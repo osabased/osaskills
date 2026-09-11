@@ -28,13 +28,15 @@ Before elaborating a favorite:
 2. Retain only materially independent candidates that could plausibly win under the ordered criteria.
 3. Describe every serious candidate at comparable, decision-relevant depth.
 
+When differing responsibility boundaries or workflow steps could change the comparison, trace each serious candidate from the same representative input and starting state to the required usable outcome. Include decision-relevant integration, manual steps, handoffs, and recovery. Include the surrounding work needed to make a component-only option a complete path. Treat untested steps as assumptions for Stage 3.
+
 This stage owns candidate-space exploration. Perform one serious bounded search when invocation triggers 3–5 require it or when Stage 1 establishes another credible omitted-direction signal. Test whether a simpler formulation, changed boundary, relaxed assumption, avoided decision, or coherent hybrid removes the current tradeoff. A hybrid qualifies only when it removes weaknesses rather than combining complexity.
 
 Known consequential competitors alone do not require another class. An imaginable candidate is not evidence that the space is inadequate. Add any credible candidate found and complete only the affected modeling needed to compare it. Repeat candidate-space exploration only after materially new evidence changes the framing, shared premises, or credible solution space.
 
 Use an available and authorized independent second look for high-impact choices only when its expected decision value justifies the cost. Ask neutrally and treat the result as evidence, not a vote.
 
-**Complete when:** known serious candidates are neutrally and comparably stated, every candidate-space examination required by the invocation trigger has been completed once, and the stage records whether exploration was not required, found no credible alternative, or added candidates for comparison.
+**Complete when:** known serious candidates are neutrally and comparably stated, any triggered outcome-path comparison is complete, every candidate-space examination required by the invocation trigger has been completed once, and the stage records whether exploration was not required, found no credible alternative, or added candidates for comparison.
 
 ## 3. Gather discriminating, applicable evidence
 
@@ -48,18 +50,18 @@ When materially new evidence changes the framing, return to Stage 1. When it cre
 
 Small or reversible actions must advance a commitment already supported at that level or reduce decision-relevant uncertainty. Keep exploratory work contained, observable, replaceable, and future-horizon reversible.
 
-**Complete when:** every decisive comparative claim has applicable proportionate evidence, or its remaining uncertainty is explicit and has been accepted, routed through bounded discovery, or identified as the exact gate blocker.
+**Complete when:** every decisive comparative claim has traceable, applicable proportionate evidence with material inferences identified, or its remaining uncertainty is explicit and has been accepted, routed through bounded discovery, or identified as the exact gate blocker.
 
 ## 4. Compare without anchoring
 
 Evaluate in order:
 
-1. **Constraint elimination:** remove candidates that violate a hard constraint unless that constraint is under review.
+1. **Constraint elimination:** remove candidates with demonstrated hard-constraint violations unless that constraint is under review.
 2. **Dominance:** prefer a candidate no worse on important criteria and materially better on at least one, unless uncertainty undermines the comparison.
 3. **Tradeoffs:** compare primary criteria, secondary criteria, then tie-breakers.
 4. **Uncertainty:** label advantages as evidence-backed, likely, or speculative.
 
-Use measurements when available and ordered qualitative judgment otherwise. Apply symmetric standards. Count concrete future integration, transition, migration, compatibility, schedule, and operating costs without counting already-spent effort as support for an incumbent. Count future requirements in proportion to credible evidence. Treat simplicity as a tie-breaker and risk reducer, not a substitute for requirements. When higher-priority criteria remain close, prefer the direction easier to validate, reverse at the likely correction horizon, leave, or extend.
+Use measurements when available and ordered qualitative judgment otherwise. Apply symmetric standards. Count concrete future integration, transition, migration, compatibility, schedule, and operating costs without counting already-spent effort as support for an incumbent. Count future requirements in proportion to credible evidence. Treat simplicity as a tie-breaker and risk reducer, not a substitute for requirements. Apply [Close comparisons](../SKILL.md#close-comparisons) when a small or uncertain difference could decide the choice.
 
 When applicable evidence establishes real dominance and no unresolved higher-priority uncertainty undermines it, stop needless lower-priority comparison. If comparison exposes a materially new framing or candidate-space signal, return to the earliest affected stage under the Continuation invariant.
 
@@ -121,4 +123,4 @@ When the gate cannot pass, identify the exact failing condition. Route a resolva
 
 ## 8. Record and return the outcome
 
-Use the matching `Direction Decision`, `Direction Blocker`, or `Adaptive Direction` contract in `../SKILL.md`. Keep the record concise and proportional, state the exact governed commitment, return it with gate status to the caller/controller, and continue only into work separately authorized by the user's request.
+Use the matching `Direction Decision`, `Direction Blocker`, or `Adaptive Direction` contract in `../SKILL.md`. For answers to the user, apply [User-facing presentation](../SKILL.md#user-facing-presentation). Keep the record concise and proportional, state the exact governed commitment, return it with gate status to the caller/controller, and continue only into work separately authorized by the user's request.
