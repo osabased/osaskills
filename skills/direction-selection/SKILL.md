@@ -1,6 +1,6 @@
 ---
 name: direction-selection
-description: Choose or reassess consequential directions when alternatives compete, the framing or candidate space is uncertain, or evidence challenges the current choice.
+description: Choose or reassess consequential directions when the preferred choice lacks sufficient evidence, alternatives compete, the framing or candidate space is uncertain, or evidence challenges the current choice.
 ---
 
 # Direction Selection
@@ -51,9 +51,17 @@ A direction is **sufficiently supported for the governed commitment** when:
 
 Scale support to the commitment. Higher-impact or harder-to-reverse commitments require stronger evidence. Seek enough support to decide, not certainty, and spend no more on direction selection than the decision warrants. Do not manufacture an alternative to satisfy the threshold.
 
+### Close comparisons
+
+When a small or uncertain difference could decide the choice, distinguish a meaningful supported advantage, supported practical equivalence for this commitment, and an unresolved difference. Use requirement-backed tolerances or evidence-backed ranges when available; preserve explicit optimization priorities. Move to the next ordered criterion when practical equivalence is supported. An unresolved difference that could matter remains uncertainty under the Support threshold. For a supported tie under the ordered criteria, favor ease of validation, reversal at the likely correction horizon, exit, or extension as applicable tie-breakers.
+
+If the choice hinges on an uncertain estimate or assumption, identify the smallest credible change that would switch it. Investigate that switch point only when plausible and worth resolving under the existing evidence or discovery rules.
+
 ## Deciding-evidence applicability
 
 Evidence may carry a decisive comparative claim only when it represents the property actually at risk and applies to the relevant version or interface, environment, workload or population, operating conditions, and material integration effects. Evidence that misses a material part of the claim may remain informative, but it is non-deciding.
+
+For each deciding claim, identify its source or observation and separate what it establishes from what is inferred. Treat repetitions of the same underlying result as one evidentiary basis. Distinguish demonstrated constraint failure, unverified satisfaction, and inapplicable evidence. Missing evidence leaves satisfaction unverified; the selected direction must still establish compliance with every known hard constraint.
 
 ## Authoritative full-mode triggers
 
@@ -94,6 +102,8 @@ When otherwise authorized and when they do not materially prejudice the unresolv
 
 ## Output contracts
 
+Use the matching schema for agent/controller handoffs. For answers to the user, render that outcome using [User-facing presentation](#user-facing-presentation).
+
 Use this result when comparison never becomes the owner:
 
 ### Applicability Result
@@ -109,7 +119,7 @@ For a conventional passing direction, use:
 - **Mode:** lightweight | full
 - **Governed commitment:** exact direction-dependent commitment supported by this gate
 - **Chosen direction:** one sentence
-- **Why it wins:** decisive reasons tied to the ordered criteria
+- **Why it wins:** decisive reasons tied to the ordered criteria, with evidence references and material inferences identified
 - **Alternatives / candidate-space result:** serious candidates and decisive losing tradeoffs; `none — no search required`; or `none — required bounded search found no credible alternative`
 - **Assumptions / uncertainty:** material items only
 - **Reopen if:** concrete evidence or conditions that invalidate the choice
@@ -148,6 +158,27 @@ Adaptive `PASS` is permitted only when the current bounded commitment satisfies 
 Keep records concise and proportional. They are local skill outputs. The caller/controller decides whether a load-bearing record should persist in project state because stale reconstruction or correction propagation would matter; this skill does not require global persistence for every record.
 
 Return the record and gate status to the caller/controller. Continue only into work separately authorized by the user's request.
+
+### User-facing presentation
+
+Present the outcome once. A normal decision should usually fit in 100–200 words; use less for simple results and expand for material risks or tradeoffs. Use short headings and sentences, selective bolding, and evidence references beside deciding claims. Summarize results rather than narrating stages. Keep the evaluation and support requirements intact; provide the full schema when the user requests it.
+
+For a passing `Direction Decision`, use this layout:
+
+- **Recommendation:** bold the chosen direction and give its main reason in one sentence, scoped to the governed commitment.
+- **Why this wins:** one or two deciding reasons. Briefly explain the strongest alternative's losing tradeoff when useful; a small comparison table may replace this section when several tradeoffs matter.
+- **Main tradeoff:** the main cost or limitation. Retain material uncertainty and the concrete condition that would change the recommendation.
+- **Next step:** the action within the supported scope and user's authorization, or the approval needed before proceeding.
+
+Omit empty optional sections. For other outcomes, use the matching presentation:
+
+| Outcome | Lead with | Retain |
+|---|---|---|
+| `Direction Blocker` or adaptive `NOT PASSED` | **Decision needed**, **Evidence needed**, or **Blocked by [constraint]**, matching the blocker | What cannot proceed, the exact missing input or constraint, owner, next action, and resume condition; say when no justified next action remains. |
+| Adaptive `PASS` | **Bounded next step** | Supported commitment and reason, why no overall winner is justified, material uncertainty, preserved options, exposure limit, and adaptation/reopen trigger. |
+| `exit` or `handoff` | One or two sentences | Result, reason, and owner or next route. |
+
+**Complete when:** the reader can identify the outcome, scope, applicable deciding evidence and material caveats, and next action or its absence without reconstructing the protocol; agent/controller handoffs retain the full matching contract and gate status.
 
 ## Reopening a direction
 

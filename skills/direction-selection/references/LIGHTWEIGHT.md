@@ -5,7 +5,7 @@ Use this branch only after the [SKILL.md](../SKILL.md) applicability router retu
 ## Procedure
 
 1. Record the goal, hard constraints, ordered criteria, governed commitment, and credible known alternatives. Do not search for another candidate merely to fill the record.
-2. Compare the known serious alternatives under the same decisive criteria. Identify the strongest surviving alternative when one exists. Do not count already-spent effort as support for an incumbent; count concrete future migration, compatibility, schedule, and operating costs.
+2. Compare the known serious alternatives under the same decisive criteria. Apply [Close comparisons](../SKILL.md#close-comparisons) when a small or uncertain difference could decide the choice. Identify the strongest surviving alternative when one exists. Do not count already-spent effort as support for an incumbent; count concrete future migration, compatibility, schedule, and operating costs.
 3. When one cheap decision-sensitive unknown prevents the Support threshold from passing, resolve it through the fitting evidence route. If bounded discovery is warranted, read [DISCOVERY.md](DISCOVERY.md) completely, preserve this comparison as owner, and resume this step afterward.
 4. Challenge one load-bearing reason only when it remains meaningfully uncertain and one cheap realistic check could change the winner. Apply the parent deciding-evidence applicability rule to the result. Skip this check when its trigger is absent.
 5. Judge the selected direction against the Support threshold using future-horizon reversibility. Set a concrete reopen condition, then return a `Direction Decision`, `Direction Blocker`, or justified `Adaptive Direction`.
@@ -30,6 +30,6 @@ Skipped mechanisms do not need to be performed or passed. The gate is a support 
 
 ## Record
 
-Use the canonical `Direction Decision`, `Direction Blocker`, or `Adaptive Direction` schema in [SKILL.md](../SKILL.md). A conventional passing record uses `Mode: lightweight` and states the exact governed commitment. `Alternatives / candidate-space result: none — no search required` is valid when no credible alternative existed.
+Use the canonical `Direction Decision`, `Direction Blocker`, or `Adaptive Direction` schema in [SKILL.md](../SKILL.md). For answers to the user, apply [User-facing presentation](../SKILL.md#user-facing-presentation). A conventional passing record uses `Mode: lightweight` and states the exact governed commitment. `Alternatives / candidate-space result: none — no search required` is valid when no credible alternative existed.
 
 Return the local record and commitment-scoped gate status to the caller/controller. Continue only into work separately authorized by the user's request.
