@@ -93,6 +93,8 @@ Choose exactly one disposition:
 - **`PLANNING HANDOFF`** — intervention is justified, but one bounded change would leave an unsafe or incomplete architecture.
 - **`BLOCKED`** — a user-owned decision, unavailable decision-sensitive evidence, or required verification prevents a supported disposition.
 
+When multiple independent candidates pass, choose the one with the strongest supported engineering benefit relative to migration, regression, and permanent structural cost. If materially equivalent, prefer the narrower blast radius and simpler verification. Treat materially different designs for the same objective as direction alternatives rather than separate improvement candidates.
+
 Resolve ordinary engineering tradeoffs autonomously. When materially different consequential architecture directions remain credible and evidence establishes no winner, invoke `$direction-selection` with the need, constraints, candidates, migration effects, and verification obligations. Continue only if its Direction Gate passes for this commitment.
 
 `EXECUTE` requires traceable callers and compatibility obligations, a complete retirement or intentional transition for the old path, runnable verification, and no unresolved material decision.
@@ -105,7 +107,9 @@ For `EXECUTE`, read [references/EXECUTION.md](references/EXECUTION.md) completel
 
 ## Output
 
-Return:
+### Agent / controller handoff
+
+Use the full record when another agent or workflow must continue the result:
 
 ### Architecture Improvement
 
@@ -125,3 +129,14 @@ For `NO CHANGE`, report either that no credible candidate emerged or the stronge
 For `PLANNING HANDOFF`, provide the complete supported objective, constraints, migration boundary, and verification obligations as input to the surrounding `to-spec` or `to-tickets` workflow.
 
 Use `IMPROVED` only after the `EXECUTE` branch completes implementation, verification, and cleanup.
+
+### User-facing presentation
+
+Present the result once and keep it proportional. Lead with the disposition and scope, then retain only the information needed to understand the result and act on it:
+
+- **`IMPROVED`** — why intervention was justified, what changed, decisive verification, and any material residual or reopen condition.
+- **`NO CHANGE`** — the decisive reason no intervention is justified; include the strongest rejected candidate only when useful.
+- **`LOCAL HANDOFF`** or **`PLANNING HANDOFF`** — the established need, the supported next route, and the boundary that keeps architecture execution from proceeding here.
+- **`BLOCKED`** — the exact blocking decision, evidence, or verification and what would unblock it.
+
+Omit empty sections, reconnaissance mechanics, and gate-by-gate narration unless they materially affect the result or the user requests the full record.
