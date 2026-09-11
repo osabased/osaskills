@@ -1,4 +1,4 @@
 interface:
   display_name: "System Review"
-  short_description: "Review behavior and failures across system parts"
-  default_prompt: "Use $system-review to map material contracts, derive end-to-end and failure scenarios, and bound conclusions to applicable evidence. Preserve demonstrated defects when diagnosis is incomplete, distinguish visibility gaps from accepted residual risks, and hand open correction comparisons to $direction-selection."
+  short_description: "Review cross-part behavior and failure paths"
+  default_prompt: "Use $system-review when changed cross-part behavior, an observed end-to-end failure, or a material assurance question requires tracing interactions or operational failure paths. Start from the review question, select the smallest sufficient end-to-end boundary unless the user requested broader coverage, test discriminating intermediate-state scenarios against applicable evidence, challenge findings with applicable counterevidence, and reuse still-valid coverage on re-review. Return a concise user-facing verdict while preserving the full handoff record when another agent must continue."
