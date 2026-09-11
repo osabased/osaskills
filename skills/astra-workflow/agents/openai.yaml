@@ -1,4 +1,0 @@
-interface:
-  display_name: "Astra Workflow"
-  short_description: "Reserve Astra for prepared consequential decisions"
-  default_prompt: "Use $astra-workflow to keep GPT-5.6 Sol as the task owner, delegate bounded discovery to GPT-5.6 Luna when useful, invoke GPT-6 Astra only for prepared consequential reasoning, then return implementation and verification to Sol."
