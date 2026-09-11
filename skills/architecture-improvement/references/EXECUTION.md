@@ -20,7 +20,7 @@ Define before editing:
 - observable architectural success evidence;
 - rollback or recovery considerations when material.
 
-When the change affects cross-part contracts, authority, retries, ordering, concurrency, durability, deployment compatibility, recovery, or operational failure paths, invoke `$system-review` for those affected scenarios and constraints.
+When preserved or changed behavior raises a material end-to-end assurance question whose correctness depends on cross-part interactions or operational failure paths, invoke `$system-review` for only those affected scenarios and constraints.
 
 **Complete when:** the design, migration, and verification plan cover the full objective without an unresolved material gap.
 
