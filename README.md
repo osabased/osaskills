@@ -2,8 +2,6 @@
 
 | Problem | Owning skill |
 |---|---|
-| My agent is having trouble reserving expensive model reasoning for consequential decisions instead of exploration and implementation | [**astra-workflow**](./skills/astra-workflow/) |
-| My agent is having trouble gathering broad repository or system evidence without bloating the controller's context | [**reconnaissance**](./skills/reconnaissance/) |
 | My agent is having trouble making worthwhile codebase architecture improvements without speculative refactoring | [**architecture-improvement**](./skills/architecture-improvement/) |
 | My agent is having trouble choosing or reassessing a consequential direction | [**direction-selection**](./skills/direction-selection/) |
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
