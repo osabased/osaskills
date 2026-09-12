@@ -65,7 +65,7 @@ Load a reference only when its branch is active. Multiple specialist references 
 
 | Trigger | Read |
 | --- | --- |
-| An architecture Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules, or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
+| An architecture Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules; a task changes or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
 | `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation materially affect the structure | [`references/server-authority.md`](references/server-authority.md) |
 | An active or materially suspected Script Capabilities sandbox can affect the move or dependency path | [`references/script-capabilities.md`](references/script-capabilities.md) |
@@ -112,7 +112,7 @@ Finish when the material structural risks within the requested boundary are acco
 
 Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, read `references/practices.md`.
 
-Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches.
+Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
 
 Design is read-only unless Implementation is separately requested. Finish when every designed item has an unambiguous home and startup/integration path and every material boundary contract is identified.
 
@@ -126,12 +126,13 @@ Finish only at the migration reference's exhaustive completion criterion: every 
 
 Use the established-project Implementation fast path whenever its conditions hold. Otherwise load the references triggered by the task before the risky operation.
 
-1. Establish the intended authorized write set at the level the task requires.
-2. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
-3. For moves, renames, topology changes, or multi-step restructuring, follow `references/migration.md`.
-4. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
-5. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
-6. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
+1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/modification-scope.md` before writing.
+2. Establish the intended authorized write set at the level the task requires.
+3. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
+4. For moves, renames, topology changes, or multi-step restructuring, follow `references/migration.md`.
+5. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
+6. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
+7. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
 
 Prefer existing static, type, lint, build, test, mapping, or hierarchy checks when they cover the failure mode. Use the smallest relevant Studio runtime checks when runtime/startup/client-server behavior needs execution evidence. Report checks that actually ran and any material residual risk from unavailable validation.
 
