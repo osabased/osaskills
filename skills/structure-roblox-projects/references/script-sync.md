@@ -1,10 +1,10 @@
 # Script Sync safeguards
 
-Use this reference when enabling Script Sync, changing a sync boundary, resuming or resolving sync conflicts, or moving metadata-bearing scripts into or out of synchronized content.
+Use this reference when reviewing or changing Script Sync behavior or boundaries, resuming or resolving sync conflicts, or moving/renaming Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter. A routine source edit inside a stable sync boundary does not require this reference.
 
 Script Sync manages `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances as a bidirectional Studio-and-disk synchronization boundary. Other instances inside a synced folder remain Studio-owned. Prefer code-focused sync roots when practical so the filesystem representation does not imply ownership of ignored Studio content.
 
-## Before changing the boundary
+## Before changing the boundary or managed topology
 
 1. When Studio settings are accessible, inspect the relevant Script Sync behavior: **Auto resume sync on place open**, **Resume conflicted sync on place open**, **Keep local files/directories after sync**, and **File extension**. Treat unavailable reopen/resume behavior as an unverified risk when it matters to the operation.
 2. Inventory affected scripts and folders, including script names, class or RunContext, attributes, tags, children, package status, and modification scope.
@@ -15,11 +15,15 @@ Script Sync manages `Script`, `LocalScript`, `ModuleScript`, and `Folder` instan
 7. With Team Create or multiple local editors, account for overlapping collaborators or sync processes. For packages, account for metadata not represented on disk, including `PackageLink`.
 8. Resolve each conflict preview intentionally. If reopen/resume settings automatically prefer Studio or disk, account for that precedence before resuming.
 
-Proceed only when every metadata-bearing script has a preservation strategy and every planned content or metadata write is authorized.
+Proceed with a topology change only when every metadata-bearing script has a preservation strategy and every planned content or metadata write is authorized.
+
+## Review
+
+For a read-only Script Sync review, apply the same representation and metadata checks that are material to the review question, but do not require a mutation plan when no change is proposed. Report unavailable Studio settings or conflict behavior only when they can affect the conclusion.
 
 ## Validation
 
-After the change, verify affected script types, RunContext values, attributes, tags, children, package behavior, source boundaries, and the absence of unintended writes in Studio and on disk.
+After a change, verify affected script types, RunContext values, attributes, tags, children, package behavior, source boundaries, and the absence of unintended writes in Studio and on disk.
 
 Script Sync owns scripts and folders rather than the wider DataModel. When the filesystem must own broader hierarchy, evaluate Rojo instead of stretching the sync boundary.
 
