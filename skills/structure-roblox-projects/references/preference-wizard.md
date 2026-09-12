@@ -1,10 +1,13 @@
 # Roblox structure preference setup
 
-Use this reference for the **Preference setup** route, and for Design, Migration plan, or Implementation when established project conventions and the current request leave material organization choices unresolved. Read [`practices.md`](practices.md) when technical definitions, diagrams, use cases, or constraints are needed. Resolve preferences without expanding modification authority.
+Use this reference for the **Preference setup** route, including first-run project onboarding, and for Design, Migration plan, or Implementation when established project conventions and the current request leave material organization choices unresolved. Read [`practices.md`](practices.md) when technical definitions, diagrams, use cases, or constraints are needed. Resolve preferences without expanding modification authority.
+
+For onboarding, orient the user to the project before exposing preference decisions. Do not create a separate onboarding workflow when the existing Preference setup route can inspect the project, explain its structure, and resolve only what remains open.
 
 ## Contents
 
 - [Setup contract](#setup-contract)
+- [Project orientation](#project-orientation)
 - [Decision catalogue](#decision-catalogue)
 - [Defaults and summary](#defaults-and-summary)
 - [Profile format](#profile-format)
@@ -12,16 +15,41 @@ Use this reference for the **Preference setup** route, and for Design, Migration
 
 ## Setup contract
 
-1. Inspect the project first when project context is available. State which source-of-truth workflow and organization conventions were detected, which material choices they already resolve, and which relevant parts could not be inspected. Cross modification or ownership boundaries only for read-only context. Explain that the result sets organization defaults rather than authorizing project changes or locking the project into a framework.
-2. Build one draft preference state covering `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`. For each material value, know whether it came from the explicit request, a coherent established convention, an applicable project profile, or a recommendation for an unresolved choice.
-3. For an established project, preserve coherent supported implemented conventions unless the user requests redesign or migration. For greenfield work, explicit redesign, or genuinely unresolved choices, recommend the smallest suitable option from the current request, project constraints, and [`practices.md`](practices.md), using the skill defaults only when stronger evidence does not decide the choice.
-4. Before asking questions, present a compact proposed setup. Separate values already resolved from choices that still need input. Do not make the user translate architecture taxonomy when the project or recommendation already determines a sensible choice. Briefly explain a recommendation only when the tradeoff is material.
-5. Ask only material unresolved choices that can change structure, workflow, or validation. Batch independent unresolved choices into one compact prompt when answers do not depend on each other; serialize dependent choices or clarification follow-ups. Stop asking as soon as every material choice is directly implementable.
-6. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts the displayed recommendations for unresolved choices. `preserve detected` keeps coherent detected conventions and asks only for choices the project does not resolve. `customize` exposes only the decisions the user wants to change.
-7. Show diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization choice, or when the user asks for one. Use the diagrams from `practices.md` rather than inventing a competing structure vocabulary.
-8. Accept naming, package, test-location, lifecycle, or other organization preferences with any answer. Retain normalized selections for the task summary and any authorized project profile, preserving additional wording verbatim in `Notes` when a profile will be written.
-9. Resolve persistence only after the organization choices are complete unless the user already specified it. Use **Current task only** for non-persistent preferences and **This project only** for reusable preferences owned by the affected project. Persistent profiles are never global or shared across projects.
-10. For **Current task only**, show the resolved summary and continue the original task without an extra confirmation stop. A project profile is a project write: show one exact pre-write preview and write it only after the user confirms `proceed`. That confirmation authorizes only the displayed project-profile write, not broader project changes. If no project root is available, keep the preferences task-local until a project can own the profile.
+1. Inspect the project first when project context is available. Determine the source-of-truth workflow, server/client/shared layout, startup topology, module organization, relevant tooling or validation, and any material part that cannot be inspected. Cross modification or ownership boundaries only for read-only context.
+2. Present the compact project orientation defined below before asking preference questions. Explain detected structure in ordinary project language rather than exposing architecture taxonomy that does not affect a user decision.
+3. Build one draft preference state covering `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`. For each material value, know whether it came from the explicit request, a coherent established convention, an applicable project profile, or a recommendation for an unresolved choice.
+4. For an established project, preserve coherent supported implemented conventions unless the user requests redesign or migration. For greenfield work, explicit redesign, or genuinely unresolved choices, recommend the smallest suitable option from the current request, project constraints, and [`practices.md`](practices.md), using the skill defaults only when stronger evidence does not decide the choice.
+5. If inspection and the current request already resolve every material choice, ask no preference questions. State that no structural decision is needed, give the smallest compatible recommendation, and continue the original task or finish onboarding as requested.
+6. Otherwise, after the orientation, present only the unresolved material choices. Do not repeat detected values as questions. Briefly explain a recommendation only when the tradeoff is material.
+7. Ask only material unresolved choices that can change structure, workflow, or validation. Batch independent unresolved choices into one compact prompt when answers do not depend on each other; serialize dependent choices or clarification follow-ups. Stop asking as soon as every material choice is directly implementable.
+8. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts the displayed recommendations for unresolved choices. `preserve detected` keeps coherent detected conventions and asks only for choices the project does not resolve. `customize` exposes only the decisions the user wants to change.
+9. Show diagrams or representative trees only when they materially clarify the project orientation or an unresolved entrypoint or module-organization choice, or when the user asks for one. Use the diagrams from `practices.md` rather than inventing a competing structure vocabulary. Accept naming, package, test-location, lifecycle, or other organization preferences with any answer. Retain normalized selections for the task summary and any authorized project profile, preserving additional wording verbatim in `Notes` when a profile will be written.
+10. Resolve persistence only after the organization choices are complete unless the user already specified it. Use **Current task only** for non-persistent preferences and **This project only** for reusable preferences owned by the affected project. Persistent profiles are never global or shared across projects. For **Current task only**, show the resolved summary and continue the original task without an extra confirmation stop. A project profile is a project write: show one exact pre-write preview and write it only after the user confirms `proceed`. That confirmation authorizes only the displayed project-profile write, not broader project changes. If no project root is available, keep the preferences task-local until a project can own the profile.
+
+## Project orientation
+
+Before preference interaction, give the user a compact mental model of the project. This is a user-facing orientation, not an architecture audit.
+
+For an established project, cover only the items that are observable and useful:
+
+- **Workflow:** where the effective authoring source of truth lives and how code reaches Studio.
+- **Runtime structure:** where server, client, and genuinely shared code live, using concrete project paths or DataModel locations when known.
+- **Startup:** the significant server and client entrypoints or independently starting scripts and what they start.
+- **Organization:** the dominant module grouping and module/lifecycle style when coherent enough to name.
+- **Validation/tooling:** existing checks or tooling that materially shape structure work.
+- **Unknowns:** only missing information that can affect the current structure decision.
+
+Then separate:
+
+- **Already decided:** coherent conventions the project or current request already resolves.
+- **Needs a decision:** only material unresolved choices.
+- **Recommendation:** the smallest compatible next step, including `Preserve the current structure` when no structural change is justified.
+
+Keep this orientation concise. Prefer a short snapshot over a full architecture report. Do not surface replication, simulation, capability, ownership, sync, migration, or other technical taxonomy unless it materially explains the current project or changes a decision. Keep those models internal when they only support reasoning.
+
+For greenfield or effectively empty projects, replace detected structure with a **Starting point**: state that no established convention was found, show the smallest recommended baseline, and ask only the first decisions that can materially change that baseline. Do not pretend recommended defaults were detected from the project.
+
+Onboarding is complete when the user can tell how the project is organized, which important choices are already settled, what remains genuinely open, and what the agent recommends next. A profile is optional and is not required for onboarding completion.
 
 ## Decision catalogue
 
