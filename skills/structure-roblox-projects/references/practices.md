@@ -37,8 +37,7 @@ Treat platform-specific statements as architectural guidance rather than frozen 
 - A `Script` with `RunContext = Client` can run from `ReplicatedStorage`; a `LocalScript` cannot run there.
 - A ModuleScript executes independently in each Luau environment that requires it. Do not treat mutable module return state as shared across client/server or across `Actor` boundaries.
 - Treat replicated code and data as visible to clients. Keep privileged authority and validation on the server.
-- Keep requires acyclic and avoid restricted requires from a desynchronized parallel phase.
-- Keep `ReplicatedFirst` limited to the earliest loading subset.
+- Avoid restricted requires from a desynchronized parallel phase.
 
 ## Entrypoints
 
@@ -82,7 +81,6 @@ Their execution order is nondeterministic unless the project adds an explicit co
 
 ### Entrypoint rules
 
-- Keep entrypoints focused on dependency assembly and startup.
 - Require feature roots explicitly unless the project already owns a reliable discovery loader.
 - Treat shared entrypoints and discovery loaders as integration boundaries.
 - Add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
