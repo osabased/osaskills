@@ -1,6 +1,6 @@
 # Server Authority structure work
 
-Use this reference when the affected structure uses or materially appears to use Roblox's specific Server Authority engine mode (`Workspace.AuthorityMode = Server`), prediction/rollback APIs, or shared deterministic simulation.
+Use this reference when the current or target structure uses or materially plans to use Roblox's specific Server Authority engine mode (`Workspace.AuthorityMode = Server`), prediction/rollback APIs, or shared deterministic simulation; or when the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority.
 
 Treat Server Authority as an engine simulation model, not as a synonym for ordinary server-side validation. Confirm the mode from the DataModel or mapped Workspace properties when available. Generic server validation, `SetNetworkOwner(nil)`, or ordinary client/server code does not prove it. When prediction APIs or a complete related configuration are visible but `AuthorityMode` cannot be inspected, mark the mode unresolved and preserve the apparent simulation boundaries.
 
