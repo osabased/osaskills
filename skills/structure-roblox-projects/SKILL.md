@@ -1,6 +1,6 @@
 ---
 name: structure-roblox-projects
-description: Roblox project structure: place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo.
+description: "Roblox project structure: place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo."
 ---
 
 # Structure Roblox Projects
