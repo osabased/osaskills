@@ -45,12 +45,12 @@ Load a reference only when its branch is active. Evaluate specialist triggers ag
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
-| **Ordinary structure** | A Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules; a task changes or validates a DataModel placement, entrypoint, or source-of-truth workflow whose platform semantics can affect correctness; or a material layout/grouping/module-style choice remains unresolved | [`references/practices.md`](references/practices.md) |
+| **Ordinary structure** | An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
-| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly changes or reviews that model | [`references/server-authority.md`](references/server-authority.md) |
-| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly changes or reviews that security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| **Script Sync** | The task reviews or changes Script Sync/conflict behavior or a sync boundary; or moves/renames content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/script-sync.md`](references/script-sync.md) |
-| **Rojo** | The task reviews or changes a Rojo mapping/workflow, mapping/project/meta/model file, or mapped topology where path/name/version/syncback/live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
+| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
+| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
+| **Script Sync** | The task reviews, designs, plans, enables, disables, or changes Script Sync/conflict behavior or a sync boundary; or migrates/renames content into, out of, or within Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/script-sync.md`](references/script-sync.md) |
+| **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
 | **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
 | **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/project-profile.md`](references/project-profile.md) |
 | **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/preference-resolution.md`](references/preference-resolution.md) |
@@ -111,7 +111,7 @@ Use the established-project fast path when all of these are true:
 - the requested work fits that structure without redesign or migration;
 - the source-of-truth boundary is staying intact;
 - no required write crosses an unclear or protected boundary; and
-- no specialist reference is required for correctness.
+- no triggered reference above is required for correctness.
 
 The fast path removes unnecessary structural ceremony and reference loading; it does not bypass write-set control, safeguards, or validation. A fast-path implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence triggers one.
 
@@ -135,3 +135,4 @@ Finish when the requested structural outcome is complete and focused checks pass
 - Put only code and data clients genuinely need in client-visible containers.
 - Preserve coherent established conventions unless the request requires redesign or migration.
 - Keep modification authority separate from technical context and project conventions.
+- Introduce a framework, package manager, test framework, or generated hierarchy only when a requirement beyond organization justifies it and the resulting writes are authorized.
