@@ -23,7 +23,7 @@ Establish the minimum sufficient working model for the current task:
 
 - **Modification boundary:** what the request clearly authorizes, and which adjacent content is context only.
 - **Source of truth:** Studio-owned, Script Sync-managed, Rojo-mapped, or another established workflow relevant to the affected content.
-- **Placement and runtime:** where the work belongs and whether server, client, shared, or replication visibility matters.
+- **Placement and runtime:** where the work belongs and whether server, client, shared, replication visibility, or an active simulation/security boundary matters.
 - **Startup and integration:** the relevant entrypoint, dependency, Remote/Bindable, loader, discovery, or lifecycle path.
 - **Local convention:** the organization, naming, module style, or framework convention the work should preserve.
 - **Validation path:** the focused checks capable of catching the structural failures this task could introduce.
@@ -70,7 +70,7 @@ Load a reference only when its branch is active. Multiple specialist references 
 | `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation materially affect the structure | [`references/server-authority.md`](references/server-authority.md) |
 | An active or materially suspected Script Capabilities sandbox can affect the move or dependency path | [`references/script-capabilities.md`](references/script-capabilities.md) |
 | Enabling/changing Script Sync, resolving its conflicts, or moving metadata-bearing content across its boundary | [`references/script-sync.md`](references/script-sync.md) |
-| Rojo mappings, project/meta/model files, version-sensitive sync behavior, `syncback`, or live serve safety affect the task | [`references/rojo.md`](references/rojo.md) |
+| A Rojo mapping/project/meta/model file is changing, or unresolved mapping/version/syncback/live-serve behavior materially affects the task | [`references/rojo.md`](references/rojo.md) |
 | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
 | The user requests reusable structural preferences, or a material organization choice remains genuinely unresolved | [`references/preference-wizard.md`](references/preference-wizard.md) |
 
