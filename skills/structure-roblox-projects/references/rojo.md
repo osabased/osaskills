@@ -1,6 +1,6 @@
 # Rojo structure work
 
-Use this reference when reviewing Rojo mapping/workflow safety, changing a Rojo mapping or project/meta/model file, or migrating Rojo-mapped content where path, name, topology, version-sensitive sync behavior, `syncback`, or live `rojo serve` safety can affect the resulting DataModel. A routine source edit inside a clear stable mapping does not require this reference.
+Use this reference when reviewing, designing, planning, adopting, removing, or changing a Rojo mapping/workflow; changing a Rojo mapping or project/meta/model file; or migrating content into, out of, or within Rojo mapping where path, name, topology, version-sensitive sync behavior, `syncback`, or live `rojo serve` safety can affect the resulting DataModel. A routine source edit inside a clear stable mapping does not require this reference.
 
 For a small filesystem-first project, prefer a compact source tree and let the project file define the DataModel mapping:
 

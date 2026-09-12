@@ -16,11 +16,11 @@ Use this reference for moves, renames, topology changes, source-of-truth migrati
    - `script.Name`, `GetFullName()`, and name- or path-derived registrations; and
    - topology- or identity-sensitive discovery behavior.
 3. When required writes cross an unclear or protected boundary, read [`modification-scope.md`](modification-scope.md) and classify those writes before planning an executable slice.
-4. Load specialist guidance when the migrated content can exercise that boundary:
-   - [`server-authority.md`](server-authority.md) for affected Server Authority prediction/rollback or shared deterministic simulation;
-   - [`script-capabilities.md`](script-capabilities.md) for affected active or materially suspected capability boundaries;
-   - [`script-sync.md`](script-sync.md) when moving or renaming Script Sync-managed content can change sync representation, metadata, child shape, packages, or conflict behavior, even if the sync root itself is unchanged; and
-   - [`rojo.md`](rojo.md) when moving or renaming Rojo-mapped content can change the resulting DataModel through path, filename, `init.*`, suffix, nested-project, metadata, or mapping semantics, even if no project file is edited.
+4. Load specialist guidance when either the current structure or requested target structure can exercise that boundary:
+   - [`server-authority.md`](server-authority.md) for migration that preserves, introduces, removes, or changes Server Authority prediction/rollback or shared deterministic simulation;
+   - [`script-capabilities.md`](script-capabilities.md) for migration that preserves, introduces, removes, or changes an active or requested Script Capabilities boundary;
+   - [`script-sync.md`](script-sync.md) when moving or renaming content into, out of, or within Script Sync management can change sync representation, metadata, child shape, packages, or conflict behavior; and
+   - [`rojo.md`](rojo.md) when moving or renaming content into, out of, or within Rojo mapping can change the resulting DataModel through path, filename, `init.*`, suffix, nested-project, metadata, or mapping semantics.
 
 ## Slice and recovery
 

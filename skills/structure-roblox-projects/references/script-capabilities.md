@@ -1,6 +1,6 @@
 # Script Capabilities boundaries
 
-Use this reference when the affected structure is under `Workspace.SandboxedInstanceMode = Experimental`, or when affected project data explicitly configures `Sandboxed = true` or non-empty `Capabilities` and the Workspace setting cannot be inspected.
+Use this reference when the current or target structure is under `Workspace.SandboxedInstanceMode = Experimental`; when affected project data explicitly configures `Sandboxed = true` or non-empty `Capabilities` and the Workspace setting cannot be inspected; or when the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model.
 
 Treat the effective sandbox container and capability set as a structural security boundary. The mere existence of `Sandboxed` or `Capabilities` properties in the engine API is not evidence that capability enforcement is active.
 
