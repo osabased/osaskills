@@ -11,7 +11,7 @@ Preserve a coherent established structure unless the user requests redesign or m
 
 1. **Route** the request as Review, Design, Migration plan, Implementation, or Preference setup.
 2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
-3. **Fast-path** ordinary work that fits a coherent established structure.
+3. **Fast-path** ordinary Implementation work that fits a coherent established structure.
 4. **Disclose** only the references whose trigger is present.
 5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
 
@@ -40,9 +40,9 @@ Access, technical necessity, project conventions, profiles, dependencies, or fai
 
 Read [`references/modification-scope.md`](references/modification-scope.md) before mutation when a proposed write may cross an unclear, shared, generated, or protected boundary; a dirty worktree makes ownership ambiguous; or a broad tool can write outside the immediately requested content.
 
-## Established-project fast path
+## Established-project Implementation fast path
 
-Use the fast path when all of these are true:
+Use this fast path only for **Implementation**, and only when all of these are true:
 
 - the affected area has a coherent supported structure;
 - the requested work fits that structure without redesign or migration;
@@ -57,7 +57,7 @@ Then:
 3. make the smallest coherent authorized change; and
 4. run focused validation for the changed behavior and integration path.
 
-A fast-path task needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence causes one of those triggers to fire.
+A fast-path Implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence causes one of those triggers to fire. Review, Design, Migration plan, and Preference setup never become mutating through this fast path.
 
 ## Reference routing
 
@@ -65,12 +65,12 @@ Load a reference only when its branch is active. Multiple specialist references 
 
 | Trigger | Read |
 | --- | --- |
-| The project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
+| An architecture Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules, or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
 | `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation materially affect the structure | [`references/server-authority.md`](references/server-authority.md) |
 | An active or materially suspected Script Capabilities sandbox can affect the move or dependency path | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| Enabling/changing Script Sync, resolving its conflicts, or moving metadata-bearing content across its boundary | [`references/script-sync.md`](references/script-sync.md) |
-| A Rojo mapping/project/meta/model file is changing, or unresolved mapping/version/syncback/live-serve behavior materially affects the task | [`references/rojo.md`](references/rojo.md) |
+| Reviewing or changing Script Sync/conflict behavior, or migrating/renaming Script Sync-managed content where sync representation, metadata, or child shape can matter | [`references/script-sync.md`](references/script-sync.md) |
+| Reviewing Rojo mapping/workflow safety; changing a mapping/project/meta/model file; or migrating Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
 | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
 | The user requests reusable structural preferences, or a material organization choice remains genuinely unresolved | [`references/preference-wizard.md`](references/preference-wizard.md) |
 
@@ -102,7 +102,7 @@ Finish when every material requested preference is directly implementable and an
 
 ### Review
 
-Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion.
+Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox placement, runtime, replication, entrypoint, or source-of-truth rules, and load any specialist reference whose trigger is present.
 
 For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
 
@@ -114,7 +114,7 @@ Preserve established conventions unless redesign is requested. When the project 
 
 Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches.
 
-Finish when every designed item has an unambiguous home and startup/integration path and every material boundary contract is identified.
+Design is read-only unless Implementation is separately requested. Finish when every designed item has an unambiguous home and startup/integration path and every material boundary contract is identified.
 
 ### Migration plan
 
@@ -124,7 +124,7 @@ Finish only at the migration reference's exhaustive completion criterion: every 
 
 ### Implementation
 
-Use the established-project fast path whenever its conditions hold. Otherwise load the references triggered by the task before the risky operation.
+Use the established-project Implementation fast path whenever its conditions hold. Otherwise load the references triggered by the task before the risky operation.
 
 1. Establish the intended authorized write set at the level the task requires.
 2. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
