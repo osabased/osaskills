@@ -7,7 +7,7 @@ Use this reference only when:
 
 Resolve only choices that are genuinely open and material. A clear established project should produce zero preference questions.
 
-Read [`practices.md`](practices.md) when technical definitions, diagrams, use cases, or constraints are needed. Read [`project-profile.md`](project-profile.md) when an existing profile may resolve a material choice or when the user requests reusable project-level convention memory. Resolve preferences without expanding modification authority.
+Read [`practices.md`](practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. If reusable project-level persistence is requested, `project-profile.md` owns normalization, preview, and the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
 
 ## Decision contract
 
@@ -23,7 +23,7 @@ Read [`practices.md`](practices.md) when technical definitions, diagrams, use ca
 8. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts recommendations for unresolved choices only. `preserve detected` keeps coherent detected conventions and leaves only genuinely open choices to resolve.
 9. Use diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization decision, or when the user asks for one. Use diagrams from `practices.md` rather than inventing competing architecture vocabulary.
 10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
-11. Project-level persistence is optional and must be explicitly requested. Follow `project-profile.md` for profile reads, normalization, previews, writes, and drift handling.
+11. Project-level persistence is optional and must be explicitly requested. Treat applicable profile evidence as caller-provided context; send resolved durable choices to `project-profile.md` only when persistence is requested.
 
 ## Decision catalogue
 
