@@ -1,6 +1,6 @@
 # Roblox organization practices
 
-Use this reference when the project does not already resolve a material layout, placement, entrypoint, grouping, or source-of-truth choice. Preserve a coherent established structure instead of normalizing it toward these defaults.
+Use this reference when choosing an unresolved layout, placement, entrypoint, grouping, module-style, or source-of-truth decision, or when an architecture Review needs ordinary Roblox placement/runtime/entrypoint/source-of-truth rules to judge an existing structure. Preserve a coherent established structure instead of normalizing it toward these defaults during ordinary implementation.
 
 Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
 
@@ -169,7 +169,7 @@ Architectures can combine. Prefer the smallest organization that makes runtime o
 | Assets required by both server and client before cloning | `ReplicatedStorage` |
 | Earliest loading-screen subset | `ReplicatedFirst` |
 
-These are defaults for unresolved choices, not reasons to migrate a working project.
+These are defaults for unresolved choices and review criteria for ordinary Roblox structural compatibility, not reasons to migrate a working project without a material finding.
 
 ## Sources
 
