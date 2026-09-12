@@ -11,8 +11,8 @@ Preserve a coherent established structure unless the user requests redesign or m
 
 1. **Route** the request as Review, Design, Migration plan, Implementation, or Preference setup.
 2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
-3. **Fast-path** ordinary Implementation work that fits a coherent established structure.
-4. **Disclose** only the references whose trigger is present.
+3. **Disclose** only the references whose trigger is present.
+4. For Implementation, determine whether the established-project fast path applies.
 5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
 
 Stop expanding discovery when more inspection is unlikely to change placement, integration, modification scope, or validation.
@@ -48,14 +48,9 @@ Use this fast path only for **Implementation**, and only when all of these are t
 - the requested work fits that structure without redesign or migration;
 - the source-of-truth boundary is staying intact;
 - no required write crosses an unclear or protected boundary; and
-- no specialist trigger below is present.
+- no triggered reference below is required for correctness.
 
-Then:
-
-1. inspect the affected area until bootstrap is complete;
-2. fit the work into the existing placement, startup, and organization conventions;
-3. make the smallest coherent authorized change; and
-4. run focused validation for the changed behavior and integration path.
+The fast path is an eligibility shortcut, not a separate mutation procedure. It means the agent may skip unnecessary structural ceremony and extra reference loading, but it must still follow the Implementation route's pre-mutation status check, write-set control, mutation, and validation steps.
 
 A fast-path Implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence causes one of those triggers to fire. Review, Design, Migration plan, and Preference setup never become mutating through this fast path.
 
@@ -65,7 +60,7 @@ Load a reference only when its branch is active. Multiple specialist references 
 
 | Trigger | Read |
 | --- | --- |
-| An architecture Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules; a task changes or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
+| An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
 | `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation materially affect the structure | [`references/server-authority.md`](references/server-authority.md) |
 | An active or materially suspected Script Capabilities sandbox can affect the move or dependency path | [`references/script-capabilities.md`](references/script-capabilities.md) |
@@ -102,7 +97,7 @@ Finish when every material requested preference is directly implementable and an
 
 ### Review
 
-Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox placement, runtime, replication, entrypoint, or source-of-truth rules, and load any specialist reference whose trigger is present.
+Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox layout, placement, runtime, replication, entrypoint, grouping, module-style, or source-of-truth rules, and load any specialist reference whose trigger is present.
 
 For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
 
@@ -124,7 +119,7 @@ Finish only at the migration reference's exhaustive completion criterion: every 
 
 ### Implementation
 
-Use the established-project Implementation fast path whenever its conditions hold. Otherwise load the references triggered by the task before the risky operation.
+Determine whether the established-project fast path applies, but always follow the pre-mutation and validation steps below. Fast-path eligibility only removes unnecessary structural ceremony; it never bypasses safeguards or triggered references.
 
 1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/modification-scope.md` before writing.
 2. Establish the intended authorized write set at the level the task requires.
