@@ -188,7 +188,7 @@ A profile is valid only when `Profile version` equals `1` and every listed headi
 
 ## Existing profiles
 
-Use the convention-resolution precedence, profile-drift handling, modification-authority rules, and established-project fast path in [`SKILL.md`](../SKILL.md). This section owns only project-profile parsing, normalization, and authorized writes when preference setup or unresolved-choice resolution actually requires them.
+Use the convention-resolution precedence, profile-drift handling, and modification-authority rules in [`SKILL.md`](../SKILL.md). This section owns only project-profile parsing, normalization, and authorized writes when preference setup or unresolved-choice resolution actually requires them.
 
 - Existing version-1 values such as `Single Script Architecture` remain accepted aliases for the single client/server entrypoint-pair preference.
 - Treat a missing field or version as incomplete. Reuse recognizable durable conventions from the existing profile and project. Resolve only material missing decisions needed by the current task or explicit profile request.
