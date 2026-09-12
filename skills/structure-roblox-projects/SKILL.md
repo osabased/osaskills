@@ -75,9 +75,9 @@ Check for the nearest project-local `.codex/roblox-structure.md` only when a mat
 
 ### Preference setup
 
-Read `references/preference-resolution.md`. Resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
+If the user requests reusable project-level convention memory, read `references/project-profile.md` first. Resolve persisted fields from the explicit request, coherent project conventions, and applicable existing profile evidence. Read `references/preference-resolution.md` only for fields that remain genuinely open.
 
-If the user requests reusable project-level convention memory, also read `references/project-profile.md` and follow its persistence rules.
+Otherwise, read `references/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
 
 Finish when every material requested preference is directly implementable and any requested profile write is either completed with authorization or blocked with the exact reason.
 
@@ -133,6 +133,8 @@ Finish when the requested structural outcome is complete and focused checks pass
 
 - Keep critical rules/state, secrets, persistence, purchases, and client-input validation authoritative on the server. Treat client-visible code and data as inspectable.
 - Put only code and data clients genuinely need in client-visible containers.
+- Keep `ReplicatedFirst` limited to the earliest loading subset.
+- Keep entrypoints focused on dependency assembly and startup; put feature behavior in cohesive ModuleScripts and keep dependency direction acyclic.
 - Preserve coherent established conventions unless the request requires redesign or migration.
 - Keep modification authority separate from technical context and project conventions.
 - Introduce a framework, package manager, test framework, or generated hierarchy only when a requirement beyond organization justifies it and the resulting writes are authorized.
