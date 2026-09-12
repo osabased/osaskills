@@ -1,140 +1,92 @@
 ---
 name: structure-roblox-projects
-description: "Roblox project structure: place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo."
+description: Design, place, review, or migrate Roblox code and DataModel structure; resolve project conventions.
 ---
 
 # Structure Roblox Projects
 
-Preserve a coherent established structure unless the user requests redesign or migration. Inspect enough context to place and integrate the work correctly, while treating modification authority separately from technical context.
-
-## Core loop
-
-1. **Route** the request as Review, Design, Migration plan, Implementation, or Preference setup.
-2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
-3. **Disclose** only the references whose trigger is present.
-4. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
-
-Stop expanding discovery when more inspection is unlikely to change placement, integration, modification scope, or validation.
+Preserve coherent established structure unless redesign or migration is requested. Inspect enough to place and integrate the work correctly; technical context and modification authority are separate.
 
 ## Bootstrap the affected area
 
-Establish the minimum sufficient working model for the current task:
+Establish only what can affect this task: the authorized modification boundary, source of truth (Studio, Script Sync, Rojo, or another established workflow), placement and server/client/shared runtime, replication or security boundaries, startup/integration path, local conventions, and useful validation.
 
-- **Modification boundary:** what the request clearly authorizes, and which adjacent content is context only.
-- **Source of truth:** Studio-owned, Script Sync-managed, Rojo-mapped, or another established workflow relevant to the affected content.
-- **Placement and runtime:** where the work belongs and whether server, client, shared, replication visibility, or an active simulation/security boundary matters.
-- **Startup and integration:** the relevant entrypoint, dependency, Remote/Bindable, loader, discovery, or lifecycle path.
-- **Local convention:** the organization, naming, module style, or framework convention the work should preserve.
-- **Validation path:** the focused checks capable of catching the structural failures this task could introduce.
-
-Skip an item when it cannot affect the task. Prefer concrete paths, instances, entrypoints, and dependency edges over architecture labels.
-
-Bootstrap is complete when every material item above is either established or identified as a blocker. A UI task should not trigger a survey of unrelated combat, persistence, NPC, or matchmaking systems.
+Prefer concrete paths, instances, entrypoints, and dependency edges over labels. Stop expanding once the material placement, integration, scope, and validation decisions are resolved or explicitly blocked. A local UI task does not need a survey of unrelated systems.
 
 ## Modification scope
 
-A clear request authorizes its stated project, system, feature, path, files, instances, or other concrete work boundary, plus new artifacts clearly owned by that deliverable. Adjacent content may be inspected for compatibility and integration.
+A clear request authorizes its stated project, system, feature, path, files, instances, or other concrete boundary, plus new artifacts clearly owned by that deliverable. Adjacent content can be inspected for compatibility and integration. Access, technical necessity, dependencies, conventions, profiles, and failed validation do not independently authorize adjacent writes.
 
-Access, technical necessity, project conventions, profiles, dependencies, or failing validation do not independently grant authority to modify adjacent content.
-
-Read [`references/modification-scope.md`](references/modification-scope.md) before mutation when a proposed write may cross an unclear, shared, generated, or protected boundary; a dirty worktree makes ownership ambiguous; or a broad tool can write outside the immediately requested content.
+Before a write that may cross an unclear/shared/generated/protected boundary, overlap ambiguously owned pre-existing work, or use a broad tool with wider outputs, read [modification-scope.md](references/modification-scope.md).
 
 ## Reference routing
 
-Load a reference only when its branch is active. Evaluate specialist triggers against both the current structure and the requested target structure. Multiple specialist references may apply to one task.
+Read only active branches. Evaluate triggers against **both current and requested target structure**, including review/design/planning as well as implementation. Adopting, disabling, replacing, or migrating a specialist feature activates its reference; several can apply together.
 
-| Branch | Trigger | Read |
+| Branch | Trigger | Reference |
 | --- | --- | --- |
-| **Ordinary structure** | An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
-| **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
-| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
-| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| **Script Sync** | The task reviews, designs, plans, enables, disables, or changes Script Sync/conflict behavior or a sync boundary; or migrates/renames content into, out of, or within Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/script-sync.md`](references/script-sync.md) |
-| **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
-| **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
-| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/project-profile.md`](references/project-profile.md) |
-| **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/preference-resolution.md`](references/preference-resolution.md) |
+| Ordinary structure | A review depends on ordinary layout/runtime/replication/entrypoint/grouping/module-style/source-of-truth rules; DataModel placement, entrypoint, or authoring-workflow semantics can affect correctness; or a material ordinary structural choice remains unresolved | [practices.md](references/practices.md) |
+| Write boundary | Unclear/shared/protected scope, broad generated output, or ambiguous pre-existing work | [modification-scope.md](references/modification-scope.md) |
+| Server Authority | `Workspace.AuthorityMode = Server`, prediction/rollback APIs, shared deterministic simulation, or a change to/from Server Authority | [server-authority.md](references/server-authority.md) |
+| Script Capabilities | An active or materially suspected sandbox affects the work, or its security model is being evaluated or changed | [script-capabilities.md](references/script-capabilities.md) |
+| Script Sync | Sync workflow, boundary, or conflicts; managed moves/renames where representation, metadata, child shape, or packages matter | [script-sync.md](references/script-sync.md) |
+| Rojo | Mapping/workflow changes, project/meta/model files, or mapped moves/renames/topology where paths, names, versions, syncback, or live serve affect the DataModel | [rojo.md](references/rojo.md) |
+| Migration | Planned moves, renames, topology/identity changes, authoring/source-of-truth migration, or multi-step restructuring | [migration.md](references/migration.md) |
+| Project profile | A material convention remains unresolved and a local profile may resolve it, or reusable project preferences/profile creation or update are requested | [project-profile.md](references/project-profile.md) |
+| Preferences | Explicit convention selection, or a material choice remains open after applicable request/project/profile evidence | [preference-resolution.md](references/preference-resolution.md) |
 
-For version-sensitive platform behavior, re-open current authoritative documentation when external access is available instead of treating cached guidance as current by default.
+For version-sensitive platform behavior, consult current authoritative documentation when external access is available rather than assuming cached guidance is current.
 
 ## Resolve conventions
 
-For ordinary work in an established project, resolve each material choice in this order:
+For ordinary established-project work, use: **explicit request → coherent affected-area convention → applicable profile if still unresolved → broader coherent project convention → current-task recommendation/default**.
 
-1. explicit current request;
-2. coherent convention in the affected area;
-3. applicable project profile when the implementation still leaves the choice unresolved;
-4. broader coherent project convention;
-5. current-task recommendation or default.
+For greenfield work or explicit redesign/migration, use: **requested target → applicable profile → relevant project constraints → current-task recommendation/default**.
 
-For greenfield work or explicit redesign/migration, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
-
-Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
+Check only the nearest project-local `.codex/roblox-structure.md`, and only for an unresolved material convention or requested reusable preferences. Read [project-profile.md](references/project-profile.md) before interpreting or writing it. It is convention memory, never modification authority.
 
 ## Complete the selected route
 
 ### Preference setup
 
-If the user requests reusable project-level convention memory, read `references/project-profile.md` first. Resolve persisted fields from the explicit request, coherent project conventions, and applicable existing profile evidence. Read `references/preference-resolution.md` only for fields that remain genuinely open.
+For reusable convention memory, follow [project-profile.md](references/project-profile.md), resolving persisted fields from the request, coherent conventions, and applicable profile evidence. Use [preference-resolution.md](references/preference-resolution.md) only for genuinely open fields or an explicit preference-selection task. An established project with settled choices needs zero preference questions.
 
-Otherwise, read `references/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
-
-Finish when every material requested preference is directly implementable and any requested profile write is either completed with authorization or blocked with the exact reason.
+Finish when material requested choices are implementable and any requested profile write satisfies its confirmation/persistence contract, or the exact blocker is reported. An unidentified project root blocks persistence, not task-local convention resolution.
 
 ### Review
 
-Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox layout, placement, runtime, replication, entrypoint, grouping, module-style, or source-of-truth rules, and load any specialist reference whose trigger is present.
+Set breadth from the review question, not write authority. Inspect relevant adjacent content and apply triggered references. Report each material finding's **evidence, impact, and smallest compatible improvement**; add confidence/scope when material.
 
-For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
-
-Finish when the material structural risks within the requested boundary are accounted for, including meaningful no-change areas or residual uncertainty when useful. Review remains read-only unless implementation is separately requested.
+Style is a finding only when it conflicts with the request or established convention, creates supported-platform incompatibility, or has concrete correctness, security, or maintainability consequences. Finish when structural risks within the requested boundary and meaningful uncertainty are accounted for. Review remains read-only unless implementation is also requested.
 
 ### Design
 
-Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, read `references/practices.md`.
+Provide the smallest structure that makes the requested work unambiguous: DataModel/filesystem home, material runtime/replication/authoring boundaries, startup, dependency direction, integration contracts, and validation path. Preserve established conventions unless redesign is requested. Identify boundary-crossing changes as approval-dependent or owner actions.
 
-Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
-
-Design is read-only unless Implementation is separately requested. Finish when every designed item has an unambiguous home and startup/integration path and every material boundary contract is identified.
+Finish when each designed item has a clear home and startup/integration path and all material boundary contracts are identified. Design remains read-only unless implementation is also requested.
 
 ### Migration plan
 
-Read `references/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
+Follow [migration.md](references/migration.md) and all current/target specialist branches. Planning remains read-only unless implementation is requested.
 
-Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
+Finish at the migration reference's completion criterion: every move, affected reference, topology/identity assumption, owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
 
 ### Implementation
 
-Use the established-project fast path when all of these are true:
+For work that fits a coherent established structure without redesign, migration, source-of-truth change, or unclear/protected write boundaries, implement directly after resolving the material bootstrap items and triggered references. This fast path needs no extra preference setup, profile write, architecture normalization, or unrelated survey.
 
-- the affected area has a coherent supported structure;
-- the requested work fits that structure without redesign or migration;
-- the source-of-truth boundary is staying intact;
-- no required write crosses an unclear or protected boundary; and
-- no triggered reference above is required for correctness.
+Establish the authorized write set and inspect relevant pre-existing changes before filesystem mutation. Apply the smallest coherent change, including authorized mappings, callers, requires, tests, and integration points. Follow [migration.md](references/migration.md) for moves, renames, topology changes, or multi-step restructuring.
 
-The fast path removes unnecessary structural ceremony and reference loading; it does not bypass write-set control, safeguards, or validation. A fast-path implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence triggers one.
+Use an explicit recovery boundary for destructive, topology-sensitive, non-version-controlled, externally stateful, or hard-to-reverse work. Routine reversible edits already captured by version control need no separate rollback bookkeeping. Inspect the resulting diff/output set when broad generation, topology changes, overlapping work, or other scope risk warrants it.
 
-Then:
+Validate credible failure modes introduced by the work. Prefer existing static/type/lint/build/test/mapping/hierarchy checks when sufficient; use focused Studio runtime checks when startup or client-server behavior needs execution evidence. Broaden validation when risk or a failed check calls for it, not as a fixed second pass. Respect the write boundary when a check exposes adjacent work.
 
-1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/modification-scope.md` before writing.
-2. Establish the intended authorized write set at the level the task requires.
-3. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
-4. For moves, renames, topology changes, or multi-step restructuring, follow `references/migration.md`.
-5. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
-6. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
-7. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
-
-Prefer existing static, type, lint, build, test, mapping, or hierarchy checks when they cover the failure mode. Use the smallest relevant Studio runtime checks when runtime/startup/client-server behavior needs execution evidence. Report checks that actually ran and any material residual risk from unavailable validation.
-
-Finish when the requested structural outcome is complete and focused checks pass, or when blocked integration, required owner actions, unavailable checks, and residual risk are explicit.
+Finish when the requested structural outcome is complete and focused checks pass, or report exact blocked integration, owner actions, unavailable checks, and residual risk. Continue the authorized implementation and its corrections without an extra review checkpoint; existing approval requirements still apply.
 
 ## Invariants
 
-- Keep critical rules/state, secrets, persistence, purchases, and client-input validation authoritative on the server. Treat client-visible code and data as inspectable.
-- Put only code and data clients genuinely need in client-visible containers.
-- Keep `ReplicatedFirst` limited to the earliest loading subset.
-- Keep entrypoints focused on dependency assembly and startup; put feature behavior in cohesive ModuleScripts and keep dependency direction acyclic.
-- Preserve coherent established conventions unless the request requires redesign or migration.
-- Keep modification authority separate from technical context and project conventions.
-- Introduce a framework, package manager, test framework, or generated hierarchy only when a requirement beyond organization justifies it and the resulting writes are authorized.
+- Keep critical rules/state, secrets, persistence, purchases, and client-input validation authoritative on the server; client-visible code/data are inspectable.
+- Put only what clients genuinely need in client-visible containers, and only the earliest loading subset in `ReplicatedFirst`.
+- Keep entrypoints focused on dependency assembly/startup, feature behavior in cohesive ModuleScripts, and dependency direction acyclic.
+- Preserve coherent conventions unless redesign/migration is requested; keep convention memory separate from write authority.
+- Introduce frameworks, package managers, test frameworks, or generated hierarchies only for requirements beyond organization and within authorized writes.

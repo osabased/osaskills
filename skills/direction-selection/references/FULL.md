@@ -1,126 +1,45 @@
-# Full direction-selection protocol
+# Full Direction Selection
 
-Use this protocol only after `../SKILL.md` routes the current decision to `full`. Apply the parent skill's invocation triggers, authority semantics, Continuation invariant, Support threshold, deciding-evidence applicability rule, Direction Gate scope, future-horizon reversibility rule, and output contracts throughout. If a specific decision-sensitive unknown blocks a stage and no direction meets the Support threshold, read [DISCOVERY.md](DISCOVERY.md) completely and apply its Discovery Entry Test; discovery returns to the exact owning stage.
+Use only after the [applicability router](../SKILL.md#applicability-router) selects `full`. The parent authority rules, Continuation invariant, Support threshold, evidence applicability, and Direction Gate scope remain authoritative. Reuse established work; the sections below describe decision obligations, not a requirement to restart a fixed itinerary.
 
-## 1. Build and challenge the problem model
+## Frame the commitment
 
-Record:
+Establish the active [full-mode triggers](../SKILL.md#authoritative-full-mode-triggers), current decision boundary, governed commitment, observable goal, hard constraints, ordered criteria, and material unknowns. Separate independent decisions, keep coupled choices together, and resolve upstream choices first. Distinguish an outcome from a symptom, requested mechanism, or convenient proxy. Explore another framing only when it could change the solution space.
 
-- **Invocation trigger(s):** exact item or items from the authoritative full-mode trigger set.
-- **Decision boundary:** the load-bearing choice required now, the commitment it governs, and later choices that can remain open. Separate independent choices, keep materially coupled choices together, and resolve upstream choices first.
-- **Framing:** whether the stated problem is the outcome, a symptom, or a requested mechanism. Consider alternate framing only when a credible framing could materially change the solution space.
-- **Goal:** the outcome being optimized and the observable success condition. Distinguish the real outcome from convenient proxies.
-- **Hard constraints and invariants:** non-negotiable requirements, interfaces, compatibility guarantees, safety boundaries, budgets, and environmental limits.
-- **Ordered criteria:** hard constraints, primary success criteria, secondary tradeoffs, then tie-breakers such as simplicity, future-horizon reversibility, option value, implementation cost, or consistency.
-- **Unknowns:** known facts, reasonable assumptions, unresolved material uncertainty, and preferences only the user can decide.
+Order hard constraints, primary success criteria, secondary tradeoffs, then applicable tie-breakers. Preserve user-owned preferences as such. Verify unstable deciding facts through fitting authoritative evidence routes; reuse applicable caller diagnosis and provenance without inheriting its ranking.
 
-Apply the authority and preference semantics from the router. Verify decision-sensitive unstable facts through fitting authoritative evidence routes when the task authorizes it. Preserve applicable caller-provided diagnosis, constraints, and evidence with their provenance; do not inherit an upstream ranking without comparison.
+## Establish the candidate space
 
-**Complete when:** the trigger, boundary, governed commitment, framing, goal, hard constraints, ordered criteria, and every known material unknown are explicit enough to establish the candidate space; any irreducible user preference is isolated.
+State each credible, materially distinct direction neutrally at comparable decision-relevant depth before elaborating a favorite. There is no required count. The current design, doing less, avoiding the decision, or preserving the status quo are candidates when credible.
 
-## 2. Establish and justify the candidate space
+When responsibility boundaries or workflow steps can change the comparison, trace candidates from the same input and starting state to the usable outcome, including material integration, manual steps, handoffs, and recovery. A component-only proposal must account for its surrounding work; untested steps remain assumptions.
 
-Start with known materially distinct credible candidates. There is no required candidate count. Include the current design, doing less, avoiding the decision, or preserving the status quo only when credible.
+Full-mode triggers 3–5, or another credible omitted-direction signal, require **one bounded candidate-space examination**. Consider whether a simpler framing, different boundary, revisable assumption, avoided decision, or coherent hybrid removes the tradeoff. Hard constraints remain binding; a hybrid must remove weaknesses rather than merely combine complexity.
 
-Before elaborating a favorite:
+Record whether examination was unnecessary, found no credible alternative, or added candidates. Known competition or an imaginable option alone does not justify further search. Reopen candidate exploration only for materially new framing, shared-premise, or solution-space evidence. Use an available authorized independent second look for high-impact choices only when its decision value justifies the cost; its result is evidence, not a vote.
 
-1. State every plausible direction found so far in one neutral sentence.
-2. Retain only materially independent candidates that could plausibly win under the ordered criteria.
-3. Describe every serious candidate at comparable, decision-relevant depth.
+## Compare using discriminating evidence
 
-When differing responsibility boundaries or workflow steps could change the comparison, trace each serious candidate from the same representative input and starting state to the required usable outcome. Include decision-relevant integration, manual steps, handoffs, and recovery. Include the surrounding work needed to make a component-only option a complete path. Treat untested steps as assumptions for Stage 3.
+Investigate only uncertainty whose plausible outcomes can affect framing, ranking, candidate adequacy, or commitment support. Use repository facts, representative execution, primary documentation, small experiments, and migration or operational evidence as appropriate. Apply the parent's [deciding-evidence applicability](../SKILL.md#deciding-evidence-applicability) rule symmetrically; distinguish observation, inference, and speculation.
 
-This stage owns candidate-space exploration. Perform one serious bounded search when invocation triggers 3–5 require it or when Stage 1 establishes another credible omitted-direction signal. Test whether a simpler formulation, changed boundary, relaxed assumption, avoided decision, or coherent hybrid removes the current tradeoff. A hybrid qualifies only when it removes weaknesses rather than combining complexity.
+Compare hard-constraint satisfaction, dominance, primary criteria, secondary tradeoffs, then tie-breakers. Eliminate demonstrated constraint violations unless the constraint is explicitly under review. Missing evidence leaves satisfaction unverified. Count credible future integration, transition, compatibility, schedule, operating, and migration costs, not already-spent effort. Simplicity reduces risk and breaks appropriate ties; it does not replace requirements. Apply [Close comparisons](../SKILL.md#close-comparisons) when differences are small or uncertain.
 
-Known consequential competitors alone do not require another class. An imaginable candidate is not evidence that the space is inadequate. Add any credible candidate found and complete only the affected modeling needed to compare it. Repeat candidate-space exploration only after materially new evidence changes the framing, shared premises, or credible solution space.
+Stop lower-priority comparison when applicable evidence establishes dominance without a higher-priority unresolved issue. When evidence changes the frame or candidate space, revisit that affected section while retaining valid work.
 
-Use an available and authorized independent second look for high-impact choices only when its expected decision value justifies the cost. Ask neutrally and treat the result as evidence, not a vote.
+If a specific decision-sensitive unknown blocks this work and no direction meets the Support threshold, read [DISCOVERY.md](DISCOVERY.md), apply its entry test, and resume the interrupted section after it returns. Safely reversible evidence work must reduce relevant uncertainty or advance a commitment already supported at that level.
 
-**Complete when:** known serious candidates are neutrally and comparably stated, any triggered outcome-path comparison is complete, every candidate-space examination required by the invocation trigger has been completed once, and the stage records whether exploration was not required, found no credible alternative, or added candidates for comparison.
+## Conditional challenges
 
-## 3. Gather discriminating, applicable evidence
+**Falsification:** challenge the leader when its supporting proposition is load-bearing, remains meaningfully uncertain or suspiciously correlated, and a realistic decision-changing challenge is available at justified cost. Target the strongest plausible failure, hidden transition/maintenance/security/compatibility cost, or condition that would favor the strongest alternative. Apply symmetric challenge standards and revalidate only affected work when the result changes.
 
-Investigate only facts that can change the comparison. Prefer actual repository constraints, tests and observed behavior, authoritative documentation, specifications, representative benchmarks, small disposable experiments, migration and operational constraints, and known failure modes.
+**Incumbent bias:** when sunk effort, attachment, legacy consistency, migration history, or exploratory lock-in may bias the choice, ask whether the same direction would be chosen from scratch with current knowledge. Sunk effort provides no support; future migration risk, retraining, production obligations, and retained asset value remain legitimate factors. Update only the affected comparison.
 
-For each investigation, name the uncertainty it can reduce and how plausible outcomes could change the decision. Stop when no plausible result can affect the choice. Apply the same evidentiary standard to every serious candidate and the parent deciding-evidence applicability rule before any evidence carries a decisive claim.
+Neither mechanism is a mandatory extra pass when its trigger is absent.
 
-For benchmarks, prototypes, tests, or observations, confirm that the evidence represents the property, workload, environment, operating conditions, and integration effects at risk. For documentation, research, reviews, or prior examples, confirm that the version, interface, operating context, and compared claim apply. Inapplicable evidence may inform the model but cannot decide the comparison.
+## Commit and return
 
-When materially new evidence changes the framing, return to Stage 1. When it creates a credible omitted-direction or shared-premise signal, return to Stage 2. Apply the Continuation invariant and repeat only affected work.
+Return `Direction Gate: PASS` only when the parent Support threshold holds, serious candidates received symmetric comparison, required candidate-space work and triggered challenges are resolved, and the commitment respects future-horizon reversibility without pre-gate lock-in. Preserve material residual uncertainty and a concrete reopen condition.
 
-Small or reversible actions must advance a commitment already supported at that level or reduce decision-relevant uncertainty. Keep exploratory work contained, observable, replaceable, and future-horizon reversible.
+Otherwise name the exact blocker. Use bounded discovery only while its entry test holds; ask for user-owned preferences or external constraints rather than inventing them. When investigation no longer has proportionate value, return `Direction Blocker`, or consult [Adaptive Direction](OUTCOMES.md#adaptive-direction) when uncertainty is structurally unstable. Adaptive handling supports a bounded commitment, not a nominal overall winner.
 
-**Complete when:** every decisive comparative claim has traceable, applicable proportionate evidence with material inferences identified, or its remaining uncertainty is explicit and has been accepted, routed through bounded discovery, or identified as the exact gate blocker.
-
-## 4. Compare without anchoring
-
-Evaluate in order:
-
-1. **Constraint elimination:** remove candidates with demonstrated hard-constraint violations unless that constraint is under review.
-2. **Dominance:** prefer a candidate no worse on important criteria and materially better on at least one, unless uncertainty undermines the comparison.
-3. **Tradeoffs:** compare primary criteria, secondary criteria, then tie-breakers.
-4. **Uncertainty:** label advantages as evidence-backed, likely, or speculative.
-
-Use measurements when available and ordered qualitative judgment otherwise. Apply symmetric standards. Count concrete future integration, transition, migration, compatibility, schedule, and operating costs without counting already-spent effort as support for an incumbent. Count future requirements in proportion to credible evidence. Treat simplicity as a tie-breaker and risk reducer, not a substitute for requirements. Apply [Close comparisons](../SKILL.md#close-comparisons) when a small or uncertain difference could decide the choice.
-
-When applicable evidence establishes real dominance and no unresolved higher-priority uncertainty undermines it, stop needless lower-priority comparison. If comparison exposes a materially new framing or candidate-space signal, return to the earliest affected stage under the Continuation invariant.
-
-**Complete when:** every surviving candidate has been evaluated under the same ordered criteria and evidentiary standard, decisive tradeoffs are explicit, and the strongest surviving alternative is identified when one exists.
-
-## 5. Falsify the leader when triggered
-
-Run falsification only when all three conditions substantially hold:
-
-1. a proposition supporting the leader is load-bearing;
-2. it remains meaningfully uncertain or confidence is suspiciously correlated; and
-3. a realistic decision-changing challenge can be obtained at justified cost.
-
-When triggered:
-
-- target the strongest realistic failure scenario and load-bearing assumptions;
-- surface hidden transition, maintenance, operational, security, and compatibility costs;
-- identify the scale, workload, environment, or future requirement that would break the leader;
-- state evidence that would make the strongest surviving alternative superior;
-- apply symmetric challenge standards to the leader and strongest alternative; and
-- apply the Continuation invariant if the leader, framing, candidate space, or decisive evidence changes.
-
-Skip falsification when its trigger is absent. Route a decision-sensitive material unknown through bounded discovery when appropriate.
-
-**Complete when:** the mechanism was skipped because its trigger is absent, the leader survived a decision-changing challenge, a replacement completed affected revalidation, or the stage entered bounded discovery.
-
-## 6. Run the zero-based diagnostic when bias risk is present
-
-Run this diagnostic only when sunk implementation effort, incumbent attachment, migration history, legacy consistency pressure, exploratory lock-in, or prior-investment reasoning could bias the choice.
-
-Ask:
-
-> If no implementation work had been done and I were choosing from scratch with everything now known, would I still choose this direction?
-
-Already-spent effort is not evidence for retaining the incumbent. Future migration, compatibility, schedule, risk, retraining, production obligations, and retained asset value are legitimate current factors. When the answer changes, update only affected comparison work and apply any independently triggered challenge. Skip the diagnostic when no credible incumbent or sunk-cost bias risk exists.
-
-**Complete when:** the mechanism was skipped because no bias trigger exists, or the leader remains stable under the diagnostic after affected work is updated.
-
-## 7. Pass the Direction Gate
-
-Set `Direction Gate: PASS` only when every applicable condition holds:
-
-- the goal, success condition, decision boundary, framing, and governed commitment are clear enough to choose;
-- hard constraints and invariants are identified;
-- every credible candidate in scope was compared symmetrically;
-- every candidate-space examination required by the invocation trigger was completed;
-- any triggered falsification or zero-based diagnostic was resolved enough;
-- decisive evidence is applicable and proportionate;
-- the selected direction meets the Support threshold;
-- no known candidate clearly dominates it, and any credible strongest alternative has no better-supported case;
-- residual uncertainty is acceptable at this commitment level and has a concrete reopen condition; and
-- the governed commitment respects future-horizon reversibility and does not rely on pre-gate de facto lock-in.
-
-Skipped mechanisms do not need to be passed. `PASS` reports support only for the governed direction-dependent commitment and does not authorize unrelated or project-wide work.
-
-When the gate cannot pass, identify the exact failing condition. Route a resolvable decision-sensitive unknown through bounded discovery. Ask only for a user-owned preference or external constraint. If further discovery lacks proportionate value, return a `Direction Blocker` unless the canonical `Adaptive Direction` conditions in `../SKILL.md` justify a bounded commitment.
-
-**Complete when:** every applicable condition supports `PASS`, or the exact blocker produces bounded discovery, a focused user question, a `Direction Blocker`, or an `Adaptive Direction`.
-
-## 8. Record and return the outcome
-
-Use the matching `Direction Decision`, `Direction Blocker`, or `Adaptive Direction` contract in `../SKILL.md`. For answers to the user, apply [User-facing presentation](../SKILL.md#user-facing-presentation). Keep the record concise and proportional, state the exact governed commitment, return it with gate status to the caller/controller, and continue only into work separately authorized by the user's request.
+**Complete when:** a supported decision, exact blocker, or justified adaptive outcome is returned with its governed commitment and gate status. Use the parent's [User-facing presentation](../SKILL.md#user-facing-presentation); read [OUTCOMES.md](OUTCOMES.md) for agent/controller handoffs, requested full records, and adaptive outcomes. Return to the caller or continue already-authorized standalone work without a new approval checkpoint.

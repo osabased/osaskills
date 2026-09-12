@@ -1,75 +1,56 @@
 ---
 name: roblox-resource-acquisition
-description: Roblox resource lifecycle for finding, evaluating, adopting, refreshing, or repairing community resources and reusable guidance around them.
+description: Find, qualify, adopt, refresh, or repair Roblox community resources and their reusable resource guidance.
 compatibility: Bundled validator scripts require Python 3.10+ and dependencies from requirements.txt.
 ---
 
 # Roblox Resource Acquisition
 
-Use community resources only when the task actually requires a resource decision or existing resource-lifecycle work. Keep resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
+Use for an actual community-resource decision or existing resource-lifecycle task, not merely because a dependency is present.
 
 ## Core rule
 
-Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification.
+Task fit and qualification justify a resource choice; a plausible search result does not. Keep resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
 
 ## Route the operating mode
 
-Choose the narrowest mode that satisfies the request, then read only the references required by that mode.
+Choose the narrowest mode satisfying the request. Read only its active references and finish the authorized decision or lifecycle action rather than adding another mode as extra scope.
 
 ### `evaluate/compare`
 
-Use when the task is to inspect, evaluate, compare, or select a resource without using/integrating it or creating/operationally adopting reusable child guidance.
+Inspect, evaluate, compare, or select without integration or reusable child/host adoption.
 
-1. Read [references/qualification-workflow.md](references/qualification-workflow.md).
-2. Read [references/state-policy.md](references/state-policy.md) for truthful trust/verification status and output discipline.
-3. Stop after the requested evidence and decision. Do not integrate the resource or generate a child skill as extra scope.
+Read [qualification-workflow.md](references/qualification-workflow.md) for qualification and [state-policy.md](references/state-policy.md) for truthful status and reporting. Stop after the requested evidence and decision. Do not integrate the resource or generate a child skill as extra scope.
 
 ### `acquire/adopt`
 
-Use when the task requires selecting, using, installing, or integrating a resource beyond evaluation. Reusable child guidance and operational host adoption are optional subscopes, not prerequisites for this mode.
+Use or integrate a resource beyond evaluation, after applicable qualification and verification from [qualification-workflow.md](references/qualification-workflow.md) are satisfied and within authorized project scope.
 
-1. Read [references/qualification-workflow.md](references/qualification-workflow.md).
-2. Integrate or use the resource only to the authorized task/project scope after its applicable qualification and verification requirements are satisfied.
-3. When reusable child guidance is in scope, read [references/generation-validation.md](references/generation-validation.md).
-4. When operational host adoption of generated guidance is requested, read [references/operational-lifecycle.md](references/operational-lifecycle.md) for the adoption gate.
-5. Read [references/state-policy.md](references/state-policy.md) before recording state or reporting completion.
+Reusable child guidance and operational host adoption are **optional subscopes**, not prerequisites. When reusable child guidance is in scope, read [generation-validation.md](references/generation-validation.md). When operational host adoption of generated guidance is requested, read [operational-lifecycle.md](references/operational-lifecycle.md) and apply its adoption gate.
 
 ### `refresh`
 
-Use for an existing resource skill whose canonical identity is known and whose source/version facts or generated guidance may have drifted.
+For an existing resource skill with known canonical identity, confirm recorded/installed state and refresh only affected source/version/API facts using [qualification-workflow.md](references/qualification-workflow.md); restart broad discovery only when current evidence makes the resource materially unsuitable or alternatives were requested. Prior runtime proof remains bound to its recorded target.
 
-1. Confirm canonical identity and installed/recorded state first; restart broad discovery only when current evidence makes the resource materially unsuitable or alternatives were requested.
-2. Read only the affected parts of [references/qualification-workflow.md](references/qualification-workflow.md) needed to refresh volatile source/version/API facts. Prior runtime proof remains bound to its recorded target.
-3. Read [references/generation-validation.md](references/generation-validation.md) to patch and rerun the structural and behavioral checks invalidated by the refresh.
-4. If installed/source/legacy/host-adoption state or a post-adoption defect is implicated, read [references/operational-lifecycle.md](references/operational-lifecycle.md).
-5. If the refresh exposes a proof, test, or generated-child defect that needs iterative repair, read [references/repair-loop.md](references/repair-loop.md).
-6. Read [references/state-policy.md](references/state-policy.md) before updating records or status.
+Use [generation-validation.md](references/generation-validation.md) to update guidance and rerun invalidated structural/behavioral checks. Read [operational-lifecycle.md](references/operational-lifecycle.md) when installed/source/legacy/host state or a post-adoption defect is implicated, and [repair-loop.md](references/repair-loop.md) when a proof, test, or generated-child defect needs iterative repair.
 
 ### `repair/reconcile`
 
-Use for a generated child defect, installed/source-state mismatch, adverse current observation, legacy child/record state, or a newer parent-side block.
+For a child defect, installed/source mismatch, adverse current observation, legacy state, or newer parent-side block, load only the affected repair branch. Read [operational-lifecycle.md](references/operational-lifecycle.md) for installed/source/legacy/host mismatch or post-adoption defects, and [repair-loop.md](references/repair-loop.md) when proof, test, or generated-child defects require iterative repair.
 
-1. For installed/source/legacy/host-adoption mismatch or a post-adoption defect, read [references/operational-lifecycle.md](references/operational-lifecycle.md) to reconcile current state and host lifecycle.
-2. For a proof, test, or generated-child defect that needs iterative repair, read [references/repair-loop.md](references/repair-loop.md).
-3. Read [references/qualification-workflow.md](references/qualification-workflow.md) only when upstream identity, source facts, qualification, or trust are themselves in question.
-4. Read [references/generation-validation.md](references/generation-validation.md) only for child validation surfaces invalidated by the repair.
-5. Read [references/state-policy.md](references/state-policy.md) before recording the outcome.
+Read [qualification-workflow.md](references/qualification-workflow.md) only when upstream identity, source facts, qualification, or trust are themselves in question. Read [generation-validation.md](references/generation-validation.md) only for child validation surfaces invalidated by the repair.
 
 ## Shared invariants
 
-Hold these across every mode:
-
-- Preserve positive resource targets, their roles, selectors, and requested scope; do not silently substitute an alternative.
-- Treat technical fit, trust, verification, generated-skill validation, installation, and operational host adoption as separate states.
-- Bind trust and evidence to canonical identity plus any material selector/version; same-named forks, mirrors, modified vendored copies, and re-uploads do not inherit it automatically.
-- Prefer primary/canonical sources for resource behavior and current Roblox Creator Hub documentation for platform behavior when material.
-- Never invent an API from naming conventions or analogous libraries.
-- Never label an unexecuted runtime check as passing. Use `unverified`, `unavailable`, or `failed` truthfully.
-- Keep resource proof proportional to the intended use and use isolated/reversible verification where practical.
-- Preserve Roblox server authority, validate client-controlled inputs, and never expose credentials or secrets merely to validate a resource.
+- Preserve requested resource targets, roles, selectors, and scope; substitution needs authority.
+- Keep technical fit, trust, verification, generated-skill validation, installation, and host adoption as separate states.
+- Bind trust/evidence to canonical identity and material selector/version. Same-named forks, mirrors, modified vendored copies, and re-uploads do not inherit it.
+- Use primary/canonical sources for resource behavior and current Roblox Creator Hub documentation for material platform behavior. Verify APIs rather than inventing them from names or analogous libraries.
+- An unexecuted runtime check is `unverified` or `unavailable`, not passing; an observed failure remains `failed`.
+- Keep proof proportional to intended use and isolated/reversible where practical. Preserve server authority, validate client-controlled inputs, and protect credentials/secrets.
 - Do not publish, spend money, or perform irreversible project mutations merely to prove a resource works.
-- Generate reusable child guidance only when that lifecycle scope is requested or required by the task; evaluation or ordinary resource integration alone grants no generation or host-adoption authority.
+- Evaluation or ordinary integration grants no child-generation or host-adoption authority; those scopes must be requested or required by the task.
 
 ## Completion
 
-A mode is complete only when its requested decision or lifecycle action is finished, every applicable verification/validation status is truthful, and any blocked use, unavailable proof, owner action, or reconciliation mismatch is explicit. Use [references/state-policy.md](references/state-policy.md) for the final reporting contract.
+Read [state-policy.md](references/state-policy.md) before recording or updating state and reporting completion in any mode. Finish the requested decision/action with truthful applicable verification/validation statuses and explicit blocked use, unavailable proof, owner actions, or reconciliation mismatches. Continue permitted work within that mode; an intermediate qualification result is not completion of authorized adoption.

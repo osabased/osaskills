@@ -1,142 +1,71 @@
 ---
 name: architecture-improvement
-description: Autonomously make one justified codebase architecture improvement, or leave the codebase unchanged.
+description: Make one justified codebase architecture improvement, or return NO CHANGE.
 disable-model-invocation: true
 ---
 
 # Architecture Improvement
 
-Evaluate one bounded codebase scope. When architectural intervention is justified and safely executable, complete one coherent improvement. `NO CHANGE` is a successful outcome.
-
-Invocation authorizes code changes only after the Intervention Gate passes, subject to any narrower user instruction.
+Evaluate one bounded scope and complete one coherent architectural improvement when justified. `NO CHANGE` is a successful outcome. Invocation authorizes code changes after the Intervention Gate passes, subject to narrower user instructions; an evaluation-only request remains read-only.
 
 ## Contract
 
-This skill owns changes to module, interface, seam, or dependency structure. Local defects, spec deviations, code smells, and preferable designs remain with their fitting owners unless architecture materially causes or obstructs a demonstrated need.
+This skill owns module, interface, seam, and dependency structure. A local defect, spec deviation, smell, or preferred design belongs to its fitting owner unless architecture materially causes or obstructs a demonstrated need.
 
-Complete one architectural objective per invocation. Preserve unrelated work; other observations do not extend this invocation.
-
-Resolve repository-owned facts through the repository and available tools. Escalate only for user-owned product intent, externally visible compatibility policy, reopening an authoritative decision, an irreversible migration, or another material choice the available evidence cannot settle.
-
-Use `$codebase-design` when available. Its vocabulary and principles guide architecture judgment; repository requirements, standards, domain language, and ADRs remain authoritative.
+Resolve repository-owned facts through available evidence. Escalate user-owned product intent, compatibility policy, reopening an authoritative decision, irreversible migration, or another material choice the evidence cannot settle. Other observations do not expand this invocation.
 
 ## 1. Establish the target
 
-Use a bounded module, subsystem, pain point, or change named by the user.
+Use the user's bounded module, subsystem, pain point, or change. For a whole-repository request or no named target, use bounded triage of relevant history, current work, recurring fixes, test friction, and repository guidance to select the strongest-supported area. If none warrants inspection, return `NO CHANGE`. Churn is a lead, not intervention evidence.
 
-When the user names the whole repository or supplies no bounded target, perform bounded triage from recent history, recurring fixes, current branch work, test friction, and repository guidance. Select the strongest-supported area for inspection. Return `NO CHANGE` when no area has a credible reason for deeper inspection. Churn is a scope signal, not evidence that intervention is warranted.
+Read the instructions, requirements, ADRs, tests, and nearby implementation that bear on this target. Before writes, establish its starting revision, pre-existing changes, and the baseline needed to distinguish task-caused failures.
 
-Estimate reconnaissance cost before loading source. When the target is large or unfamiliar, several independent regions need mapping, or direct inspection would materially consume the controller's context, read [references/RECONNAISSANCE.md](references/RECONNAISSANCE.md) completely and apply it.
-
-Read applicable repository instructions, domain documentation, ADRs, standards, tests, and nearby implementation. Record the starting revision, working-tree state, and relevant baseline checks so pre-existing failures and user changes remain distinguishable.
-
-**Complete when:** one bounded target, its authoritative context, observable baseline, and direct or delegated reconnaissance boundary are clear, or bounded triage supports `NO CHANGE` without a target.
+When a large or unfamiliar target, independent mapping work, or controller-context cost makes delegation worthwhile, read [RECONNAISSANCE.md](references/RECONNAISSANCE.md). Otherwise inspect directly. Use `$codebase-design` when available and a concrete architecture-design question needs its guidance, rather than loading it for every assessment. Repository authority remains controlling.
 
 ## 2. Build intervention evidence
 
-Inspect the target directly or synthesize reconnaissance packets across its callers, dependencies, interfaces, tests, and change history.
+Connect a demonstrated need to an architectural cause through relevant callers, dependencies, interfaces, tests, and history. Leads include recurring coordinated edits, duplicated caller policy, an obstructed authorized near-term change, interface complexity, inaccessible behavioral tests, recurring seam failures, and pass-through structures that relocate change knowledge.
 
-Potential evidence includes:
+A credible candidate identifies the need and consequence, supporting provenance, architectural cause, affected behavior/callers/tests, smallest local alternative, expected locality or testability gain, migration/regression/permanent abstraction cost, and observable success evidence. Record only decision-relevant detail.
 
-- one behavior repeatedly requiring coordinated edits across callers;
-- an authorized near-term change that the current structure would spread across callers or layers;
-- callers duplicating policy or depending on implementation knowledge;
-- an interface nearly as complex as the behavior behind it;
-- meaningful behavior that tests cannot exercise through the interface;
-- recurring defects or regressions at the same seam;
-- pass-through or tightly coupled structure that relocates change knowledge instead of hiding it.
-
-These are leads. Form a candidate only when concrete evidence connects a demonstrated need to an architectural cause. A delegated claim also needs applicable provenance before it can support the candidate.
-
-For each credible candidate, record:
-
-- the demonstrated need and evidence;
-- recurrence, current consequence, or committed change affected;
-- affected callers, tests, and behavior;
-- the architectural cause;
-- the smallest local alternative;
-- expected locality, leverage, or testability gain;
-- migration, regression, and permanent abstraction cost;
-- observable evidence that would establish success.
-
-When signals are widespread, classify them as independent problems, symptoms of a shared architectural cause, or style disorder. Select by supported cause and leverage rather than visibility.
-
-**Complete when:** the evidence supports at least one fully described candidate or supports stopping without one, and every decisive claim has traceable provenance.
+Distinguish independent problems, symptoms of one shared cause, and style disorder. A delegated claim needs applicable provenance; cross-area inference, conflicting packets, or mainly low-capability scans warrant a focused challenger probe or direct decisive reasoning.
 
 ## 3. Apply the Intervention Gate
 
-A candidate authorizes architectural change only when every condition is supported:
+Architectural change requires support for all seven conditions:
 
-1. **Demonstrated need** — concrete evidence shows recurring engineering cost, a current material consequence, or an authorized near-term change that the present structure materially obstructs.
-2. **Architectural causality** — the current module, interface, seam, or dependency structure materially causes or obstructs that need.
-3. **Direct improvement** — the proposed change addresses the demonstrated need rather than relocating complexity or changing style.
-4. **Superiority** — its expected outcome is better supported than doing nothing or applying the smallest local correction.
-5. **Proportionality** — expected benefit exceeds migration work, regression exposure, and permanent structural cost.
-6. **Compatibility** — applicable behavior, constraints, and authoritative decisions remain satisfied, or authority exists to revise them.
-7. **Verifiability** — observable checks can establish preserved behavior and the claimed architectural benefit.
+1. **Demonstrated need:** recurring engineering cost, a current material consequence, or an authorized near-term change materially obstructed by the structure.
+2. **Architectural causality:** module, interface, seam, or dependency structure materially causes or obstructs that need.
+3. **Direct improvement:** the change addresses the need instead of relocating complexity or changing style.
+4. **Superiority:** a better-supported outcome than doing nothing or making the smallest local correction.
+5. **Proportionality:** benefit exceeds migration work, regression exposure, and permanent structural cost.
+6. **Compatibility:** behavior, constraints, and authoritative decisions remain satisfied, or authority exists to revise them.
+7. **Verifiability:** observable checks can establish preserved behavior and the claimed architectural benefit.
 
-Challenge each candidate with the strongest applicable case for the current design, an isolated cause, a local correction, a hypothetical seam, relocated knowledge, speculative benefit, or an ADR-backed constraint.
-
-When qualification depends on cross-area inference, conflicting packets, or evidence gathered mainly through low-capability scans, run a focused challenger probe or perform the decisive reasoning directly.
-
-Invocation is not evidence of need. Smells, unfamiliar organization, preference, hypothetical scale, and cleaner-looking alternatives remain non-authorizing observations. The threshold stays fixed when no candidate survives.
-
-**Complete when:** every credible candidate either passes all seven conditions or has a decisive rejection reason.
+Test the strongest applicable case for the current design, a local cause/correction, speculative benefit, relocated knowledge, or an ADR-backed constraint. Invocation, unfamiliar organization, hypothetical scale, and cleaner-looking alternatives do not establish need. Keep the threshold fixed when no candidate survives.
 
 ## 4. Choose the route
 
-Choose exactly one disposition:
+| Route | Evidence-supported condition |
+| --- | --- |
+| `NO CHANGE` | No credible candidate emerges or none passes the gate. |
+| `LOCAL HANDOFF` | A material need exists, but a non-architectural correction is better supported. |
+| `EXECUTE` | One bounded objective is justified, safely executable, and verifiable. |
+| `PLANNING HANDOFF` | Intervention is justified, but one bounded change would leave an unsafe or incomplete architecture. |
+| `BLOCKED` | A user-owned choice, unavailable deciding evidence, or required verification prevents a supported disposition. |
 
-- **`NO CHANGE`** — no candidate passes the Intervention Gate.
-- **`LOCAL HANDOFF`** — a material need exists, but a non-architectural correction is better supported.
-- **`EXECUTE`** — one bounded architectural objective is justified and can be completed and verified safely.
-- **`PLANNING HANDOFF`** — intervention is justified, but one bounded change would leave an unsafe or incomplete architecture.
-- **`BLOCKED`** — a user-owned decision, unavailable decision-sensitive evidence, or required verification prevents a supported disposition.
+Among independent passing candidates, choose by supported engineering benefit relative to migration, regression, and permanent cost; break material ties with narrower blast radius and simpler verification. Distinct designs for one objective are direction alternatives, not separate improvement candidates.
 
-When multiple independent candidates pass, choose the one with the strongest supported engineering benefit relative to migration, regression, and permanent structural cost. If materially equivalent, prefer the narrower blast radius and simpler verification. Treat materially different designs for the same objective as direction alternatives rather than separate improvement candidates.
+Resolve ordinary engineering tradeoffs directly. Invoke `$direction-selection` only when materially different consequential designs remain credible with no supported winner; pass the need, constraints, candidates, migration effects, and verification obligations. Its gate must pass for this commitment.
 
-Resolve ordinary engineering tradeoffs autonomously. When materially different consequential architecture directions remain credible and evidence establishes no winner, invoke `$direction-selection` with the need, constraints, candidates, migration effects, and verification obligations. Continue only if its Direction Gate passes for this commitment.
+`EXECUTE` requires traceable callers and compatibility obligations, complete retirement or an intentional transition for the old path, runnable verification, and no unresolved material decision. Read [EXECUTION.md](references/EXECUTION.md) and continue through implementation, verification, and cleanup without another approval stop inside existing authorization.
 
-`EXECUTE` requires traceable callers and compatibility obligations, a complete retirement or intentional transition for the old path, runnable verification, and no unresolved material decision.
-
-Use `PLANNING HANDOFF` when a shared systemic cause, ordered migration dependencies, or required stabilization prevents one safe coherent change. Preserve the causal structure, affected behavior, stabilization, migration order, first executable slice, verification obligations, and retirement conditions. Widespread smells alone do not justify a repository-wide rewrite.
-
-For `EXECUTE`, read [references/EXECUTION.md](references/EXECUTION.md) completely and follow it. For every other disposition, proceed directly to Output.
-
-**Complete when:** one disposition follows from the evidence and candidate selection is not deferred to the user.
+For `PLANNING HANDOFF`, preserve the causal objective, affected behavior, constraints, stabilization, migration order, first executable slice, verification obligations, and retirement conditions for the surrounding planning workflow. Widespread smells do not justify a rewrite.
 
 ## Output
 
-### Agent / controller handoff
+Lead with disposition and scope. For `IMPROVED`, state the demonstrated need, change, decisive verification, and material residuals. For `NO CHANGE`, give the decisive reason or strongest rejected candidate when useful. For a handoff or blocker, give the established need, exact boundary, fitting next route, and what would unblock execution. Omit empty fields and gate-by-gate narration.
 
-Use the full record when another agent or workflow must continue the result:
+Read [OUTCOMES.md](references/OUTCOMES.md) when another agent/workflow needs the full record or the user requests it.
 
-### Architecture Improvement
-
-- **Scope:** bounded target and revision
-- **Disposition:** `IMPROVED` | `NO CHANGE` | `LOCAL HANDOFF` | `PLANNING HANDOFF` | `BLOCKED`
-- **Reconnaissance:** direct or delegated coverage, capability profiles used, and material limits or assignment mismatches
-- **Evidence:** decisive repository evidence
-- **Intervention Gate:** pass or decisive failure by condition
-- **Objective:** selected architecture change, local correction boundary, planning target, or `none`
-- **Work completed:** changed behavior and structure, or `none`
-- **Verification:** checks and scenarios actually run, including blocked checks
-- **Residuals:** remaining task-related residue, or `none`
-- **Reopen if:** concrete evidence or conditions that would change the disposition
-
-For `NO CHANGE`, report either that no credible candidate emerged or the strongest rejected candidate and its decisive failure. Keep non-authorizing observations out of the result.
-
-For `PLANNING HANDOFF`, provide the complete supported objective, constraints, migration boundary, and verification obligations as input to the surrounding `to-spec` or `to-tickets` workflow.
-
-Use `IMPROVED` only after the `EXECUTE` branch completes implementation, verification, and cleanup.
-
-### User-facing presentation
-
-Present the result once and keep it proportional. Lead with the disposition and scope, then retain only the information needed to understand the result and act on it:
-
-- **`IMPROVED`** — why intervention was justified, what changed, decisive verification, and any material residual or reopen condition.
-- **`NO CHANGE`** — the decisive reason no intervention is justified; include the strongest rejected candidate only when useful.
-- **`LOCAL HANDOFF`** or **`PLANNING HANDOFF`** — the established need, the supported next route, and the boundary that keeps architecture execution from proceeding here.
-- **`BLOCKED`** — the exact blocking decision, evidence, or verification and what would unblock it.
-
-Omit empty sections, reconnaissance mechanics, and gate-by-gate narration unless they materially affect the result or the user requests the full record.
+**Complete when:** one supported disposition is delivered. Use `IMPROVED` only after the selected objective is implemented, required verification passes, the architectural benefit is observable, and task-created residue is removed. Assessment alone is not completion of an authorized `EXECUTE` route.

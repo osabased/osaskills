@@ -1,4 +1,4 @@
 interface:
   display_name: "System Review"
   short_description: "Review cross-part behavior and failure paths"
-  default_prompt: "Use $system-review when changed cross-part behavior, an observed end-to-end failure, or a material assurance question requires tracing interactions or operational failure paths. Start from the review question, select the smallest sufficient end-to-end boundary unless the user requested broader coverage, test discriminating intermediate-state scenarios against applicable evidence, challenge findings with applicable counterevidence, and reuse still-valid coverage on re-review. Return a concise user-facing verdict while preserving the full handoff record when another agent must continue."
+  default_prompt: "Use $system-review to answer the system review question within the requested boundary. Return an evidence-backed verdict, material findings with closure conditions, and any deciding evidence gaps."

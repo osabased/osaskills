@@ -1,183 +1,79 @@
 ---
 name: system-review
-description: Review a defined system when changed cross-part behavior, an observed end-to-end failure, or a material assurance question depends on interactions between parts or operational failure paths.
+description: Review cross-part contracts and operational failure paths for changed behavior, an end-to-end failure, or a system assurance question.
 ---
 
 # System Review
 
-Determine whether a defined system achieves its required outcome across interactions. Start from the review question, not an inventory of the system. A defect needs a demonstrated failed contract or control and a material consequence. Missing decision-sensitive evidence is a visibility gap.
+Determine whether a defined system achieves its required outcome across interactions. Start from the review question, not a system inventory. A defect requires a demonstrated failed contract or control and a material consequence; missing deciding evidence is a visibility gap.
 
-## 1. Route and frame the review
+## Scope and authority
 
-System review owns defined cross-part behavior and operational failure paths. If the question can be answered within one component without reasoning about cross-part contracts or failure propagation, return `System Review Applicability: HANDOFF` with the reason and fitting owner, then stop. Local implementation, domain-specific organization or qualification, and preference work remain with their fitting owners unless needed as evidence for the system diagnosis. Comparison among open directions remains with `direction-selection`; system review evaluates choices only as they carry defined scenarios, diagnoses failures, and constrains corrections.
+If one component can answer the question without cross-part contracts or failure propagation, return `System Review Applicability: HANDOFF` with the reason and fitting owner. Local implementation, domain organization, resource qualification, and preferences remain with their owners. This skill diagnoses defined scenarios; `direction-selection` compares open consequential corrections.
 
-State the **review question**: the exact changed behavior, observed failure, or assurance claim the review must resolve. Select the smallest sufficient end-to-end boundary that can answer it. Expand that boundary only when evidence reveals a relevant dependency, propagation path, or authority outside it. When the user explicitly requests a broad or whole-system review, preserve that requested boundary and qualify conclusions to the evidence available rather than silently shrinking the review.
+Establish the exact changed behavior, observed failure, or assurance claim, and the smallest end-to-end boundary that can answer it. Expand when evidence reveals relevant dependencies, propagation paths, or authority. Preserve an explicitly requested broad/whole-system boundary and qualify conclusions rather than silently narrowing it.
 
-Reuse applicable caller-provided scope, diagnosis, authority, scenarios, findings, and evidence. Re-check inherited material only when freshness, conflict, scope mismatch, or another decision-sensitive uncertainty makes that necessary.
+Keep the outcome, scope, review stage, target identity, operating bar, normative authority, and decision-sensitive unknowns clear enough to evaluate the question. Target identity includes the material revision/version, configuration, environment, workload, and time window. Reuse applicable caller context and evidence; re-check it for freshness, conflicts, scope mismatch, or other deciding uncertainty.
 
-Capture:
+Normative evidence defines required behavior; structural evidence shows what exists; behavioral evidence shows what happens; external authority establishes platform/dependency behavior. Conclusions cannot exceed their evidence's stage, target, or operating conditions.
 
-- **Outcome:** the state the system must produce for users or operators.
-- **Scope:** the selected boundary, including participating components, modules, agents, tools, stores, dependencies, human steps, trust boundaries, and environments.
-- **Review stage:** proposed design, implementation, operation, or a stated combination.
-- **Target identity:** applicable revision or version, configuration, environment, workload, and operational time window.
-- **Operating bar:** prototype, internal, production, regulated/high-risk, or another constraint that changes what matters.
-- **Normative authority:** requirements, invariants, and accepted constraints defining expected behavior.
-- **Unknowns:** missing facts whose plausible answers could change a conclusion.
+## Contracts and scenarios
 
-Classify evidence by reach: normative evidence defines what must happen; structural evidence shows what exists; behavioral evidence shows what happens; external authority establishes relevant platform or dependency behavior. A conclusion cannot reach beyond the stage, target, or operating conditions represented by its evidence.
+Trace interactions capable of affecting the outcome, including relevant components, tools, stores, dependencies, human steps, and trust boundaries. For each material boundary, understand the exchanged state/control, meaning and authoritative owner, success/failure semantics, side-effect/acknowledgement boundary, and observable result.
 
-**Complete when:** the task is handed off, or the review question, outcome, boundary, stage, target, operating bar, authority, and decision-sensitive unknowns are explicit enough to map the interactions that can affect the answer.
+Compare semantics on both sides: identity, units, ordering, state ownership, compatibility, and other relevant guarantees. Pay particular attention to a committed side effect whose acknowledgement or record is missing.
 
-## 2. Map contracts and derive discriminating scenarios
+Use the smallest scenario set covering every material contract and credible failure transition; equivalent contracts can share a scenario. Tie each to a requirement, boundary, or credible operating condition:
 
-Build a compact working map for every interaction capable of affecting the outcome:
+`setup → action/event → material intermediate states → observable expected outcome`
 
-`source → target | state or control exchanged | meaning and authoritative owner | success and failure semantics | side effect / acknowledgement boundary | observable result`
+Include applicable normal flow, unauthorized/invalid input, dependency slowdown/partial failure, retry/duplication/reordering/concurrency, interruption/restart/recovery, deploy/rollback/migration/version skew, credible resource pressure, and operator detection/recovery. These are conditional failure families, not a mandatory test suite. For interruption/retry/recovery, identify the last committed effect and first unconfirmed state.
 
-Compare the meaning of shared data and guarantees on both sides of each material boundary. Check identity, units, ordering, state ownership, compatibility, and other semantics that could differ across the boundary. Identify intermediate states where one side has committed a side effect but another side has not acknowledged, recorded, or incorporated it.
+Compare expected outcomes with the safest applicable evidence through:
 
-Derive the smallest scenario set that covers every material contract and credible failure transition. One scenario may cover several related contracts; equivalent contracts may share a scenario. Tie each scenario to the contract map, a requirement, a trust boundary, or a credible operating condition.
+`trigger → required contract/control → actual transitions → propagation → consequence → detection/recovery`
 
-Consider when applicable:
+Resolve inspectable unknowns before declaring gaps. Prefer behavioral execution when it can establish the property and structural inspection for structural requirements; keep active probes within authorization and acceptable blast radius. Use current primary documentation for version-sensitive external facts. A blocked or unavailable check remains explicit, not a pass.
 
-- normal end-to-end flow;
-- invalid or unauthorized input;
-- dependency slowdown, partial failure, timeout, and recovery;
-- retry, duplication, reordering, interruption, and concurrency;
-- restart, deploy, rollback, migration, or version skew;
-- credible load growth, resource exhaustion, or backpressure;
-- operator detection, diagnosis, and recovery.
+When technology choice carries a scenario, assess workload fit, known weaknesses, current operational cost, and replaceability at the likely future correction point. A named pattern matters only when its problem is present.
 
-Write each scenario as:
+Read [cross-agent-synthesis.md](references/cross-agent-synthesis.md) only when distinct independent perspectives could materially change a finding, causal attribution, disposition, or visibility gap; preserve their first passes. Otherwise synthesize directly.
 
-`setup → action or event → material intermediate state(s) → observable expected outcome`
+## Findings and counterevidence
 
-For interruption, retry, or recovery scenarios, name the last committed effect and the first unconfirmed or unrecorded state. Connect the expected outcome to the evidence route capable of establishing it at the current review stage.
+Retain a candidate only when the chain `trigger → failed contract/control → propagation → material consequence` is supported and survives its strongest plausible counterexplanation. Check relevant guards, caller obligations, upstream guarantees, recovery behavior, and scope assumptions. Counterevidence must apply to the failing scenario.
 
-**Complete when:** every material contract is covered by at least one scenario, every relevant failure transition includes the intermediate state that makes it discriminating, and every scenario has an observable expected outcome with an applicable evidence route.
+Group symptoms of one failed contract; keep independently material failed controls separate even when one trigger exposed them. Preferences, fashionable patterns, generic best practices, and unsupported future scale are not findings.
 
-## 3. Trace scenarios against applicable evidence
+Give each demonstrated defect one supported disposition:
 
-For each scenario, trace:
+- **Correction:** the smallest coherent correction supported by evidence, preserving neighboring requirements and guarantees.
+- **Diagnostic handoff:** the defect is known but its cause/correction is not; give the unresolved boundary, missing discriminating evidence, smallest safe check, and owner.
+- **Direction handoff:** the defect and constraints are known but consequential corrections compete; give the decision boundary, hard constraints, evidence, and established options without ranking. Invoke `direction-selection` only when the surrounding task includes choosing the correction.
 
-`trigger or condition → required contract or control → actual state transitions → propagation → consequence → detection and recovery`
+An uncertain correction or visibility gap does not erase a demonstrated defect. Record **Close when**: the exact scenario and positive observable evidence needed to establish correction on the current target.
 
-Inspect only the safest available evidence needed to compare actual behavior with the expected outcome. Resolve directly inspectable unknowns before reporting gaps, and use current primary documentation for version-sensitive external facts. Prefer behavioral execution when it can establish the property and structural inspection when the requirement is inherently structural. Keep active probes within authorization and an acceptable blast radius; otherwise record the check as blocked or unverified.
+## Re-review continuation
 
-When a technology choice carries a scenario, judge it by workload fit, mismatch with known weaknesses, operational cost at the current team and scale, and future-horizon replaceability. Named patterns are evidence only when their problem is present.
+Preserve still-valid scope, contract maps, scenario/finding identifiers, authority, provenance, findings, and passing coverage. Revisit only material invalidated by changes to code, configuration, workload, assumptions, target, or evidence freshness. Rerun failed and previously passing scenarios affected by a correction. Retry blocked checks only when their prerequisites or evidence route change; carry unchanged blockers explicitly.
 
-When genuinely distinct independent perspectives could materially change a finding, causal attribution, disposition, or visibility gap, preserve their first passes and read [references/cross-agent-synthesis.md](references/cross-agent-synthesis.md). Otherwise synthesize directly.
+Keep an uncorrected demonstrated defect open. Close it only with fresh positive evidence satisfying its recorded closure condition. Invalidated evidence cannot support a fresh `PASS`.
 
-### Re-review continuation
+## Verdict
 
-Preserve still-applicable boundaries, contract maps, scenario and finding identifiers, authorities, findings, evidence provenance, and passing coverage. Invalidate only material affected by changed code, configuration, workload, assumptions, target identity, or evidence freshness.
+A **visibility gap** is missing evidence that could change the verdict, a finding, its cause, or its correction. A **residual risk** is an evidence-backed exposure sufficiently understood and accepted at the current operating bar; it needs a reason for acceptance and an observable reopen condition. Unverified uncertainty is not an accepted risk.
 
-- Rerun a failed scenario when a correction or changed premise could alter its result.
-- Rerun previously passing scenarios whose contracts, dependencies, or assumptions are affected by that change.
-- Retry a blocked check when its prerequisite, authorization, environment, or available evidence route changes. Carry an unchanged blocker forward explicitly.
-- Keep an uncorrected demonstrated defect open. Close it only with fresh positive evidence that satisfies its recorded closure condition.
+Apply this precedence:
 
-Evidence invalidated for the current target cannot support a fresh `PASS`.
+1. **`CHANGES REQUIRED`**: a demonstrated material defect remains, even with visibility gaps.
+2. **`INSUFFICIENT EVIDENCE`**: no demonstrated defect requires changes, but a deciding gap prevents assessing the operating bar.
+3. **`PASS WITH RISKS`**: no required correction or verdict-blocking gap remains, and at least one accepted residual risk is recorded.
+4. **`PASS`**: applicable scenarios support the required outcome within the recorded stage/target, with no defect, verdict-blocking gap, or residual risk.
 
-**Complete when:** every material scenario has applicable evidence or an explicit blocked check, every conclusion is bounded to that evidence, and every scenario invalidated by a changed premise has been rerun while unchanged blockers and coverage are carried forward.
+## Output
 
-## 4. Challenge and reconcile findings
+Lead with **verdict and scope**, then findings in descending consequence. Keep decisive evidence, consequence, supported disposition/next action, and **Close when** beside each finding. Include material gaps, accepted risks, and coverage limits; omit empty sections and process narration. A clean focused review may be a few lines.
 
-Trace each candidate finding through:
+Read [OUTCOMES.md](references/OUTCOMES.md) for agent/controller handoffs or user-requested full records.
 
-`trigger → violated contract or failed control → propagation → material consequence`
-
-Before retaining it, test the strongest plausible reason the candidate could be false or inapplicable. Inspect relevant guards, caller obligations, upstream guarantees, recovery behavior, and scope assumptions. Counterevidence counts only when its applicability to the failing scenario is established; a demonstrated failed contract remains established until applicable evidence refutes or corrects it.
-
-A trigger is not automatically a system defect. Group observations when the same violated contract or failed control explains them and attach downstream symptoms as evidence. Preserve independently material failed controls as separate findings, even when one trigger exposed them.
-
-A finding survives only when it has evidence, a material consequence, and one supported disposition:
-
-- **Correction:** one smallest coherent correction is supported and addresses the demonstrated failure while preserving neighboring requirements and guarantees.
-- **Diagnostic handoff:** the defect is demonstrated but its causal boundary or correction is not. Include the unresolved boundary, missing discriminating evidence, smallest safe next check, and fitting owner.
-- **Direction handoff:** the defect and correction constraints are established but materially different consequential corrections remain credible. Include the defect evidence, hard constraints and invariants, exact decision boundary, and established options without ranking.
-
-Hand comparative correction selection to `direction-selection` when the surrounding task includes choosing the direction. System review preserves the diagnosis and does not search for or rank replacements. An uncertain correction does not weaken an established defect; use a diagnostic or direction handoff instead.
-
-Treat preferences, generic best practices, absent fashionable patterns, and unsupported future scale as non-findings. A visibility gap may affect the verdict, finding qualification, causal attribution, or correction determination. It must not erase a demonstrated defect or force an invented correction.
-
-Record **Close when** for every finding: the exact scenario and observable positive evidence required to establish correction. On re-review, close a finding only when that condition is positively established for the current target.
-
-**Complete when:** every surviving finding has survived an applicable countercheck, is materially distinct and evidence-backed, has one supported disposition and closure condition, and every decision-sensitive gap is explicit.
-
-## 5. Return the review
-
-### Agent / controller handoff
-
-Use the full structured record for callers that must continue the work:
-
-### System Review
-
-- **Scope:** reviewed system boundary and review question
-- **Stage and target:** applicable stage, revision, configuration, environment, workload, and time window
-- **Operating bar:** applicable bar
-- **Verdict:** `PASS` | `PASS WITH RISKS` | `CHANGES REQUIRED` | `INSUFFICIENT EVIDENCE`
-
-### Findings
-
-For each demonstrated defect:
-
-**[S-NN] Title**
-- **Evidence:** decisive normative, structural, behavioral, or external evidence
-- **Scenario:** exposing behavior or failure path
-- **Failure:** violated contract or failed control
-- **Consequence:** material effect
-- **Correction:** smallest coherent correction
-- **Close when:** scenario and observable evidence required to close the finding
-
-Replace `Correction` when another disposition applies:
-
-- **Diagnostic handoff:** unresolved boundary, missing discriminating evidence, smallest safe next check, and owner
-- **Direction handoff:** decision boundary, hard constraints, established evidence, and options without ranking
-
-### Visibility Gaps
-
-Only gaps capable of changing a conclusion:
-
-**[V-NN] Gap**
-- **Missing evidence:** what cannot be established
-- **Decision effect:** what verdict, finding, cause, or correction it could change
-- **Next check / owner:** smallest safe evidence route and fitting owner
-
-### Residual Risks
-
-Only known, evidence-backed exposures accepted at the current operating bar:
-
-**[R-NN] Risk**
-- **Evidence:** what establishes the exposure
-- **Exposure:** what may happen and under what conditions
-- **Why accepted:** why no correction is required at the current bar
-- **Reopen if:** observable condition that invalidates the acceptance
-
-A residual risk is a sufficiently understood exposure accepted at the current bar. A visibility gap is missing evidence whose plausible answers could materially change a conclusion. Unverified uncertainty is not a residual risk.
-
-### Validated Areas
-
-Material contracts and scenarios supported without a demonstrated defect. State the evidence type and reach; do not imply broader correctness.
-
-### Verification
-
-Scenarios, tests, inspections, observations, and authorities actually used; include blocked checks and invalidated re-review coverage that was rerun.
-
-Apply verdict precedence:
-
-1. `CHANGES REQUIRED` — at least one demonstrated material defect remains, even when visibility gaps also exist.
-2. `INSUFFICIENT EVIDENCE` — no demonstrated defect requires changes, but a decision-sensitive gap prevents deciding whether the operating bar is met.
-3. `PASS WITH RISKS` — no correction is required, no verdict-blocking gap remains, and at least one residual-risk record is present.
-4. `PASS` — within the recorded stage and target, applicable scenarios support the required outcome and no defect, verdict-blocking gap, or residual risk remains.
-
-### User-facing presentation
-
-Present the result once rather than narrating the review process. Lead with **verdict and scope**. Then show findings in descending consequence, keeping the decisive evidence, supported disposition or next action, and **Close when** condition beside each finding. End with only the material coverage limits: decision-sensitive visibility gaps, accepted residual risks, or evidence boundaries that qualify the verdict.
-
-Omit empty sections and repeated information. A clean focused review may be only a few lines. Expand only for meaningful findings, uncertainty, or a user-requested broad review. Provide the full agent/controller handoff when the user requests it or another agent needs it for continuation.
-
-Stop when the applicable scenarios are evaluated and the evidence supports the stage-scoped verdict. A preferable alternative system or architecture is not by itself a reason to continue.
-
-**Complete when:** the verdict follows deterministically from the findings, visibility gaps, residual risks, validated areas, and verification actually recorded; the user can identify the result, consequence, next action, and material limits without reconstructing the process; and any caller receives the full information required to continue.
+**Complete when:** every material scenario has applicable evidence or an explicit blocked check, findings have supported dispositions and closure conditions, and the verdict follows from the recorded evidence and limits. A preferable alternative architecture is not a reason to keep reviewing. Return the diagnosis to the caller; review alone does not authorize implementation.
