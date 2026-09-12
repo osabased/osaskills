@@ -15,7 +15,7 @@ A project profile is **convention memory**, not modification authority and not a
 4. During ordinary established-project work, if the profile conflicts with a coherent implemented convention, preserve the implementation and treat the profile as drift.
 5. Reuse recognizable durable conventions from incomplete profiles instead of discarding them wholesale.
 
-Do not read or write a global structure profile, including legacy `$CODEX_HOME/roblox-structure-profile.md` files. If the affected project root cannot be identified, keep normalized decisions task-local.
+Do not read or write a global structure profile, including legacy `$CODEX_HOME/roblox-structure-profile.md` files. If the affected project root cannot be identified, profile persistence is blocked. Keep normalized decisions task-local and report the missing root as the blocker.
 
 ## Profile contract
 
@@ -78,7 +78,7 @@ For a custom selection, write `Custom` as the normalized field value and preserv
 - Treat an unsupported version as incomplete without overwriting it automatically. Preserve its contents, map what can be mapped safely, and replace it only after an explicitly requested normalized profile is previewed and authorized.
 - If a profile conflicts with a coherent implemented convention during ordinary established-project work, preserve the implemented convention and treat the profile as drift rather than forcing the project toward stale memory.
 
-When profile evidence still leaves a material choice unresolved, return to [`preference-resolution.md`](preference-resolution.md) for that choice only.
+When profile evidence still leaves a material choice unresolved, resolve that choice with [`preference-resolution.md`](preference-resolution.md), then continue this profile procedure.
 
 ## Create or update a profile
 
