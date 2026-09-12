@@ -13,15 +13,15 @@ Use this reference for the **Preference setup** route, and for Design, Migration
 ## Setup contract
 
 1. Inspect the project first when project context is available. State which source-of-truth workflow and organization conventions were detected, which material choices they already resolve, and which relevant parts could not be inspected. Cross modification or ownership boundaries only for read-only context. Explain that the result sets organization defaults rather than authorizing project changes or locking the project into a framework.
-2. Build one draft preference state covering `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`. For each material value, know whether it came from the explicit request, a coherent established convention, an applicable profile, or a recommendation for an unresolved choice.
+2. Build one draft preference state covering `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`. For each material value, know whether it came from the explicit request, a coherent established convention, an applicable project profile, or a recommendation for an unresolved choice.
 3. For an established project, preserve coherent supported implemented conventions unless the user requests redesign or migration. For greenfield work, explicit redesign, or genuinely unresolved choices, recommend the smallest suitable option from the current request, project constraints, and [`practices.md`](practices.md), using the skill defaults only when stronger evidence does not decide the choice.
 4. Before asking questions, present a compact proposed setup. Separate values already resolved from choices that still need input. Do not make the user translate architecture taxonomy when the project or recommendation already determines a sensible choice. Briefly explain a recommendation only when the tradeoff is material.
 5. Ask only material unresolved choices that can change structure, workflow, or validation. Batch independent unresolved choices into one compact prompt when answers do not depend on each other; serialize dependent choices or clarification follow-ups. Stop asking as soon as every material choice is directly implementable.
 6. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts the displayed recommendations for unresolved choices. `preserve detected` keeps coherent detected conventions and asks only for choices the project does not resolve. `customize` exposes only the decisions the user wants to change.
 7. Show diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization choice, or when the user asks for one. Use the diagrams from `practices.md` rather than inventing a competing structure vocabulary.
-8. Accept naming, package, test-location, lifecycle, or other organization preferences with any answer. Retain normalized selections for the task summary and any authorized profile, preserving additional wording verbatim in `Notes` when a profile will be written.
-9. Resolve preference scope only after the organization choices are complete unless the user already specified it. Recommend **Current task only** for temporary, experimental, narrowly scoped, read-only, or externally owned work; **This project only** for reusable project-specific preferences; and **Global default** only when the user wants a fallback across projects.
-10. For **Current task only**, show the resolved summary and continue the original task without an extra confirmation stop. A project profile is a project write and a global profile is a personal configuration write: show one exact pre-write preview and write it only after the user confirms `proceed`. That confirmation authorizes only the displayed profile write, not broader project changes.
+8. Accept naming, package, test-location, lifecycle, or other organization preferences with any answer. Retain normalized selections for the task summary and any authorized project profile, preserving additional wording verbatim in `Notes` when a profile will be written.
+9. Resolve persistence only after the organization choices are complete unless the user already specified it. Use **Current task only** for non-persistent preferences and **This project only** for reusable preferences owned by the affected project. Persistent profiles are never global or shared across projects.
+10. For **Current task only**, show the resolved summary and continue the original task without an extra confirmation stop. A project profile is a project write: show one exact pre-write preview and write it only after the user confirms `proceed`. That confirmation authorizes only the displayed project-profile write, not broader project changes. If no project root is available, keep the preferences task-local until a project can own the profile.
 
 ## Decision catalogue
 
@@ -95,12 +95,13 @@ Prefer existing checks and test placement. For a new project with no explicit te
 Resolve this after the organization choices unless the user already specified it:
 
 - **Current task only:** Apply the resolved preferences without writing a profile.
-- **This project only:** Save `.codex/roblox-structure.md` under the affected project root so it overrides global defaults for that codebase.
-- **Global default:** Save a personal fallback profile used only when a project has no closer profile or coherent established convention.
+- **This project only:** Save `.codex/roblox-structure.md` under the affected project root. This is the only persistent profile scope.
+
+If the affected project root cannot be identified, persistent profile setup is blocked until the project is known; keep the resolved preferences task-local rather than writing them elsewhere.
 
 ## Defaults and summary
 
-When `use recommended` is selected, keep every value already resolved by the explicit request, coherent established conventions, or applicable profiles, then accept the recommendations displayed for remaining choices. If a recommendation still needs a fallback, use:
+When `use recommended` is selected, keep every value already resolved by the explicit request, coherent established conventions, or applicable project profile, then accept the recommendations displayed for remaining choices. If a recommendation still needs a fallback, use:
 
 - detected supported source-of-truth workflow, otherwise Studio-native;
 - coherent established entrypoints, otherwise Single client/server entrypoint pair (SSA);
@@ -108,19 +109,19 @@ When `use recommended` is selected, keep every value already resolved by the exp
 - coherent established module style, otherwise plain Luau;
 - coherent established naming, otherwise the new-project naming defaults from `SKILL.md`;
 - existing checks and test placement, otherwise the smallest relevant available validation;
-- Current task only unless the user clearly wants a reusable project or global preference.
+- Current task only unless the user clearly wants a reusable preference for the affected project.
 
 After all material choices are resolved:
 
 1. For **Current task only**, show `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Preference scope` in a concise summary. Include any additional organization preference that materially affects the task. Continue the original task without requiring `proceed` unless the user explicitly requested an approval gate.
-2. For a persistent project or global scope, show one explicit pre-write preview. Identify the selected scope and destination, then show every version-1 field exactly as it will be persisted: `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`.
-3. Ask the user to reply `proceed`, name a field to change, or provide replacement wording only when a persistent profile write, ambiguity, or explicitly requested approval gate still requires confirmation. `proceed` authorizes only the displayed profile write and does not broaden project modification authority.
-4. When a selection changes, resolve only that choice and any directly dependent clarification, then regenerate the applicable summary or persistent pre-write preview.
-5. For **Current task only**, write no profile. For a persistent selection, write only the displayed and confirmed profile, then continue the original task.
+2. For **This project only**, show one explicit pre-write preview. Identify the affected project root and destination, then show every version-1 field exactly as it will be persisted: `Source of truth`, `Entrypoints`, `Module organization`, `Module style`, `Naming`, `Tests`, and `Notes`.
+3. Ask the user to reply `proceed`, name a field to change, or provide replacement wording only when a project-profile write, ambiguity, or explicitly requested approval gate still requires confirmation. `proceed` authorizes only the displayed profile write and does not broaden project modification authority.
+4. When a selection changes, resolve only that choice and any directly dependent clarification, then regenerate the applicable summary or project-profile pre-write preview.
+5. For **Current task only**, write no profile. For **This project only**, write only the displayed and confirmed profile, then continue the original task.
 
 ## Profile format
 
-For **Current task only**, keep the normalized summary in conversation state and write no profile. Otherwise write project profiles to `.codex/roblox-structure.md`. Write global profiles to `$CODEX_HOME/roblox-structure-profile.md`; when `CODEX_HOME` is unset, use the platform user `.codex` directory. Infer preference scope from the path rather than storing it as a field. Never persist task-specific modification authority in a profile; establish it anew for each task.
+Persistent profiles are project-local only. Write them to `.codex/roblox-structure.md` under the affected project root. Do not read or write a global structure profile, including legacy `$CODEX_HOME/roblox-structure-profile.md` files. If no project root is available, keep the normalized preferences in conversation state and do not persist them. Never persist task-specific modification authority in a profile; establish it anew for each task.
 
 Use this exact version-1 shape and keep every field non-empty:
 
@@ -158,8 +159,8 @@ A profile is valid only when `Profile version` equals `1` and every listed headi
 
 ## Existing profiles
 
-Use the convention-resolution precedence, profile-drift handling, and modification-authority rules in [`SKILL.md`](../SKILL.md). This section owns only profile parsing, normalization, and authorized write interaction when preference setup or unresolved-choice resolution is required.
+Use the convention-resolution precedence, profile-drift handling, and modification-authority rules in [`SKILL.md`](../SKILL.md). This section owns only project-profile parsing, normalization, and authorized write interaction when preference setup or unresolved-choice resolution is required.
 
 - Existing version-1 values such as `Single Script Architecture` remain accepted aliases for the single client/server entrypoint-pair preference.
-- Treat a missing field or version as incomplete. Resolve recognizable values from the existing profile and project first, ask only for material missing decisions, show the complete normalized version-1 profile, and wait for `proceed` before writing it.
+- Treat a missing field or version as incomplete. Resolve recognizable values from the existing project profile and project first, ask only for material missing decisions, show the complete normalized version-1 profile, and wait for `proceed` before writing it.
 - Treat an unsupported version as incomplete without overwriting it automatically. Preserve its contents, resolve what can be mapped safely, ask only for decisions the current skill cannot determine, show the proposed version-1 normalization, and wait for `proceed` before replacing it.
