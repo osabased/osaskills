@@ -12,8 +12,7 @@ Preserve a coherent established structure unless the user requests redesign or m
 1. **Route** the request as Review, Design, Migration plan, Implementation, or Preference setup.
 2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
 3. **Disclose** only the references whose trigger is present.
-4. For Implementation, determine whether the established-project fast path applies.
-5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
+4. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
 
 Stop expanding discovery when more inspection is unlikely to change placement, integration, modification scope, or validation.
 
@@ -40,34 +39,21 @@ Access, technical necessity, project conventions, profiles, dependencies, or fai
 
 Read [`references/modification-scope.md`](references/modification-scope.md) before mutation when a proposed write may cross an unclear, shared, generated, or protected boundary; a dirty worktree makes ownership ambiguous; or a broad tool can write outside the immediately requested content.
 
-## Established-project Implementation fast path
-
-Use this fast path only for **Implementation**, and only when all of these are true:
-
-- the affected area has a coherent supported structure;
-- the requested work fits that structure without redesign or migration;
-- the source-of-truth boundary is staying intact;
-- no required write crosses an unclear or protected boundary; and
-- no triggered reference below is required for correctness.
-
-The fast path is an eligibility shortcut, not a separate mutation procedure. It means the agent may skip unnecessary structural ceremony and extra reference loading, but it must still follow the Implementation route's pre-mutation status check, write-set control, mutation, and validation steps.
-
-A fast-path Implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence causes one of those triggers to fire. Review, Design, Migration plan, and Preference setup never become mutating through this fast path.
-
 ## Reference routing
 
 Load a reference only when its branch is active. Evaluate specialist triggers against both the current structure and the requested target structure. Multiple specialist references may apply to one task.
 
-| Trigger | Read |
-| --- | --- |
-| An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
-| A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
-| The current or target structure uses Server Authority (`Workspace.AuthorityMode = Server`), prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
-| An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| Reviewing, designing, planning, enabling, disabling, or changing Script Sync/conflict behavior or a sync boundary; or migrating/renaming content into, out of, or within Script Sync-managed content where sync representation, metadata, or child shape can matter | [`references/script-sync.md`](references/script-sync.md) |
-| Reviewing, designing, planning, adopting, removing, or changing a Rojo mapping/workflow; changing a mapping/project/meta/model file; or migrating content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
-| Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
-| The user requests reusable structural preferences, or a material organization choice remains genuinely unresolved | [`references/preference-wizard.md`](references/preference-wizard.md) |
+| Branch | Trigger | Read |
+| --- | --- | --- |
+| **Ordinary structure** | A Review depends on ordinary Roblox placement/runtime/entrypoint/source-of-truth rules; a task changes or validates a DataModel placement, entrypoint, or source-of-truth workflow whose platform semantics can affect correctness; or a material layout/grouping/module-style choice remains unresolved | [`references/practices.md`](references/practices.md) |
+| **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
+| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly changes or reviews that model | [`references/server-authority.md`](references/server-authority.md) |
+| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly changes or reviews that security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
+| **Script Sync** | The task reviews or changes Script Sync/conflict behavior or a sync boundary; or moves/renames content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/script-sync.md`](references/script-sync.md) |
+| **Rojo** | The task reviews or changes a Rojo mapping/workflow, mapping/project/meta/model file, or mapped topology where path/name/version/syncback/live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
+| **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
+| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/project-profile.md`](references/project-profile.md) |
+| **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/preference-resolution.md`](references/preference-resolution.md) |
 
 For version-sensitive platform behavior, re-open current authoritative documentation when external access is available instead of treating cached guidance as current by default.
 
@@ -77,21 +63,21 @@ For ordinary work in an established project, resolve each material choice in thi
 
 1. explicit current request;
 2. coherent convention in the affected area;
-3. applicable project profile for a choice the implementation still leaves unresolved;
+3. applicable project profile when the implementation still leaves the choice unresolved;
 4. broader coherent project convention;
 5. current-task recommendation or default.
 
 For greenfield work or explicit redesign/migration, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
 
-Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Treat the profile as convention memory, never as modification authority. When it conflicts with a coherent implemented convention during ordinary established-project work, preserve the implementation and treat the discrepancy as profile drift. Update the profile only when that write is explicitly requested and authorized.
+Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
 
 ## Complete the selected route
 
 ### Preference setup
 
-Read `references/preference-wizard.md`. Resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
+Read `references/preference-resolution.md`. Resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
 
-Persist `.codex/roblox-structure.md` only when the user explicitly requests project-level convention memory and authorizes that write. Keep persistent profiles about durable conventions rather than task scope, current dependency graphs, transient layout observations, or temporary risks.
+If the user requests reusable project-level convention memory, also read `references/project-profile.md` and follow its persistence rules.
 
 Finish when every material requested preference is directly implementable and any requested profile write is either completed with authorization or blocked with the exact reason.
 
@@ -119,7 +105,17 @@ Finish only at the migration reference's exhaustive completion criterion: every 
 
 ### Implementation
 
-Determine whether the established-project fast path applies, but always follow the pre-mutation and validation steps below. Fast-path eligibility only removes unnecessary structural ceremony; it never bypasses safeguards or triggered references.
+Use the established-project fast path when all of these are true:
+
+- the affected area has a coherent supported structure;
+- the requested work fits that structure without redesign or migration;
+- the source-of-truth boundary is staying intact;
+- no required write crosses an unclear or protected boundary; and
+- no specialist reference is required for correctness.
+
+The fast path removes unnecessary structural ceremony and reference loading; it does not bypass write-set control, safeguards, or validation. A fast-path implementation needs no preference questions, profile write, architecture normalization, rollback ceremony, or specialist reference unless evidence triggers one.
+
+Then:
 
 1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/modification-scope.md` before writing.
 2. Establish the intended authorized write set at the level the task requires.
@@ -137,9 +133,5 @@ Finish when the requested structural outcome is complete and focused checks pass
 
 - Keep critical rules/state, secrets, persistence, purchases, and client-input validation authoritative on the server. Treat client-visible code and data as inspectable.
 - Put only code and data clients genuinely need in client-visible containers.
-- Keep `ReplicatedFirst` limited to the earliest loading subset.
-- Keep entrypoints focused on dependency assembly and startup; put feature behavior in cohesive ModuleScripts and keep dependency direction acyclic.
-- Preserve established names and casing. For a new project with no stronger convention, use PascalCase for folders, scripts, and module tables; camelCase for functions and locals; and UPPER_SNAKE_CASE for constants.
-- Prefer explicit dependencies. Add `Init` and `Start` phases only when ordering or cross-system readiness requires them.
-- Retain multiple entrypoints when object lifetime, `Actor` parallelism, character/tool behavior, or isolation makes them the simpler fit.
-- Introduce a framework, package manager, test framework, or generated hierarchy only when a requirement beyond organization justifies it and the resulting writes are authorized.
+- Preserve coherent established conventions unless the request requires redesign or migration.
+- Keep modification authority separate from technical context and project conventions.
