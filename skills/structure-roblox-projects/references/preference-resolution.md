@@ -86,7 +86,7 @@ Example normalized preference: `Plain Luau with explicit requires and Init/Start
 
 ### Naming
 
-Prefer the project's coherent existing names and casing. For a new project with no explicit preference, use PascalCase for folders, scripts, and module tables; camelCase for functions and locals; and UPPER_SNAKE_CASE for constants. Ask only when naming is materially unresolved or the user wants a reusable convention different from detected/default behavior.
+Use the naming rules in `practices.md`. Ask only when naming is materially unresolved or the user wants a reusable convention different from detected/default behavior.
 
 ### Tests
 
@@ -100,7 +100,7 @@ When `use recommended` is selected, keep every value already resolved by the exp
 - coherent established entrypoints, otherwise Single client/server entrypoint pair (SSA);
 - coherent established module organization, otherwise feature-first grouping within runtime boundaries;
 - coherent established module style, otherwise plain Luau;
-- coherent established naming, otherwise the new-project naming defaults above;
+- coherent established naming, otherwise the new-project naming defaults in `practices.md`;
 - existing checks and test placement, otherwise the smallest relevant available validation.
 
 For task-local decisions, summarize only the resolved choices that materially affect the current task, then continue without an extra approval stop unless the user requested one.
