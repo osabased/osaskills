@@ -1,6 +1,6 @@
 # Rojo structure work
 
-Use this reference when the task changes or depends on Rojo mappings, project/meta/model files, version-sensitive suffix or sync behavior, `syncback`, or live `rojo serve` safety.
+Use this reference when the task changes a Rojo mapping or project/meta/model file, or when unresolved effective mapping, version-sensitive sync behavior, `syncback`, or live `rojo serve` safety materially affects the task. A routine edit inside a clear existing mapping does not require this reference.
 
 For a small filesystem-first project, prefer a compact source tree and let the project file define the DataModel mapping:
 
