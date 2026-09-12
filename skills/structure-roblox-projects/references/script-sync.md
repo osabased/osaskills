@@ -1,6 +1,6 @@
 # Script Sync safeguards
 
-Use this reference when reviewing or changing Script Sync behavior or boundaries, resuming or resolving sync conflicts, or moving/renaming Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter. A routine source edit inside a stable sync boundary does not require this reference.
+Use this reference when reviewing, designing, planning, enabling, disabling, or changing Script Sync behavior or boundaries; resuming or resolving sync conflicts; or moving/renaming content into, out of, or within Script Sync management where sync representation, metadata, child shape, packages, or conflict behavior can matter. A routine source edit inside a stable sync boundary does not require this reference.
 
 Script Sync manages `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances as a bidirectional Studio-and-disk synchronization boundary. Other instances inside a synced folder remain Studio-owned. Prefer code-focused sync roots when practical so the filesystem representation does not imply ownership of ignored Studio content.
 
