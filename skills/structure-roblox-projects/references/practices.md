@@ -157,6 +157,10 @@ Architectures can combine. Prefer the smallest organization that makes runtime o
 | Preserve existing framework | Keep established discovery, naming, and lifecycle. | Working framework-based projects. |
 | Named framework or custom lifecycle | Define framework/discovery/lifecycle rules deliberately. | Projects with requirements that justify team-wide lifecycle machinery. |
 
+## Naming
+
+Preserve coherent existing names and casing. For a new project with no stronger convention, use PascalCase for folders, scripts, and module tables; camelCase for functions and locals; and UPPER_SNAKE_CASE for constants.
+
 ## Common placement
 
 | Content | Typical home |
