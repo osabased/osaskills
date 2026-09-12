@@ -56,16 +56,16 @@ A fast-path Implementation needs no preference questions, profile write, archite
 
 ## Reference routing
 
-Load a reference only when its branch is active. Multiple specialist references may apply to one task.
+Load a reference only when its branch is active. Evaluate specialist triggers against both the current structure and the requested target structure. Multiple specialist references may apply to one task.
 
 | Trigger | Read |
 | --- | --- |
 | An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
-| `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation materially affect the structure | [`references/server-authority.md`](references/server-authority.md) |
-| An active or materially suspected Script Capabilities sandbox can affect the move or dependency path | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| Reviewing or changing Script Sync/conflict behavior, or migrating/renaming Script Sync-managed content where sync representation, metadata, or child shape can matter | [`references/script-sync.md`](references/script-sync.md) |
-| Reviewing Rojo mapping/workflow safety; changing a mapping/project/meta/model file; or migrating Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
+| The current or target structure uses Server Authority (`Workspace.AuthorityMode = Server`), prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
+| An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
+| Reviewing, designing, planning, enabling, disabling, or changing Script Sync/conflict behavior or a sync boundary; or migrating/renaming content into, out of, or within Script Sync-managed content where sync representation, metadata, or child shape can matter | [`references/script-sync.md`](references/script-sync.md) |
+| Reviewing, designing, planning, adopting, removing, or changing a Rojo mapping/workflow; changing a mapping/project/meta/model file; or migrating content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
 | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
 | The user requests reusable structural preferences, or a material organization choice remains genuinely unresolved | [`references/preference-wizard.md`](references/preference-wizard.md) |
 
@@ -113,7 +113,7 @@ Design is read-only unless Implementation is separately requested. Finish when e
 
 ### Migration plan
 
-Read `references/migration.md` and every specialist reference whose trigger is present. Keep planning read-only unless implementation is also requested.
+Read `references/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
 
 Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
 
