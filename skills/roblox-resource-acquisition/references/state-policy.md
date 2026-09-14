@@ -4,6 +4,16 @@ Apply this reference whenever the workflow records trust or verification, writes
 
 Before creating or updating persistent lifecycle state, use the project/environment's authoritative registry or storage location when one exists; otherwise use the portable fallback defined here. Do not duplicate resource identity, version, adoption, or validation state across competing locations.
 
+## Portable resource-record location
+
+When the environment has no authoritative resource-record format or storage location, resolve portable schema-version 2 resource records in this order:
+
+1. an explicit record path supplied by the user, project, or environment;
+2. `<project-root>/.roblox-resources/records/<slug>.yaml` when a project root is in scope;
+3. `~/.roblox-resources/records/<slug>.yaml` otherwise.
+
+Use the first applicable location in that order for a new portable record, and use the same precedence when resolving an existing portable record. This location rule does not itself authorize creating or updating persistent state; it only selects the destination when the surrounding task or environment already authorizes that lifecycle write.
+
 ## Record trust and verification separately
 
 Do not overload one status word with two meanings. Track **trust** (who/what authorizes normal use) separately from **verification** (what has actually been proven).
