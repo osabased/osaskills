@@ -13,9 +13,9 @@ Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write
 | Script Sync | Synchronize scripts in the DataModel with text files on local disk; changes made in Studio or on disk propagate to the other side. | Using a preferred external text editor or checking code into version control while using Studio for everything else. |
 | Rojo | Use a filesystem-first workflow that synchronizes local files with the Studio DataModel. | Checking the entire project, not just code, into version control or using the filesystem as the project's source of truth. |
 
-If the requirement is only external script editing or code version control while Studio remains the tool for everything else, Script Sync is a good fit. If the requirement is to put the entire project into version control or use the filesystem as the source of truth, Roblox recommends third-party tools such as Rojo instead.
+If the requirement is only external script editing or code version control while Studio remains the tool for everything else, Script Sync is a good fit. If the requirement is to put the entire project into version control or use the filesystem as the source of truth, Roblox identifies third-party tools such as Rojo as the better choice.
 
-Treat Script Sync as a bidirectional boundary with explicit conflict resolution; neither physical representation is permanently authoritative for synchronized source. Treat each Rojo-mapped filesystem tree as authoritative for the instances its effective mapping owns.
+Script Sync applies changes in both directions between Studio and disk. When starting or resuming sync with differences between them, Studio presents a conflict-resolution dialog with **Keep Studio** and **Keep Disk** choices. Roblox describes Rojo as a **file system-first** approach that synchronizes local files with the Studio DataModel.
 
 ## Placement model
 
