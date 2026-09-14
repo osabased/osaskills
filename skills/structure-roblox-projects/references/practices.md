@@ -10,10 +10,10 @@ Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write
 | --- | --- | --- |
 | Preserve detected workflow | Keep the project's working authoring and sync boundaries. | Established projects. |
 | Studio-native | Keep the DataModel, including script source, in Studio. | Projects that want one native editor and no filesystem build workflow. |
-| Script Sync | Bidirectionally synchronize selected scripts/folders while Studio owns the wider DataModel. | External editing or Git while Studio remains the primary project editor. |
-| Rojo | Map filesystem content into the DataModel through project files. | Filesystem-first projects that need broader hierarchy ownership, reproducible builds, CI, packages, sourcemaps, or explicit mappings. |
+| Script Sync | Synchronize scripts in the DataModel with text files on local disk; changes made in Studio or on disk propagate to the other side. | Using a preferred external text editor or checking code into version control while using Studio for everything else. |
+| Rojo | Use a filesystem-first workflow that synchronizes local files with the Studio DataModel. | Checking the entire project, not just code, into version control or using the filesystem as the project's source of truth. |
 
-When the unresolved requirement is only "edit Luau externally" or "put scripts in Git," prefer Script Sync unless another requirement needs filesystem ownership of more than scripts/folders. Do not introduce Rojo solely to obtain external editing or script version control. Choose Rojo when the filesystem must be the source of truth for broader project structure or when its mapping/build workflow is itself required.
+If the requirement is only external script editing or code version control while Studio remains the tool for everything else, Script Sync is a good fit. If the requirement is to put the entire project into version control or use the filesystem as the source of truth, Roblox recommends third-party tools such as Rojo instead.
 
 Treat Script Sync as a bidirectional boundary with explicit conflict resolution; neither physical representation is permanently authoritative for synchronized source. Treat each Rojo-mapped filesystem tree as authoritative for the instances its effective mapping owns.
 
