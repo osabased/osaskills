@@ -75,7 +75,7 @@ Check for the nearest project-local `.codex/roblox-structure.md` only when a mat
 
 ### Preference setup
 
-If the user requests reusable project-level convention memory, read `references/project-profile.md` first. Resolve persisted fields from the explicit request, coherent project conventions, and applicable existing profile evidence. Read `references/preference-resolution.md` only for fields that remain genuinely open.
+If the user requests reusable project-level convention memory, read `references/project-profile.md` first. Persist only durable conventions intentionally selected by the user or explicitly included in the requested project-level preference setup. Preserve unrelated existing profile sections, and treat missing sections as no project-profile preference. Read `references/preference-resolution.md` only for requested or otherwise intentionally included decisions that remain genuinely open.
 
 Otherwise, read `references/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
 
