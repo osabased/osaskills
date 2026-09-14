@@ -12,6 +12,7 @@ Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write
 | Studio-native | Keep the DataModel, including script source, in Studio. | Projects that want one native editor and no filesystem build workflow. |
 | Script Sync | Synchronize scripts in the DataModel with text files on local disk; changes made in Studio or on disk propagate to the other side. | Using a preferred external text editor or checking code into version control while using Studio for everything else. |
 | Rojo | Use a filesystem-first workflow that synchronizes local files with the Studio DataModel. | Checking the entire project, not just code, into version control or using the filesystem as the project's source of truth. |
+| Custom / other established workflow | Use another authoring or synchronization model and state its durable rules explicitly. | Established or constrained projects whose workflow is not accurately represented by Studio-native, Script Sync, or Rojo. |
 
 If the requirement is only external script editing or code version control while Studio remains the tool for everything else, Script Sync is a good fit. If the requirement is to put the entire project into version control or use the filesystem as the source of truth, Roblox identifies third-party tools such as Rojo as the better choice.
 
@@ -25,7 +26,7 @@ Use the dimensions that can change the decision:
 | --- | --- | --- |
 | Runtime / consumer | Server, client, both | Which Luau environments execute or consume it? |
 | Replication | Server-only, client-visible | Can clients receive and inspect it? |
-| Authoring | Studio-owned, Script Sync-managed, Rojo-mapped | Which workflow owns this instance? |
+| Authoring | Studio-owned, Script Sync-managed, Rojo-mapped, other established workflow | Which workflow owns this instance? |
 
 A shared ModuleScript is normally both-runtime and client-visible. A server asset can be server-only without being executable. Map modification authority separately from these dimensions.
 
