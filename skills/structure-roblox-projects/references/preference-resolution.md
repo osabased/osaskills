@@ -37,10 +37,11 @@ Options and meanings come from `practices.md`:
 - Studio-native
 - Script Sync
 - Rojo
+- Custom / other established workflow
 
 For an established project, preserve the detected supported workflow unless migration or redesign is requested. For greenfield work with no stronger requirement, default to Studio-native. If the user wants external editing, Git, CI, packages, or reproducible filesystem builds, recommend the smallest workflow that actually satisfies those requirements rather than defaulting from tool familiarity alone.
 
-When a detected workflow will be persisted, normalize it to the concrete workflow (`Studio-native`, `Script Sync`, or `Rojo`) rather than the phrase `Preserve detected workflow`.
+When a detected workflow will be persisted, normalize Studio-native, Script Sync, or Rojo to that concrete workflow rather than the phrase `Preserve detected workflow`. For another established workflow, normalize the `Source of truth` field to `Custom` and preserve the directly implementable durable convention in `Notes` according to `project-profile.md`.
 
 ### Entrypoints
 
