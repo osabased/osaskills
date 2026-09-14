@@ -15,11 +15,7 @@ An empty `host_adoptions` list means artifact only. File placement alone never e
 
 ## Portable resource records
 
-Resolve matching resource records in this order:
-
-1. an explicit record path supplied by the user, project, or environment;
-2. `<project-root>/.roblox-resources/records/<slug>.yaml`;
-3. `~/.roblox-resources/records/<slug>.yaml`.
+Resolve matching resource records using the canonical [portable resource-record location](state-policy.md#portable-resource-record-location) policy.
 
 Bind records and learnings by `slug` plus `canonical_url`, and by `package_id` when present. A same-named fork, mirror, or package does not inherit state.
 
