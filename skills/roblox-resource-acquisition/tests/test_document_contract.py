@@ -76,6 +76,25 @@ def test_acquire_adopt_keeps_child_generation_and_host_adoption_conditional():
     assert "generation-validation.md" in section
     assert "When operational host adoption of generated guidance is requested" in section
     assert "operational-lifecycle.md" in section
+    assert "state-policy.md" in section
+
+
+def test_portable_record_location_has_one_canonical_owner():
+    state = REFERENCES["state-policy.md"]
+    operational = REFERENCES["operational-lifecycle.md"]
+
+    explicit = "an explicit record path supplied by the user, project, or environment"
+    project = "`<project-root>/.roblox-resources/records/<slug>.yaml`"
+    user = "`~/.roblox-resources/records/<slug>.yaml`"
+    positions = [state.index(explicit), state.index(project), state.index(user)]
+    assert positions == sorted(positions)
+
+    assert (
+        "[portable resource-record location](state-policy.md#portable-resource-record-location)"
+        in operational
+    )
+    assert project not in operational
+    assert user not in operational
 
 
 def test_refresh_preserves_target_bound_proof_and_avoids_default_rediscovery():
