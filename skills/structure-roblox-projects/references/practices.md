@@ -10,8 +10,10 @@ Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write
 | --- | --- | --- |
 | Preserve detected workflow | Keep the project's working authoring and sync boundaries. | Established projects. |
 | Studio-native | Keep the DataModel, including script source, in Studio. | Projects that want one native editor and no filesystem build workflow. |
-| Script Sync | Bidirectionally synchronize selected scripts/folders while Studio owns the wider DataModel. | External editing or Git without filesystem ownership of the wider hierarchy. |
-| Rojo | Map filesystem content into the DataModel through project files. | Filesystem-first projects needing reproducible builds, CI, packages, sourcemaps, or broader mapping. |
+| Script Sync | Bidirectionally synchronize selected scripts/folders while Studio owns the wider DataModel. | External editing or Git while Studio remains the primary project editor. |
+| Rojo | Map filesystem content into the DataModel through project files. | Filesystem-first projects that need broader hierarchy ownership, reproducible builds, CI, packages, sourcemaps, or explicit mappings. |
+
+When the unresolved requirement is only "edit Luau externally" or "put scripts in Git," prefer Script Sync unless another requirement needs filesystem ownership of more than scripts/folders. Do not introduce Rojo solely to obtain external editing or script version control. Choose Rojo when the filesystem must be the source of truth for broader project structure or when its mapping/build workflow is itself required.
 
 Treat Script Sync as a bidirectional boundary with explicit conflict resolution; neither physical representation is permanently authoritative for synchronized source. Treat each Rojo-mapped filesystem tree as authoritative for the instances its effective mapping owns.
 
@@ -178,4 +180,4 @@ These are defaults for unresolved choices and review criteria for ordinary Roblo
 - Roblox architecture: [Script types and locations](https://create.roblox.com/docs/scripting/locations), [Plant reference project](https://create.roblox.com/docs/resources/plant-reference-project), [Data model](https://create.roblox.com/docs/projects/data-model)
 - Roblox modules: [ModuleScript](https://create.roblox.com/docs/reference/engine/classes/ModuleScript), [Reuse code](https://create.roblox.com/docs/scripting/module)
 - Roblox runtime/security: [Client-server runtime](https://create.roblox.com/docs/projects/client-server), [Client-server boundary](https://create.roblox.com/docs/scripting/security/client-server-boundary), [Access control and confidentiality](https://create.roblox.com/docs/scripting/security/access-control)
-- Roblox workflows: [Studio testing modes](https://create.roblox.com/docs/studio/testing-modes), [Third-party tools](https://create.roblox.com/docs/projects/external-tools)
+- Roblox workflows: [Script Sync](https://create.roblox.com/docs/scripting/sync), [Studio testing modes](https://create.roblox.com/docs/studio/testing-modes), [Third-party tools](https://create.roblox.com/docs/projects/external-tools)
