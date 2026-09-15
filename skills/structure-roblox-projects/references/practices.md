@@ -2,6 +2,8 @@
 
 Use this reference when choosing an unresolved layout, placement, entrypoint, grouping, module-style, or source-of-truth decision, or when an architecture Review needs ordinary Roblox placement/runtime/entrypoint/source-of-truth rules to judge an existing structure. Preserve a coherent established structure instead of normalizing it toward these defaults during ordinary implementation.
 
+When canonical SSA is selected or recognized, [`ssa.md`](ssa.md) owns its feature placement, discovery, and lifecycle contract. Use this file only for ordinary choices that contract does not resolve.
+
 Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
 
 ## Source of truth
@@ -63,7 +65,7 @@ ReplicatedFirst/
   LoadingClient              only when early loading behavior is required
 ```
 
-This is a useful greenfield default, not a universal recommendation. Preserve a coherent established startup topology.
+This is a useful general option, not a universal recommendation. Preserve a coherent established startup topology. For the selected canonical SSA form of this topology, follow [`ssa.md`](ssa.md) rather than deriving discovery or lifecycle behavior here.
 
 ### Multiple entrypoints
 
@@ -84,9 +86,9 @@ Their execution order is nondeterministic unless the project adds an explicit co
 
 ### Entrypoint rules
 
-- Require feature roots explicitly unless the project already owns a reliable discovery loader.
+- In projects without canonical SSA or another reliable lifecycle loader, require feature roots explicitly.
 - Treat shared entrypoints and discovery loaders as integration boundaries.
-- Add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
+- In projects without an established lifecycle contract, add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
 - Point dependencies toward stable domain/shared modules rather than back toward entrypoints.
 - Split modules by cohesive responsibility rather than arbitrary line count.
 
