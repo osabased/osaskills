@@ -90,7 +90,15 @@ A profile is useful when it contains at least one recognized non-empty durable c
 
 ## Agent onboarding recognition
 
-Usable agent onboarding requires both a useful profile with the canonical `Freshness` section and this canonical owned block in the affected project root's `AGENTS.md`:
+Usable agent onboarding requires all of the following:
+
+1. a useful profile with the canonical `Freshness` section;
+2. the canonical owned block below in the affected project root's `AGENTS.md`; and
+3. that project-root `AGENTS.md` lies on the instruction-discovery chain for the intended fresh-agent working directory.
+
+For Codex, instructions are discovered from the repository/project root down to the working directory. A nested project's `AGENTS.md` is therefore not loaded by a fresh session started above that project. When the intended fresh-agent working directory is above the affected project root, treat the project-root block as persisted but **not usable onboarding**. [`project-profile-persistence.md`](project-profile-persistence.md) owns the visibility check plus any authorized ancestor pointer or explicit onboarding limitation.
+
+Canonical project-root block:
 
 ```markdown
 <!-- structure-roblox-projects:onboarding:start -->
@@ -100,7 +108,7 @@ Before making a structural placement, startup, source-of-truth, organization, or
 <!-- structure-roblox-projects:onboarding:end -->
 ```
 
-Use this contract only to recognize whether onboarding is already usable. It does not authorize an `AGENTS.md` write. When persistence or onboarding mutation is active, [`project-profile-persistence.md`](project-profile-persistence.md) owns append/update/create behavior and write authority.
+Use this contract only to recognize whether onboarding is already usable. It does not authorize an `AGENTS.md` write. When persistence or onboarding mutation is active, [`project-profile-persistence.md`](project-profile-persistence.md) owns append/update/create behavior, instruction-scope visibility, and write authority.
 
 ## Existing profiles
 
