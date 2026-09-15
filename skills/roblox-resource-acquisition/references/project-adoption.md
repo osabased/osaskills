@@ -2,7 +2,7 @@
 
 Use this reference when a resource becomes, ceases to be, or changes as a durable project-standard dependency, when a project-use authority supplies a fixed resource target, or when the project-root `AGENTS.md` resource index must change.
 
-This file owns project-use state, project-root onboarding mutation, project conflict handling, and project-local generated-skill placement. Resource trust/verification remains in [state-policy.md](state-policy.md); generated-child validation remains in [generation-validation.md](generation-validation.md); host operational state remains in [operational-lifecycle.md](operational-lifecycle.md).
+This file owns project-use state, project-root onboarding mutation, project conflict handling, project-local generated-skill placement, and fresh-agent visibility of the project resource index. Resource trust/verification remains in [state-policy.md](state-policy.md); generated-child validation remains in [generation-validation.md](generation-validation.md); host operational state remains in [operational-lifecycle.md](operational-lifecycle.md).
 
 ## Establish project-use authority
 
@@ -58,7 +58,7 @@ Use the project-standard resources below when their listed roles apply. If a res
 
 Mutation rules:
 
-1. Use only the `AGENTS.md` at the affected project root. Do not mutate a global or unrelated nested project's instructions.
+1. Use only the `AGENTS.md` at the affected project root for this detailed resource index. Do not mutate a global or unrelated nested project's instructions.
 2. If `AGENTS.md` exists and the owned markers are absent, append the complete block after existing content, adding only the newline needed for a clean append.
 3. If the markers exist, update only the content between them. Preserve everything outside them.
 4. If no project-root `AGENTS.md` exists, create one containing only the owned block.
@@ -68,7 +68,20 @@ Mutation rules:
 8. When the resource itself is currently blocked for its adopted use, keep the project decision visible but mark that use blocked and direct repair/reconciliation; do not present it as normally usable.
 9. Omit `retired` and `not-applicable` resources from the active block. Remove the owned block entirely when no adopted resources remain; preserve all unrelated `AGENTS.md` content.
 
-An already-authorized `acquire/adopt` operation that establishes or changes a project-standard dependency also authorizes the matching record and owned onboarding writes after conflict checks pass. Do not add a redundant confirmation stop solely for those owned persistence writes.
+An already-authorized `acquire/adopt` operation that establishes or changes a project-standard dependency also authorizes the matching record and owned project-root onboarding writes after conflict checks pass. Do not add a redundant confirmation stop solely for those owned persistence writes.
+
+## Verify fresh-agent instruction scope
+
+The project-root index is usable onboarding only when fresh agents will actually load that `AGENTS.md`.
+
+For Codex, identify the working directory from which fresh agents are expected to enter the project and check whether the affected project root lies on the repository/project-root-to-working-directory instruction chain.
+
+- If the project-root `AGENTS.md` lies on that chain, the index is visible and no additional pointer is needed.
+- If the expected working directory is above a nested Roblox project, that nested `AGENTS.md` is not loaded by default. Keep the project-root index as durable project state, but **do not claim usable fresh-agent onboarding** from it alone.
+- When an ancestor `AGENTS.md` on the loaded instruction chain is already within the authorized write boundary, add only the smallest project-scoped context pointer needed to reach the nested project instructions, for example: `For Roblox resource work under <project-relative-path>/, read <project-relative-path>/AGENTS.md before choosing or changing project-standard resources.` Preserve every unrelated ancestor instruction.
+- When that ancestor write is not authorized, leave it unchanged and report the exact condition: future agents must start Codex from the affected project root (or a descendant) for the nested resource index to apply, or the owner must separately authorize an ancestor pointer.
+
+An ancestor pointer is a visibility aid, not resource authority, and it does not move the resource index out of the project root. Re-check current OpenAI Codex `AGENTS.md` discovery guidance when this behavior is material and external documentation is available.
 
 ## Place generated project skills
 
@@ -94,4 +107,4 @@ Maintain one canonical editable child. When a project artifact is adopted into a
 - `roblox-resource-acquisition` may replace or retire an adopted resource only when it owns that project-use decision or the user explicitly authorizes the authority change.
 - For externally owned resources, report evidence to the owning contract/user and preserve the target until that authority changes it.
 
-Project adoption is complete when the resource record truthfully represents the durable role and authority, the project-root onboarding block matches active adopted state without altering unrelated instructions, any generated child occupies exactly the intended artifact/host state, and conflicts or blocks are explicit rather than silently resolved.
+Project adoption is complete when the resource record truthfully represents the durable role and authority, the project-root onboarding block matches active adopted state without altering unrelated instructions, fresh-agent visibility is either verified for the intended working directory or its exact limitation is reported, any generated child occupies exactly the intended artifact/host state, and conflicts or blocks are explicit rather than silently resolved.

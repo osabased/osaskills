@@ -1301,6 +1301,20 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
             errors.append("Expected identity/state must include the reviewed provenance version/state")
 
     parent_state_check = reconciliation_values.get("Parent-state check")
+    parent_state_route = bool(
+        parent_state_check
+        and (
+            re.search(
+                r"(?:\.agents[/\\]roblox[/\\]resources|~[/\\]\.roblox-resources|(?:[A-Za-z]:)?[/\\][^\s`]+)",
+                parent_state_check,
+                re.I,
+            )
+            or (
+                re.search(r"\b(?:authoritative|explicit)\b", parent_state_check, re.I)
+                and re.search(r"\b(?:path|location|registry|store)\b", parent_state_check, re.I)
+            )
+        )
+    )
     if parent_state_check and not (
         re.search(r"schema[- ]version\s*3", parent_state_check, re.I)
         and re.search(r"\brecords?\b", parent_state_check, re.I)
@@ -1309,6 +1323,8 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         and re.search(r"\bcanonical\b", parent_state_check, re.I)
     ):
         errors.append("Parent-state check must load matching v3 records and learnings by slug plus canonical identity")
+    if parent_state_check and not parent_state_route:
+        errors.append("Parent-state check must name a concrete record/learnings discovery route")
 
     mismatch_action = reconciliation_values.get("Mismatch/unknown action")
     if mismatch_action and not (

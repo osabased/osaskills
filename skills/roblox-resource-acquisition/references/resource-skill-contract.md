@@ -59,7 +59,7 @@ Include an **Operational reconciliation** section containing these labeled field
 - `Policy`: exactly `required` or `not-applicable` followed by a concrete reason;
 - `Installed-state check`: a resource-specific command, file/manifest inspection, package/asset identity check, or an explicit immutable-install explanation;
 - `Expected identity/state`: the canonical identity and reviewed version/commit/source state the guidance targets;
-- `Parent-state check`: how to load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity;
+- `Parent-state check`: a deterministic discovery route for matching schema-version 3 resource records and resource-bound learnings, plus the resource slug/canonical-identity match. For a project-local child, name the project-root-relative canonical record/learnings locations or the exact authoritative locations that apply. For a portable/user child, state the project/user fallback resolution rule. An identity-only instruction such as “load matching records and learnings” is insufficient;
 - `Mismatch/unknown action`: stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode;
 - `Defect handoff`: capture the task, installed state, expected/observed behavior, and smallest reproduction, then invoke the same parent repair route.
 
