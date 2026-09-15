@@ -1,6 +1,6 @@
 # Project resource adoption
 
-Use this reference when a resource becomes, ceases to be, or changes as a durable project-standard dependency, when a project-use authority supplies a fixed resource target, or when the project-root `AGENTS.md` resource index must change.
+Use this reference when a resource becomes, ceases to be, or changes as a durable project-standard dependency, when a project-use authority supplies a fixed resource target, or when the project-root resource onboarding index must change.
 
 This file owns project-use state, project-root onboarding mutation, project conflict handling, project-local generated-skill placement, and fresh-agent visibility of the project resource index. Resource trust/verification remains in [state-policy.md](state-policy.md); generated-child validation remains in [generation-validation.md](generation-validation.md); host operational state remains in [operational-lifecycle.md](operational-lifecycle.md).
 
@@ -15,9 +15,19 @@ Before changing project-standard resource state, determine who owns the resource
 
 Project trust and project-use authority are different claims. `trust.basis: project` says the resource identity is trusted by project policy; `project_use.authority` says which durable project contract controls whether that resource is the project-standard choice for its role.
 
+## Resolve the active Codex instruction file
+
+Before reading or mutating project onboarding, resolve the instruction file Codex actually selects at the affected directory. Under current Codex discovery precedence, use the first non-empty file in this order:
+
+1. `AGENTS.override.md` when present;
+2. `AGENTS.md` when present;
+3. the first non-empty configured name in `project_doc_fallback_filenames`, when that configuration is available.
+
+Codex includes at most one instruction file per directory. Do not create a higher-precedence file merely to make this workflow's block visible when a lower-precedence instruction file is already active; doing so can shadow existing project guidance. If no active instruction file exists, use `AGENTS.md` as the canonical new project instruction file. When current fallback configuration cannot be established, do not invent fallback filenames; report any resulting visibility uncertainty rather than claiming the block is loaded.
+
 ## Check project conflicts before mutation
 
-Inspect the affected project root's governing `AGENTS.md` and any directly referenced durable project guidance that can resolve the same resource role, including `.agents/roblox/structure.md` when applicable.
+Inspect the affected project root's active Codex instruction file and any directly referenced durable project guidance that can resolve the same resource role, including `.agents/roblox/structure.md` when applicable.
 
 A conflict exists only when existing durable guidance and the proposed project use establish incompatible choices for the **same role and applicable scope**. Adjacent capabilities are not conflicts.
 
@@ -44,7 +54,7 @@ Keep project-use state independent from resource verification and generated-chil
 
 ## Maintain the project resource index
 
-When at least one resource has `project_use.status: adopted`, maintain this owned block in the affected project root's `AGENTS.md`:
+When at least one resource has `project_use.status: adopted`, maintain this owned block in the affected project root's active Codex instruction file resolved above:
 
 ```markdown
 <!-- roblox-resource-acquisition:onboarding:start -->
@@ -58,30 +68,32 @@ Use the project-standard resources below when their listed roles apply. If a res
 
 Mutation rules:
 
-1. Use only the `AGENTS.md` at the affected project root for this detailed resource index. Do not mutate a global or unrelated nested project's instructions.
-2. If `AGENTS.md` exists and the owned markers are absent, append the complete block after existing content, adding only the newline needed for a clean append.
+1. Use only the active instruction file at the affected project root for this detailed resource index. Do not mutate a global or unrelated nested project's instructions.
+2. If an active project-root instruction file exists and the owned markers are absent, append the complete block after existing content, adding only the newline needed for a clean append.
 3. If the markers exist, update only the content between them. Preserve everything outside them.
-4. If no project-root `AGENTS.md` exists, create one containing only the owned block.
-5. Derive active entries from adopted project-use records for that project/scope; do not duplicate version, provenance, verification history, or API guidance in `AGENTS.md`.
-6. For externally owned choices, identify the owner only when that prevents authority ambiguity, for example: `Structural selection is governed by .agents/roblox/structure.md.`
-7. Add `Use $<generated_skill>` only when the matching child has an applicable `operational` host adoption visible to fresh agents in the intended scope. A missing/broken child does not remove an otherwise valid adopted resource choice.
-8. When the resource itself is currently blocked for its adopted use, keep the project decision visible but mark that use blocked and direct repair/reconciliation; do not present it as normally usable.
-9. Omit `retired` and `not-applicable` resources from the active block. Remove the owned block entirely when no adopted resources remain; preserve all unrelated `AGENTS.md` content.
+4. If no active project-root instruction file exists, create `AGENTS.md` containing only the owned block. Do not create `AGENTS.override.md` or another higher-precedence file merely for this index.
+5. If a previous owned block exists in a now-inactive same-directory instruction file because precedence or fallback configuration changed, remove that stale owned block only when that file is within the authorized write boundary; otherwise report the duplicate/inactive block instead of maintaining two authoritative indexes.
+6. Derive active entries from adopted project-use records for that project/scope; do not duplicate version, provenance, verification history, or API guidance in the instruction file.
+7. For externally owned choices, identify the owner only when that prevents authority ambiguity, for example: `Structural selection is governed by .agents/roblox/structure.md.`
+8. Add `Use $<generated_skill>` only when the matching child has an applicable `operational` host adoption visible to fresh agents in the intended scope. A missing/broken child does not remove an otherwise valid adopted resource choice.
+9. When the resource itself is currently blocked for its adopted use, keep the project decision visible but mark that use blocked and direct repair/reconciliation; do not present it as normally usable.
+10. Omit `retired` and `not-applicable` resources from the active block. Remove the owned block entirely when no adopted resources remain; preserve all unrelated instruction content.
 
 An already-authorized `acquire/adopt` operation that establishes or changes a project-standard dependency also authorizes the matching record and owned project-root onboarding writes after conflict checks pass. Do not add a redundant confirmation stop solely for those owned persistence writes.
 
 ## Verify fresh-agent instruction scope
 
-The project-root index is usable onboarding only when fresh agents will actually load that `AGENTS.md`.
+The project-root index is usable onboarding only when fresh agents will actually load the active instruction file that contains it.
 
-For Codex, identify the working directory from which fresh agents are expected to enter the project and check whether the affected project root lies on the repository/project-root-to-working-directory instruction chain.
+For Codex, identify the working directory from which fresh agents are expected to enter the project. Starting at the repository/project root and walking down to that working directory, resolve the active instruction file independently at each directory using the precedence above.
 
-- If the project-root `AGENTS.md` lies on that chain, the index is visible and no additional pointer is needed.
-- If the expected working directory is above a nested Roblox project, that nested `AGENTS.md` is not loaded by default. Keep the project-root index as durable project state, but **do not claim usable fresh-agent onboarding** from it alone.
-- When an ancestor `AGENTS.md` on the loaded instruction chain is already within the authorized write boundary, add only the smallest project-scoped context pointer needed to reach the nested project instructions, for example: `For Roblox resource work under <project-relative-path>/, read <project-relative-path>/AGENTS.md before choosing or changing project-standard resources.` Preserve every unrelated ancestor instruction.
-- When that ancestor write is not authorized, leave it unchanged and report the exact condition: future agents must start Codex from the affected project root (or a descendant) for the nested resource index to apply, or the owner must separately authorize an ancestor pointer.
+- If the project root lies on that instruction chain and its active instruction file contains the index, the index is visible and no additional pointer is needed.
+- If the expected working directory is above a nested Roblox project, that nested project's instruction file is not loaded by default. Keep the project resource records as durable state, but **do not claim usable fresh-agent onboarding** from the nested index alone.
+- When an ancestor active instruction file on the loaded chain is already within the authorized write boundary, add only the smallest project-scoped context pointer needed to reach the nested project instructions, for example: `For Roblox resource work under <project-relative-path>/, read <project-relative-path>/<active-instruction-file> before choosing or changing project-standard resources.` Preserve every unrelated ancestor instruction.
+- Do not create `AGENTS.md`, `AGENTS.override.md`, or another higher-precedence ancestor file merely to add that pointer when a lower-precedence active instruction file already exists; append to the active file instead when authorized.
+- When the required ancestor write is not authorized, or the effective instruction file cannot be established, leave it unchanged and report the exact condition. Future agents must start Codex from the affected project root (or a descendant) for the nested project instruction file to apply, or the owner must separately authorize the needed ancestor pointer.
 
-An ancestor pointer is a visibility aid, not resource authority, and it does not move the resource index out of the project root. Re-check current OpenAI Codex `AGENTS.md` discovery guidance when this behavior is material and external documentation is available.
+An ancestor pointer is a visibility aid, not resource authority, and it does not move the resource index out of the project root. Re-check current OpenAI Codex instruction discovery guidance when this behavior is material and external documentation is available.
 
 ## Place generated project skills
 

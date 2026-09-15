@@ -25,6 +25,8 @@ A generated skill is not complete merely because it documents the resource. It m
 - project assumptions/prerequisites;
 - an explicit alternatives section naming the closest meaningful alternative or Roblox built-in when relevant; if none is meaningful, state that explicitly with a short reason.
 
+Treat the frontmatter `description` as the child's pre-load routing contract. State the positive trigger there and include any material exclusion whose absence could cause incorrect implicit activation before the body is loaded. Do not copy every `Do not use when` bullet into frontmatter; carry only the boundaries needed to distinguish this skill from simpler tasks, built-ins, adjacent resources, or competing skills.
+
 For an externally owned project dependency, alternatives are informational only: the child must preserve the supplied identity/pin and hand replacement/upgrade decisions back to the owning project authority.
 
 ## Required operating knowledge

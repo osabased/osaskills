@@ -100,6 +100,20 @@ def test_generated_child_contract_requires_parent_state_discovery_route():
     assert "Resolve the child's `Parent-state check`" in generation
 
 
+def test_project_onboarding_resolves_codex_instruction_precedence():
+    adoption = (RESOURCE_ROOT / "references" / "project-adoption.md").read_text(
+        encoding="utf-8"
+    )
+    assert "active Codex instruction file" in adoption
+    assert "`AGENTS.override.md`" in adoption
+    assert "`AGENTS.md`" in adoption
+    assert "`project_doc_fallback_filenames`" in adoption
+    assert "first non-empty file" in adoption
+    assert "at most one instruction file per directory" in adoption
+    assert "Do not create a higher-precedence file merely" in adoption
+    assert "do not invent fallback filenames" in adoption
+
+
 def test_nested_project_onboarding_requires_instruction_scope_visibility():
     adoption = (RESOURCE_ROOT / "references" / "project-adoption.md").read_text(
         encoding="utf-8"
@@ -117,7 +131,7 @@ def test_nested_project_onboarding_requires_instruction_scope_visibility():
     ):
         assert "working directory" in text, path
         assert "not usable onboarding" in text.lower() or "do not claim usable fresh-agent onboarding" in text.lower(), path
-    assert "ancestor `AGENTS.md`" in adoption
+    assert "ancestor active instruction file" in adoption
     assert "ancestor `AGENTS.md`" in persistence
     assert "not authorized" in adoption
     assert "not authorized" in persistence
