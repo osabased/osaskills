@@ -91,3 +91,11 @@ def test_external_project_authority_is_preserved_not_reselected():
     assert "project-use authority" in parent
     assert "must not substitute, retarget, upgrade, or retire it independently" in adoption
     assert "structure-roblox-projects" in adoption
+
+
+def test_project_skill_adoption_refuses_unrelated_target_collision():
+    adoption = (RESOURCE_ROOT / "references" / "project-adoption.md").read_text(
+        encoding="utf-8"
+    )
+    assert "ownership/identity is ambiguous, stop and surface the collision" in adoption
+    assert "never overwrite, merge, rename, or repurpose a pre-existing skill" in adoption
