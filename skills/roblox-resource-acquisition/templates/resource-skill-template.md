@@ -24,7 +24,7 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 - Policy: REQUIRED/NOT-APPLICABLE — REASON
 - Installed-state check: RESOURCE-SPECIFIC CHECK OR IMMUTABLE-INSTALL EXPLANATION
 - Expected identity/state: RESOURCE SLUG + CANONICAL URL + PACKAGE ID WHEN APPLICABLE + REVIEWED VERSION/COMMIT/STATE
-- Parent-state check: Load matching schema-version 2 resource records and resource-bound learnings by resource slug plus canonical identity.
+- Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by resource slug plus canonical identity.
 - Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 - Defect handoff: Capture the task, installed state, expected and observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 
@@ -78,7 +78,7 @@ Both lines must be concrete enough for another agent to execute/check; do not us
 
 ## Alternatives
 
-Compare against the closest Roblox built-in or credible alternative. If none is meaningful, state why.
+Compare against the closest Roblox built-in or credible alternative. If the project-use target is owned by another project contract, keep alternatives informational and hand replacement/upgrade decisions back to that authority. If none is meaningful, state why.
 
 ## Provenance
 
@@ -92,5 +92,4 @@ Compare against the closest Roblox built-in or credible alternative. If none is 
 
 ## Version drift
 
-Before using newer upstream versions, check release notes/source for changes affecting the APIs and behavior documented above. Re-review material changes before updating this skill's source state, and rerun runtime proof when the claimed verification status would otherwise become stale.
-
+Before using newer upstream versions, check release notes/source for changes affecting the APIs and behavior documented above. Re-review material changes before updating this skill's source state, and rerun runtime proof when the claimed verification status would otherwise become stale. When the target is owned by another project contract, report a newer candidate or incompatibility to that authority instead of advancing the pin independently.
