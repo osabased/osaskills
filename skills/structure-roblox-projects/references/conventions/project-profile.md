@@ -2,10 +2,12 @@
 
 Use this reference when:
 
-- a material structural convention remains unresolved and the nearest project-local `.codex/roblox-structure.md` may resolve it; or
-- the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update.
+- a material structural convention remains unresolved and the nearest project-local `.codex/roblox-structure.md` may resolve it;
+- the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update;
+- an Implementation establishes the durable structure of a greenfield project/experience; or
+- an explicitly requested project-wide redesign or migration is being implemented and changes durable structural conventions.
 
-A project profile is **convention memory**, not modification authority and not a repository snapshot. It records only durable structural rules intentionally persisted for the project.
+A project profile is **convention memory**, not modification authority and not a repository snapshot. It records only durable structural rules intentionally established for the project.
 
 ## Read and apply profiles
 
@@ -68,13 +70,13 @@ A profile is useful when it contains at least one recognized non-empty durable c
 - Treat recognized non-empty sections as durable convention evidence and missing sections as intentionally unset.
 - Preserve unrelated existing sections during targeted updates. Do not normalize, add, remove, or rewrite them merely because another field is being changed.
 - If a persisted convention conflicts with a coherent implemented convention during ordinary established-project work, preserve the implemented convention and treat the profile as drift rather than forcing the project toward stale memory.
-- Remove a persisted convention only when the user explicitly requests its removal or explicitly requests a broader profile rewrite that includes that decision.
+- Remove a persisted convention only when the user explicitly requests its removal or an implemented project-wide redesign/migration makes that persisted decision no longer applicable.
 
-When profile evidence still leaves a material choice unresolved for the current task, resolve that choice with [`preference-resolution.md`](preference-resolution.md). Do not persist the resulting task-local recommendation unless the user explicitly requests project-level persistence for that choice.
+When profile evidence still leaves a material choice unresolved for the current task, resolve that choice with [`preference-resolution.md`](preference-resolution.md). Do not persist the resulting task-local recommendation unless a persistence mode below requires it or the user explicitly requests project-level persistence for that choice.
 
 ## Fresh-agent handoff
 
-When durable project structure is intentionally persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the structural source of truth; `AGENTS.md` only tells fresh agents that the profile exists and when to read it.
+When durable project structure is persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the structural source of truth; `AGENTS.md` only tells fresh agents that the profile exists and when to read it.
 
 Use this owned block:
 
@@ -83,6 +85,8 @@ Use this owned block:
 ## Roblox structure handoff
 
 Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` and preserve its applicable durable conventions together with coherent implemented project structure.
+
+If the profile conflicts with coherent implemented project structure, preserve the implementation and treat the profile as stale; do not reshape the project to match stale profile guidance.
 
 Do not treat moves, renames, topology changes, or restructuring as a migration unless the user explicitly requests the migration/transition/conversion itself or migration planning.
 <!-- structure-roblox-projects:end -->
@@ -97,20 +101,30 @@ Maintain it with these rules:
 5. Never replace, normalize, reorder, summarize, or otherwise rewrite an existing `AGENTS.md` to install this handoff. Similar human-authored Roblox guidance outside the owned markers is governing context, not content this skill owns.
 6. Keep detailed structural conventions in `.codex/roblox-structure.md`; do not duplicate the profile into `AGENTS.md`.
 
-The handoff block is maintained only as part of an authorized durable profile creation/update. Task-local use of this skill must not create or modify `AGENTS.md` merely to advertise the skill or record transient findings.
+Task-local use of this skill must not create or modify `AGENTS.md` merely to advertise the skill or record transient findings.
+
+## Persistence modes
+
+Choose persistence from the user's requested scope and what is actually implemented:
+
+- **Task-local work:** Review, design-only work, ordinary feature Implementation, moves/renames/restructuring, and task-local preference resolution do not create or update the profile or handoff unless the user explicitly requests persistence.
+- **Foundational setup:** when Implementation creates or sets up a greenfield project's durable structure, persist the durable conventions actually established by that implementation and maintain the fresh-agent handoff. This is part of completing the requested setup; it does not require a separate `remember this` request or an extra approval stop solely for persistence.
+- **Implemented project-wide redesign or migration:** when the user explicitly requests and authorizes implementation of a project-wide redesign or migration and the completed target changes durable structural conventions, update only the affected persisted decisions and maintain the handoff. A review, proposal, design, or migration plan alone does not update durable guidance.
+- **Explicit profile/preference setup:** when the user directly asks to create, update, repair, normalize, or persist project-level structural preferences, persist only the decisions included in that request.
+
+Automatic persistence in foundational setup or implemented project-wide redesign/migration is narrow modification authority for `.codex/roblox-structure.md` and the owned `AGENTS.md` block only. It does not authorize unrelated repository instructions or broader project changes. If either destination crosses an unclear, shared, generated, or protected write boundary, apply `../core/modification-scope.md` before writing.
 
 ## Create or update a profile
 
-Profile persistence is optional and requires an explicit user request.
-
-1. Determine what durable convention memory the user intends to persist.
-   - For a targeted request such as `remember that this project uses Rojo`, persist only the requested decision.
-   - For an explicit broader profile setup, resolve only the durable decisions intentionally included in that setup. Use `preference-resolution.md` only for included decisions that remain genuinely open.
+1. Determine the active persistence mode above. If none applies, keep the result task-local.
 2. Identify the affected project root, destination `.codex/roblox-structure.md`, and project-root `AGENTS.md` handoff destination.
-3. When updating an existing profile, preserve every unrelated existing section. When creating a profile, omit every unrequested or otherwise intentionally unset section.
-4. Prepare the resulting sparse profile and the `AGENTS.md` handoff operation required by **Fresh-agent handoff**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
-5. Show one exact pre-write preview of the resulting profile and the exact handoff block. State whether `AGENTS.md` will be appended, the owned block updated, or a new file created; never present replacement of an existing `AGENTS.md` as an allowed operation.
-6. Write them only after the user confirms `proceed` or otherwise explicitly authorizes that exact durable persistence operation.
-7. Treat that confirmation as authority only for the displayed profile and owned `AGENTS.md` handoff block, not for broader project changes.
+3. Build the smallest sparse profile required by that mode:
+   - for foundational setup, include only durable conventions actually established by the implemented project structure;
+   - for an implemented project-wide redesign/migration, update only persisted decisions the implemented target changed or invalidated, preserving every unrelated existing section;
+   - for explicit profile/preference setup, persist only the requested decisions and omit every otherwise unset section.
+4. Prepare the `AGENTS.md` handoff operation required by **Fresh-agent handoff**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
+5. For foundational setup and implemented project-wide redesign/migration, perform the profile and handoff writes as part of the authorized Implementation once the durable implemented outcome is known. Do not add a separate approval stop solely for these owned persistence writes.
+6. For explicit profile/preference setup outside an already authorized Implementation, show one exact pre-write preview of the resulting sparse profile and handoff block, state whether `AGENTS.md` will be appended, the owned block updated, or a new file created, and write them only after the user confirms that persistence operation.
+7. Treat every persistence write as authority only for the sparse profile decisions established by the active mode and the owned `AGENTS.md` block.
 
-A profile update is complete when the resulting file contains only the intended durable convention memory, unrelated persisted conventions remain unchanged, the project-root `AGENTS.md` points fresh agents to the profile without altering unrelated instructions, and any detected drift outside the requested update is left documented rather than silently reconciled.
+A profile update is complete when the resulting file contains only the applicable durable convention memory, unrelated persisted conventions remain unchanged, the project-root `AGENTS.md` points fresh agents to the profile without altering unrelated instructions, and any detected drift outside the active persistence scope is left documented rather than silently reconciled.
