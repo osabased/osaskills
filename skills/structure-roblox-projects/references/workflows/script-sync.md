@@ -30,8 +30,6 @@ For a read-only Script Sync review, apply the representation, attributes/tags, p
 
 After a change, verify affected script types, RunContext values, attributes, tags, children, package behavior including `PackageLink` where relevant, source boundaries, and the absence of unintended writes in Studio and on disk. When boundary scale was material to the change, verify the resulting script and top-level synced-instance counts remain within the current documented limits.
 
-Script Sync only synchronizes `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances; other instances in a synced folder are ignored. When the entire project must live in version control or the filesystem must be the project's source of truth, Roblox identifies third-party tools such as Rojo as the better choice.
-
 Re-open current Roblox Script Sync documentation before version- or workflow-sensitive destructive operations.
 
 ## Official evidence
