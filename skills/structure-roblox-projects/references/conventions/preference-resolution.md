@@ -7,7 +7,7 @@ Use this reference only when:
 
 Resolve only choices that are genuinely open and material. A clear established project should produce zero preference questions.
 
-Read [`practices.md`](../core/practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. When project-level persistence applies under `project-profile.md`, that reference owns normalization and the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
+Read [`practices.md`](../core/practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. When project-level persistence applies, [`project-profile-persistence.md`](project-profile-persistence.md) owns the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
 
 ## Decision contract
 
@@ -23,7 +23,7 @@ Read [`practices.md`](../core/practices.md) when technical definitions, diagrams
 8. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts recommendations for unresolved choices only. `preserve detected` keeps coherent detected conventions and leaves only genuinely open choices to resolve.
 9. Use diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization decision, or when the user asks for one. Use diagrams from `../core/practices.md` rather than inventing competing architecture vocabulary.
 10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
-11. Project-level persistence follows `project-profile.md`: task-local decisions remain non-persistent unless requested, while implemented foundational setup and implemented project-wide redesign/migration persist the durable conventions that those authorized changes actually establish or change.
+11. Project-level persistence follows [`project-profile-persistence.md`](project-profile-persistence.md): task-local decisions remain non-persistent unless requested, while implemented foundational setup and implemented project-wide redesign/migration persist the durable conventions that those authorized changes actually establish or change.
 
 ## Canonical SSA bundle
 
@@ -35,7 +35,7 @@ Selecting Canonical SSA resolves the entrypoint, module-organization, and module
 
 Preserve coherent established entrypoints and frameworks for existing projects. Canonical SSA becomes their target only through explicit redesign or migration. Requirements such as `Actor` parallelism, object lifetime, character/tool behavior, or isolated scripts can select multiple or custom entrypoints instead.
 
-When project-profile persistence applies under `project-profile.md`, normalize Canonical SSA through the existing fields:
+When project-profile persistence applies under [`project-profile-persistence.md`](project-profile-persistence.md), normalize Canonical SSA through the existing fields:
 
 | Field | Normalized value |
 | --- | --- |
@@ -59,7 +59,7 @@ Options and meanings come from `../core/practices.md`:
 
 For an established project, preserve the detected supported workflow unless migration or redesign is requested. For greenfield work with no stronger requirement, default to Studio-native. If the user wants external editing, Git, CI, packages, or reproducible filesystem builds, recommend the smallest workflow that actually satisfies those requirements rather than defaulting from tool familiarity alone.
 
-When a detected workflow will be persisted, normalize Studio-native, Script Sync, or Rojo to that concrete workflow rather than the phrase `Preserve detected workflow`. For another established workflow, normalize the `Source of truth` field to `Custom` and preserve the directly implementable durable convention in `Notes` according to `project-profile.md`.
+When a detected workflow will be persisted, normalize Studio-native, Script Sync, or Rojo to that concrete workflow rather than the phrase `Preserve detected workflow`. For another established workflow, normalize the `Source of truth` field to `Custom` and preserve the directly implementable durable convention in `Notes` according to [`project-profile.md`](project-profile.md).
 
 ### Entrypoints
 
@@ -120,6 +120,6 @@ When `use recommended` is selected, keep every value already resolved by the exp
 
 For task-local decisions, summarize only the resolved choices that materially affect the current task, then continue without an extra approval stop unless the user requested one.
 
-When `project-profile.md` says persistence applies, pass only the durable choices within that persistence scope to it for normalization and authorized persistence.
+When project-profile persistence applies, pass only the durable choices within that persistence scope to [`project-profile-persistence.md`](project-profile-persistence.md) for the authorized write.
 
 Preference resolution is complete when every material open choice is directly implementable or explicitly blocked.
