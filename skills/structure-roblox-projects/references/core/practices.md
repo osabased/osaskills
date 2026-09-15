@@ -2,9 +2,9 @@
 
 Use this reference when choosing an unresolved layout, placement, entrypoint, grouping, module-style, or source-of-truth decision, or when an architecture Review needs ordinary Roblox placement/runtime/entrypoint/source-of-truth rules to judge an existing structure. Preserve a coherent established structure instead of normalizing it toward these defaults during ordinary implementation.
 
-When canonical SSA is selected or recognized, [`ssa.md`](ssa.md) owns its feature placement, discovery, and lifecycle contract. Use this file only for ordinary choices that contract does not resolve.
+When canonical SSA is selected or recognized, [`ssa.md`](../ssa/ssa.md) owns its feature placement, discovery, and lifecycle contract. Use this file only for ordinary choices that contract does not resolve.
 
-Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
+Modification authority comes from [`SKILL.md`](../../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
 
 ## Source of truth
 
@@ -32,7 +32,7 @@ Use the dimensions that can change the decision:
 
 A shared ModuleScript is normally both-runtime and client-visible. A server asset can be server-only without being executable. Map modification authority separately from these dimensions.
 
-Simulation and capability boundaries are specialist cases. Follow the routing in `SKILL.md` when the affected structure uses Server Authority prediction/rollback or Script Capabilities.
+Simulation and capability boundaries are specialist cases. Follow the routing in `../../SKILL.md` when the affected structure uses Server Authority prediction/rollback or Script Capabilities.
 
 ## Current foundation
 
@@ -65,7 +65,7 @@ ReplicatedFirst/
   LoadingClient              only when early loading behavior is required
 ```
 
-This is a useful general option, not a universal recommendation. Preserve a coherent established startup topology. For the selected canonical SSA form of this topology, follow [`ssa.md`](ssa.md) rather than deriving discovery or lifecycle behavior here.
+This is a useful general option, not a universal recommendation. Preserve a coherent established startup topology. For the selected canonical SSA form of this topology, follow [`ssa.md`](../ssa/ssa.md) rather than deriving discovery or lifecycle behavior here.
 
 ### Multiple entrypoints
 
