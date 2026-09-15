@@ -223,7 +223,7 @@ Use **Widget Resource** for synchronized widget state. Guidance targets **1.2.3*
 - Policy: required — project package manifests can select a different materially version-sensitive release.
 - Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
 - Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
-- Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity.
+- Parent-state check: Resolve the affected Roblox project root, then read `.agents/roblox/resources/records/widget-resource.yaml` and `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity.
 - Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 - Defect handoff: Capture the task, installed state, expected behavior, observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 
