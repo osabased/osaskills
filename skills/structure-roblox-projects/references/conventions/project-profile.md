@@ -72,6 +72,33 @@ A profile is useful when it contains at least one recognized non-empty durable c
 
 When profile evidence still leaves a material choice unresolved for the current task, resolve that choice with [`preference-resolution.md`](preference-resolution.md). Do not persist the resulting task-local recommendation unless the user explicitly requests project-level persistence for that choice.
 
+## Fresh-agent handoff
+
+When durable project structure is intentionally persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the structural source of truth; `AGENTS.md` only tells fresh agents that the profile exists and when to read it.
+
+Use this owned block:
+
+```markdown
+<!-- structure-roblox-projects:start -->
+## Roblox structure handoff
+
+Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` and preserve its applicable durable conventions together with coherent implemented project structure.
+
+Do not treat moves, renames, topology changes, or restructuring as a migration unless the user explicitly requests the migration/transition/conversion itself or migration planning.
+<!-- structure-roblox-projects:end -->
+```
+
+Maintain it with these rules:
+
+1. Use only the `AGENTS.md` at the affected project root for this handoff. Do not create or modify a global `AGENTS.md` or an unrelated nested project's instructions.
+2. If project-root `AGENTS.md` already exists and the owned markers are absent, append the complete block after the existing content. Preserve all pre-existing content byte-for-byte except for any final newline needed to append cleanly.
+3. If the owned markers already exist, update only the content between those markers when the canonical handoff changes. Preserve everything outside the markers.
+4. If no project-root `AGENTS.md` exists, create one containing only the owned block.
+5. Never replace, normalize, reorder, summarize, or otherwise rewrite an existing `AGENTS.md` to install this handoff. Similar human-authored Roblox guidance outside the owned markers is governing context, not content this skill owns.
+6. Keep detailed structural conventions in `.codex/roblox-structure.md`; do not duplicate the profile into `AGENTS.md`.
+
+The handoff block is maintained only as part of an authorized durable profile creation/update. Task-local use of this skill must not create or modify `AGENTS.md` merely to advertise the skill or record transient findings.
+
 ## Create or update a profile
 
 Profile persistence is optional and requires an explicit user request.
@@ -79,10 +106,11 @@ Profile persistence is optional and requires an explicit user request.
 1. Determine what durable convention memory the user intends to persist.
    - For a targeted request such as `remember that this project uses Rojo`, persist only the requested decision.
    - For an explicit broader profile setup, resolve only the durable decisions intentionally included in that setup. Use `preference-resolution.md` only for included decisions that remain genuinely open.
-2. Identify the affected project root and destination `.codex/roblox-structure.md`.
+2. Identify the affected project root, destination `.codex/roblox-structure.md`, and project-root `AGENTS.md` handoff destination.
 3. When updating an existing profile, preserve every unrelated existing section. When creating a profile, omit every unrequested or otherwise intentionally unset section.
-4. Show one exact pre-write preview of the resulting sparse profile.
-5. Write it only after the user confirms `proceed` or otherwise explicitly authorizes that exact profile write.
-6. Treat that confirmation as authority only for the displayed profile, not for broader project changes.
+4. Prepare the resulting sparse profile and the `AGENTS.md` handoff operation required by **Fresh-agent handoff**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
+5. Show one exact pre-write preview of the resulting profile and the exact handoff block. State whether `AGENTS.md` will be appended, the owned block updated, or a new file created; never present replacement of an existing `AGENTS.md` as an allowed operation.
+6. Write them only after the user confirms `proceed` or otherwise explicitly authorizes that exact durable persistence operation.
+7. Treat that confirmation as authority only for the displayed profile and owned `AGENTS.md` handoff block, not for broader project changes.
 
-A profile update is complete when the resulting file contains only the intended durable convention memory, unrelated persisted conventions remain unchanged, and any detected drift outside the requested update is left documented rather than silently reconciled.
+A profile update is complete when the resulting file contains only the intended durable convention memory, unrelated persisted conventions remain unchanged, the project-root `AGENTS.md` points fresh agents to the profile without altering unrelated instructions, and any detected drift outside the requested update is left documented rather than silently reconciled.
