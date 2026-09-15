@@ -75,6 +75,8 @@ local Client = ReplicatedStorage:WaitForChild("Client")
 ModuleLoader.Start(Client)
 ```
 
+Both entrypoints must require the same replicated ModuleLoader instance. In v3.0.4, the client-side require waits for the server-created `LoadedEvent` child, so the server bootstrap must require that loader instance for client startup to proceed.
+
 Adapt only lookup syntax required by the active source-of-truth representation. Preserve the resulting locations and direct `ModuleLoader.Start(...)` calls.
 
 ## Baseline configuration
@@ -87,11 +89,11 @@ Keep the effective loader-wide baseline at:
 
 This makes direct-child ModuleScripts under `Server/` and `Client/` the discovery surface. A concrete loader-wide requirement may open an infrastructure/design decision; feature code does not change these settings locally.
 
-Cross-runtime readiness belongs to each feature protocol. Global client/server waiting remains off.
+Cross-runtime readiness belongs to each feature protocol. `ClientWaitForServer` remains off, so client startup does not wait for the server's full load/Init/Start completion. Module Loader v3.0.4 still performs its built-in relocation-manifest synchronization before client discovery; that bootstrap gate is separate from feature readiness.
 
 ## Failure semantics
 
-Version 3.0.4 catches load, Init, and Start failures, emits warnings, and continues later lifecycle work before setting loaded state. In particular:
+Version 3.0.4 catches load, Init, and Start errors, emits warnings, and continues later lifecycle work before setting loaded state. A lifecycle callback that never returns is different: the current phase waits for it, so startup cannot complete merely by emitting slow-callback warnings. In particular:
 
 - `ServerLoaded` or client-loaded state does not prove that every lifecycle method succeeded;
 - an Init failure does not automatically prevent that module's Start attempt; and
@@ -110,7 +112,7 @@ Changing the ModuleLoader canonical identity, version/commit, acquisition form, 
 For creation or bootstrap changes, verify:
 
 - the effective DataModel and instance `RunContext` values;
-- the direct server and client startup calls;
+- the direct server and client startup calls, including both requiring the same replicated ModuleLoader instance;
 - the exact loader identity/pin, selected acquisition form, package/asset location, depth, and disabled global wait;
 - one representative lifecycle root per affected runtime;
 - the full load → Init → Start phase barrier; and
