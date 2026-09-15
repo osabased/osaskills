@@ -150,7 +150,7 @@ Systems/
   DamageSystem
 ```
 
-Architectures can combine. Prefer the smallest organization that makes runtime ownership, navigation, and dependencies clear. Preserve adjacent established groups unless migration is part of the request.
+Architectures can combine. Prefer the smallest organization that makes runtime ownership, navigation, and dependencies clear. Preserve adjacent established groups unless redesign or migration is part of the request.
 
 ## Module style
 
