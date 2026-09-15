@@ -1,8 +1,13 @@
 # Roblox structural migration
 
-Use this reference for moves, renames, topology changes, source-of-truth migrations, or multi-step restructuring where identity, mappings, consumers, or rollback can be affected.
+This reference has two uses:
 
-## Account for the migration
+- **Explicit migration workflow:** use the full workflow only when the user explicitly requests a migration, conversion, transition, or migration plan. Migration intent comes from the request, not from the technical operations the work happens to require.
+- **Structural-change safeguards:** ordinary Review, Design, or Implementation work may use only the applicable tracing, recovery, specialist-boundary, or validation guidance below when moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring create those failure modes. Consulting these safeguards does not activate the Migration route or its exhaustive completion criterion.
+
+## Account for an explicit migration
+
+For the full Migration route:
 
 1. Inventory the current and target hierarchies, effective authoring mappings, entrypoints, and every proposed move or rename.
 2. Trace every affected reference and assumption, including:
@@ -22,9 +27,13 @@ Use this reference for moves, renames, topology changes, source-of-truth migrati
    - [`script-sync.md`](script-sync.md) when moving or renaming content into, out of, or within Script Sync management can change sync representation, metadata, child shape, packages, or conflict behavior; and
    - [`rojo.md`](rojo.md) when moving or renaming content into, out of, or within Rojo mapping can change the resulting DataModel through path, filename, `init.*`, suffix, nested-project, metadata, or mapping semantics.
 
+For an ordinary structural change, apply only the items above that are needed to keep the requested change coherent and safe. Do not inventory an unrelated target architecture or satisfy migration-wide accounting merely because one safeguard applies.
+
 ## Slice and recovery
 
-Define minimum coherent slices: each slice should move a concept once and update the references needed for that slice to work.
+For an explicit migration, define minimum coherent slices: each slice should move a concept once and update the references needed for that slice to work.
+
+For ordinary structural work, use a coherent slice only when the change is multi-step or a partial application would leave the affected behavior broken.
 
 Give a slice an explicit recovery boundary when it is destructive, topology-sensitive, non-version-controlled, externally stateful, or otherwise difficult to reverse. Version control is sufficient recovery for routine reversible filesystem edits when the affected writes are fully captured there.
 
@@ -32,7 +41,7 @@ A slice is blocked when coherent completion requires a protected write that is n
 
 ## Structural checks
 
-For every affected branch, check the relevant failure modes:
+Check only the failure modes the affected change can exercise:
 
 - cyclic or newly invalid dependency direction;
 - accidental replication of authoritative-only logic or data;
@@ -44,4 +53,4 @@ For every affected branch, check the relevant failure modes:
 
 After topology- or identity-sensitive moves, exercise affected discovery or registration behavior when a representative runtime is available. When entrypoints, Remotes, networking behavior, or replicated modules/state change, validate the applicable server/client or multi-client path. Server Authority simulation changes use the network validation in `../platform/server-authority.md`.
 
-Migration planning is complete when every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
+The exhaustive migration completion criterion applies only to the explicit Migration route: migration planning is complete when every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for. Ordinary structural work finishes according to its selected Review, Design, or Implementation route after the applicable safeguards and focused validation are satisfied.
