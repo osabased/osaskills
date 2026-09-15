@@ -10,9 +10,15 @@ Preserve a coherent established structure unless the user requests redesign or m
 ## Core loop
 
 1. **Route** the request through the applicable Review, Design, Migration plan, Implementation, or Preference setup route(s).
-2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
-3. **Disclose** only the references whose trigger is present.
-4. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
+2. **Establish project context:**
+   - **Greenfield** means the user is creating or designing the project/experience from scratch. Resolve structure from the request, applicable project preferences/constraints, then recommendations/defaults; do not search for established conventions that do not exist.
+   - **Established** means work occurs inside an existing project, including brand-new features and ordinary restructuring. Preserve applicable established conventions unless the user requests redesign.
+   - Project context changes how a selected route resolves structure; it does not select or replace the route.
+3. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
+4. **Disclose** only the references whose trigger is present.
+5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
+
+Migration is intent-gated: activate the Migration route only when the user explicitly requests the migration/transition/conversion itself or asks for migration planning. Do not infer Migration merely because ordinary Review, Design, or Implementation involves moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring.
 
 Stop expanding discovery when more inspection is unlikely to change placement, integration, modification scope, or validation.
 
@@ -55,7 +61,8 @@ An internal edit inside an already placed feature remains on the established-pro
 | **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/platform/script-capabilities.md`](references/platform/script-capabilities.md) |
 | **Script Sync** | The task reviews, designs, plans, enables, disables, or changes Script Sync/conflict behavior or a sync boundary; or migrates/renames content into, out of, or within Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/workflows/script-sync.md`](references/workflows/script-sync.md) |
 | **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/workflows/rojo.md`](references/workflows/rojo.md) |
-| **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/workflows/migration.md`](references/workflows/migration.md) |
+| **Migration workflow** | The user explicitly requests the migration/transition/conversion itself or asks for migration planning | [`references/workflows/migration.md`](references/workflows/migration.md) |
+| **Structural-change safeguards** | Ordinary Review, Design, or Implementation includes moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring where reference tracing, recovery, specialist-boundary, or structural validation guidance is needed | Applicable safeguards in [`references/workflows/migration.md`](references/workflows/migration.md); this does not activate the Migration route |
 | **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/conventions/project-profile.md`](references/conventions/project-profile.md) |
 | **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/conventions/preference-resolution.md`](references/conventions/preference-resolution.md) |
 
@@ -71,7 +78,7 @@ For ordinary work in an established project, resolve each material choice in thi
 4. broader coherent project convention;
 5. current-task recommendation or default.
 
-For greenfield work or explicit redesign/migration, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
+For greenfield work or an explicitly requested redesign/migration target, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
 
 Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/conventions/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
 
@@ -103,7 +110,9 @@ Design is read-only unless Implementation is separately requested. Finish when e
 
 ### Migration plan
 
-Read `references/workflows/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
+Use this route only when the user explicitly requests the migration/transition/conversion itself or asks for migration planning. A request to review whether a migration should happen remains Review unless migration planning is also requested.
+
+Read `references/workflows/migration.md` and every specialist reference whose current-state or requested target-state trigger is present. Keep planning read-only unless implementation is also requested.
 
 Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
 
@@ -112,7 +121,7 @@ Finish only at the migration reference's exhaustive completion criterion: every 
 Use the established-project fast path when all of these are true:
 
 - the affected area has a coherent supported structure;
-- the requested work fits that structure without redesign or migration;
+- the requested work fits that structure without requested redesign or migration;
 - the source-of-truth boundary is staying intact;
 - no required write crosses an unclear or protected boundary; and
 - no triggered reference above is required for correctness.
@@ -124,7 +133,7 @@ Then:
 1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/core/modification-scope.md` before writing.
 2. Establish the intended authorized write set at the level the task requires.
 3. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
-4. For moves, renames, topology changes, or multi-step restructuring, follow `references/workflows/migration.md`.
+4. For ordinary moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring, apply only the relevant structural-change safeguards from `references/workflows/migration.md`. Reading or applying those safeguards does not activate the Migration route or its exhaustive completion criterion.
 5. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
 6. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
 7. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
