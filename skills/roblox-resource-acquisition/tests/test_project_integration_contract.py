@@ -50,7 +50,7 @@ def test_resource_project_state_uses_agents_namespace_and_schema_v3():
         encoding="utf-8"
     )
     assert "<project-root>/.agents/roblox/resources/records/<slug>.yaml" in state
-    assert ".roblox-resources/records/<slug>.yaml" not in state
+    assert "<project-root>/.roblox-resources/records/<slug>.yaml" not in state
     assert "schema-version 3" in state
     assert "schema_version: 3" in template
     assert "project_use:" in template
@@ -62,7 +62,7 @@ def test_resource_project_state_uses_agents_namespace_and_schema_v3():
 def test_agent_facing_resource_docs_have_no_stale_v2_record_contract():
     for path, text in _markdown_texts(RESOURCE_ROOT):
         assert "schema-version 2" not in text, path
-        assert ".roblox-resources/records/<slug>.yaml" not in text, path
+        assert "<project-root>/.roblox-resources/records/<slug>.yaml" not in text, path
 
 
 def test_generated_child_contract_uses_current_record_schema():
