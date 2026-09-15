@@ -7,8 +7,10 @@ STRUCTURE_ROOT = SKILLS_ROOT / "structure-roblox-projects"
 
 
 def _markdown_texts(root: Path):
+    seen: set[Path] = set()
     for path in (root / "SKILL.md", *root.rglob("*.md")):
-        if path.is_file():
+        if path.is_file() and path not in seen:
+            seen.add(path)
             yield path, path.read_text(encoding="utf-8")
 
 
@@ -57,6 +59,12 @@ def test_resource_project_state_uses_agents_namespace_and_schema_v3():
     assert "<skill-scope-root>/.agents/skills/<skill-name>/" in adoption
 
 
+def test_agent_facing_resource_docs_have_no_stale_v2_record_contract():
+    for path, text in _markdown_texts(RESOURCE_ROOT):
+        assert "schema-version 2" not in text, path
+        assert ".roblox-resources/records/<slug>.yaml" not in text, path
+
+
 def test_generated_child_contract_uses_current_record_schema():
     contract = (RESOURCE_ROOT / "references" / "resource-skill-contract.md").read_text(
         encoding="utf-8"
@@ -72,7 +80,6 @@ def test_generated_child_contract_uses_current_record_schema():
         ("resource-skill-template.md", template),
         ("operational-lifecycle.md", operational),
     ):
-        assert "schema-version 2" not in text, path
         assert "schema-version 3" in text, path
 
 
