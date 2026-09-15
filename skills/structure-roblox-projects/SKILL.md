@@ -45,6 +45,8 @@ Load a reference only when its branch is active. Evaluate specialist triggers ag
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
+| **Canonical SSA feature work** | The affected area already uses canonical SSA, or the task places/integrates ordinary feature work inside canonical SSA | [`references/ssa.md`](references/ssa.md) |
+| **Canonical SSA infrastructure** | The task creates canonical greenfield SSA, changes its bootstrap/startup/discovery or loader-wide behavior, explicitly migrates toward it, or integrates/upgrades/replaces its canonical loader | [`references/ssa.md`](references/ssa.md), [`references/ssa-bootstrap.md`](references/ssa-bootstrap.md) |
 | **Ordinary structure** | An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
 | **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
 | **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
@@ -54,6 +56,10 @@ Load a reference only when its branch is active. Evaluate specialist triggers ag
 | **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
 | **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/project-profile.md`](references/project-profile.md) |
 | **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/preference-resolution.md`](references/preference-resolution.md) |
+
+Canonical SSA is a greenfield default, not a normalization rule for established projects. A coherent established startup architecture remains authoritative during ordinary work unless redesign or migration is explicitly selected.
+
+Load specialist references independently whenever their own triggers are present; canonical SSA routing composes with source-of-truth, migration, modification-scope, Server Authority, Script Capabilities, and project-profile branches rather than replacing them.
 
 For version-sensitive platform behavior, re-open current authoritative documentation when external access is available instead of treating cached guidance as current by default.
 
@@ -79,11 +85,13 @@ If the user requests reusable project-level convention memory, read `references/
 
 Otherwise, read `references/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
 
+When unresolved greenfield work selects canonical SSA, treat its loader, depth-1 discovery, feature-first runtime boundaries, and standard optional lifecycle as one bundled decision rather than reopening them as separate preference questions.
+
 Finish when every material requested preference is directly implementable and any requested profile write is either completed with authorization or blocked with the exact reason.
 
 ### Review
 
-Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox layout, placement, runtime, replication, entrypoint, grouping, module-style, or source-of-truth rules, and load any specialist reference whose trigger is present.
+Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox layout, placement, runtime, replication, entrypoint, grouping, module-style, or source-of-truth rules, and load any specialist reference whose trigger is present. When the affected structure is canonical SSA, load the applicable SSA branch instead of reconstructing its lifecycle or discovery rules from generic practices.
 
 For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
 
@@ -91,7 +99,7 @@ Finish when the material structural risks within the requested boundary are acco
 
 ### Design
 
-Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, read `references/practices.md`.
+Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, read `references/practices.md` and `references/preference-resolution.md` as needed. If unresolved greenfield design selects canonical SSA, use its bundled decision and route bootstrap details through `references/ssa-bootstrap.md`.
 
 Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
 
@@ -99,11 +107,13 @@ Design is read-only unless Implementation is separately requested. Finish when e
 
 ### Migration plan
 
-Read `references/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
+Read `references/migration.md` and every specialist reference whose current-state or target-state trigger is present. Explicit migration toward canonical SSA also loads `references/ssa.md` and `references/ssa-bootstrap.md`. Keep planning read-only unless implementation is also requested.
 
 Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
 
 ### Implementation
+
+Before choosing the fast path, load any triggered canonical SSA reference. Ordinary canonical SSA feature work uses `references/ssa.md`; bootstrap, migration, loader integration, or loader-wide changes use both SSA references. Do not edit `ServerMain`, `ClientMain`, loader-wide configuration, or discovery machinery for an ordinary canonical SSA feature unless evidence changes the task into infrastructure work.
 
 Use the established-project fast path when all of these are true:
 
