@@ -24,7 +24,7 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 - Policy: REQUIRED/NOT-APPLICABLE — REASON
 - Installed-state check: RESOURCE-SPECIFIC CHECK OR IMMUTABLE-INSTALL EXPLANATION
 - Expected identity/state: RESOURCE SLUG + CANONICAL URL + PACKAGE ID WHEN APPLICABLE + REVIEWED VERSION/COMMIT/STATE
-- Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by resource slug plus canonical identity.
+- Parent-state check: Resolve the affected Roblox project root. Use any exact authoritative record/learnings locations already supplied by that project; otherwise read `.agents/roblox/resources/records/RESOURCE-SLUG.yaml` and `.agents/roblox/resources/learnings/` relative to that root. When no project root applies, use `~/.roblox-resources/records/RESOURCE-SLUG.yaml` and `~/.roblox-resources/learnings/`. Match by resource slug plus canonical identity.
 - Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 - Defect handoff: Capture the task, installed state, expected and observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 
