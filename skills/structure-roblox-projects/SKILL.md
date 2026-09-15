@@ -63,7 +63,7 @@ An internal edit inside an already placed feature remains on the established-pro
 | **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/workflows/rojo.md`](references/workflows/rojo.md) |
 | **Migration workflow** | The user explicitly requests the migration/transition/conversion itself or asks for migration planning | [`references/workflows/migration.md`](references/workflows/migration.md) |
 | **Structural-change safeguards** | Ordinary Review, Design, or Implementation includes moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring where reference tracing, recovery, specialist-boundary, or structural validation guidance is needed | Applicable safeguards in [`references/workflows/migration.md`](references/workflows/migration.md); this does not activate the Migration route |
-| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/conventions/project-profile.md`](references/conventions/project-profile.md) |
+| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it; the user requests profile creation/update; Implementation establishes a greenfield project's durable structure; or an explicitly requested project-wide redesign/migration is being implemented and changes durable structural conventions | [`references/conventions/project-profile.md`](references/conventions/project-profile.md) |
 | **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/conventions/preference-resolution.md`](references/conventions/preference-resolution.md) |
 
 For version-sensitive platform behavior, re-open current authoritative documentation when external access is available instead of treating cached guidance as current by default.
@@ -80,7 +80,7 @@ For ordinary work in an established project, resolve each material choice in thi
 
 For greenfield work or an explicitly requested redesign/migration target, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
 
-Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/conventions/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
+Check for the nearest project-local `.codex/roblox-structure.md` when a material convention remains unresolved, a Project profile persistence trigger above is active, or the user asks for reusable project preferences. Read `references/conventions/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
 
 ## Complete the selected route
 
@@ -134,9 +134,10 @@ Then:
 2. Establish the intended authorized write set at the level the task requires.
 3. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
 4. For ordinary moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring, apply only the relevant structural-change safeguards from `references/workflows/migration.md`. Reading or applying those safeguards does not activate the Migration route or its exhaustive completion criterion.
-5. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
-6. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
-7. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
+5. When this Implementation establishes a greenfield project's durable structure, or implements an explicitly requested project-wide redesign/migration that changes durable structural conventions, follow the applicable persistence mode in `references/conventions/project-profile.md` and maintain its fresh-agent handoff. Do not persist ordinary task-local feature work or restructuring merely because this skill was used.
+6. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
+7. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
+8. Run focused validation that covers the credible failure modes introduced by the change, including the persisted profile/handoff when step 5 applies. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
 
 Prefer existing static, type, lint, build, test, mapping, or hierarchy checks when they cover the failure mode. Use the smallest relevant Studio runtime checks when runtime/startup/client-server behavior needs execution evidence. Report checks that actually ran and any material residual risk from unavailable validation.
 
