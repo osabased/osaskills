@@ -35,7 +35,7 @@ When external documentation is available, re-open the official release notes, ap
 
 - Prefer `rojo build`, sourcemap generation, or another non-live structural check when it can validate the mapping adequately.
 - Before live `rojo serve`, inspect version-supported place and network safeguards such as `servePlaceIds`, `blockedPlaceIds`, `serveAddress`, and `serveAllowedHosts`. Verify the intended place and binding before connecting Studio.
-- Treat `rojo syncback` as a filesystem-writing migration operation, not a validation command. Read [`modification-scope.md`](modification-scope.md) and [`migration.md`](migration.md) before using it. Account for every potentially written path, preserve pre-existing work, establish recovery, and inspect the resulting diff.
+- Treat `rojo syncback` as a filesystem-writing migration operation, not a validation command. Read [`modification-scope.md`](../core/modification-scope.md) and [`migration.md`](migration.md) before using it. Account for every potentially written path, preserve pre-existing work, establish recovery, and inspect the resulting diff.
 - Preserve working mappings and versions unless their change is part of the request.
 
 ## Sources
