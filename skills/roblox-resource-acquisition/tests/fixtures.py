@@ -87,12 +87,18 @@ related_entry: ""
 """
 
 def valid_record() -> dict:
-    """Return a complete schema-version 2 curated resource record."""
+    """Return a complete schema-version 3 curated resource record."""
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "resource": "Promise",
         "slug": "evaera-promise",
         "discovery_origin": "curated",
+        "project_use": {
+            "status": "not-applicable",
+            "role": "",
+            "scope": "",
+            "authority": "",
+        },
         "trust": {
             "level": "trusted",
             "basis": "curated",
@@ -217,7 +223,7 @@ Use **Widget Resource** for synchronized widget state. Guidance targets **1.2.3*
 - Policy: required — project package manifests can select a different materially version-sensitive release.
 - Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
 - Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
-- Parent-state check: Load matching schema-version 2 resource records and resource-bound learnings by slug plus canonical identity.
+- Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity.
 - Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 - Defect handoff: Capture the task, installed state, expected behavior, observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 

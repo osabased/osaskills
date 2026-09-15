@@ -1,8 +1,15 @@
-schema_version: 2
+schema_version: 3
 
 resource: ""
 slug: "" # required for trusted records; stable curated/discovery identity
 discovery_origin: "" # curated | project | devforum | other; explain direct user targeting under selection_reason
+
+# Durable project-standard use is independent from trust, verification, and installation.
+project_use:
+  status: not-applicable # not-applicable | adopted | retired
+  role: "" # required for adopted/retired
+  scope: "" # required for adopted/retired; concise project-relative scope
+  authority: "" # required for adopted/retired; workflow/project contract that owns the choice
 
 trust:
   level: untrusted # trusted | untrusted
@@ -27,7 +34,7 @@ reconciliation:
   installed_identity: ""
   installed_version_or_commit: ""
   detection_method: ""
-  parent_state_sources: [] # matching v2 records/learnings actually consulted
+  parent_state_sources: [] # matching v3 records/learnings actually consulted
   result: ""
 
 capability: ""
@@ -44,7 +51,7 @@ resource_proof:
   unavailable_claims: [] # material required claims that could not be executed; must be empty for verified-acquisition
 
 # Optional second product. Leave generated_skill empty when no reusable child is in scope;
-# its validation state never grants or revokes upstream resource trust by itself.
+# its validation state never grants/revokes upstream trust or project-use state by itself.
 generated_skill: ""
 skill_validation:
   structural_passed: false

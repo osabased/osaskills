@@ -27,11 +27,11 @@ Read [`practices.md`](../core/practices.md) when technical definitions, diagrams
 
 ## Canonical SSA bundle
 
-For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the pinned loader and direct server/client bootstrap pair from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](../ssa/ssa.md).
+For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the exact ModuleLoader identity and pin plus the direct server/client bootstrap pair from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](../ssa/ssa.md).
 
-Its zero-registration startup and fixed lifecycle integration are the requirement beyond organization that justifies the loader. Once the bundle is selected, treat that loader choice as resolved rather than reopening resource comparison.
+Its zero-registration startup and fixed lifecycle integration are the requirement beyond organization that justifies the loader. Once the bundle is selected, `structure-roblox-projects` owns the loader identity, version/commit, acquisition form, placement, and upgrade decision as part of the structural architecture. Do not reopen resource comparison or permit another workflow to substitute or upgrade the loader independently.
 
-Selecting Canonical SSA resolves the entrypoint, module-organization, and module-style decisions owned by that bundle. Ask no separate questions for those fields unless a concrete requirement conflicts. Source of truth, naming, tests, and any out-of-bundle requirement remain independently resolvable when material.
+Selecting Canonical SSA resolves the entrypoint, module-organization, module-style, and ModuleLoader structural-dependency decisions owned by that bundle. Ask no separate questions for those fields unless a concrete requirement conflicts. Source of truth, naming, tests, and any out-of-bundle requirement remain independently resolvable when material.
 
 Preserve coherent established entrypoints and frameworks for existing projects. Canonical SSA becomes their target only through explicit redesign or migration. Requirements such as `Actor` parallelism, object lifetime, character/tool behavior, or isolated scripts can select multiple or custom entrypoints instead.
 
@@ -42,6 +42,7 @@ When project-profile persistence applies under [`project-profile-persistence.md`
 | `Entrypoints` | `Canonical SSA: ServerMain and ClientMain directly start depth-1 feature roots with the pinned canonical ModuleLoader; only direct children of Server/Client are loader-owned roots, so nest helpers beneath them; ordinary feature work does not edit loader or entrypoint infrastructure.` |
 | `Module organization` | `Feature-first inside separate Server, Client, Shared, and Remotes boundaries.` |
 | `Module style` | `Plain Luau feature roots with explicit dependencies and optional Init/Start lifecycle; all loads precede Init, Init precedes Start, and sibling lifecycle order is not a dependency contract.` |
+| `Structural dependencies` | Persist the exact ModuleLoader repository/package identity, version, commit, selected acquisition form, and `ReplicatedStorage/Packages/ModuleLoader` placement from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md). State that changing any of them is Canonical SSA infrastructure work owned by `structure-roblox-projects`. |
 
 ## Decision catalogue
 

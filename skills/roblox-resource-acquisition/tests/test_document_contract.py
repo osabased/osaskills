@@ -69,9 +69,9 @@ def test_evaluate_compare_stops_before_integration_and_generation():
     assert "Do not integrate the resource or generate a child skill as extra scope" in section
 
 
-def test_acquire_adopt_keeps_child_generation_and_host_adoption_conditional():
+def test_acquire_adopt_routes_project_state_and_keeps_child_adoption_conditional():
     section = _mode("acquire/adopt")
-    assert "optional subscopes" in section
+    assert "project-adoption.md" in section
     assert "When reusable child guidance is in scope" in section
     assert "generation-validation.md" in section
     assert "When operational host adoption of generated guidance is requested" in section
@@ -84,7 +84,7 @@ def test_portable_record_location_has_one_canonical_owner():
     operational = REFERENCES["operational-lifecycle.md"]
 
     explicit = "an explicit record path supplied by the user, project, or environment"
-    project = "`<project-root>/.roblox-resources/records/<slug>.yaml`"
+    project = "`<project-root>/.agents/roblox/resources/records/<slug>.yaml`"
     user = "`~/.roblox-resources/records/<slug>.yaml`"
     positions = [state.index(explicit), state.index(project), state.index(user)]
     assert positions == sorted(positions)
@@ -97,15 +97,17 @@ def test_portable_record_location_has_one_canonical_owner():
     assert user not in operational
 
 
-def test_refresh_preserves_target_bound_proof_and_avoids_default_rediscovery():
+def test_refresh_preserves_authority_and_target_bound_proof():
     section = _mode("refresh")
-    assert "restart broad discovery only when" in section
+    assert "externally owned target" in section
     assert "Prior runtime proof remains bound to its recorded target" in section
+    assert "project-adoption.md" in section
     assert "repair-loop.md" in section
 
 
 def test_repair_reconcile_keeps_upstream_and_child_revalidation_conditional():
     section = _mode("repair/reconcile")
+    assert "project-adoption.md" in section
     assert "qualification-workflow.md" in section
     assert "only when upstream identity, source facts, qualification, or trust are themselves in question" in section
     assert "generation-validation.md" in section

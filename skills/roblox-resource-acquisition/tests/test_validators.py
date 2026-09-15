@@ -22,8 +22,58 @@ class ResourceRecordTests(unittest.TestCase):
     def validate(self, record: dict) -> tuple[list[str], list[str]]:
         return validate_record(Path("record.yaml"), record)
 
-    def test_artifact_only_v2_record_passes(self) -> None:
+    def test_artifact_only_v3_record_passes(self) -> None:
         errors, _ = self.validate(fixtures.valid_record())
+        self.assertEqual(errors, [])
+
+    def test_project_use_adopted_requires_role_scope_authority_and_trust(self) -> None:
+        record = fixtures.valid_record()
+        record["project_use"] = {
+            "status": "adopted",
+            "role": "persistent player data",
+            "scope": "project",
+            "authority": "roblox-resource-acquisition",
+        }
+        errors, _ = self.validate(record)
+        self.assertEqual(errors, [])
+
+        for field in ("role", "scope", "authority"):
+            broken = fixtures.valid_record()
+            broken["project_use"] = {
+                "status": "adopted",
+                "role": "persistent player data",
+                "scope": "project",
+                "authority": "roblox-resource-acquisition",
+            }
+            broken["project_use"][field] = ""
+            errors, _ = self.validate(broken)
+            self.assertIn(
+                f"project_use.status 'adopted' requires project_use.{field}",
+                errors,
+            )
+
+        record["trust"] = {"level": "untrusted", "basis": "", "reason": ""}
+        errors, _ = self.validate(record)
+        self.assertIn("project_use.status adopted requires trust.level: trusted", errors)
+
+    def test_not_applicable_project_use_must_not_carry_project_authority(self) -> None:
+        record = fixtures.valid_record()
+        record["project_use"]["authority"] = "structure-roblox-projects"
+        errors, _ = self.validate(record)
+        self.assertIn(
+            "project_use.status not-applicable requires empty role, scope, and authority",
+            errors,
+        )
+
+    def test_retired_project_use_preserves_prior_role_and_authority(self) -> None:
+        record = fixtures.valid_record()
+        record["project_use"] = {
+            "status": "retired",
+            "role": "persistent player data",
+            "scope": "project",
+            "authority": "roblox-resource-acquisition",
+        }
+        errors, _ = self.validate(record)
         self.assertEqual(errors, [])
 
     def test_direct_evaluation_target_preserves_provenance_without_trust(self) -> None:
@@ -102,18 +152,18 @@ class ResourceRecordTests(unittest.TestCase):
         errors, _ = self.validate(record)
         self.assertTrue(any("observed installed identity or version" in error for error in errors))
 
-    def test_legacy_record_is_rejected(self) -> None:
+    def test_schema_v2_record_is_rejected(self) -> None:
         record = fixtures.valid_record()
-        del record["schema_version"]
+        record["schema_version"] = 2
         errors, _ = self.validate(record)
-        self.assertTrue(any("legacy records must enter repair/reconcile" in error for error in errors))
+        self.assertIn("schema_version must be integer 3; older records must enter repair/reconcile", errors)
 
-    def test_yaml_loader_rejects_legacy_file(self) -> None:
+    def test_yaml_loader_rejects_old_schema_file(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
-            path = Path(temp) / "legacy.yaml"
-            legacy = fixtures.valid_record()
-            del legacy["schema_version"]
-            path.write_text(yaml.safe_dump(legacy, sort_keys=False), encoding="utf-8")
+            path = Path(temp) / "old.yaml"
+            old = fixtures.valid_record()
+            old["schema_version"] = 2
+            path.write_text(yaml.safe_dump(old, sort_keys=False), encoding="utf-8")
             loaded = load_record(path)
             errors, _ = validate_record(path, loaded)
             self.assertTrue(errors)

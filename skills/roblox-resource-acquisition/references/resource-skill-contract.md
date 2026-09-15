@@ -25,6 +25,8 @@ A generated skill is not complete merely because it documents the resource. It m
 - project assumptions/prerequisites;
 - an explicit alternatives section naming the closest meaningful alternative or Roblox built-in when relevant; if none is meaningful, state that explicitly with a short reason.
 
+For an externally owned project dependency, alternatives are informational only: the child must preserve the supplied identity/pin and hand replacement/upgrade decisions back to the owning project authority.
+
 ## Required operating knowledge
 
 - installation/placement;
@@ -57,13 +59,13 @@ Include an **Operational reconciliation** section containing these labeled field
 - `Policy`: exactly `required` or `not-applicable` followed by a concrete reason;
 - `Installed-state check`: a resource-specific command, file/manifest inspection, package/asset identity check, or an explicit immutable-install explanation;
 - `Expected identity/state`: the canonical identity and reviewed version/commit/source state the guidance targets;
-- `Parent-state check`: how to load matching schema-version 2 resource records and resource-bound learnings by slug plus canonical identity;
+- `Parent-state check`: how to load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity;
 - `Mismatch/unknown action`: stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode;
 - `Defect handoff`: capture the task, installed state, expected/observed behavior, and smallest reproduction, then invoke the same parent repair route.
 
 Use `required` when installed resource state can drift independently and the guidance is materially version-sensitive. Use `not-applicable` only when the install is fixed to the exact immutable reviewed state or the documented behavior is demonstrably insensitive to independent drift. Unknown material state never counts as a match.
 
-The child does not bundle the external learnings store. It consults matching external state during direct use and treats a current `blocked_use_or_version` as a stop, while re-checking adverse learnings as observations rather than executable policy.
+The child does not bundle the external resource record, project-use state, or learnings store. It consults matching external state during direct use and treats a current `blocked_use_or_version` as a stop, while re-checking adverse learnings as observations rather than executable policy.
 
 ## Prohibited behavior
 
@@ -76,11 +78,11 @@ The skill must not:
 - call a resource "safe" merely because it is popular/open source;
 - make auto-update the default for third-party packages without considering supply-chain risk;
 - require human confirmation for routine reversible engineering steps unless the surrounding environment requires it;
-- silently publish places, expose credentials, spend money, or mutate production data.
+- silently publish places, expose credentials, spend money, or mutate production data;
 - call a validated artifact operational merely because it exists in a filesystem location;
-- continue version-sensitive guidance through an unresolved identity/version mismatch or matching current block.
+- continue version-sensitive guidance through an unresolved identity/version mismatch or matching current block;
+- replace, retarget, or upgrade an externally owned project dependency merely because an alternative appears preferable.
 
 ## Context economy
 
 The skill should make the common path obvious in the first screenful or two, with deeper edge cases below or in references. A generated skill that forces an agent to reread an upstream manual for basic use has failed its purpose.
-
