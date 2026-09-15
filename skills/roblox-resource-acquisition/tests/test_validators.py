@@ -203,6 +203,29 @@ class GeneratedSkillTests(unittest.TestCase):
             errors, _ = validate_skill(skill)
             self.assertEqual(errors, [])
 
+    def test_parent_state_check_requires_discovery_route(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8")
+            concrete = (
+                "Parent-state check: Resolve the affected Roblox project root, then read `.agents/roblox/resources/records/widget-resource.yaml` and `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity."
+            )
+            weak = (
+                "Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity."
+            )
+            path.write_text(text.replace(concrete, weak), encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertIn(
+                "Parent-state check must name a concrete record/learnings discovery route",
+                errors,
+            )
+
     def test_missing_operational_reconciliation_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             skill = self.write_child(
