@@ -15,7 +15,7 @@ Preserve a coherent established structure unless the user requests redesign or m
    - **Established** means work occurs inside an existing project, including brand-new features and ordinary restructuring. Preserve applicable established conventions unless the user requests redesign.
    - Project context changes how a selected route resolves structure; it does not select or replace the route.
 3. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
-4. **Disclose** only the references whose trigger is present.
+4. **Load** only the references whose trigger is present.
 5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
 
 Migration is intent-gated: activate the Migration route only when the user explicitly requests the migration/transition/conversion itself or asks for migration planning. Do not infer Migration merely because ordinary Review, Design, or Implementation involves moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring.
