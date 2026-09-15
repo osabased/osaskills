@@ -9,7 +9,7 @@ Preserve a coherent established structure unless the user requests redesign or m
 
 ## Core loop
 
-1. **Route** the request as Review, Design, Migration plan, Implementation, or Preference setup.
+1. **Route** the request through the applicable Review, Design, Migration plan, Implementation, or Preference setup route(s).
 2. **Bootstrap** only the affected area until the material placement, integration, scope, and validation decisions are resolved.
 3. **Disclose** only the references whose trigger is present.
 4. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
@@ -47,7 +47,7 @@ An internal edit inside an already placed feature remains on the established-pro
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
-| **Canonical SSA feature integration** | Recognized canonical SSA needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa/ssa.md`](references/ssa/ssa.md) |
+| **Canonical SSA feature integration** | A canonical SSA area—an applicable `Server/` or `Client/` root whose entrypoint directly calls the pinned `ModuleLoader.Start(...)` on that root, with no conflicting startup convention—needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa/ssa.md`](references/ssa/ssa.md) |
 | **Canonical SSA infrastructure** | Create canonical SSA; explicitly migrate to it; or change its entrypoints, loader identity/acquisition/configuration, discovery, or upgrade behavior | [`references/ssa/ssa.md`](references/ssa/ssa.md) and [`references/ssa/ssa-bootstrap.md`](references/ssa/ssa-bootstrap.md) |
 | **Ordinary structure** | An ordinary Roblox structure choice or Review criterion remains unresolved outside the active canonical SSA contract | [`references/core/practices.md`](references/core/practices.md) |
 | **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/core/modification-scope.md`](references/core/modification-scope.md) |
