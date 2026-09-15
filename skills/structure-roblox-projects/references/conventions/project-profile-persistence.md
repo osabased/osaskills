@@ -8,21 +8,11 @@ Use this reference only when the project-profile contract in [`project-profile.m
 - an authorized Implementation encounters a persisted convention that satisfies the `Freshness` contract's verified-drift test; or
 - an explicitly requested project-wide redesign or migration is being implemented and changes durable structural conventions.
 
-Read [`project-profile.md`](project-profile.md) first. It owns profile meaning, recognized sections, interpretation, and the canonical `Freshness` contract. This file owns only persistence and project-root `AGENTS.md` onboarding writes. It does not change when persistence is authorized.
+Read [`project-profile.md`](project-profile.md) first. It owns profile meaning, recognized sections, interpretation, the canonical `Freshness` contract, and recognition of usable agent onboarding. This file owns only persistence and project-root `AGENTS.md` onboarding writes. It does not change when persistence is authorized.
 
-## Agent onboarding
+## Agent onboarding mutation
 
-When durable project structure is persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the durable structural convention record; `AGENTS.md` provides agent onboarding by telling agents that the profile exists and when to read it.
-
-Use this owned block:
-
-```markdown
-<!-- structure-roblox-projects:onboarding:start -->
-## Roblox structure onboarding
-
-Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` for the project's durable structural conventions.
-<!-- structure-roblox-projects:onboarding:end -->
-```
+When durable project structure is persisted, maintain the canonical owned onboarding block defined in [`project-profile.md`](project-profile.md) in the affected project root's `AGENTS.md`.
 
 Maintain it with these rules:
 
@@ -32,8 +22,6 @@ Maintain it with these rules:
 4. If no project-root `AGENTS.md` exists, create one containing only the owned block.
 5. Never replace, normalize, reorder, summarize, or otherwise rewrite an existing `AGENTS.md` to install agent onboarding. Similar human-authored Roblox guidance outside the owned markers is governing context, not content this skill owns.
 6. Keep detailed structural conventions and freshness behavior in `.codex/roblox-structure.md`; do not duplicate the profile into `AGENTS.md`.
-
-For automatic established-project initialization, **usable agent onboarding** requires a useful profile with the canonical `Freshness` section and the canonical owned onboarding block in the project-root `AGENTS.md`.
 
 Task-local use of this skill must not create or modify `AGENTS.md` merely to advertise the skill or record transient findings. The established-project onboarding initialization mode below is the narrow automatic exception because it gives future agents durable project-local structural guidance established from existing project evidence.
 
@@ -60,7 +48,7 @@ Automatic persistence in established-project onboarding initialization, verified
    - for foundational setup, include only durable conventions actually established by the implemented project structure;
    - for an implemented project-wide redesign/migration, update only persisted decisions the implemented target changed or invalidated, preserving every unrelated existing section;
    - for explicit profile/preference setup, persist only the requested decisions and omit every otherwise unset section.
-4. Prepare the `AGENTS.md` onboarding operation required by **Agent onboarding**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
+4. Prepare the `AGENTS.md` onboarding operation required by **Agent onboarding mutation**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
 5. For established-project onboarding initialization, verified drift repair, foundational setup, and implemented project-wide redesign/migration, perform the applicable profile/onboarding writes as part of the authorized Implementation once the durable outcome is known. Do not add a separate approval stop solely for these owned persistence writes.
 6. For explicit profile/preference setup outside an already authorized Implementation, show one exact pre-write preview of the resulting sparse profile and onboarding block, state whether `AGENTS.md` will be appended, the owned block updated, or a new file created, and write them only after the user confirms that persistence operation.
 7. Treat every persistence write as authority only for the managed `Freshness` section, sparse profile decisions established by the active mode, and the owned `AGENTS.md` onboarding block.
