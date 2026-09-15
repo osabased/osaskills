@@ -4,6 +4,8 @@ Use this reference when choosing an unresolved layout, placement, entrypoint, gr
 
 Modification authority comes from [`SKILL.md`](../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
 
+When canonical greenfield SSA is selected or already present, [`ssa.md`](ssa.md) owns its feature-root discovery and lifecycle contract. Keep this reference generic for non-canonical and unresolved structures.
+
 ## Source of truth
 
 | Choice | Meaning | Good fit |
@@ -63,7 +65,7 @@ ReplicatedFirst/
   LoadingClient              only when early loading behavior is required
 ```
 
-This is a useful greenfield default, not a universal recommendation. Preserve a coherent established startup topology.
+This is a useful greenfield shape, not a universal recommendation. When the task selects canonical greenfield SSA, use [`ssa.md`](ssa.md) for feature integration and [`ssa-bootstrap.md`](ssa-bootstrap.md) when creating or changing the bootstrap. Preserve a coherent established startup topology.
 
 ### Multiple entrypoints
 
@@ -84,9 +86,9 @@ Their execution order is nondeterministic unless the project adds an explicit co
 
 ### Entrypoint rules
 
-- Require feature roots explicitly unless the project already owns a reliable discovery loader.
+- Follow an established reliable discovery loader when the project owns one; otherwise explicit feature-root requires remain a valid non-canonical integration strategy.
 - Treat shared entrypoints and discovery loaders as integration boundaries.
-- Add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
+- When canonical SSA is active, its standard optional `Init` / `Start` lifecycle comes from [`ssa.md`](ssa.md); other structures should introduce lifecycle phases only when their requirements or established architecture justify them.
 - Point dependencies toward stable domain/shared modules rather than back toward entrypoints.
 - Split modules by cohesive responsibility rather than arbitrary line count.
 
@@ -154,7 +156,8 @@ Architectures can combine. Prefer the smallest organization that makes runtime o
 
 | Choice | Meaning | Good fit |
 | --- | --- | --- |
-| Plain Luau | Focused ModuleScripts with explicit dependencies and lifecycle only where needed. | Greenfield work without framework requirements. |
+| Plain Luau | Focused ModuleScripts with explicit dependencies and lifecycle only where needed. | Greenfield work outside canonical SSA when no framework requirements apply. |
+| Canonical SSA | Feature roots use the canonical discovery and optional lifecycle contract in [`ssa.md`](ssa.md). | Recommended unresolved greenfield SSA path. |
 | Preserve existing framework | Keep established discovery, naming, and lifecycle. | Working framework-based projects. |
 | Named framework or custom lifecycle | Define framework/discovery/lifecycle rules deliberately. | Projects with requirements that justify team-wide lifecycle machinery. |
 
