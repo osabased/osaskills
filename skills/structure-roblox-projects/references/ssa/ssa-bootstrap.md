@@ -2,7 +2,7 @@
 
 Use this contract to create canonical Single Script Architecture (SSA), explicitly migrate a project to it, or change its loader, entrypoints, discovery, configuration, acquisition, or upgrade behavior. Read [`ssa.md`](ssa.md) for the feature contract that the infrastructure must expose.
 
-Preserve a coherent established startup architecture unless migration is explicit.
+Preserve a coherent established startup architecture unless redesign or migration is explicit.
 
 ## Loader identity and acquisition
 
