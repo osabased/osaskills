@@ -39,9 +39,9 @@ When project-profile persistence applies under `project-profile.md`, normalize C
 
 | Field | Normalized value |
 | --- | --- |
-| `Entrypoints` | `Canonical SSA: ServerMain and ClientMain directly start depth-1 feature roots with the pinned canonical ModuleLoader.` |
+| `Entrypoints` | `Canonical SSA: ServerMain and ClientMain directly start depth-1 feature roots with the pinned canonical ModuleLoader; only direct children of Server/Client are loader-owned roots, so nest helpers beneath them; ordinary feature work does not edit loader or entrypoint infrastructure.` |
 | `Module organization` | `Feature-first inside separate Server, Client, Shared, and Remotes boundaries.` |
-| `Module style` | `Plain Luau feature roots with explicit dependencies and optional Init/Start lifecycle.` |
+| `Module style` | `Plain Luau feature roots with explicit dependencies and optional Init/Start lifecycle; all loads precede Init, Init precedes Start, and sibling lifecycle order is not a dependency contract.` |
 
 ## Decision catalogue
 
