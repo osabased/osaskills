@@ -1302,13 +1302,13 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
 
     parent_state_check = reconciliation_values.get("Parent-state check")
     if parent_state_check and not (
-        re.search(r"schema[- ]version\s*2", parent_state_check, re.I)
+        re.search(r"schema[- ]version\s*3", parent_state_check, re.I)
         and re.search(r"\brecords?\b", parent_state_check, re.I)
         and re.search(r"\blearnings?\b", parent_state_check, re.I)
         and contains_word(parent_state_check, "slug")
         and re.search(r"\bcanonical\b", parent_state_check, re.I)
     ):
-        errors.append("Parent-state check must load matching v2 records and learnings by slug plus canonical identity")
+        errors.append("Parent-state check must load matching v3 records and learnings by slug plus canonical identity")
 
     mismatch_action = reconciliation_values.get("Mismatch/unknown action")
     if mismatch_action and not (
@@ -1403,4 +1403,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
