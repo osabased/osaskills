@@ -25,6 +25,24 @@ Read [`practices.md`](practices.md) when technical definitions, diagrams, use ca
 10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
 11. Project-level persistence is optional and must be explicitly requested. Treat applicable profile evidence as caller-provided context; send resolved durable choices to `project-profile.md` only when persistence is requested.
 
+## Canonical SSA bundle
+
+For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the pinned loader and direct server/client bootstrap pair from [`ssa-bootstrap.md`](ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](ssa.md).
+
+Its zero-registration startup and fixed lifecycle integration are the requirement beyond organization that justifies the loader. Once the bundle is selected, treat that loader choice as resolved rather than reopening resource comparison.
+
+Selecting Canonical SSA resolves the entrypoint, module-organization, and module-style decisions owned by that bundle. Ask no separate questions for those fields unless a concrete requirement conflicts. Source of truth, naming, tests, and any out-of-bundle requirement remain independently resolvable when material.
+
+Preserve coherent established entrypoints and frameworks for existing projects. Canonical SSA becomes their target only through explicit redesign or migration. Requirements such as `Actor` parallelism, object lifetime, character/tool behavior, or isolated scripts can select multiple or custom entrypoints instead.
+
+When project-profile persistence is explicitly requested, normalize Canonical SSA through the existing fields:
+
+| Field | Normalized value |
+| --- | --- |
+| `Entrypoints` | `Canonical SSA: ServerMain and ClientMain directly start depth-1 feature roots with the pinned canonical ModuleLoader.` |
+| `Module organization` | `Feature-first inside separate Server, Client, Shared, and Remotes boundaries.` |
+| `Module style` | `Plain Luau feature roots with explicit dependencies and optional Init/Start lifecycle.` |
+
 ## Decision catalogue
 
 Use this catalogue only for choices that remain open. Do not mechanically resolve every field.
@@ -45,18 +63,16 @@ When a detected workflow will be persisted, normalize Studio-native, Script Sync
 
 ### Entrypoints
 
-- Single client/server entrypoint pair (SSA; greenfield default)
+- Canonical SSA (recommended greenfield)
 - Multiple entrypoints
 - Preserve established entrypoints
 - Custom entrypoints
 
-Preserve coherent established startup topology. For greenfield work, recommend a single client/server entrypoint pair unless object lifetime, `Actor` parallelism, character/tool behavior, isolation, or another concrete runtime requirement makes multiple entrypoints the simpler fit.
+Preserve coherent established startup topology. For greenfield work, recommend the Canonical SSA bundle unless a concrete runtime requirement makes multiple or custom entrypoints the simpler fit.
 
 For **Multiple entrypoints**, use the derivation rules in `practices.md` and resolve only startup details needed to make each independently starting path unambiguous.
 
 For **Custom entrypoints**, resolve the count, runtime owner, location, startup behavior, and runtime-specific exceptions for every entrypoint the design actually requires.
-
-Example normalized preference: `Single client/server entrypoint pair (SSA), with ServerMain and ClientMain starting feature root modules explicitly.`
 
 ### Module organization
 
@@ -67,7 +83,7 @@ Example normalized preference: `Single client/server entrypoint pair (SSA), with
 - Preserve established organization
 - Custom
 
-Preserve a coherent established organization. For greenfield work, recommend feature-first grouping inside explicit runtime boundaries unless the project is small enough that shallow runtime layers are simpler or a concrete component/ECS/service-controller model better matches the domain.
+Canonical SSA already resolves this field. Otherwise, preserve a coherent established organization and recommend feature-first grouping inside explicit runtime boundaries when no stronger requirement applies.
 
 For **Custom**, resolve grouping rules inside server, client, and shared boundaries, including naming and material exceptions.
 
@@ -79,7 +95,7 @@ Example normalized preference: `Feature-first inside separate Server, Client, an
 - Preserve an existing framework
 - Named framework or custom lifecycle
 
-Preserve an established framework or lifecycle unless migration is requested. For greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
+Canonical SSA already resolves this field. Otherwise, preserve an established framework or lifecycle unless migration is requested; for greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
 
 For a named framework or custom lifecycle, resolve the framework name, module discovery rule, lifecycle phases, dependency ownership, and material exceptions.
 
@@ -98,9 +114,7 @@ Prefer existing checks and test placement. For a new project with no explicit te
 When `use recommended` is selected, keep every value already resolved by the explicit request, coherent established conventions, or applicable project profile, then accept recommendations for remaining choices. If a recommendation still needs a fallback, use:
 
 - detected supported source-of-truth workflow, otherwise Studio-native;
-- coherent established entrypoints, otherwise Single client/server entrypoint pair (SSA);
-- coherent established module organization, otherwise feature-first grouping within runtime boundaries;
-- coherent established module style, otherwise plain Luau;
+- coherent established entrypoints, organization, and module style, otherwise the Canonical SSA bundle for greenfield work without a conflicting requirement;
 - coherent established naming, otherwise the new-project naming defaults in `practices.md`;
 - existing checks and test placement, otherwise the smallest relevant available validation.
 

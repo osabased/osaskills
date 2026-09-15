@@ -43,9 +43,13 @@ Read [`references/modification-scope.md`](references/modification-scope.md) befo
 
 Load a reference only when its branch is active. Evaluate specialist triggers against both the current structure and the requested target structure. Multiple specialist references may apply to one task.
 
+An internal edit inside an already placed feature remains on the established-project fast path when it requires no placement, lifecycle, or structural-integration decision. Canonical SSA paths alone do not trigger an SSA reference.
+
 | Branch | Trigger | Read |
 | --- | --- | --- |
-| **Ordinary structure** | An architecture Review depends on ordinary Roblox layout, placement, runtime, entrypoint, grouping, module-style, or source-of-truth rules; a task reviews, designs, plans, changes, or validates a DataModel placement, entrypoint type/location, or source-of-truth workflow whose Roblox platform semantics can affect correctness; or the project does not already resolve a material layout, placement, entrypoint, grouping, module-style, or source-of-truth choice | [`references/practices.md`](references/practices.md) |
+| **Canonical SSA feature integration** | Recognized canonical SSA needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa.md`](references/ssa.md) |
+| **Canonical SSA infrastructure** | Create canonical SSA; explicitly migrate to it; or change its entrypoints, loader identity/acquisition/configuration, discovery, or upgrade behavior | [`references/ssa.md`](references/ssa.md) and [`references/ssa-bootstrap.md`](references/ssa-bootstrap.md) |
+| **Ordinary structure** | An ordinary Roblox structure choice or Review criterion remains unresolved outside the active canonical SSA contract | [`references/practices.md`](references/practices.md) |
 | **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
 | **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
 | **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
@@ -83,7 +87,7 @@ Finish when every material requested preference is directly implementable and an
 
 ### Review
 
-Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Read `references/practices.md` when the conclusion depends on ordinary Roblox layout, placement, runtime, replication, entrypoint, grouping, module-style, or source-of-truth rules, and load any specialist reference whose trigger is present.
+Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Load the references selected by **Reference routing** when the conclusion depends on their structural rules.
 
 For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
 
@@ -91,7 +95,7 @@ Finish when the material structural risks within the requested boundary are acco
 
 ### Design
 
-Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, read `references/practices.md`.
+Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, load the branch selected by **Reference routing**.
 
 Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
 
