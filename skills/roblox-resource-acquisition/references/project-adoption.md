@@ -80,6 +80,8 @@ Keep generated artifact storage separate from host discovery:
 
 Resolve `skill-scope-root` from where fresh agents are expected to work. Codex discovers repository skills from `.agents/skills` directories from the working directory upward to the repository root; therefore a nested Roblox project's `.agents/skills` is not automatically visible to a session started above that project. Prefer the repository/root scope that makes the intended project skill visible to those fresh agents, unless narrower nested visibility is explicitly intended.
 
+Before moving or writing a child into `<skill-scope-root>/.agents/skills/<skill-name>/`, inspect any existing target directory. If it is the same managed generated child, reconcile/update it through the existing host adoption. If it is unrelated or ownership/identity is ambiguous, stop and surface the collision; never overwrite, merge, rename, or repurpose a pre-existing skill merely to complete adoption.
+
 Host adoption remains a separate lifecycle gate. Moving a validated project artifact into a host-recognized `.agents/skills/<skill-name>/` location establishes an installed host copy, not `operational` status. Complete the checks in [operational-lifecycle.md](operational-lifecycle.md) before claiming operational adoption.
 
 Maintain one canonical editable child. When a project artifact is adopted into a project-local host location, move it into the host location or otherwise complete the transition without leaving a second independently editable canonical copy. Record the resulting host location in `host_adoptions`.
