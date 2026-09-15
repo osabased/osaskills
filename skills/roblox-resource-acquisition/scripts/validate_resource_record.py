@@ -37,6 +37,7 @@ TOP_LEVEL_FIELDS = {
     "resource",
     "slug",
     "discovery_origin",
+    "project_use",
     "trust",
     "canonical_url",
     "package_id",
@@ -57,6 +58,7 @@ TOP_LEVEL_FIELDS = {
 }
 REQUIRED_TOP_LEVEL_FIELDS = TOP_LEVEL_FIELDS
 NESTED_FIELDS = {
+    "project_use": {"status", "role", "scope", "authority"},
     "trust": {"level", "basis", "reason"},
     "verification": {"status", "validated_at", "version_or_commit"},
     "reconciliation": {
@@ -110,6 +112,10 @@ STRING_FIELDS = {
     "blocked_use_or_version",
     "rejection_reason",
     "reconsider_when",
+    "project_use.status",
+    "project_use.role",
+    "project_use.scope",
+    "project_use.authority",
     "trust.level",
     "trust.basis",
     "trust.reason",
@@ -133,6 +139,7 @@ STRING_FIELDS = {
     "skill_validation.catalog_result",
 }
 ALLOWED_ORIGINS = {"curated", "project", "devforum", "other"}
+ALLOWED_PROJECT_USE = {"not-applicable", "adopted", "retired"}
 ALLOWED_TRUST_LEVELS = {"trusted", "untrusted"}
 ALLOWED_TRUST_BASES = {"", "curated", "verified-acquisition", "project", "explicit-user", "other"}
 ALLOWED_VERIFICATION = {"unverified", "unavailable", "verified", "failed"}
@@ -154,8 +161,6 @@ def load_record(path: Path) -> dict[str, Any]:
     if not isinstance(loaded, dict):
         raise ValueError("record must be a YAML mapping")
     normalize_empty_values(loaded, LIST_FIELDS)
-    # PyYAML resolves an unquoted ISO date to datetime.date. Accept that
-    # natural YAML spelling and normalize it to the schema's string form.
     verification = loaded.get("verification")
     if isinstance(verification, dict) and isinstance(verification.get("validated_at"), date):
         verification["validated_at"] = verification["validated_at"].isoformat()
@@ -167,8 +172,6 @@ def load_record(path: Path) -> dict[str, Any]:
         for adoption in host_adoptions:
             if isinstance(adoption, dict) and isinstance(adoption.get("checked_at"), date):
                 adoption["checked_at"] = adoption["checked_at"].isoformat()
-            # PyYAML follows YAML 1.1 and resolves unquoted yes/no as booleans.
-            # Preserve the public yes/no evidence vocabulary for ordinary YAML input.
             if isinstance(adoption, dict) and isinstance(adoption.get("evidence"), dict):
                 evidence = adoption["evidence"]
                 for field in ("discoverable", "enabled"):
@@ -201,8 +204,8 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
     if missing:
         errors.append(f"missing required top-level field(s): {', '.join(missing)}")
 
-    if data.get("schema_version") != 2:
-        errors.append("schema_version must be integer 2; legacy records must enter repair/reconcile")
+    if data.get("schema_version") != 3:
+        errors.append("schema_version must be integer 3; older records must enter repair/reconcile")
 
     for parent, allowed in NESTED_FIELDS.items():
         value = data.get(parent)
@@ -253,6 +256,25 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
     if origin == "other" and not nonempty_string(selection_reason):
         errors.append("discovery_origin other requires selection_reason to preserve selection provenance")
 
+    project_status = dotted_get(data, "project_use.status")
+    project_role = dotted_get(data, "project_use.role")
+    project_scope = dotted_get(data, "project_use.scope")
+    project_authority = dotted_get(data, "project_use.authority")
+    if isinstance(project_status, str) and project_status not in ALLOWED_PROJECT_USE:
+        errors.append("project_use.status must be not-applicable, adopted, or retired")
+    if project_status in {"adopted", "retired"}:
+        for field, value in (
+            ("role", project_role),
+            ("scope", project_scope),
+            ("authority", project_authority),
+        ):
+            if not nonempty_string(value):
+                errors.append(f"project_use.status {project_status!r} requires project_use.{field}")
+    if project_status == "not-applicable" and any(
+        nonempty_string(value) for value in (project_role, project_scope, project_authority)
+    ):
+        errors.append("project_use.status not-applicable requires empty role, scope, and authority")
+
     trust_level = dotted_get(data, "trust.level")
     trust_basis = dotted_get(data, "trust.basis")
     trust_reason = dotted_get(data, "trust.reason")
@@ -269,6 +291,8 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
             errors.append("trusted records require slug to bind trust to a stable identity")
         if not nonempty_string(data.get("canonical_url")) and not nonempty_string(data.get("package_id")):
             errors.append("trusted records require canonical_url or package_id to bind trust to canonical identity")
+    if project_status == "adopted" and trust_level != "trusted":
+        errors.append("project_use.status adopted requires trust.level: trusted")
     if trust_basis in {"curated", "verified-acquisition", "project", "explicit-user", "other"} and trust_level != "trusted":
         errors.append(f"trust.basis {trust_basis!r} requires trust.level: trusted")
     if trust_basis == "curated" and origin != "curated":
@@ -351,9 +375,7 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
     parent_sources = dotted_get(data, "reconciliation.parent_state_sources")
     reconciliation_result = dotted_get(data, "reconciliation.result")
     if isinstance(reconciliation_status, str) and reconciliation_status not in ALLOWED_RECONCILIATION:
-        errors.append(
-            "reconciliation.status must be matched, mismatched, blocked, unknown, or not-applicable"
-        )
+        errors.append("reconciliation.status must be matched, mismatched, blocked, unknown, or not-applicable")
     if isinstance(reconciliation_checked, str) and reconciliation_checked.strip():
         errors.extend(validate_date(reconciliation_checked.strip(), field="reconciliation.checked_at"))
     if reconciliation_status in {"matched", "mismatched", "blocked", "not-applicable"}:
@@ -395,9 +417,7 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
     catalog_environment = dotted_get(data, "skill_validation.catalog_environment")
     catalog_result = dotted_get(data, "skill_validation.catalog_result")
     if isinstance(catalog_status, str) and catalog_status not in ALLOWED_CATALOG_ROUTING:
-        errors.append(
-            "skill_validation.catalog_routing_status must be not-applicable, unverified, verified, unavailable, or failed"
-        )
+        errors.append("skill_validation.catalog_routing_status must be not-applicable, unverified, verified, unavailable, or failed")
     if nonempty_string(catalog_fingerprint) and not FINGERPRINT_RE.fullmatch(catalog_fingerprint.strip()):
         errors.append("skill_validation.catalog_fingerprint must use sha256:<64 lowercase hex characters>")
     if catalog_status in {"verified", "unavailable", "failed"}:
@@ -432,9 +452,7 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
         if isinstance(scope, str) and scope not in ALLOWED_HOST_SCOPES:
             errors.append(f"{prefix}.scope must be repo, user, admin, plugin, or other")
         if isinstance(host_status, str) and host_status not in ALLOWED_HOST_STATUSES:
-            errors.append(
-                f"{prefix}.status must be installed, operational, blocked, disabled, removed, unavailable, or failed"
-            )
+            errors.append(f"{prefix}.status must be installed, operational, blocked, disabled, removed, unavailable, or failed")
         checked_at = adoption.get("checked_at")
         if isinstance(checked_at, str) and checked_at.strip():
             errors.extend(validate_date(checked_at.strip(), field=f"{prefix}.checked_at"))
@@ -508,13 +526,8 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
         ):
             errors.append("catalog routing evidence requires generated_skill to identify the generated child")
 
-    if trust_basis == "verified-acquisition":
-        # Resource-side promotion is independent of the optional generated child.
-        # Generic verification rules above already require dated immutable source
-        # state, executed/passing resource proof, and no unavailable claims when
-        # verification.status is verified.
-        if status != "verified":
-            errors.append("verified-acquisition requires verification.status: verified")
+    if trust_basis == "verified-acquisition" and status != "verified":
+        errors.append("verified-acquisition requires verification.status: verified")
 
     if trust_basis == "curated":
         if not nonempty_string(slug):
@@ -535,9 +548,7 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description=(
-            "Validate a portable Roblox resource evidence record for structural and trust/verification state consistency."
-        )
+        description="Validate a portable Roblox resource evidence record for structural and lifecycle state consistency."
     )
     parser.add_argument("resource_record", type=Path, help="resource-record YAML file")
     return parser.parse_args(argv)
@@ -567,10 +578,9 @@ def main(argv: list[str] | None = None) -> int:
     print("PASS: resource-record structural/state checks passed")
     for note in notes:
         print(f"NOTE: {note}")
-    print("NOTE: this does not prove source truth, resource behavior, or generated-skill behavior; it only checks that the recorded state is internally consistent")
+    print("NOTE: this does not prove source truth, resource behavior, project-use correctness, or generated-skill behavior; it only checks that the recorded state is internally consistent")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
