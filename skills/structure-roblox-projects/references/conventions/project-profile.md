@@ -76,7 +76,7 @@ When profile evidence still leaves a material choice unresolved for the current 
 
 ## Fresh-agent handoff
 
-When durable project structure is persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the structural source of truth; `AGENTS.md` only tells fresh agents that the profile exists and when to read it.
+When durable project structure is persisted, also maintain a small discovery pointer in the affected project root's `AGENTS.md`. The profile remains the durable structural convention record; `AGENTS.md` only tells fresh agents that the profile exists and when to read it.
 
 Use this owned block:
 
@@ -84,11 +84,7 @@ Use this owned block:
 <!-- structure-roblox-projects:start -->
 ## Roblox structure handoff
 
-Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` and preserve its applicable durable conventions together with coherent implemented project structure.
-
-If the profile conflicts with coherent implemented project structure, preserve the implementation and treat the profile as stale; do not reshape the project to match stale profile guidance.
-
-Do not treat moves, renames, topology changes, or restructuring as a migration unless the user explicitly requests the migration/transition/conversion itself or migration planning.
+Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` for the project's durable structural conventions.
 <!-- structure-roblox-projects:end -->
 ```
 
