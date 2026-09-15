@@ -19,7 +19,7 @@ Canonical SSA pins:
 
 When the project already uses or deliberately selects Wally, declare `ModuleLoader = "crusherfire/module-loader@3.0.4"` and map the resulting package alias to `ReplicatedStorage/Packages/ModuleLoader`. Otherwise acquire the exact [`v3.0.4` `ModuleLoader.rbxm` release asset](https://github.com/ActualFire-Games/module-loader/releases/tag/v3.0.4).
 
-When acquisition or integration is part of the task, invoke [`roblox-resource-acquisition`](../../roblox-resource-acquisition/SKILL.md) in `acquire/adopt` mode. Preserve the selected identity and pin as a positive target; qualify and integrate it without restarting broad candidate discovery. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
+When acquisition or integration is part of the task, invoke [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) in `acquire/adopt` mode. Preserve the selected identity and pin as a positive target; qualify and integrate it without restarting broad candidate discovery. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
 
 ## Resulting DataModel
 
@@ -46,7 +46,7 @@ ServerStorage/
   Assets/
 ```
 
-Not every feature needs a root or subtree in every boundary. Use [`script-sync.md`](script-sync.md) or [`rojo.md`](rojo.md) for the active source-of-truth mechanics while preserving these resulting locations and instance types.
+Not every feature needs a root or subtree in every boundary. Use [`script-sync.md`](../workflows/script-sync.md) or [`rojo.md`](../workflows/rojo.md) for the active source-of-truth mechanics while preserving these resulting locations and instance types.
 
 ## Direct bootstrap
 
@@ -98,7 +98,7 @@ Treat a loader load, Init, or Start warning attributable to changed work as a va
 
 ## Migration and upgrade
 
-For an explicit migration, follow [`migration.md`](migration.md) and account for every old entrypoint and registration path, duplicate-start risk, the resulting source-of-truth mapping, and a recovery boundary. Remove or redirect old startup only inside the authorized migration write set.
+For an explicit migration, follow [`migration.md`](../workflows/migration.md) and account for every old entrypoint and registration path, duplicate-start risk, the resulting source-of-truth mapping, and a recovery boundary. Remove or redirect old startup only inside the authorized migration write set.
 
 Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Update this contract only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md).
 
