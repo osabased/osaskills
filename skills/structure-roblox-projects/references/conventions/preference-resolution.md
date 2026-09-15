@@ -95,7 +95,7 @@ Example normalized preference: `Feature-first inside separate Server, Client, an
 - Preserve an existing framework
 - Named framework or custom lifecycle
 
-Canonical SSA already resolves this field. Otherwise, preserve an established framework or lifecycle unless migration is requested; for greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
+Canonical SSA already resolves this field. Otherwise, preserve an established framework or lifecycle unless redesign or migration is requested; for greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
 
 For a named framework or custom lifecycle, resolve the framework name, module discovery rule, lifecycle phases, dependency ownership, and material exceptions.
 
