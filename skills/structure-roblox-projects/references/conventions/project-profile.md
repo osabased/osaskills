@@ -85,6 +85,20 @@ Feature-first inside separate Server, Client, and Shared boundaries.
 
 A profile is useful when it contains at least one recognized non-empty durable convention. The title is recommended but not required when reading a legacy profile; profiles this skill creates or updates use the title above and canonical `Freshness` section. For a custom selection, keep the existing normalized representation: write `Custom` in the relevant field and preserve the directly implementable durable convention in `Notes`. Put a named framework and lifecycle summary in `Module style` and preserve extra durable wording in `Notes`. When `Notes` supplies required detail for a custom selection, treat it as part of that persisted decision rather than as an unrelated preference.
 
+## Agent onboarding recognition
+
+Usable agent onboarding requires both a useful profile with the canonical `Freshness` section and this canonical owned block in the affected project root's `AGENTS.md`:
+
+```markdown
+<!-- structure-roblox-projects:onboarding:start -->
+## Roblox structure onboarding
+
+Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` for the project's durable structural conventions.
+<!-- structure-roblox-projects:onboarding:end -->
+```
+
+Use this contract only to recognize whether onboarding is already usable. It does not authorize an `AGENTS.md` write. When persistence or onboarding mutation is active, [`project-profile-persistence.md`](project-profile-persistence.md) owns append/update/create behavior and write authority.
+
 ## Existing profiles
 
 - Treat recognized non-empty convention sections as durable convention evidence and missing sections as intentionally unset.
