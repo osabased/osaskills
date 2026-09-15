@@ -25,6 +25,26 @@ Read [`practices.md`](practices.md) when technical definitions, diagrams, use ca
 10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
 11. Project-level persistence is optional and must be explicitly requested. Treat applicable profile evidence as caller-provided context; send resolved durable choices to `project-profile.md` only when persistence is requested.
 
+## Canonical greenfield SSA bundle
+
+For unresolved greenfield SSA work, recommend the canonical SSA bundle as one decision rather than reopening its loader, discovery, or lifecycle as separate preference questions:
+
+- one `ServerMain` / `ClientMain` bootstrap pair;
+- the canonical ActualFire module loader;
+- depth-1 lifecycle-root discovery;
+- feature-first `Server` / `Client` / `Shared` runtime boundaries;
+- the standard optional top-level / `Init` / `Start` lifecycle.
+
+Once canonical SSA is selected, [`ssa.md`](ssa.md) defines ordinary feature behavior and [`ssa-bootstrap.md`](ssa-bootstrap.md) defines bootstrap/infrastructure behavior.
+
+A directly implementable normalized form is:
+
+```text
+Canonical SSA: single ServerMain/ClientMain bootstrap, canonical depth-1 discovery loader, feature-first Server/Client/Shared boundaries, and standard optional Init/Start lifecycle.
+```
+
+Canonical SSA is the unresolved greenfield default, not a migration target for coherent established projects.
+
 ## Decision catalogue
 
 Use this catalogue only for choices that remain open. Do not mechanically resolve every field.
@@ -43,47 +63,46 @@ For an established project, preserve the detected supported workflow unless migr
 
 When a detected workflow will be persisted, normalize Studio-native, Script Sync, or Rojo to that concrete workflow rather than the phrase `Preserve detected workflow`. For another established workflow, normalize the `Source of truth` field to `Custom` and preserve the directly implementable durable convention in `Notes` according to `project-profile.md`.
 
-### Entrypoints
+### Startup and architecture
 
-- Single client/server entrypoint pair (SSA; greenfield default)
+- Canonical SSA (greenfield default)
 - Multiple entrypoints
-- Preserve established entrypoints
-- Custom entrypoints
+- Preserve established startup/framework/lifecycle
+- Components or ECS where materially architecture-defining
+- Custom startup/lifecycle
 
-Preserve coherent established startup topology. For greenfield work, recommend a single client/server entrypoint pair unless object lifetime, `Actor` parallelism, character/tool behavior, isolation, or another concrete runtime requirement makes multiple entrypoints the simpler fit.
+Preserve coherent established entrypoints, frameworks, discovery, and lifecycle unless redesign or migration is requested.
+
+For unresolved greenfield work, select the canonical SSA bundle above unless object lifetime, `Actor` parallelism, character/tool behavior, isolation, ECS/component requirements, or another concrete constraint makes a different architecture the smaller fit.
 
 For **Multiple entrypoints**, use the derivation rules in `practices.md` and resolve only startup details needed to make each independently starting path unambiguous.
 
-For **Custom entrypoints**, resolve the count, runtime owner, location, startup behavior, and runtime-specific exceptions for every entrypoint the design actually requires.
+For **Custom startup/lifecycle**, resolve the count, runtime owner, location, startup behavior, discovery rule if any, lifecycle phases, dependency ownership, and material exceptions the design actually requires.
 
-Example normalized preference: `Single client/server entrypoint pair (SSA), with ServerMain and ClientMain starting feature root modules explicitly.`
+Do not select canonical SSA and then separately ask whether feature roots are registered manually, which loader to use, what discovery depth to use, or whether its standard lifecycle exists. Those choices are part of the canonical bundle.
 
-### Module organization
+### Module organization outside canonical SSA
 
-- Feature-first (greenfield default)
+- Feature-first
 - Runtime layers
 - Service/controller
 - Components or ECS
 - Preserve established organization
 - Custom
 
-Preserve a coherent established organization. For greenfield work, recommend feature-first grouping inside explicit runtime boundaries unless the project is small enough that shallow runtime layers are simpler or a concrete component/ECS/service-controller model better matches the domain.
+Canonical SSA already selects feature-first organization inside its runtime boundaries. Use this catalogue when another path is selected or when an established project leaves organization genuinely open.
 
 For **Custom**, resolve grouping rules inside server, client, and shared boundaries, including naming and material exceptions.
 
-Example normalized preference: `Feature-first inside separate Server, Client, and Shared boundaries.`
+### Module style outside canonical SSA
 
-### Module style
-
-- Plain Luau (greenfield default)
+- Plain Luau
 - Preserve an existing framework
 - Named framework or custom lifecycle
 
-Preserve an established framework or lifecycle unless migration is requested. For greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
+Canonical SSA already defines its ordinary lifecycle contract. Outside canonical SSA, preserve an established framework/lifecycle unless migration is requested. For unresolved greenfield work that intentionally does not use canonical SSA, recommend plain Luau with explicit dependencies and add lifecycle phases only when requirements justify them.
 
 For a named framework or custom lifecycle, resolve the framework name, module discovery rule, lifecycle phases, dependency ownership, and material exceptions.
-
-Example normalized preference: `Plain Luau with explicit requires and Init/Start only where readiness ordering is observable.`
 
 ### Naming
 
@@ -98,9 +117,7 @@ Prefer existing checks and test placement. For a new project with no explicit te
 When `use recommended` is selected, keep every value already resolved by the explicit request, coherent established conventions, or applicable project profile, then accept recommendations for remaining choices. If a recommendation still needs a fallback, use:
 
 - detected supported source-of-truth workflow, otherwise Studio-native;
-- coherent established entrypoints, otherwise Single client/server entrypoint pair (SSA);
-- coherent established module organization, otherwise feature-first grouping within runtime boundaries;
-- coherent established module style, otherwise plain Luau;
+- coherent established startup/framework/lifecycle, otherwise canonical SSA;
 - coherent established naming, otherwise the new-project naming defaults in `practices.md`;
 - existing checks and test placement, otherwise the smallest relevant available validation.
 
