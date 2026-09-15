@@ -36,7 +36,7 @@ Lifecycle methods are optional:
 - `Init` prepares feature-local state and dependencies.
 - `Start` activates behavior such as event connections or long-running work, then returns after activation.
 
-The loader attempts every successful load before it attempts any `Init`, then attempts `Start` after the Init phase. Sibling order within Init or Start is not a dependency contract.
+The loader attempts every successful load before it attempts any `Init`, then attempts `Start` after the Init phase. Within each phase, upstream honors `LoaderPriority` (higher first). Do not rely on incidental order among equal-priority siblings; use priority ordering only when it is an explicit startup contract.
 
 A direct dependency on another lifecycle root is valid when it makes ownership clearer, but `require()` returns that module's API; it does not imply that the dependency's `Init` or `Start` has run. Keep requires acyclic. Move lifecycle-independent access into a nested API/domain module or an applicable Shared module when that makes the dependency explicit.
 
