@@ -83,6 +83,46 @@ def test_generated_child_contract_uses_current_record_schema():
         assert "schema-version 3" in text, path
 
 
+def test_generated_child_contract_requires_parent_state_discovery_route():
+    contract = (RESOURCE_ROOT / "references" / "resource-skill-contract.md").read_text(
+        encoding="utf-8"
+    )
+    template = (RESOURCE_ROOT / "templates" / "resource-skill-template.md").read_text(
+        encoding="utf-8"
+    )
+    generation = (RESOURCE_ROOT / "references" / "generation-validation.md").read_text(
+        encoding="utf-8"
+    )
+    assert "deterministic discovery route" in contract
+    assert "identity-only instruction" in contract
+    assert ".agents/roblox/resources/records/RESOURCE-SLUG.yaml" in template
+    assert "~/.roblox-resources/records/RESOURCE-SLUG.yaml" in template
+    assert "Resolve the child's `Parent-state check`" in generation
+
+
+def test_nested_project_onboarding_requires_instruction_scope_visibility():
+    adoption = (RESOURCE_ROOT / "references" / "project-adoption.md").read_text(
+        encoding="utf-8"
+    )
+    profile = (
+        STRUCTURE_ROOT / "references" / "conventions" / "project-profile.md"
+    ).read_text(encoding="utf-8")
+    persistence = (
+        STRUCTURE_ROOT / "references" / "conventions" / "project-profile-persistence.md"
+    ).read_text(encoding="utf-8")
+    for path, text in (
+        ("project-adoption.md", adoption),
+        ("project-profile.md", profile),
+        ("project-profile-persistence.md", persistence),
+    ):
+        assert "working directory" in text, path
+        assert "not usable onboarding" in text.lower() or "do not claim usable fresh-agent onboarding" in text.lower(), path
+    assert "ancestor `AGENTS.md`" in adoption
+    assert "ancestor `AGENTS.md`" in persistence
+    assert "not authorized" in adoption
+    assert "not authorized" in persistence
+
+
 def test_external_project_authority_is_preserved_not_reselected():
     parent = (RESOURCE_ROOT / "SKILL.md").read_text(encoding="utf-8")
     adoption = (RESOURCE_ROOT / "references" / "project-adoption.md").read_text(
