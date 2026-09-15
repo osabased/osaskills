@@ -122,10 +122,25 @@ def test_post_adoption_defect_blocks_host_state_before_repair():
     assert "operational-lifecycle.md#post-adoption-defects" in repair
 
 
-def test_self_package_repair_requires_explicit_authorization():
+def test_self_package_repair_honors_existing_authorization_and_blocks_ungranted_edits():
     state = REFERENCES["state-policy.md"]
-    assert "never edited autonomously" in state
-    assert "wait for an explicit yes from the user in chat" in state
+    assert "current request already authorizes modifying this package" in state
+    assert "do not add a redundant per-diff confirmation" in state
+    assert "When package edits are not already authorized" in state
+    assert "wait for explicit user authorization in chat" in state
+    assert "expands beyond the existing authorized scope requires new authorization" in state
+
+
+def test_generated_child_description_carries_preload_routing_boundary():
+    contract = REFERENCES["resource-skill-contract.md"]
+    template = (ROOT / "templates" / "resource-skill-template.md").read_text(
+        encoding="utf-8"
+    )
+    assert "pre-load routing contract" in contract
+    assert "material exclusion" in contract
+    assert "incorrect implicit activation" in contract
+    assert "USE-TRIGGER-IN-ONE-SENTENCE" in template
+    assert "ADD-MATERIAL-ROUTING-EXCLUSION-WHEN-NEEDED" in template
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():
