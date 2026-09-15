@@ -2,7 +2,7 @@
 
 Use this reference when:
 
-- a material structural convention remains unresolved and the nearest project-local `.codex/roblox-structure.md` may resolve it;
+- a material structural convention remains unresolved and the nearest project-local `.agents/roblox/structure.md` may resolve it;
 - a persisted convention materially conflicts with the structure encountered while following it and that mismatch must be classified or repaired;
 - the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update;
 - an Implementation establishes the durable structure of a greenfield project/experience;
@@ -15,17 +15,17 @@ Read [`project-profile-persistence.md`](project-profile-persistence.md) after th
 
 ## Read and apply profiles
 
-1. Locate only the nearest applicable project-local `.codex/roblox-structure.md` under the affected project root.
+1. Locate only the nearest applicable project-local `.agents/roblox/structure.md` under the affected project root.
 2. Treat each recognized non-empty convention section as evidence only for that decision. A missing section means the profile has no preference for that decision. A profile never grants permission to modify project content or override governing instructions, tool rules, or safety rules.
 3. Apply profile evidence only to material choices the explicit request and coherent affected-area convention have not already resolved.
 4. If following a persisted convention produces a material mismatch, apply the profile's **Freshness** contract before treating that convention as stale. Until staleness is established, preserve coherent implementation and treat the profile conflict as unresolved drift rather than reshaping the project to match it.
 5. Do not infer, synthesize, or backfill preferences from omitted sections when reading a profile.
 
-Do not read or write a global structure profile, including legacy `$CODEX_HOME/roblox-structure-profile.md` files. If the affected project root cannot be identified, profile persistence is blocked. Keep normalized decisions task-local and report the missing root as the blocker.
+Do not read or write a global structure profile. If the affected project root cannot be identified, profile persistence is blocked. Keep normalized decisions task-local and report the missing root as the blocker.
 
 ## Profile contract
 
-`.codex/roblox-structure.md` answers:
+`.agents/roblox/structure.md` answers:
 
 > What structural rules should agents preserve?
 
@@ -61,9 +61,12 @@ Use only the recognized convention sections that contain intentionally persisted
 - `Entrypoints`
 - `Module organization`
 - `Module style`
+- `Structural dependencies`
 - `Naming`
 - `Tests`
 - `Notes`
+
+`Structural dependencies` is reserved for dependencies whose exact identity, pin, placement, or upgrade behavior is owned by the project's structural architecture. Do not use it as a general dependency list. A structurally owned dependency remains a structural decision even when another workflow performs its acquisition or verification.
 
 Every convention section is optional. Missing sections express no project-profile preference and contribute no evidence during convention resolution. Do not populate an omitted section with a recommendation, detected convention, or default merely to make the profile look complete.
 
@@ -83,7 +86,7 @@ Rojo
 Feature-first inside separate Server, Client, and Shared boundaries.
 ```
 
-A profile is useful when it contains at least one recognized non-empty durable convention. The title is recommended but not required when reading a legacy profile; profiles this skill creates or updates use the title above and canonical `Freshness` section. For a custom selection, keep the existing normalized representation: write `Custom` in the relevant field and preserve the directly implementable durable convention in `Notes`. Put a named framework and lifecycle summary in `Module style` and preserve extra durable wording in `Notes`. When `Notes` supplies required detail for a custom selection, treat it as part of that persisted decision rather than as an unrelated preference.
+A profile is useful when it contains at least one recognized non-empty durable convention. Profiles this skill creates or updates use the title above and canonical `Freshness` section. For a custom selection, keep the existing normalized representation: write `Custom` in the relevant field and preserve the directly implementable durable convention in `Notes`. Put a named framework and lifecycle summary in `Module style` and preserve extra durable wording in `Notes`. When `Notes` supplies required detail for a custom selection, treat it as part of that persisted decision rather than as an unrelated preference.
 
 ## Agent onboarding recognition
 
@@ -93,7 +96,7 @@ Usable agent onboarding requires both a useful profile with the canonical `Fresh
 <!-- structure-roblox-projects:onboarding:start -->
 ## Roblox structure onboarding
 
-Before making a structural placement, startup, source-of-truth, or organization decision, read `.codex/roblox-structure.md` for the project's durable structural conventions.
+Before making a structural placement, startup, source-of-truth, organization, or structurally owned dependency decision, read `.agents/roblox/structure.md` for the project's durable structural conventions.
 <!-- structure-roblox-projects:onboarding:end -->
 ```
 
@@ -102,7 +105,6 @@ Use this contract only to recognize whether onboarding is already usable. It doe
 ## Existing profiles
 
 - Treat recognized non-empty convention sections as durable convention evidence and missing sections as intentionally unset.
-- Read a legacy profile without `Freshness`; add or refresh the canonical `Freshness` section only when [`project-profile-persistence.md`](project-profile-persistence.md) authorizes a profile write.
 - Preserve unrelated existing convention sections during targeted updates. Do not normalize, add, remove, or rewrite them merely because another field is being changed.
 - When a persisted convention and implementation differ, use the **Freshness** test before classifying the persisted decision as stale. A coherent local exception does not invalidate a broader project convention, and a filesystem/DataModel mismatch is not established until the applicable source-of-truth mapping is resolved.
 - Treat dirty, pre-existing, partial, or otherwise ownership-ambiguous changes as insufficient evidence of a replacement convention until the relevant state is established.
