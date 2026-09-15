@@ -17,9 +17,13 @@ Canonical SSA pins:
 | License | MIT |
 | `ModuleLoader.rbxm` SHA-256 | `79ebdaa4e8291402d565e5318775c2208e554ccb36770db20be5978f15b30521` |
 
+`structure-roblox-projects` owns this dependency as part of Canonical SSA infrastructure: its canonical identity, exact pin, acquisition form, DataModel placement, expected behavior, and upgrade/replacement decision are structural architecture. Another workflow may acquire, verify, or document this exact target, but it must not select a substitute, advance the pin, or redefine the dependency independently.
+
 When the project already uses or deliberately selects Wally, declare `ModuleLoader = "crusherfire/module-loader@3.0.4"` and map the resulting package alias to `ReplicatedStorage/Packages/ModuleLoader`. Otherwise acquire the exact [`v3.0.4` `ModuleLoader.rbxm` release asset](https://github.com/ActualFire-Games/module-loader/releases/tag/v3.0.4).
 
-When acquisition or integration is part of the task, invoke [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) in `acquire/adopt` mode. Preserve the selected identity and pin as a positive target; qualify and integrate it without restarting broad candidate discovery. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
+When acquisition or integration is part of the task, invoke [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) in `acquire/adopt` mode with `structure-roblox-projects` as the project-use authority and the identity/pin above as a fixed positive target. Qualification and verification may block that target, but they do not authorize rediscovery, substitution, or upgrade. If the target cannot be acquired or verified sufficiently for the intended use, surface the block back to this structural workflow. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
+
+When Canonical SSA is durably persisted, record the exact selected acquisition form together with the identity, version, commit, and `ReplicatedStorage/Packages/ModuleLoader` placement under `Structural dependencies` in `.agents/roblox/structure.md`. That project profile is the durable project authority for the ModuleLoader target.
 
 ## Resulting DataModel
 
@@ -68,7 +72,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Packages = ReplicatedStorage:WaitForChild("Packages")
 local ModuleLoader = require(Packages:WaitForChild("ModuleLoader"))
 local Client = ReplicatedStorage:WaitForChild("Client")
-
 ModuleLoader.Start(Client)
 ```
 
@@ -100,7 +103,7 @@ Treat a loader load, Init, or Start warning attributable to changed work as a va
 
 For an explicit migration, follow [`migration.md`](../workflows/migration.md) and account for every old entrypoint and registration path, duplicate-start risk, the resulting source-of-truth mapping, and a recovery boundary. Remove or redirect old startup only inside the authorized migration write set.
 
-Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Update this contract only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md).
+Changing the ModuleLoader canonical identity, version/commit, acquisition form, or placement is Canonical SSA infrastructure work owned by `structure-roblox-projects`; do not let resource refresh independently advance it. Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Update this contract and the affected project's `Structural dependencies` decision only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md).
 
 ## Validation
 
@@ -108,7 +111,7 @@ For creation or bootstrap changes, verify:
 
 - the effective DataModel and instance `RunContext` values;
 - the direct server and client startup calls;
-- the exact loader pin, package/asset location, depth, and disabled global wait;
+- the exact loader identity/pin, selected acquisition form, package/asset location, depth, and disabled global wait;
 - one representative lifecycle root per affected runtime;
 - the full load → Init → Start phase barrier; and
 - warning inspection plus direct feature behavior rather than loaded-state attributes alone.
