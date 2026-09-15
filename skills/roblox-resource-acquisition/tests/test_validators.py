@@ -214,7 +214,7 @@ class GeneratedSkillTests(unittest.TestCase):
             path = skill / "SKILL.md"
             text = path.read_text(encoding="utf-8")
             concrete = (
-                "Parent-state check: Resolve the affected Roblox project root, then read `.agents/roblox/resources/records/widget-resource.yaml` and `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity."
+                "Parent-state check: Resolve the affected Roblox project root, then read the matching schema-version 3 resource record at `.agents/roblox/resources/records/widget-resource.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity."
             )
             weak = (
                 "Parent-state check: Load matching schema-version 3 resource records and resource-bound learnings by slug plus canonical identity."
