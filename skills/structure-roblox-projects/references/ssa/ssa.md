@@ -17,7 +17,7 @@ Create only the boundaries the feature needs. Use matching feature names across 
 
 These paths are relative to `ServerScriptService` for `Server/` and `ReplicatedStorage` for `Client/`, `Shared/`, and `Remotes/`. Shared ModuleScripts share source and visibility, not mutable runtime state; server and client execute them independently.
 
-Represent the resulting DataModel through the active source-of-truth workflow. For Rojo, a feature directory can use `init.luau` so the directory maps to the lifecycle-root ModuleScript while retaining child implementation modules. Read [`rojo.md`](rojo.md) or [`script-sync.md`](script-sync.md) when that specialist branch is active.
+Represent the resulting DataModel through the active source-of-truth workflow. For Rojo, a feature directory can use `init.luau` so the directory maps to the lifecycle-root ModuleScript while retaining child implementation modules. Read [`rojo.md`](../workflows/rojo.md) or [`script-sync.md`](../workflows/script-sync.md) when that specialist branch is active.
 
 ## 2. Fill the discovery slot
 

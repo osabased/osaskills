@@ -7,7 +7,7 @@ Use this reference only when:
 
 Resolve only choices that are genuinely open and material. A clear established project should produce zero preference questions.
 
-Read [`practices.md`](practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. If reusable project-level persistence is requested, `project-profile.md` owns normalization, preview, and the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
+Read [`practices.md`](../core/practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. If reusable project-level persistence is requested, `project-profile.md` owns normalization, preview, and the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
 
 ## Decision contract
 
@@ -21,13 +21,13 @@ Read [`practices.md`](practices.md) when technical definitions, diagrams, use ca
 6. When a choice remains open, recommend the smallest compatible option first. Ask the user only when the decision is material and cannot be selected safely from the task, project constraints, profile, or skill defaults.
 7. Batch independent unresolved choices into one compact prompt when answers do not depend on each other. Serialize only dependent choices or clarification follow-ups. Stop as soon as every material choice is directly implementable.
 8. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts recommendations for unresolved choices only. `preserve detected` keeps coherent detected conventions and leaves only genuinely open choices to resolve.
-9. Use diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization decision, or when the user asks for one. Use diagrams from `practices.md` rather than inventing competing architecture vocabulary.
+9. Use diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization decision, or when the user asks for one. Use diagrams from `../core/practices.md` rather than inventing competing architecture vocabulary.
 10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
 11. Project-level persistence is optional and must be explicitly requested. Treat applicable profile evidence as caller-provided context; send resolved durable choices to `project-profile.md` only when persistence is requested.
 
 ## Canonical SSA bundle
 
-For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the pinned loader and direct server/client bootstrap pair from [`ssa-bootstrap.md`](ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](ssa.md).
+For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the pinned loader and direct server/client bootstrap pair from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](../ssa/ssa.md).
 
 Its zero-registration startup and fixed lifecycle integration are the requirement beyond organization that justifies the loader. Once the bundle is selected, treat that loader choice as resolved rather than reopening resource comparison.
 
@@ -49,7 +49,7 @@ Use this catalogue only for choices that remain open. Do not mechanically resolv
 
 ### Source of truth
 
-Options and meanings come from `practices.md`:
+Options and meanings come from `../core/practices.md`:
 
 - Preserve the detected supported workflow
 - Studio-native
@@ -70,7 +70,7 @@ When a detected workflow will be persisted, normalize Studio-native, Script Sync
 
 Preserve coherent established startup topology. For greenfield work, recommend the Canonical SSA bundle unless a concrete runtime requirement makes multiple or custom entrypoints the simpler fit.
 
-For **Multiple entrypoints**, use the derivation rules in `practices.md` and resolve only startup details needed to make each independently starting path unambiguous.
+For **Multiple entrypoints**, use the derivation rules in `../core/practices.md` and resolve only startup details needed to make each independently starting path unambiguous.
 
 For **Custom entrypoints**, resolve the count, runtime owner, location, startup behavior, and runtime-specific exceptions for every entrypoint the design actually requires.
 
@@ -103,7 +103,7 @@ Example normalized preference: `Plain Luau with explicit requires and Init/Start
 
 ### Naming
 
-Use the naming rules in `practices.md`. Ask only when naming is materially unresolved or the user wants a reusable convention different from detected/default behavior.
+Use the naming rules in `../core/practices.md`. Ask only when naming is materially unresolved or the user wants a reusable convention different from detected/default behavior.
 
 ### Tests
 
@@ -115,7 +115,7 @@ When `use recommended` is selected, keep every value already resolved by the exp
 
 - detected supported source-of-truth workflow, otherwise Studio-native;
 - coherent established entrypoints, organization, and module style, otherwise the Canonical SSA bundle for greenfield work without a conflicting requirement;
-- coherent established naming, otherwise the new-project naming defaults in `practices.md`;
+- coherent established naming, otherwise the new-project naming defaults in `../core/practices.md`;
 - existing checks and test placement, otherwise the smallest relevant available validation.
 
 For task-local decisions, summarize only the resolved choices that materially affect the current task, then continue without an extra approval stop unless the user requested one.

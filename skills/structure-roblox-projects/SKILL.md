@@ -37,7 +37,7 @@ A clear request authorizes its stated project, system, feature, path, files, ins
 
 Access, technical necessity, project conventions, profiles, dependencies, or failing validation do not independently grant authority to modify adjacent content.
 
-Read [`references/modification-scope.md`](references/modification-scope.md) before mutation when a proposed write may cross an unclear, shared, generated, or protected boundary; a dirty worktree makes ownership ambiguous; or a broad tool can write outside the immediately requested content.
+Read [`references/core/modification-scope.md`](references/core/modification-scope.md) before mutation when a proposed write may cross an unclear, shared, generated, or protected boundary; a dirty worktree makes ownership ambiguous; or a broad tool can write outside the immediately requested content.
 
 ## Reference routing
 
@@ -47,17 +47,17 @@ An internal edit inside an already placed feature remains on the established-pro
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
-| **Canonical SSA feature integration** | Recognized canonical SSA needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa.md`](references/ssa.md) |
-| **Canonical SSA infrastructure** | Create canonical SSA; explicitly migrate to it; or change its entrypoints, loader identity/acquisition/configuration, discovery, or upgrade behavior | [`references/ssa.md`](references/ssa.md) and [`references/ssa-bootstrap.md`](references/ssa-bootstrap.md) |
-| **Ordinary structure** | An ordinary Roblox structure choice or Review criterion remains unresolved outside the active canonical SSA contract | [`references/practices.md`](references/practices.md) |
-| **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/modification-scope.md`](references/modification-scope.md) |
-| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/server-authority.md`](references/server-authority.md) |
-| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/script-capabilities.md`](references/script-capabilities.md) |
-| **Script Sync** | The task reviews, designs, plans, enables, disables, or changes Script Sync/conflict behavior or a sync boundary; or migrates/renames content into, out of, or within Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/script-sync.md`](references/script-sync.md) |
-| **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/rojo.md`](references/rojo.md) |
-| **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/migration.md`](references/migration.md) |
-| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/project-profile.md`](references/project-profile.md) |
-| **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/preference-resolution.md`](references/preference-resolution.md) |
+| **Canonical SSA feature integration** | Recognized canonical SSA needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa/ssa.md`](references/ssa/ssa.md) |
+| **Canonical SSA infrastructure** | Create canonical SSA; explicitly migrate to it; or change its entrypoints, loader identity/acquisition/configuration, discovery, or upgrade behavior | [`references/ssa/ssa.md`](references/ssa/ssa.md) and [`references/ssa/ssa-bootstrap.md`](references/ssa/ssa-bootstrap.md) |
+| **Ordinary structure** | An ordinary Roblox structure choice or Review criterion remains unresolved outside the active canonical SSA contract | [`references/core/practices.md`](references/core/practices.md) |
+| **Write boundary** | A write may cross an unclear/shared/protected boundary, broad generated output, or ambiguous pre-existing work | [`references/core/modification-scope.md`](references/core/modification-scope.md) |
+| **Server Authority** | The current or target structure uses `Workspace.AuthorityMode = Server`, prediction/rollback APIs, or shared deterministic simulation; or the task explicitly reviews, designs, plans, enables, disables, or migrates to/from Server Authority | [`references/platform/server-authority.md`](references/platform/server-authority.md) |
+| **Script Capabilities** | An active or materially suspected Script Capabilities sandbox can affect the work; or the task explicitly reviews, designs, plans, enables, disables, or changes the Script Capabilities security model | [`references/platform/script-capabilities.md`](references/platform/script-capabilities.md) |
+| **Script Sync** | The task reviews, designs, plans, enables, disables, or changes Script Sync/conflict behavior or a sync boundary; or migrates/renames content into, out of, or within Script Sync-managed content where sync representation, metadata, child shape, packages, or conflict behavior can matter | [`references/workflows/script-sync.md`](references/workflows/script-sync.md) |
+| **Rojo** | The task reviews, designs, plans, adopts, removes, or changes a Rojo mapping/workflow; changes a mapping/project/meta/model file; or migrates content into, out of, or within Rojo-mapped content where path, name, topology, version, syncback, or live-serve behavior can affect the resulting DataModel | [`references/workflows/rojo.md`](references/workflows/rojo.md) |
+| **Migration** | Moves, renames, topology/identity changes, source-of-truth migration, or multi-step restructuring are planned | [`references/workflows/migration.md`](references/workflows/migration.md) |
+| **Project profile** | A material convention remains unresolved and an existing `.codex/roblox-structure.md` may resolve it, or the user requests profile creation/update | [`references/conventions/project-profile.md`](references/conventions/project-profile.md) |
+| **Preferences** | The user explicitly asks to choose structural preferences, or a material organization choice remains unresolved after applicable request/project/profile evidence | [`references/conventions/preference-resolution.md`](references/conventions/preference-resolution.md) |
 
 For version-sensitive platform behavior, re-open current authoritative documentation when external access is available instead of treating cached guidance as current by default.
 
@@ -73,15 +73,15 @@ For ordinary work in an established project, resolve each material choice in thi
 
 For greenfield work or explicit redesign/migration, use the requested target first, then an applicable project profile, relevant project constraints, and a current-task recommendation/default.
 
-Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
+Check for the nearest project-local `.codex/roblox-structure.md` only when a material convention remains unresolved or the user asks for reusable project preferences. Read `references/conventions/project-profile.md` before interpreting, creating, or updating that file. Treat the profile as convention memory, never as modification authority.
 
 ## Complete the selected route
 
 ### Preference setup
 
-If the user requests reusable project-level convention memory, read `references/project-profile.md` first. Persist only durable conventions intentionally selected by the user or explicitly included in the requested project-level preference setup. Preserve unrelated existing profile sections, and treat missing sections as no project-profile preference. Read `references/preference-resolution.md` only for requested or otherwise intentionally included decisions that remain genuinely open.
+If the user requests reusable project-level convention memory, read `references/conventions/project-profile.md` first. Persist only durable conventions intentionally selected by the user or explicitly included in the requested project-level preference setup. Preserve unrelated existing profile sections, and treat missing sections as no project-profile preference. Read `references/conventions/preference-resolution.md` only for requested or otherwise intentionally included decisions that remain genuinely open.
 
-Otherwise, read `references/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
+Otherwise, read `references/conventions/preference-resolution.md` and resolve only choices that are genuinely open and material to the request. A clear established project should produce zero preference questions.
 
 Finish when every material requested preference is directly implementable and any requested profile write is either completed with authorization or blocked with the exact reason.
 
@@ -103,7 +103,7 @@ Design is read-only unless Implementation is separately requested. Finish when e
 
 ### Migration plan
 
-Read `references/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
+Read `references/workflows/migration.md` and every specialist reference whose current-state or target-state trigger is present. Keep planning read-only unless implementation is also requested.
 
 Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
 
@@ -121,10 +121,10 @@ The fast path removes unnecessary structural ceremony and reference loading; it 
 
 Then:
 
-1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/modification-scope.md` before writing.
+1. In a version-controlled filesystem worktree, inspect relevant status or pre-existing changes before mutation. If they overlap the intended work or make ownership ambiguous, read `references/core/modification-scope.md` before writing.
 2. Establish the intended authorized write set at the level the task requires.
 3. Apply the smallest coherent change. Update the authorized paths, mappings, callers, requires, tests, or integration points needed for that change to work.
-4. For moves, renames, topology changes, or multi-step restructuring, follow `references/migration.md`.
+4. For moves, renames, topology changes, or multi-step restructuring, follow `references/workflows/migration.md`.
 5. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
 6. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
 7. Run focused validation that covers the credible failure modes introduced by the change. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
