@@ -15,10 +15,10 @@ Use this reference for moves, renames, topology changes, source-of-truth migrati
    - `script.Parent` and other ancestry or sibling traversal;
    - `script.Name`, `GetFullName()`, and name- or path-derived registrations; and
    - topology- or identity-sensitive discovery behavior.
-3. When required writes cross an unclear or protected boundary, read [`modification-scope.md`](modification-scope.md) and classify those writes before planning an executable slice.
+3. When required writes cross an unclear or protected boundary, read [`modification-scope.md`](../core/modification-scope.md) and classify those writes before planning an executable slice.
 4. Load specialist guidance when either the current structure or requested target structure can exercise that boundary:
-   - [`server-authority.md`](server-authority.md) for migration that preserves, introduces, removes, or changes Server Authority prediction/rollback or shared deterministic simulation;
-   - [`script-capabilities.md`](script-capabilities.md) for migration that preserves, introduces, removes, or changes an active or requested Script Capabilities boundary;
+   - [`server-authority.md`](../platform/server-authority.md) for migration that preserves, introduces, removes, or changes Server Authority prediction/rollback or shared deterministic simulation;
+   - [`script-capabilities.md`](../platform/script-capabilities.md) for migration that preserves, introduces, removes, or changes an active or requested Script Capabilities boundary;
    - [`script-sync.md`](script-sync.md) when moving or renaming content into, out of, or within Script Sync management can change sync representation, metadata, child shape, packages, or conflict behavior; and
    - [`rojo.md`](rojo.md) when moving or renaming content into, out of, or within Rojo mapping can change the resulting DataModel through path, filename, `init.*`, suffix, nested-project, metadata, or mapping semantics.
 
@@ -42,6 +42,6 @@ For every affected branch, check the relevant failure modes:
 - changed Server Authority prediction/rollback boundaries; and
 - changed Script Capabilities sandbox semantics.
 
-After topology- or identity-sensitive moves, exercise affected discovery or registration behavior when a representative runtime is available. When entrypoints, Remotes, networking behavior, or replicated modules/state change, validate the applicable server/client or multi-client path. Server Authority simulation changes use the network validation in `server-authority.md`.
+After topology- or identity-sensitive moves, exercise affected discovery or registration behavior when a representative runtime is available. When entrypoints, Remotes, networking behavior, or replicated modules/state change, validate the applicable server/client or multi-client path. Server Authority simulation changes use the network validation in `../platform/server-authority.md`.
 
 Migration planning is complete when every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
