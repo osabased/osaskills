@@ -1,6 +1,6 @@
 # Roblox structure profile persistence
 
-Use this reference only when the project-profile contract in [`project-profile.md`](project-profile.md) permits or requires a profile/onboarding write:
+Use this reference only when profile/onboarding persistence handling is in scope under [`project-profile.md`](project-profile.md):
 
 - the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update;
 - an Implementation establishes the durable structure of a greenfield project/experience;
@@ -8,7 +8,7 @@ Use this reference only when the project-profile contract in [`project-profile.m
 - an authorized Implementation encounters a persisted convention that satisfies the `Freshness` contract's verified-drift test; or
 - an explicitly requested project-wide redesign or migration is being implemented and changes durable structural conventions.
 
-Read [`project-profile.md`](project-profile.md) first. It owns profile meaning, recognized sections, interpretation, the canonical `Freshness` contract, and recognition of usable agent onboarding. This file owns only persistence and project-root `AGENTS.md` onboarding writes. It does not change when persistence is authorized.
+Read [`project-profile.md`](project-profile.md) first. It owns profile meaning, recognized sections, interpretation, the canonical `Freshness` contract, and recognition of usable agent onboarding. This file owns persistence-mode authority, confirmation, and project-root `AGENTS.md` onboarding mutation. Entering this reference does not itself authorize a write.
 
 ## Agent onboarding mutation
 
