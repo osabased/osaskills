@@ -11,7 +11,7 @@ Use this reference when:
 
 A project profile is **convention memory**, not modification authority and not a repository snapshot. It records only durable structural rules deliberately selected or coherently established in the project.
 
-When a profile or project-root `AGENTS.md` write is permitted or required by one of the persistence triggers above, read [`project-profile-persistence.md`](project-profile-persistence.md) after this file. That reference owns persistence modes and onboarding mutation; this file owns profile interpretation and the durable profile contract.
+Read [`project-profile-persistence.md`](project-profile-persistence.md) after this file when persistence handling is in scope: explicit profile/preference setup, foundational setup, established-project onboarding initialization, verified drift repair during an authorized Implementation, or an implemented project-wide redesign/migration that changes durable conventions. Entering that reference does not itself authorize a write; it owns persistence-mode authority, confirmation, and mutation behavior. This file owns profile interpretation and the durable profile contract.
 
 ## Read and apply profiles
 
@@ -110,4 +110,4 @@ Use this contract only to recognize whether onboarding is already usable. It doe
 
 When profile evidence still leaves a material choice unresolved for the current task, resolve that choice with [`preference-resolution.md`](preference-resolution.md). Do not persist the resulting task-local recommendation unless [`project-profile-persistence.md`](project-profile-persistence.md) requires it or the user explicitly requests project-level persistence for that choice.
 
-Profile interpretation is complete when every material recognized persisted convention has been applied, classified as unresolved drift, or proven stale under the `Freshness` contract. If a write is authorized or required, continue with [`project-profile-persistence.md`](project-profile-persistence.md).
+Profile interpretation is complete when every material recognized persisted convention has been applied, classified as unresolved drift, or proven stale under the `Freshness` contract. If a persistence mode becomes applicable, continue with [`project-profile-persistence.md`](project-profile-persistence.md).
