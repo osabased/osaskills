@@ -22,7 +22,7 @@ Learnings decay. They lower the cost of the next check by saying where to look f
 Resolve stores in this order:
 
 1. an explicit learnings-store path supplied by the user/project/environment;
-2. `<project-root>/.roblox-resources/learnings/` when present;
+2. `<project-root>/.agents/roblox/resources/learnings/` when present;
 3. `~/.roblox-resources/learnings/` when present.
 
 Unlike the curated registry, entries are not exclusive: **all valid entries from all discovered stores load together**. There is no override-by-slug. When two learnings disagree about the same volatile fact, the fact is uncertain — re-check it from current sources rather than picking a winner. Project-local entries describe that project's context and carry more weight inside it.
@@ -57,9 +57,9 @@ Entries carry no trust and no verification fields; the validator rejects them. K
 
 ## Consumption
 
-**Acquisition brief ([qualification-workflow.md §0](qualification-workflow.md#0-decide-whether-acquisition-is-warranted)).** Load learnings relevant to the capability and environment. Environment blockers shape which verification route the brief plans for; gotchas and rejections set realistic expectations. Learnings inform the brief; they never decide acquisition by themselves.
+**Acquisition brief ([qualification-workflow.md §0](qualification-workflow.md#0-decide-whether-acquisition-is-warranted)).** Load learnings relevant to the capability and environment. Environment blockers shape which verification route the brief can realistically plan for; gotchas and rejections set expectations early. Learnings inform the brief; they never decide acquisition by themselves.
 
-**Registry and discovery ([qualification-workflow.md §1](qualification-workflow.md#1-consult-the-external-trusted-curated-registry-then-discover-if-needed)).** Failed-query learnings retire known-dead query shapes without narrowing the requirement itself. A rejection learning deprioritizes its candidate only while the recorded `version_context` still matches current upstream and `reconsider_when` has not triggered; once upstream moves past the rejected state, the rejection is stale and the candidate re-enters discovery normally. Learnings never reorder curated preference and never silently suppress a curated resource: an adverse learning about a curated resource routes into the [qualification contradiction path](qualification-workflow.md#2-qualify-candidates-according-to-actual-trust) — report and block the affected use — never around it.
+**Registry and discovery ([qualification-workflow.md §1](qualification-workflow.md#1-consult-the-external-trusted-curated-registry-then-discover-if-needed)).** Failed-query learnings retire known-dead query shapes without narrowing the requirement itself. A rejection learning deprioritizes its candidate only while the recorded `version_context` still matches current upstream and its reconsider condition has not triggered; once upstream moves past the rejected state, the rejection is stale and the candidate re-enters normally. Learnings never reorder curated preference and never silently suppress a curated resource: an adverse learning about a curated resource routes into the [qualification contradiction path](qualification-workflow.md#2-qualify-candidates-according-to-actual-trust) — report and block the affected use — never around it.
 
 **Qualification ([qualification-workflow.md §2](qualification-workflow.md#2-qualify-candidates-according-to-actual-trust)).** Resource-bound gotchas and drift notes are pre-loaded contradiction checks: falsify the recorded issue against the current version first, because it is the cheapest place a candidate can fail. The learning directs where to look; only the current check decides.
 
