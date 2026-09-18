@@ -218,14 +218,12 @@ Use **Widget Resource** for synchronized widget state. Guidance targets **1.2.3*
 
 1. Install package `com.example.widget` at version `1.2.3` under `ReplicatedStorage.Packages`.
 
-## Operational reconciliation
+## Repair interrupt
 
-- Policy: required — project package manifests can select a different materially version-sensitive release.
-- Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
-- Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
-- Parent-state check: Resolve the affected Roblox project root, then read the matching schema-version 3 resource record at `.agents/roblox/resources/records/widget-resource.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity.
-- Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
-- Defect handoff: Capture the task, installed state, expected behavior, observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
+- Trigger: Invoke `roblox-resource-acquisition` in `repair/reconcile` mode when this reusable guidance requires guessing, bypassing an instruction, repeated rediscovery, or an undocumented workaround likely to recur; a harmless task-local adjustment is not an interrupt.
+- Hard defect: If correctness, security, canonical identity, selected version, or verification is unreliable, stop dependent work and enter parent reconciliation and repair before continuing.
+- Soft defect: If the workaround is safe and reversible, immediate work may continue, but invoke parent repair diagnosis and surface the reproduction, workaround, and durable correction before completion.
+- Handoff: Capture the task, installed state, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction. Parent activation authorizes diagnosis and reporting, not edits without current authorization.
 
 ## Common path
 
@@ -234,6 +232,15 @@ local Widget = require(game.ReplicatedStorage.Packages.Widget)
 local session = Widget.new()
 session:Start()
 ```
+
+## Operational reconciliation
+
+- Policy: required — project package manifests can select a different materially version-sensitive release.
+- Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
+- Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
+- Parent-state check: Resolve the affected Roblox project root, then read the matching schema-version 3 resource record at `.agents/roblox/resources/records/widget-resource.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity.
+- Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
+- Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for evidence and parent activation.
 
 ## Client/server placement
 

@@ -2,9 +2,15 @@
 
 Use this reference for iterative repair of a **generated resource skill or affected resource/child validation evidence**. For installed/host reconciliation and post-adoption blocking/restoration semantics, also use [operational-lifecycle.md](operational-lifecycle.md). It never authorizes editing the `roblox-resource-acquisition` package itself; evidence that this package's own guidance is defective follows the self-growth boundaries in [state-policy.md](state-policy.md).
 
-## Post-adoption entry
+## Repair-interrupt entry
 
-When ordinary use exposes a defect after host adoption, first follow [operational-lifecycle.md](operational-lifecycle.md#post-adoption-defects) to capture the reproduction, reconcile installed/parent state, block affected host adoptions, and invalidate affected evidence. Then enter the normal repair cycle below.
+When ordinary use exposes reusable friction, invoke repair diagnosis even if a safe workaround succeeds. Capture the reproduction and workaround, then classify it:
+
+- a hard correctness, security, identity, version, or verification defect stops dependent work and follows [operational-lifecycle.md](operational-lifecycle.md#post-adoption-defects) for blocking and reconciliation;
+- a soft guidance defect may let safe reversible immediate work continue, but its durable correction must be surfaced before completion;
+- a harmless task-local adjustment with no reusable defect exits the interrupt without opening a repair cycle.
+
+Diagnosis and reporting are permitted by activation. Package or child edits still follow [state-policy.md](state-policy.md#self-growth-boundaries). When a soft child repair is authorized, invalidate only the evidence affected by the edit and keep the host `installed` until fresh validation and explicit activation restore `operational`.
 
 ## The cycle
 
@@ -53,7 +59,7 @@ The resource behaves as understood; the generated skill teaches it wrong.
 - **Re-run:** the failed check first, then **every previously passing applicable check** per the testing-protocol regression rule.
 - **Record:** a `repair-outcome` learning — defect class, fix pattern, which check caught it.
 - **Status:** the patch voids the skill's prior behavioral pass. `skill_validation.independent_behavioral_passed` cannot remain true until the reruns complete and pass.
-- **Adoption:** affected host entries remain `blocked` until the repaired artifact is authorized for host update, the full regression/catalog checks pass, and explicit activation passes again.
+- **Adoption:** hard defects keep affected host entries `blocked`. An authorized soft guidance repair keeps the host `installed` while invalidated structural, behavioral, catalog, and activation checks are rerun; restore `operational` only after they pass.
 
 ### 5. Environment failure
 
@@ -117,4 +123,3 @@ No repair activity upgrades any status implicitly:
 ## Learning emission
 
 Every repair cycle appends exactly one learning entry per [learnings-store.md](learnings-store.md). If no store exists and one cannot be created, put the learning's content in the escalation or final report so it is not lost — never write it into this skill's package.
-

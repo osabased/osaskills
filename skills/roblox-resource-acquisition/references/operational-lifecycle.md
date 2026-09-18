@@ -1,6 +1,6 @@
 # Operational Child Lifecycle
 
-Use this reference when adopting a generated child, reconciling it before ordinary use, repairing a post-adoption defect, or validating a multi-child catalog.
+Use this reference when adopting a generated child, reconciling state before use, repairing a hard post-adoption defect or an authorized child artifact, or validating a multi-child catalog. Soft repair diagnosis alone does not require this lifecycle branch.
 
 ## States
 
@@ -25,7 +25,8 @@ Use only schema-version 3 records. A record that does not satisfy the current co
 
 Every generated child declares its reconciliation policy:
 
-- **required:** installed resource state can drift and the documented behavior is materially version-sensitive;
+- **required:** every version-sensitive use must reconcile independently drifting installed state with parent lifecycle evidence before proceeding;
+- **conditional:** ordinary use can cheaply confirm the declared pin plus its lock/header counterpart, while a canonical verifier provides the deferred installed-integrity gate before completion;
 - **not-applicable:** the installation mechanism fixes an immutable reviewed state, or the documented behavior is demonstrably insensitive to independently drifting state. Record the concrete reason.
 
 When reconciliation is required:
@@ -34,9 +35,20 @@ When reconciliation is required:
 2. Compare the observed canonical identity and version/commit/source state with the child's provenance.
 3. Load matching schema-version 3 resource records and resource-bound learnings.
 4. Re-check adverse learnings against current evidence; a learning directs the check but never decides it alone.
-5. Stop the affected use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode when the installed identity differs, installed state is unknown or mismatched, a current block applies, a material adverse observation remains unresolved, or the child's instructions fail during ordinary use.
+5. Stop the affected use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode when the installed identity differs, installed state is unknown or mismatched, a current block applies, a material adverse observation remains unresolved, or an instruction defect is hard because correctness, security, identity, version, or verification is unreliable.
 
 Record `matched` only after applicable installed-state and parent-state checks complete. Use `mismatched`, `blocked`, or `unknown` truthfully when they do not.
+
+When reconciliation is conditional:
+
+1. Follow the child's **Common path** and confirm only its declared project pin plus the named lockfile or generated-version header.
+2. If they match, proceed without reading package internals, provenance, resource records, or learnings. Run the child's named integrity gate before task completion and require its documented pass condition.
+3. Escalate to the full required-policy sequence above when the declaration or lock/header is missing or mismatched; the task is adoption, upgrade, or an authorized repair that invalidates evidence; the verifier fails or reports drift; repair diagnosis classifies a defect as hard; or an already-known block applies.
+4. On escalation, stop version-sensitive work until the full sequence resolves or truthfully records the mismatch/block.
+
+A soft instruction defect still activates the parent repair interrupt, but it does not automatically activate this full state sequence. Diagnose and surface its reproduction, safe workaround, and durable correction first; enter reconciliation only if diagnosis finds a hard/state trigger or an authorized edit invalidates lifecycle evidence.
+
+This fast path intentionally does not discover newly added external record blocks at initial use. Urgent blocks must be surfaced by updating the child or through the named project-wide integrity gate. Records and learnings remain lifecycle evidence used by reconciliation, not ambient prerequisites for a healthy conditional task.
 
 ## Adoption gate
 
@@ -82,7 +94,11 @@ Do not leave both as independently editable canonical children after adoption. T
 
 ## Post-adoption defects
 
-Capture the task, host, project, installed identity/version, expected behavior, observed behavior, and smallest reproduction. Mark matching operational entries `blocked`, invalidate affected behavioral and catalog-routing passes, and enter the existing repair classification loop.
+Capture the task, host, project, installed identity/version, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction, then classify the defect before changing lifecycle state.
+
+- **Hard:** Mark matching operational entries `blocked`, invalidate affected behavioral and catalog-routing passes, and enter the repair loop plus applicable state reconciliation.
+- **Soft, diagnosis only:** Safe reversible immediate work may continue. Surface the defect before completion; do not invalidate unrelated lifecycle evidence or force provenance reconciliation when no artifact changes are authorized.
+- **Soft, authorized child repair:** Keep the host truthfully `installed` while the canonical child is being repaired, invalidate structural, behavioral, catalog-routing, and explicit-activation evidence affected by the edit, and restore `operational` only after fresh validation and explicit activation.
 
 A repaired artifact does not update a separate installed host copy automatically. Obtain authorization for that host mutation, update it, rerun all invalidated regression checks, rerun catalog validation, and repeat explicit host activation before restoring `operational`. For a managed project-local child whose canonical copy is already the adopted `.agents/skills/<skill-name>/` directory, repair that canonical child in place and rerun the same invalidated host checks; do not manufacture a second staging copy.
 

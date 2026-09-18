@@ -78,6 +78,8 @@ Whenever this workflow writes or updates a portable resource record, run `script
 
 ## Self-growth boundaries
 
+Repair-interrupt activation is permission to diagnose and report the defect, not a blanket mutation grant. A safe workaround does not erase the reusable defect, and completing the immediate task does not remove the obligation to surface its reproduction, workaround, and durable correction. Hard defects stop dependent work; soft defects may preserve immediate progress without expanding edit authority or forcing unrelated provenance reconciliation.
+
 Durable learning has exactly two destinations with different mutation rules.
 
 **External learnings store** — user/project-owned observation data outside this package, governed by [learnings-store.md](learnings-store.md). Appending a new entry (integration gotchas, failed query patterns, version drift notes, environment blockers, rejection reasons, repair outcomes) is autonomous and needs no permission. Editing, retargeting, or deleting any existing entry requires explicit user permission in chat, every time; there is no standing allowlist. This package ships only the store contract and `../templates/learning-entry.yaml`; never bundle accumulated entries into the package or into a generated skill.

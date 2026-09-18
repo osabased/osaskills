@@ -36,9 +36,16 @@ Required when the resource touches remotes, HTTP, credentials, persistence, arbi
 
 ## Test I - Operational reconciliation
 
-Use a project whose installed resource state is independently mutable when the child declares reconciliation `required`. Pass if the child detects the installed identity/version, compares it with its reviewed state, consults matching parent-maintained records/learnings, and stops the affected use on an unknown, mismatch, or current block. For `not-applicable`, pass only when the child gives a concrete immutable-install or version-insensitivity reason.
+For `required`, use a project whose installed resource state is independently mutable. Pass if every version-sensitive use detects the installed identity/version, compares it with its reviewed state, consults matching parent-maintained records/learnings, and stops on an unknown, mismatch, or current block.
 
-Introduce a new ordinary-use instruction defect. Pass if the child captures the task, installed state, expected/observed behavior, and smallest reproduction, then activates `roblox-resource-acquisition` in `repair/reconcile` mode without silently continuing.
+For `conditional`, run both branches:
+
+- Healthy ordinary use: make the declared pin and named lock/header match. Pass only if the agent proceeds after those checks without reading package internals, provenance, resource records, or learnings, while retaining the exact integrity gate for completion.
+- State escalation: separately introduce a missing/mismatched pin or lock/header, verifier failure or drift, adoption/upgrade, an authorized repair, a hard correctness/security/identity/version defect, and an already-known block. Pass only if each applicable trigger stops version-sensitive use, loads the deterministic parent record/learnings route, and invokes `roblox-resource-acquisition` in `repair/reconcile` mode.
+
+For `not-applicable`, pass only when the child gives a concrete immutable-install or version-insensitivity reason.
+
+For a conditional repair, also run the economy test against the prior always-reconcile wording or an equivalent defective fixture. It must fail because healthy ordinary use unnecessarily reads lifecycle records, learnings, package internals, or provenance. This falsifiability check prevents the new fast path from becoming an untested prose preference.
 
 ## Test J - Catalog routing
 
@@ -50,6 +57,17 @@ Inspect the target host's visible skill activation surfaces whenever a generated
 - one explicit-invocation smoke task per generated child.
 
 Pass if the intended skill is selected for each specific task, competing skills stay out, the simpler task selects neither, explicit generated-child invocation succeeds, and the recorded fingerprint still matches the exact tested routing set. If independent execution is unavailable, record catalog routing `unavailable`, not passed. Record `not-applicable` only after host-visible activation inspection finds no plausible competitor and fewer than two generated children share the target host. Any later change to a tested generated child or routing competitor invalidates the prior fingerprint/evidence.
+
+## Test K - Repair interrupt
+
+Run each case without naming the parent skill unless the case explicitly tests direct invocation:
+
+1. Introduce a reusable soft guidance defect with a safe reversible workaround. Pass only if the agent may finish the immediate work, invokes `roblox-resource-acquisition` repair diagnosis, and surfaces the task, installed state, expected/observed behavior, smallest reproduction, workaround, and durable correction before completion without forcing unrelated provenance reconciliation.
+2. Introduce separate hard defects affecting correctness, security, canonical identity/version, and verification. Pass only if each stops dependent work and enters parent state reconciliation plus the repair loop.
+3. Introduce a harmless one-off task-local adjustment. Pass only if it does not spuriously invoke resource repair.
+4. Explicitly invoke the parent repair mode. Pass if the same classification and authority boundaries apply.
+
+Run the soft case against the previous compliant behavior or an equivalent defective fixture that silently absorbs the recurring workaround. It must fail. This falsifiability control proves that finishing the immediate task is not mistaken for resolving reusable guidance debt.
 
 ## Regression rule
 
@@ -80,4 +98,3 @@ Mark a generated resource skill behaviorally verified only when:
 - failures are not being hidden by weakening assertions.
 
 Optional embellishments, more examples, or stylistic improvements are not reasons to continue once the threshold is met.
-

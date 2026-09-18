@@ -37,10 +37,11 @@ REQUIRED_HEADINGS = [
     "Alternatives",
     "Provenance",
     "Prerequisites and installation",
+    "Repair interrupt",
+    "Common path",
     "Operational reconciliation",
     "Mental model",
     "Client/server placement",
-    "Common path",
     "Lifecycle and cleanup",
     "API used by this skill",
     "Failure modes",
@@ -70,7 +71,7 @@ TEMPLATE_SENTINELS = [
     "Provide the shortest source-grounded setup/use sequence. Do not call it runtime-verified unless the recorded resource verification status is `verified`.",
     "-- Minimal example grounded in the reviewed source/API.",
     "Document only source-grounded public APIs that the agent needs frequently; distinguish source review from runtime verification.",
-    "Policy: REQUIRED/NOT-APPLICABLE — REASON",
+    "Policy: REQUIRED/CONDITIONAL/NOT-APPLICABLE — REASON",
     "Installed-state check: RESOURCE-SPECIFIC CHECK OR IMMUTABLE-INSTALL EXPLANATION",
     "Expected identity/state: RESOURCE SLUG + CANONICAL URL + PACKAGE ID WHEN APPLICABLE + REVIEWED VERSION/COMMIT/STATE",
     "Likely cause -> diagnosis -> repair.",
@@ -338,6 +339,7 @@ SECTION_MIN_WORDS = {
     "Do not use when": 4,
     "Alternatives": 6,
     "Prerequisites and installation": 5,
+    "Repair interrupt": 40,
     "Operational reconciliation": 30,
     "Mental model": 8,
     "Client/server placement": 12,
@@ -352,7 +354,7 @@ SECTION_MIN_WORDS = {
 
 
 COMMAND_TOOL_RE = re.compile(
-    r"\b(?:python\d*|pytest|luau|lune|rojo|selene|stylua|npm|pnpm|yarn|bun|cargo|git|wally|aftman)\b",
+    r"\b(?:python\d*|pytest|luau|lune|lute|rojo|selene|stylua|npm|pnpm|yarn|bun|cargo|git|wally|aftman)\b",
     re.I,
 )
 
@@ -857,7 +859,7 @@ def looks_like_direct_tool_command(value: str) -> bool:
         # the action/context path below.
         return False
 
-    if re.fullmatch(r"(?:pytest|luau|lune|rojo|selene|stylua)(?:\s+\S+)*", raw, re.I):
+    if re.fullmatch(r"(?:pytest|luau|lune|lute|rojo|selene|stylua)(?:\s+\S+)*", raw, re.I):
         return True
 
     if re.match(r"^python\d*\b", raw, re.I):
@@ -1240,6 +1242,69 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
             "Client/server placement must explicitly describe both client and server behavior/placement"
         )
 
+    repair_interrupt = sections.get("Repair interrupt", "")
+    repair_fields = ("Trigger", "Hard defect", "Soft defect", "Handoff")
+    repair_values: dict[str, str | None] = {}
+    repair_unfenced = strip_fenced_blocks(mask_html_comments(repair_interrupt))
+    for label in repair_fields:
+        field_count = len(
+            re.findall(
+                rf"^[ \t]{{0,3}}(?:[-*][ \t]+)?{re.escape(label)}[ \t]*:",
+                repair_unfenced,
+                re.M | re.I,
+            )
+        )
+        if field_count > 1:
+            errors.append(f"Repair interrupt contains duplicate labeled field: {label}")
+        value = extract_labeled_value(repair_interrupt, label)
+        repair_values[label] = value
+        if value is None:
+            errors.append(f"Repair interrupt is missing labeled field: {label}")
+        elif word_count(value) < 6 or is_vague_section(value):
+            errors.append(f"Repair interrupt field is too thin/vague: {label}")
+
+    trigger = repair_values.get("Trigger")
+    if trigger and not (
+        "roblox-resource-acquisition" in trigger.lower()
+        and "repair/reconcile" in trigger.lower()
+        and re.search(r"\b(?:guess(?:ing)?|bypass(?:ing)?|repeat(?:ed|ing)?|rediscover(?:y|ing)?|undocumented)\b", trigger, re.I)
+        and re.search(r"\b(?:workaround|adjustment|guidance|instruction)\b", trigger, re.I)
+        and re.search(r"\b(?:harmless|one-off|task-local|task local)\b", trigger, re.I)
+    ):
+        errors.append("Repair interrupt Trigger must activate parent repair for recurring reusable workarounds while excluding harmless task-local adjustments")
+
+    hard_defect = repair_values.get("Hard defect")
+    if hard_defect and not (
+        re.search(r"\b(?:stop|block|halt|pause)\b", hard_defect, re.I)
+        and all(contains_word(hard_defect, term) for term in ("correctness", "security", "identity", "version", "verification"))
+        and re.search(r"\b(?:parent|roblox-resource-acquisition|reconciliation|repair)\b", hard_defect, re.I)
+    ):
+        errors.append("Repair interrupt Hard defect must stop dependent work for correctness, security, identity, version, or verification failures and enter parent repair")
+
+    soft_defect = repair_values.get("Soft defect")
+    if soft_defect and not (
+        contains_word(soft_defect, "safe")
+        and contains_word(soft_defect, "reversible")
+        and re.search(r"\b(?:continue|finish|proceed)\b", soft_defect, re.I)
+        and re.search(r"\b(?:invoke|activate)\b[^.\n]{0,100}\b(?:parent|roblox-resource-acquisition)\b", soft_defect, re.I)
+        and re.search(r"\bsurface\b[^.\n]{0,140}\bbefore\b[^.\n]{0,60}\bcompletion\b", soft_defect, re.I)
+        and all(contains_word(soft_defect, term) for term in ("reproduction", "workaround", "correction"))
+    ):
+        errors.append("Repair interrupt Soft defect must allow safe reversible progress, invoke parent repair, and surface reproduction/workaround/correction before completion")
+
+    handoff = repair_values.get("Handoff")
+    if handoff and not (
+        all(contains_word(handoff, term) for term in ("task", "installed", "expected", "observed", "reproduction", "workaround", "correction"))
+        and re.search(r"\b(?:diagnosis|diagnose)\b", handoff, re.I)
+        and re.search(r"\b(?:authorization|authorized|permission)\b", handoff, re.I)
+    ):
+        errors.append("Repair interrupt Handoff must capture complete evidence and state that diagnosis does not grant edit authorization")
+
+    repair_heading = re.search(r"^## Repair interrupt\s*$", body, re.M | re.I)
+    common_heading = re.search(r"^## Common path\s*$", body, re.M | re.I)
+    if repair_heading and common_heading and repair_heading.start() > common_heading.start():
+        errors.append("generated skills must place Repair interrupt before Common path")
+
     reconciliation = sections.get("Operational reconciliation", "")
     reconciliation_fields = (
         "Policy",
@@ -1249,9 +1314,13 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         "Mismatch/unknown action",
         "Defect handoff",
     )
+    conditional_reconciliation_fields = (
+        "Integrity gate",
+        "Escalation triggers",
+    )
     reconciliation_values: dict[str, str | None] = {}
     reconciliation_unfenced = strip_fenced_blocks(mask_html_comments(reconciliation))
-    for label in reconciliation_fields:
+    for label in (*reconciliation_fields, *conditional_reconciliation_fields):
         field_count = len(
             re.findall(
                 rf"^[ \t]{{0,3}}(?:[-*][ \t]+)?{re.escape(label)}[ \t]*:",
@@ -1263,28 +1332,62 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
             errors.append(f"Operational reconciliation contains duplicate labeled field: {label}")
         value = extract_labeled_value(reconciliation, label)
         reconciliation_values[label] = value
-        if value is None:
+        if label in reconciliation_fields and value is None:
             errors.append(f"Operational reconciliation is missing labeled field: {label}")
-        elif word_count(value) < 3 or is_vague_section(value):
+        elif value is not None and (word_count(value) < 3 or is_vague_section(value)):
             errors.append(f"Operational reconciliation field is too thin/vague: {label}")
 
     policy_value = reconciliation_values.get("Policy")
+    policy_name: str | None = None
     if policy_value:
         policy_match = re.fullmatch(
-            r"(required|not-applicable)\s*(?:[-—:]\s*)?(.+)", policy_value.strip(), re.I
+            r"(required|conditional|not-applicable)\s*(?:[-—:]\s*)?(.+)", policy_value.strip(), re.I
         )
         if not policy_match or word_count(policy_match.group(2) if policy_match else "") < 3:
-            errors.append("Operational reconciliation Policy must be required or not-applicable with a concrete reason")
-        elif policy_match.group(1).lower() == "not-applicable" and not re.search(
+            errors.append("Operational reconciliation Policy must be required, conditional, or not-applicable with a concrete reason")
+        else:
+            policy_name = policy_match.group(1).lower()
+        if policy_name == "not-applicable" and not re.search(
             r"\b(?:immutable|pinned|fixed|version[- ]insensitive|cannot drift|exact (?:version|commit|state))\b",
             policy_match.group(2),
             re.I,
         ):
             errors.append("not-applicable reconciliation requires an immutable-install or version-insensitivity reason")
 
+    if policy_name == "conditional":
+        for label in conditional_reconciliation_fields:
+            value = reconciliation_values.get(label)
+            if value is None:
+                errors.append(f"conditional reconciliation is missing labeled field: {label}")
+
+        integrity_gate = reconciliation_values.get("Integrity gate")
+        if integrity_gate and not (
+            is_concrete_verification_step(integrity_gate)
+            and re.search(r"\bpass(?:es|ed|ing)?\b|\bPASS\b", integrity_gate)
+            and re.search(r"\bbefore\b[^.\n]{0,80}\bcomplet(?:e|ion|ing)\b", integrity_gate, re.I)
+        ):
+            errors.append("conditional Integrity gate must name a concrete verifier command, pass condition, and before-completion timing")
+
+        escalation_triggers = reconciliation_values.get("Escalation triggers")
+        if escalation_triggers:
+            trigger_groups = (
+                r"\b(?:missing|mismatch(?:ed)?)\b",
+                r"\b(?:adopt(?:ion)?|upgrad(?:e|ing)|repair)\b",
+                r"\bverifier\b[^.\n]{0,100}\b(?:fail(?:ure|ed|s)?|drift)\b|\b(?:fail(?:ure|ed|s)?|drift)\b[^.\n]{0,100}\bverifier\b",
+                r"\bhard\b[^.\n]{0,100}\bdefect\b|\bdefect\b[^.\n]{0,100}\bhard\b",
+                r"\b(?:known|current|existing)\b[^.\n]{0,60}\bblock(?:ed)?\b|\bblock(?:ed)?\b[^.\n]{0,60}\b(?:known|current|existing)\b",
+            )
+            if not all(re.search(pattern, escalation_triggers, re.I) for pattern in trigger_groups):
+                errors.append("conditional Escalation triggers must cover missing/mismatched state, adoption/upgrade/authorized repair, verifier failure/drift, hard defects, and known blocks")
+
+        common_heading = re.search(r"^## Common path\s*$", body, re.M | re.I)
+        reconciliation_heading = re.search(r"^## Operational reconciliation\s*$", body, re.M | re.I)
+        if common_heading and reconciliation_heading and common_heading.start() > reconciliation_heading.start():
+            errors.append("conditional skills must place Common path before Operational reconciliation")
+
     installed_check = reconciliation_values.get("Installed-state check")
     if installed_check and not re.search(
-        r"\b(?:check|inspect|read|compare|hash|manifest|lockfile|package|asset|commit|version|immutable|pinned|fixed)\b",
+        r"\b(?:check|confirm|inspect|read|compare|hash|manifest|lockfile|package|asset|commit|version|immutable|pinned|fixed)\b",
         installed_check,
         re.I,
     ):
@@ -1333,15 +1436,19 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         and "repair/reconcile" in mismatch_action.lower()
     ):
         errors.append("Mismatch/unknown action must stop the affected use and invoke repair/reconcile")
+    if policy_name == "conditional" and mismatch_action and not (
+        re.search(r"\b(?:every|all)\b[^.\n]{0,40}\b(?:state\s+)?escalation\b", mismatch_action, re.I)
+        and re.search(r"\bparent[- ]state\b", mismatch_action, re.I)
+    ):
+        errors.append("conditional Mismatch/unknown action must apply parent-state reconciliation and repair/reconcile to every state escalation trigger")
 
     defect_handoff = reconciliation_values.get("Defect handoff")
-    if defect_handoff:
-        required_terms = ("task", "installed", "expected", "observed", "reproduction")
-        if not all(contains_word(defect_handoff, term) for term in required_terms) or not (
-            "roblox-resource-acquisition" in defect_handoff.lower()
-            and "repair/reconcile" in defect_handoff.lower()
-        ):
-            errors.append("Defect handoff must capture task/installed/expected/observed/reproduction evidence and invoke repair/reconcile")
+    if defect_handoff and not (
+        re.search(r"\brepair interrupt\b", defect_handoff, re.I)
+        and re.search(r"\bsource of truth\b", defect_handoff, re.I)
+        and re.search(r"\b(?:follow|use|defer|point)\b", defect_handoff, re.I)
+    ):
+        errors.append("Defect handoff must point to the earlier Repair interrupt handoff as its source of truth")
 
     verify = sections.get("Verify after installation", "")
     run_step = extract_required_labeled_value(verify, "Run")

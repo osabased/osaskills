@@ -114,12 +114,24 @@ def test_repair_reconcile_keeps_upstream_and_child_revalidation_conditional():
     assert "only for child validation surfaces invalidated by the repair" in section
 
 
-def test_post_adoption_defect_blocks_host_state_before_repair():
+def test_post_adoption_defect_classifies_before_host_state_change():
     operational = REFERENCES["operational-lifecycle.md"]
     repair = REFERENCES["repair-loop.md"]
-    assert "Mark matching operational entries `blocked`" in operational
-    assert "invalidate affected behavioral and catalog-routing passes" in operational
+    assert "classify the defect before changing lifecycle state" in operational
+    assert "**Hard:** Mark matching operational entries `blocked`" in operational
+    assert "**Soft, authorized child repair:** Keep the host truthfully `installed`" in operational
     assert "operational-lifecycle.md#post-adoption-defects" in repair
+
+
+def test_parent_self_invokes_for_recurring_workarounds_and_separates_soft_state_work():
+    assert "## Repair interrupt" in PARENT
+    interrupt = PARENT.split("## Repair interrupt", 1)[1].split("## Route the operating mode", 1)[0]
+    assert "bypassing an instruction" in interrupt
+    assert "Do not silently absorb the defect" in interrupt
+    assert "does not by itself require unrelated pin, provenance, record, or learning reconciliation" in interrupt
+    repair = _mode("repair/reconcile")
+    assert "The user need not name this skill" in repair
+    assert "soft instruction defect" in repair
 
 
 def test_self_package_repair_honors_existing_authorization_and_blocks_ungranted_edits():
@@ -141,6 +153,27 @@ def test_generated_child_description_carries_preload_routing_boundary():
     assert "incorrect implicit activation" in contract
     assert "USE-TRIGGER-IN-ONE-SENTENCE" in template
     assert "ADD-MATERIAL-ROUTING-EXCLUSION-WHEN-NEEDED" in template
+
+
+def test_conditional_reconciliation_contract_preserves_existing_policies():
+    contract = REFERENCES["resource-skill-contract.md"]
+    lifecycle = REFERENCES["operational-lifecycle.md"]
+    testing = REFERENCES["testing-protocol.md"]
+    learnings = REFERENCES["learnings-store.md"]
+    template = (ROOT / "templates" / "resource-skill-template.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "exactly `required`, `conditional`, or `not-applicable`" in contract
+    assert "`Integrity gate`" in contract
+    assert "`Escalation triggers`" in contract
+    assert "every version-sensitive use" in lifecycle
+    assert "declared pin plus its lock/header counterpart" in lifecycle
+    assert "For `conditional`, run both branches" in testing
+    assert "do not load records or learnings" in learnings
+    assert template.index("## Repair interrupt") < template.index("## Common path")
+    assert template.index("## Common path") < template.index("## Operational reconciliation")
+    assert "REQUIRED/CONDITIONAL/NOT-APPLICABLE" in template
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():

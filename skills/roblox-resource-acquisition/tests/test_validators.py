@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 import unittest
@@ -192,6 +193,23 @@ class GeneratedSkillTests(unittest.TestCase):
         )
         return skill
 
+    def make_conditional(self, skill: Path) -> None:
+        path = skill / "SKILL.md"
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(
+            "Policy: required — project package manifests can select a different materially version-sensitive release.",
+            "Policy: conditional — the declared pin and lock identify healthy ordinary use while installed integrity can still drift.",
+        ).replace(
+            "Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.\n",
+            "Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.\n"
+            "- Integrity gate: Run `lute run scripts/verify.luau` before completing the task; pass when it prints `[verify] PASS` and exits with code `0`.\n"
+            "- Escalation triggers: Escalate for a missing or mismatched pin/lock, adoption or upgrade, authorized repair, verifier failure or drift, a hard defect, or an already-known block.\n",
+        ).replace(
+            "Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.",
+            "Mismatch/unknown action: For every state escalation trigger, stop the affected version-sensitive use, perform the Parent-state check, and invoke `roblox-resource-acquisition` in `repair/reconcile` mode before continuing.",
+        )
+        path.write_text(text, encoding="utf-8")
+
     def test_valid_reconciliation_contract_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             skill = self.write_child(
@@ -202,6 +220,70 @@ class GeneratedSkillTests(unittest.TestCase):
             )
             errors, _ = validate_skill(skill)
             self.assertEqual(errors, [])
+
+    def test_repair_interrupt_rejects_silent_workaround_absorption(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8").replace(
+                "Soft defect: If the workaround is safe and reversible, immediate work may continue, but invoke parent repair diagnosis and surface the reproduction, workaround, and durable correction before completion.",
+                "Soft defect: If a workaround succeeds, continue the immediate task and do not interrupt delivery.",
+            )
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertTrue(any("Repair interrupt Soft defect" in error for error in errors))
+
+    def test_repair_interrupt_requires_parent_activation_and_hard_stop(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8").replace(
+                "Invoke `roblox-resource-acquisition` in `repair/reconcile` mode",
+                "Note the issue locally",
+                1,
+            ).replace(
+                "stop dependent work and enter parent reconciliation and repair before continuing",
+                "continue carefully and mention the risk later",
+                1,
+            )
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertTrue(any("Repair interrupt Trigger" in error for error in errors))
+            self.assertTrue(any("Repair interrupt Hard defect" in error for error in errors))
+
+    def test_repair_interrupt_must_precede_common_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8")
+            match = re.search(
+                r"^## Repair interrupt\s*$.*?(?=^## |\Z)",
+                text,
+                re.MULTILINE | re.DOTALL,
+            )
+            self.assertIsNotNone(match)
+            repair = match.group(0)
+            text = text[: match.start()] + text[match.end() :]
+            marker = "## Operational reconciliation"
+            text = text.replace(marker, repair + "\n" + marker, 1)
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertIn("generated skills must place Repair interrupt before Common path", errors)
 
     def test_parent_state_check_requires_discovery_route(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -235,11 +317,111 @@ class GeneratedSkillTests(unittest.TestCase):
                 "- Synchronizing replicated widget state across server-owned sessions.",
             )
             text = skill.joinpath("SKILL.md").read_text(encoding="utf-8")
-            start = text.index("## Operational reconciliation")
-            end = text.index("## Common path")
-            skill.joinpath("SKILL.md").write_text(text[:start] + text[end:], encoding="utf-8")
+            text = re.sub(
+                r"^## Operational reconciliation\s*$.*?(?=^## |\Z)",
+                "",
+                text,
+                count=1,
+                flags=re.MULTILINE | re.DOTALL,
+            )
+            skill.joinpath("SKILL.md").write_text(text, encoding="utf-8")
             errors, _ = validate_skill(skill)
             self.assertTrue(any("Operational reconciliation" in error for error in errors))
+
+    def test_conditional_reconciliation_passes(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            self.make_conditional(skill)
+            errors, _ = validate_skill(skill)
+            self.assertEqual(errors, [])
+
+    def test_conditional_reconciliation_requires_fast_path_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for missing_label in ("Integrity gate", "Escalation triggers"):
+                with self.subTest(missing_label=missing_label):
+                    skill = self.write_child(
+                        root,
+                        f"roblox-widget-{missing_label.split()[0].lower()}",
+                        "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                        "- Synchronizing replicated widget state across server-owned sessions.",
+                    )
+                    self.make_conditional(skill)
+                    path = skill / "SKILL.md"
+                    text = path.read_text(encoding="utf-8")
+                    text = re.sub(rf"^- {re.escape(missing_label)}:.*\n", "", text, count=1, flags=re.MULTILINE)
+                    path.write_text(text, encoding="utf-8")
+                    errors, _ = validate_skill(skill)
+                    self.assertIn(
+                        f"conditional reconciliation is missing labeled field: {missing_label}",
+                        errors,
+                    )
+
+    def test_conditional_reconciliation_rejects_weak_fast_path_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            self.make_conditional(skill)
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8").replace(
+                "Integrity gate: Run `lute run scripts/verify.luau` before completing the task; pass when it prints `[verify] PASS` and exits with code `0`.",
+                "Integrity gate: Check the verifier later.",
+            ).replace(
+                "Escalation triggers: Escalate for a missing or mismatched pin/lock, adoption or upgrade, authorized repair, verifier failure or drift, a hard defect, or an already-known block.",
+                "Escalation triggers: Escalate when something seems wrong.",
+            )
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertTrue(any("conditional Integrity gate" in error for error in errors))
+            self.assertTrue(any("conditional Escalation triggers" in error for error in errors))
+
+    def test_conditional_reconciliation_requires_identity_parent_route_and_repair_handoff(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            self.make_conditional(skill)
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8")
+            for label in ("Expected identity/state", "Parent-state check", "Defect handoff"):
+                text = re.sub(rf"^- {re.escape(label)}:.*\n", "", text, count=1, flags=re.MULTILINE)
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            for label in ("Expected identity/state", "Parent-state check", "Defect handoff"):
+                self.assertIn(
+                    f"Operational reconciliation is missing labeled field: {label}",
+                    errors,
+                )
+
+    def test_conditional_reconciliation_requires_every_trigger_to_use_parent_repair_route(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            skill = self.write_child(
+                Path(temp),
+                "roblox-widget-resource",
+                "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
+                "- Synchronizing replicated widget state across server-owned sessions.",
+            )
+            self.make_conditional(skill)
+            path = skill / "SKILL.md"
+            text = path.read_text(encoding="utf-8").replace(
+                "Mismatch/unknown action: For every state escalation trigger, stop the affected version-sensitive use, perform the Parent-state check, and invoke `roblox-resource-acquisition` in `repair/reconcile` mode before continuing.",
+                "Mismatch/unknown action: Stop mismatched version use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.",
+            )
+            path.write_text(text, encoding="utf-8")
+            errors, _ = validate_skill(skill)
+            self.assertTrue(any("every state escalation trigger" in error for error in errors))
 
     def test_immutable_not_applicable_reconciliation_passes(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -282,7 +464,7 @@ class GeneratedSkillTests(unittest.TestCase):
                 "Mismatch/unknown action: Continue cautiously and mention the difference later.",
             )
             text = text.replace(
-                "Defect handoff: Capture the task, installed state, expected behavior, observed behavior, and smallest reproduction; then invoke `roblox-resource-acquisition` in `repair/reconcile` mode.",
+                "Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for evidence and parent activation.",
                 "Defect handoff: Mention the problem in the final response.",
             )
             path.write_text(text, encoding="utf-8")
@@ -363,9 +545,14 @@ class GeneratedSkillTests(unittest.TestCase):
             )
             path = invalid / "SKILL.md"
             text = path.read_text(encoding="utf-8")
-            start = text.index("## Operational reconciliation")
-            end = text.index("## Common path")
-            path.write_text(text[:start] + text[end:], encoding="utf-8")
+            text = re.sub(
+                r"^## Operational reconciliation\s*$.*?(?=^## |\Z)",
+                "",
+                text,
+                count=1,
+                flags=re.MULTILINE | re.DOTALL,
+            )
+            path.write_text(text, encoding="utf-8")
 
             errors, _, _, _ = validate_catalog([invalid], host="portable")
             self.assertTrue(any("Operational reconciliation" in error for error in errors))

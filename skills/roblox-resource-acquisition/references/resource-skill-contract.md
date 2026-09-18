@@ -56,18 +56,34 @@ Provide a small verification recipe an agent can run after installation. It must
 
 ## Required operational reconciliation
 
+Before the common path, include a **Repair interrupt** section with four explicit behaviors:
+
+- `Trigger`: activate `roblox-resource-acquisition` in `repair/reconcile` mode when reusable guidance requires guessing, bypassing instructions, repeated rediscovery, or a likely-recurring undocumented workaround; distinguish harmless task-local adjustments;
+- `Hard defect`: stop dependent work when correctness, security, identity, version, or verification is unreliable;
+- `Soft defect`: allow safe reversible immediate work to continue, but require parent repair diagnosis and surface the reproduction, workaround, and durable correction before completion;
+- `Handoff`: capture task, installed state, expected/observed behavior, smallest reproduction, workaround, and proposed durable correction, while stating that parent activation authorizes diagnosis/reporting rather than otherwise unauthorized edits.
+
+Place **Repair interrupt** before **Common path**. This is a separate early activation contract, not another name for state reconciliation.
+
 Include an **Operational reconciliation** section containing these labeled fields:
 
-- `Policy`: exactly `required` or `not-applicable` followed by a concrete reason;
+- `Policy`: exactly `required`, `conditional`, or `not-applicable` followed by a concrete reason;
 - `Installed-state check`: a resource-specific command, file/manifest inspection, package/asset identity check, or an explicit immutable-install explanation;
 - `Expected identity/state`: the canonical identity and reviewed version/commit/source state the guidance targets;
 - `Parent-state check`: a deterministic discovery route for matching schema-version 3 resource records and resource-bound learnings, plus the resource slug/canonical-identity match. For a project-local child, name the project-root-relative canonical record/learnings locations or the exact authoritative locations that apply. For a portable/user child, state the project/user fallback resolution rule. An identity-only instruction such as “load matching records and learnings” is insufficient;
 - `Mismatch/unknown action`: stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode;
-- `Defect handoff`: capture the task, installed state, expected/observed behavior, and smallest reproduction, then invoke the same parent repair route.
+- `Defect handoff`: point to the earlier **Repair interrupt** handoff as the source of truth rather than duplicating a weaker evidence list.
 
-Use `required` when installed resource state can drift independently and the guidance is materially version-sensitive. Use `not-applicable` only when the install is fixed to the exact immutable reviewed state or the documented behavior is demonstrably insensitive to independent drift. Unknown material state never counts as a match.
+Conditional policies additionally require:
 
-The child does not bundle the external resource record, project-use state, or learnings store. It consults matching external state during direct use and treats a current `blocked_use_or_version` as a stop, while re-checking adverse learnings as observations rather than executable policy.
+- `Integrity gate`: the concrete canonical verifier command, its observable pass condition, and the requirement to run it before task completion. The gate may be deferred until completion and does not block initial ordinary use;
+- `Escalation triggers`: the exact conditions that replace the fast path with full parent-state reconciliation. At minimum cover a missing or mismatched installed pin/state, adoption or upgrade, an authorized repair that invalidates evidence, verifier failure or drift, a hard defect, and an already-known block.
+
+Use `required` when every version-sensitive use must consult installed and parent lifecycle state before proceeding. Use `conditional` when a cheap declared-pin plus lock/header check can establish the expected ordinary-use state and a canonical verifier will check installed integrity before completion. Use `not-applicable` only when the install is fixed to the exact immutable reviewed state or the documented behavior is demonstrably insensitive to independent drift. Unknown material state never counts as a match.
+
+Put **Repair interrupt** before **Common path**, and **Common path** before the conditional reconciliation branch, so healthy ordinary use is immediately actionable while reusable defects self-activate repair. Under `conditional`, the ordinary path reads only the declared pin and its lock/header counterpart, then proceeds without package-internal, provenance, resource-record, or learning reads. The integrity gate still runs before completion. If a state escalation trigger applies, stop version-sensitive work and execute the full installed-state, parent-state, and mismatch contract before continuing. A soft instruction defect activates repair diagnosis without automatically forcing unrelated parent-state or provenance work.
+
+The child does not bundle the external resource record, project-use state, or learnings store. Records and learnings are lifecycle evidence, not mandatory ordinary-use inputs for a conditional child. A `required` child consults them before version-sensitive direct use; a `conditional` child consults them only after an escalation trigger. Once loaded, a current `blocked_use_or_version` stops the affected use, while adverse learnings remain observations to re-check rather than executable policy.
 
 ## Prohibited behavior
 
