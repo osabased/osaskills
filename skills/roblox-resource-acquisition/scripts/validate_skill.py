@@ -769,6 +769,21 @@ def validate_section_shapes(sections: dict[str, str], errors: list[str]) -> None
                 errors.append(f"Lifecycle and cleanup is missing labeled field: {label}")
             elif word_count(value) < 2 or is_vague_section(value):
                 errors.append(f"Lifecycle and cleanup field is too thin/vague: {label}")
+        initialization = extract_labeled_value(lifecycle, "Initialization")
+        if initialization and not (
+            re.search(r"\b(?:construct|create|initialize|start|activate|register|require)\w*\b", initialization, re.I)
+            and re.search(r"\b(?:owner|owned|lifetime|lifecycle|scope|server|client|module)\b", initialization, re.I)
+        ):
+            errors.append("Lifecycle Initialization must identify the behavior-activating operation and its owner/lifetime")
+        cleanup = extract_labeled_value(lifecycle, "Cleanup/destruction")
+        if cleanup:
+            handles_pending_work = bool(
+                re.search(r"\b(?:cancel|invalidate|abort|close|stop)\w*\b[^.\n]{0,100}\b(?:wait|task|thread|promise|pending|spawn)\w*\b", cleanup, re.I)
+                or re.search(r"\bno\b[^.\n]{0,80}\b(?:pending|spawned|asynchronous|background)\b", cleanup, re.I)
+            )
+            tears_down = bool(re.search(r"\b(?:destroy|disconnect|cleanup|clean up|cancel|invalidate|close|stop|remove)\w*\b", cleanup, re.I))
+            if not (handles_pending_work and tears_down):
+                errors.append("Lifecycle Cleanup/destruction must cover pending wait/task cancellation or explicit absence, plus teardown of activated resources")
 
     api = sections.get("API used by this skill", "")
     if api:
@@ -1310,6 +1325,7 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         "Policy",
         "Installed-state check",
         "Expected identity/state",
+        "Current-block check",
         "Parent-state check",
         "Mismatch/unknown action",
         "Defect handoff",
@@ -1403,6 +1419,29 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         if version_value and version_value.strip().lower() not in expected_state.lower():
             errors.append("Expected identity/state must include the reviewed provenance version/state")
 
+    current_block_check = reconciliation_values.get("Current-block check")
+    if policy_name == "not-applicable":
+        if not current_block_check or not (
+            re.match(r"not-applicable\b", current_block_check.strip(), re.I)
+            and re.search(
+                r"\b(?:immutable|pinned|fixed|version[- ]insensitive|cannot drift|exact (?:version|commit|state))\b",
+                current_block_check,
+                re.I,
+            )
+        ):
+            errors.append(
+                "not-applicable Current-block check must state the concrete immutable or version-insensitive reason"
+            )
+    elif current_block_check and not (
+        "check_resource_status.py" in current_block_check
+        and "--pair" in current_block_check
+        and re.search(r"\bbefore\b[^.\n]{0,80}\b(?:use|using|proceed)", current_block_check, re.I)
+        and re.search(r"\bhealthy\b", current_block_check, re.I)
+        and re.search(r"\b(?:blocked|unknown)\b", current_block_check, re.I)
+        and re.search(r"\b(?:full|parent[- ]state)\b[^.\n]{0,60}\breconcil", current_block_check, re.I)
+    ):
+        errors.append("Current-block check must run check_resource_status.py --pair before affected use, require HEALTHY, and escalate BLOCKED/UNKNOWN to full reconciliation")
+
     parent_state_check = reconciliation_values.get("Parent-state check")
     parent_state_route = bool(
         parent_state_check
@@ -1451,8 +1490,24 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         errors.append("Defect handoff must point to the earlier Repair interrupt handoff as its source of truth")
 
     verify = sections.get("Verify after installation", "")
+    executable_fixture = extract_required_labeled_value(verify, "Executable fixture")
     run_step = extract_required_labeled_value(verify, "Run")
     pass_condition = extract_required_labeled_value(verify, "Pass condition")
+
+    if executable_fixture is None:
+        errors.append("verification recipe is missing an explicit Executable fixture: field")
+    elif not executable_fixture:
+        errors.append("verification Executable fixture: field is empty")
+    else:
+        fixture_is_na = bool(re.match(r"not-applicable\b", executable_fixture.strip(), re.I))
+        if fixture_is_na:
+            if not re.search(r"\b(?:non-executable|source-reviewed|unverified|routing|advice|instruction)\b", executable_fixture, re.I):
+                errors.append("not-applicable Executable fixture must state the non-executable claim boundary")
+        else:
+            fixture_path = Path(executable_fixture.strip().strip("`"))
+            resolved_fixture = fixture_path if fixture_path.is_absolute() else root / fixture_path
+            if not resolved_fixture.resolve().is_file():
+                errors.append("Executable fixture must name an existing maintained file relative to the generated skill root")
 
     if run_step is None:
         errors.append("verification recipe is missing an explicit Run: step in its verification section")
@@ -1471,7 +1526,7 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
     # Reject duplicate operational labels because the validator otherwise has
     # to guess which recipe is normative.
     verify_unfenced = strip_fenced_blocks(mask_html_comments(verify))
-    for label in ("Run", "Pass condition"):
+    for label in ("Executable fixture", "Run", "Pass condition"):
         label_count = len(
             re.findall(
                 rf"^[ \t]{{0,3}}(?:[-*][ \t]+)?{re.escape(label)}[ \t]*:",

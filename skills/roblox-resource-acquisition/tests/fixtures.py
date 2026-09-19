@@ -238,6 +238,7 @@ session:Start()
 - Policy: required — project package manifests can select a different materially version-sensitive release.
 - Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
 - Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
+- Current-block check: Before affected use, run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair .agents/skills/roblox-widget-resource .agents/roblox/resources/records/widget-resource.yaml`; proceed only on HEALTHY, and enter full parent-state reconciliation on BLOCKED or UNKNOWN.
 - Parent-state check: Resolve the affected Roblox project root, then read the matching schema-version 3 resource record at `.agents/roblox/resources/records/widget-resource.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to it; when no project root applies, use `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity.
 - Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
 - Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for evidence and parent activation.
@@ -252,9 +253,9 @@ Each server-owned session publishes a replicated widget snapshot and owns cleanu
 
 ## Lifecycle and cleanup
 
-- Initialization: Create one server-owned session after package loading completes.
+- Initialization: Create and start one server-owned session after package loading completes; the server lifecycle root owns the activated session.
 - Reuse: Reuse the session for related widget updates during its lifetime.
-- Cleanup/destruction: Call the documented destroy method when the owning system stops.
+- Cleanup/destruction: Invalidate or cancel pending waits and spawned tasks, then call the documented destroy method when the owning system stops.
 
 ## API used by this skill
 
@@ -275,6 +276,8 @@ A missing package or wrong server placement causes initialization failure; inspe
 Keep the server authoritative, validate client payloads before changing widget state, and pin the inspected package version.
 
 ## Verify after installation
+
+Executable fixture: not-applicable — resource behavior remains unverified and this recipe records source-reviewed instruction guidance only.
 
 Run: Execute `lune run tests/widget.luau` after installing the package.
 

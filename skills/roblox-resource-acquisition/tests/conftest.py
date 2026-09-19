@@ -53,6 +53,11 @@ def bundle_mod():
 
 
 @pytest.fixture(scope="session")
+def status_mod():
+    return load_script("check_resource_status")
+
+
+@pytest.fixture(scope="session")
 def catalog_mod():
     return load_script("validate_skill_catalog")
 

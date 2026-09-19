@@ -439,6 +439,9 @@ class GeneratedSkillTests(unittest.TestCase):
             ).replace(
                 "Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.",
                 "Installed-state check: The package lockfile is pinned to the exact immutable `com.example.widget` version `1.2.3`.",
+            ).replace(
+                "Current-block check: Before affected use, run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair .agents/skills/roblox-widget-resource .agents/roblox/resources/records/widget-resource.yaml`; proceed only on HEALTHY, and enter full parent-state reconciliation on BLOCKED or UNKNOWN.",
+                "Current-block check: not-applicable — the package lockfile is pinned to the exact immutable reviewed package version.",
             )
             path.write_text(text, encoding="utf-8")
             errors, _ = validate_skill(skill)

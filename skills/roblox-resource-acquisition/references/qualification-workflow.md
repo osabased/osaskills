@@ -173,4 +173,12 @@ Test only what matters, but cover applicable categories:
 - one meaningful edge or failure case;
 - compatibility with the project's actual conventions.
 
+### Installation identity and version enforcement
+
+When adopting a tool, package installer, or CI installation action for a pinned resource, trace the selected identity/version through the actual installation path. Inspect the relevant wrapper/action revision and confirm that its declared selector reaches the release/package resolution command; an advertised input that is unused, or a fallback to `latest`, does not enforce the requested pin. Treat the installer revision and the installed resource version as separate selectors.
+
+After installation, compare the resolved executable/package identity and observed version with the selected target, using a version command, lockfile/artifact metadata, or another authoritative observation. Put a mismatch-failing postcondition in the project-owned preparation or verification path, including CI when its install route differs. A warm local cache proves neither fresh installation nor a different CI installer; record those proof boundaries explicitly.
+
+If the installation route ignores the selector, repair or replace that route within the authorized scope while preserving the selected resource target. Prefer an inspected version-enforcing installer over compensating with an unpinned install followed by an unrelated upgrade. When installation cannot run here, source inspection can support the proposed route, but the install remains unexecuted. Qualify only the install surfaces relevant to this adoption; this is not a demand to audit every existing dependency.
+
 If a test exposes an intrinsic defect in an untrusted candidate, reject it and return to discovery only when alternatives are in scope. If it exposes a defect in a trusted resource, set verification truthfully to failed and record the exact affected version/use in `blocked_use_or_version`, report it, and do not silently rewrite its trust basis. This blocking requirement applies to every policy-trusted basis, not only curated resources. If the failure is caused by misunderstanding, correct the model and rerun. Do not modify third-party source merely to force a pass unless the task explicitly calls for maintaining a fork.

@@ -1,6 +1,6 @@
 ---
 name: structure-roblox-projects
-description: "Roblox project structure: place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo."
+description: "Roblox project structure: bootstrap or customize setup, place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo."
 ---
 
 # Structure Roblox Projects
@@ -9,7 +9,7 @@ Preserve a coherent established structure unless the user requests redesign or m
 
 ## Core loop
 
-1. **Route** the request through the applicable Review, Design, Migration plan, Implementation, or Preference setup route(s).
+1. **Route** the request through the applicable Onboarding, Review, Design, Migration plan, Implementation, or Preference setup route(s).
 2. **Establish project context:**
    - **Greenfield** means the user is creating or designing the project/experience from scratch. Resolve structure from the request, applicable project preferences/constraints, then recommendations/defaults; do not search for established conventions that do not exist.
    - **Established** means work occurs inside an existing project, including brand-new features and ordinary restructuring. Preserve applicable established conventions unless the user requests redesign.
@@ -19,6 +19,8 @@ Preserve a coherent established structure unless the user requests redesign or m
 5. Execute the selected route and run validation that covers the credible failure modes introduced by the work.
 
 Migration is intent-gated: activate the Migration route only when the user explicitly requests the migration/transition/conversion itself or asks for migration planning. Do not infer Migration merely because ordinary Review, Design, or Implementation involves moves, renames, topology/identity changes, source-of-truth-sensitive edits, or multi-step restructuring.
+
+An explicit invocation with no concrete work activates Onboarding. Inspect only the minimal available project context, then guide the user toward a concrete recommended setup or relevant established-project improvements. Do not turn a bare invocation into a repository-wide review or implementation authorization.
 
 Stop expanding discovery when more inspection is unlikely to change placement, integration, modification scope, or validation.
 
@@ -32,10 +34,21 @@ Establish the minimum sufficient working model for the current task:
 - **Startup and integration:** the relevant entrypoint, dependency, Remote/Bindable, loader, discovery, or lifecycle path.
 - **Local convention:** the organization, naming, module style, or framework convention the work should preserve.
 - **Validation path:** the focused checks capable of catching the structural failures this task could introduce.
+- **Development artifact intent:** when the task authors or restructures demos, stories, previews, test bootstraps, or similar development tooling, whether each artifact ships or is excluded and how that boundary will be proved.
 
 Skip an item when it cannot affect the task. Prefer concrete paths, instances, entrypoints, and dependency edges over architecture labels.
 
 Bootstrap is complete when every material item above is either established or identified as a blocker. A UI task should not trigger a survey of unrelated combat, persistence, NPC, or matchmaking systems.
+
+## Conditional development-tooling setup
+
+Apply this contract only when the authorized task creates or changes development UI/test tooling, its build composition, or a workflow intended to prove interactive behavior. It does not require unrelated projects to adopt profiles, Rojo, a preview framework, or a new test framework, and it does not activate a project-wide migration.
+
+- Give every authored demo, story, preview, and development bootstrap explicit **ship** or **exclude** intent. Absence of an entrypoint proves only that content does not start through that path; it does not prove exclusion from a distributable artifact.
+- When development and release artifacts differ, keep runtime mapping or composition in one source of truth and derive the profiles without duplicating singleton services. Add artifact-level assertions that prove required runtime content remains, development-only content is absent from release output, and singleton services are not duplicated. Keep development-only source in the project's strict analysis and applicable test coverage even when release composition excludes it.
+- For claims about rendered UI, text entry, pointer input, focus, or animation, use an observable client path supported by the available Studio tools. Preserve the established loader, capability boundaries, and user-owned sessions. Verify that the running client corresponds to the intended source and project configuration, including uncommitted source when present, and confirm an expected UI marker before interaction. Exercise actual pointer/text events for input claims; direct domain calls are not evidence that input wiring works.
+
+For a Rojo-backed version of this contract, including the proved profile composition and artifact checker, read [`references/workflows/rojo.md`](references/workflows/rojo.md). If the task instead depends on proving or adopting an external preview/test library, route only that library-evidence question through the available Roblox resource-acquisition workflow; keep artifact composition and project topology here.
 
 ## Modification scope
 
@@ -53,6 +66,7 @@ An internal edit inside an already placed feature remains on the established-pro
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
+| **Onboarding/setup** | The skill is explicitly invoked without concrete work; or the user requests guided project setup, setup customization, or a recommendation for a Roblox project foundation | [`references/workflows/onboarding.md`](references/workflows/onboarding.md) |
 | **Canonical SSA feature integration** | A canonical SSA area—an applicable `Server/` or `Client/` root whose entrypoint directly calls the pinned `ModuleLoader.Start(...)` on that root, with no conflicting startup convention—needs a feature root added/moved, a Server/Client/Shared/Remotes placement chosen, or a feature lifecycle or structural integration changed | [`references/ssa/ssa.md`](references/ssa/ssa.md) |
 | **Canonical SSA infrastructure** | Create canonical SSA; explicitly migrate to it; or change its entrypoints, loader identity/acquisition/configuration, discovery, or upgrade behavior | [`references/ssa/ssa.md`](references/ssa/ssa.md) and [`references/ssa/ssa-bootstrap.md`](references/ssa/ssa-bootstrap.md) |
 | **Ordinary structure** | An ordinary Roblox structure choice or Review criterion remains unresolved outside the active canonical SSA contract | [`references/core/practices.md`](references/core/practices.md) |
@@ -83,6 +97,12 @@ For greenfield work or an explicitly requested redesign/migration target, use th
 Check for the nearest project-local `.agents/roblox/structure.md` when a material convention remains unresolved, a Project profile persistence trigger above is active, or the user asks for reusable project preferences. Read `references/conventions/project-profile.md` before interpreting, creating, or updating that file; when persistence handling is in scope, continue into the persistence reference it discloses. Treat the profile as convention memory, never as modification authority.
 
 ## Complete the selected route
+
+### Onboarding
+
+Read `references/workflows/onboarding.md`. Inspect minimal context, resolve unknown use cases before recommending libraries, and offer a concrete recommended setup or customization rather than a generic request for direction. A bare invocation remains read-only until the user selects a setup. When the user already requested setup implementation, or selects the proposed setup, continue through the applicable Design and Implementation routes without asking for the same authorization again.
+
+Finish when the user has a directly implementable recommendation and requested setup work is either completed and validated or blocked with the exact unresolved choice or integration condition.
 
 ### Preference setup
 

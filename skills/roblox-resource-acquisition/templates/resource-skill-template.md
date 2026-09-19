@@ -28,7 +28,7 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 
 ## Common path
 
-Provide the shortest source-grounded setup/use sequence. Do not call it runtime-verified unless the recorded resource verification status is `verified`.
+Provide the shortest source-grounded setup/use sequence. Derive executable code from the maintained fixture; do not keep a second implementation here. Do not call it runtime-verified unless the recorded resource verification status is `verified`.
 
 ```luau
 -- Minimal example grounded in the reviewed source/API.
@@ -39,6 +39,7 @@ Provide the shortest source-grounded setup/use sequence. Do not call it runtime-
 - Policy: REQUIRED/CONDITIONAL/NOT-APPLICABLE — REASON
 - Installed-state check: RESOURCE-SPECIFIC CHECK OR IMMUTABLE-INSTALL EXPLANATION
 - Expected identity/state: RESOURCE SLUG + CANONICAL URL + PACKAGE ID WHEN APPLICABLE + REVIEWED VERSION/COMMIT/STATE
+- Current-block check: For `required` or `conditional`, before affected use run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair CHILD-SKILL-DIRECTORY MATCHING-RECORD.yaml`; proceed only on `HEALTHY` (exit 0), and enter full parent-state reconciliation on `BLOCKED` or `UNKNOWN`. For `not-applicable`, replace this with `not-applicable` plus the exact immutable or version-insensitive reason.
 - Integrity gate: CONDITIONAL ONLY — EXACT CANONICAL VERIFIER COMMAND, OBSERVABLE PASS CONDITION, AND BEFORE-COMPLETION TIMING
 - Escalation triggers: CONDITIONAL ONLY — MISSING/MISMATCHED PIN OR LOCK/HEADER; ADOPTION/UPGRADE/AUTHORIZED REPAIR; VERIFIER FAILURE/DRIFT; HARD DEFECT; ALREADY-KNOWN BLOCK
 - Parent-state check: Resolve the affected Roblox project root. Use any exact authoritative record/learnings locations already supplied by that project; otherwise read the matching schema-version 3 resource record at `.agents/roblox/resources/records/RESOURCE-SLUG.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to that root. When no project root applies, use `~/.roblox-resources/records/RESOURCE-SLUG.yaml` and `~/.roblox-resources/learnings/`. Match by resource slug plus canonical identity.
@@ -55,9 +56,10 @@ Explain the minimum concepts needed to use the resource correctly.
 
 ## Lifecycle and cleanup
 
-- Initialization: ...
+- Initialization: Name the operation that activates behavior (constructors may register player hooks, persistence, tasks, or listeners even when a top-level bundle require is inert) and identify its owner. Establish that owner and its cleanup path before fallible acquisition.
 - Reuse: ...
-- Cleanup/destruction: ...
+- Cleanup/destruction: State how partial acquisition rolls back, how pending waits/tasks are cancelled or invalidated, and how repeated/reentrant teardown stays idempotent. For composed libraries, record the pinned cleanup owner's actual ordering/error-continuation behavior and encode producer-before-consumer ordering explicitly when required.
+- Ownership boundary: Separate feature/component-owned resources from package/process-global work. Apply the parent integration-proof host-ownership boundary before requiring global finalization.
 
 ## API used by this skill
 
@@ -79,11 +81,15 @@ State the applicable resource-specific trust boundaries and mitigations. If none
 
 ## Verify after installation
 
+Executable fixture: PATH TO THE MAINTAINED REPRESENTATIVE INTEGRATION FIXTURE that is the source for examples and runs against the actual adopted resource/companion pins, or `not-applicable` with the exact non-executable claim boundary.
+
 Run: ...
 
 Pass condition: ...
 
-Both lines must be concrete enough for another agent to execute/check; do not use placeholders or generic outcomes such as “check it” or “it works.”
+Evidence boundary: State whether this proves static/strict analysis, construction and owned lifecycle, real runtime input/animation/startup, and/or clean diagnostics. Do not promote an unobserved lane. A clean-console claim additionally requires a red-capable warning/error guard through the complete runtime boundary the harness owns; process exit applies only to a harness-owned disposable process.
+
+Both command and pass condition must be concrete enough for another agent to execute/check; do not use placeholders or generic outcomes such as “check it” or “it works.” Keep advice-only and inert-utility verification proportional; do not add Studio/UI/lifecycle machinery without a corresponding claim.
 
 ## Alternatives
 

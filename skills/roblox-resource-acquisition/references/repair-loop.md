@@ -16,9 +16,9 @@ Diagnosis and reporting are permitted by activation. Package or child edits stil
 
 One repair cycle, in order:
 
-1. **Classify** the failure into exactly one class below. If two defects are visible, take the one closest to the evidence and leave the other for its own cycle.
-2. **Fix once, narrowly.** Apply the single smallest change the class prescribes for one distinct failing check. Batched speculative edits hide which change fixed or broke what.
-3. **Re-run** what the class prescribes, then the regression reruns required by [testing-protocol.md](testing-protocol.md).
+1. **Classify** the failure into exactly one class below. Track distinct failures separately even when one understood cause explains several.
+2. **Fix once, narrowly.** Apply the smallest understood correction. Batch related edits when the same demonstrated cause and evidence boundary justify them; keep speculative or independently falsifiable changes in separate cycles.
+3. **Re-run** what the class prescribes, then the change-based dependent reruns required by [testing-protocol.md](testing-protocol.md#change-based-invalidation-rule).
 4. **Record** one learning entry in the external store per [learnings-store.md](learnings-store.md), kind per the class.
 5. **Re-assess** against the budget, convergence, and stop rules.
 
@@ -56,9 +56,9 @@ The resource is fine; the model of it was wrong, and proof or skill text built o
 The resource behaves as understood; the generated skill teaches it wrong.
 
 - **Action:** patch only the instructions responsible.
-- **Re-run:** the failed check first, then **every previously passing applicable check** per the testing-protocol regression rule.
+- **Re-run:** the failed check first, then only prior passing checks invalidated by changed declared inputs per the testing-protocol rule.
 - **Record:** a `repair-outcome` learning — defect class, fix pattern, which check caught it.
-- **Status:** the patch voids the skill's prior behavioral pass. `skill_validation.independent_behavioral_passed` cannot remain true until the reruns complete and pass.
+- **Status:** the patch voids only dependent behavioral claims. Aggregate pass cannot remain true when a required dependent claim is stale; unrelated structured evidence remains current.
 - **Adoption:** hard defects keep affected host entries `blocked`. An authorized soft guidance repair keeps the host `installed` while invalidated structural, behavioral, catalog, and activation checks are rerun; restore `operational` only after they pass.
 
 ### 5. Environment failure
@@ -115,7 +115,7 @@ No repair activity upgrades any status implicitly:
 
 - resource verification moves only when the applicable upstream resource proof in [qualification-workflow.md](qualification-workflow.md) actually re-executes and passes;
 - structural skill validation moves only when `scripts/validate_skill.py` re-runs and passes;
-- behavioral skill validation moves only when independent behavioral execution re-runs and passes;
+- affected behavioral skill validation moves only when its independent behavioral execution re-runs and passes;
 - catalog routing moves only when the current catalog fingerprint's independent routing tests re-run and pass;
 - host adoption returns to `operational` only after authorized host update and explicit activation re-run;
 - a patch moves affected behavioral status **down** until reruns restore it.

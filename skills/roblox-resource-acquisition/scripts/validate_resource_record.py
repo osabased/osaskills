@@ -11,6 +11,7 @@ with code 2 and an install hint when PyYAML is missing.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import sys
 from datetime import date
@@ -31,6 +32,7 @@ from _common import (
     validate_https_url,
     validated_url_host,
 )
+from validate_skill_catalog import CatalogSkill, catalog_fingerprint as compute_catalog_fingerprint, load_catalog_skill
 
 TOP_LEVEL_FIELDS = {
     "schema_version",
@@ -81,10 +83,15 @@ NESTED_FIELDS = {
         "catalog_fingerprint",
         "catalog_environment",
         "catalog_result",
+        "checks",
+        "claim_scope",
     },
 }
 OPTIONAL_NESTED_FIELDS = {
     "resource_proof": {"target_version_or_commit"},
+    # ``checks`` is a schema-v3 extension. Omission remains readable as legacy
+    # evidence, but strict finalization cannot treat prose/booleans as current.
+    "skill_validation": {"checks", "claim_scope"},
 }
 LIST_FIELDS = {
     "alternatives_considered",
@@ -137,6 +144,7 @@ STRING_FIELDS = {
     "skill_validation.catalog_fingerprint",
     "skill_validation.catalog_environment",
     "skill_validation.catalog_result",
+    "skill_validation.claim_scope",
 }
 ALLOWED_ORIGINS = {"curated", "project", "devforum", "other"}
 ALLOWED_PROJECT_USE = {"not-applicable", "adopted", "retired"}
@@ -154,6 +162,40 @@ ALLOWED_ACTIVATION = {"passed", "failed", "not-run", "unavailable"}
 HOST_FIELDS = {"host", "scope", "location", "status", "checked_at", "result", "evidence"}
 HOST_EVIDENCE_FIELDS = {"installed", "registered", "discoverable", "enabled", "explicit_activation"}
 FINGERPRINT_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
+CHECK_FIELDS = {
+    "check_id",
+    "kind",
+    "execution_mode",
+    "status",
+    "tested_at",
+    "target_version_or_commit",
+    "inputs",
+    "command",
+    "result",
+    "artifact",
+    "tested_child_sha256",
+    "scope_fingerprint",
+}
+OPTIONAL_CHECK_FIELDS = {"command", "artifact", "tested_child_sha256", "scope_fingerprint"}
+CHECK_INPUT_FIELDS = {"role", "path", "section", "sha256"}
+OPTIONAL_CHECK_INPUT_FIELDS = {"section"}
+CHECK_KINDS = {
+    "routing",
+    "instruction-response",
+    "executable-integration",
+    "lifecycle-failure-cleanup",
+}
+EXECUTION_MODES = {"independent-agent", "same-agent-audit", "command", "studio-playtest"}
+CHECK_STATUSES = {"passed", "failed", "unavailable", "historical"}
+CHECK_INPUT_ROLES = {
+    "fixture",
+    "api",
+    "contract",
+    "configuration",
+    "shared-dependency",
+    "activation-metadata",
+}
+CLAIM_SCOPES = {"unclaimed", "advice-only", "executable-integration"}
 
 
 def load_record(path: Path) -> dict[str, Any]:
@@ -177,6 +219,11 @@ def load_record(path: Path) -> dict[str, Any]:
                 for field in ("discoverable", "enabled"):
                     if isinstance(evidence.get(field), bool):
                         evidence[field] = "yes" if evidence[field] else "no"
+    skill_validation = loaded.get("skill_validation")
+    if isinstance(skill_validation, dict) and isinstance(skill_validation.get("checks"), list):
+        for check in skill_validation["checks"]:
+            if isinstance(check, dict) and isinstance(check.get("tested_at"), date):
+                check["tested_at"] = check["tested_at"].isoformat()
     return loaded
 
 
@@ -193,7 +240,240 @@ def nonempty_string(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
-def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[str]]:
+def _section_bytes(path: Path, heading: str) -> bytes | None:
+    """Return exact Markdown section bytes for scoped freshness hashing."""
+    text = path.read_text(encoding="utf-8-sig")
+    match = re.search(rf"^##[ \t]+{re.escape(heading.strip())}[ \t]*$", text, re.M | re.I)
+    if not match:
+        return None
+    next_heading = re.search(r"^##[ \t]+.+$", text[match.end() :], re.M)
+    end = match.end() + next_heading.start() if next_heading else len(text)
+    return text[match.start() : end].encode("utf-8")
+
+
+def _sha256_bytes(value: bytes) -> str:
+    return "sha256:" + hashlib.sha256(value).hexdigest()
+
+
+def _validate_skill_checks(
+    data: dict[str, Any],
+    errors: list[str],
+    notes: list[str],
+    *,
+    current_skill_root: Path | None,
+    require_current_evidence: bool,
+) -> None:
+    checks = dotted_get(data, "skill_validation.checks")
+    independent_passed = dotted_get(data, "skill_validation.independent_behavioral_passed")
+    claim_scope = dotted_get(data, "skill_validation.claim_scope")
+    catalog_status = dotted_get(data, "skill_validation.catalog_routing_status")
+    catalog_fingerprint = dotted_get(data, "skill_validation.catalog_fingerprint")
+    if claim_scope is not None and (not isinstance(claim_scope, str) or claim_scope not in CLAIM_SCOPES):
+        errors.append("skill_validation.claim_scope must be unclaimed, advice-only, or executable-integration")
+    if checks is None:
+        if independent_passed is True:
+            message = (
+                "legacy skill_validation booleans/prose do not establish current independent behavioral evidence"
+            )
+            if require_current_evidence:
+                errors.append(message)
+            else:
+                notes.append(message)
+        if catalog_status == "verified":
+            message = "legacy catalog routing fields do not establish current structured routing evidence"
+            if require_current_evidence:
+                errors.append(message)
+            else:
+                notes.append(message)
+        return
+    if not isinstance(checks, list):
+        return
+
+    record_version = dotted_get(data, "verification.version_or_commit")
+    current_independent_kinds: set[str] = set()
+    current_routing_fingerprints: set[str] = set()
+    seen_ids: set[str] = set()
+    for index, check in enumerate(checks):
+        prefix = f"skill_validation.checks[{index}]"
+        if not isinstance(check, dict):
+            errors.append(f"{prefix} must be a mapping")
+            continue
+        unknown = sorted(set(check) - CHECK_FIELDS)
+        missing = sorted(CHECK_FIELDS - OPTIONAL_CHECK_FIELDS - set(check))
+        if unknown:
+            errors.append(f"{prefix} has unknown field(s): {', '.join(unknown)}")
+        if missing:
+            errors.append(f"{prefix} is missing field(s): {', '.join(missing)}")
+
+        for field in CHECK_FIELDS - {"inputs"}:
+            if field in check and not isinstance(check.get(field), str):
+                errors.append(f"{prefix}.{field} must be a string")
+        check_id = check.get("check_id")
+        if not nonempty_string(check_id):
+            errors.append(f"{prefix}.check_id must be a non-empty string")
+        elif check_id.strip() in seen_ids:
+            errors.append(f"duplicate skill validation check_id: {check_id.strip()}")
+        else:
+            seen_ids.add(check_id.strip())
+
+        kind = check.get("kind")
+        mode = check.get("execution_mode")
+        status = check.get("status")
+        tested_at = check.get("tested_at")
+        target = check.get("target_version_or_commit")
+        valid_kind = isinstance(kind, str) and kind in CHECK_KINDS
+        valid_mode = isinstance(mode, str) and mode in EXECUTION_MODES
+        valid_status = isinstance(status, str) and status in CHECK_STATUSES
+        if not valid_kind:
+            errors.append(f"{prefix}.kind has an invalid value")
+        if not valid_mode:
+            errors.append(f"{prefix}.execution_mode has an invalid value")
+        if not valid_status:
+            errors.append(f"{prefix}.status has an invalid value")
+        if nonempty_string(tested_at):
+            errors.extend(validate_date(tested_at.strip(), field=f"{prefix}.tested_at"))
+        else:
+            errors.append(f"{prefix}.tested_at must be a valid ISO date")
+        if not nonempty_string(target):
+            errors.append(f"{prefix}.target_version_or_commit must be non-empty")
+        elif status != "historical" and nonempty_string(record_version) and target.strip() != record_version.strip():
+            errors.append(f"{prefix}.target_version_or_commit must match verification.version_or_commit")
+
+        tested_child = check.get("tested_child_sha256")
+        scope_fingerprint = check.get("scope_fingerprint")
+        if nonempty_string(tested_child) and not FINGERPRINT_RE.fullmatch(tested_child.strip()):
+            errors.append(f"{prefix}.tested_child_sha256 must use sha256:<64 lowercase hex characters>")
+        if nonempty_string(scope_fingerprint) and not FINGERPRINT_RE.fullmatch(scope_fingerprint.strip()):
+            errors.append(f"{prefix}.scope_fingerprint must use sha256:<64 lowercase hex characters>")
+        if kind == "routing" and status == "passed" and not nonempty_string(scope_fingerprint):
+            errors.append(f"{prefix} passed routing evidence requires scope_fingerprint")
+        if valid_kind and kind != "routing" and nonempty_string(scope_fingerprint):
+            errors.append(f"{prefix}.scope_fingerprint is only valid for routing evidence")
+
+        if status in ("passed", "failed", "unavailable", "historical") and not nonempty_string(check.get("result")):
+            errors.append(f"{prefix}.result must be non-empty")
+        if kind in ("executable-integration", "lifecycle-failure-cleanup") and status == "passed":
+            if mode not in ("command", "studio-playtest", "independent-agent"):
+                errors.append(f"{prefix} executable evidence requires command, studio-playtest, or independent-agent execution")
+            if not nonempty_string(check.get("command")):
+                errors.append(f"{prefix} passed executable evidence requires command")
+
+        inputs = check.get("inputs")
+        if not isinstance(inputs, list):
+            errors.append(f"{prefix}.inputs must be a list")
+            inputs = []
+        if status == "passed" and kind != "routing" and not inputs:
+            errors.append(f"{prefix} passed non-routing evidence requires scoped inputs")
+        if status == "passed" and kind in ("executable-integration", "lifecycle-failure-cleanup"):
+            if not any(isinstance(item, dict) and item.get("role") == "fixture" for item in inputs):
+                errors.append(f"{prefix} passed executable evidence requires a maintained fixture input")
+        if status == "passed" and kind == "routing":
+            if not any(isinstance(item, dict) and item.get("role") == "activation-metadata" for item in inputs):
+                errors.append(f"{prefix} passed routing evidence requires a current activation-metadata input")
+
+        routing_skills: list[CatalogSkill] = []
+        routing_has_current_child = False
+        for input_index, evidence_input in enumerate(inputs):
+            input_prefix = f"{prefix}.inputs[{input_index}]"
+            if not isinstance(evidence_input, dict):
+                errors.append(f"{input_prefix} must be a mapping")
+                continue
+            unknown_input = sorted(set(evidence_input) - CHECK_INPUT_FIELDS)
+            missing_input = sorted(CHECK_INPUT_FIELDS - OPTIONAL_CHECK_INPUT_FIELDS - set(evidence_input))
+            if unknown_input:
+                errors.append(f"{input_prefix} has unknown field(s): {', '.join(unknown_input)}")
+            if missing_input:
+                errors.append(f"{input_prefix} is missing field(s): {', '.join(missing_input)}")
+            role = evidence_input.get("role")
+            input_path = evidence_input.get("path")
+            section = evidence_input.get("section")
+            digest = evidence_input.get("sha256")
+            valid_role = isinstance(role, str) and role in CHECK_INPUT_ROLES
+            if not valid_role:
+                errors.append(f"{input_prefix}.role has an invalid value")
+            if not nonempty_string(input_path):
+                errors.append(f"{input_prefix}.path must be a non-empty string")
+            if "section" in evidence_input and not isinstance(section, str):
+                errors.append(f"{input_prefix}.section must be a string")
+            if not nonempty_string(digest) or not FINGERPRINT_RE.fullmatch(digest.strip()):
+                errors.append(f"{input_prefix}.sha256 must use sha256:<64 lowercase hex characters>")
+            if status != "passed" or current_skill_root is None or not nonempty_string(input_path):
+                continue
+            resolved = Path(input_path)
+            if not resolved.is_absolute():
+                resolved = current_skill_root / resolved
+            resolved = resolved.resolve()
+            if not resolved.is_file():
+                errors.append(f"{input_prefix} current input is missing: {resolved}")
+                continue
+            if role == "activation-metadata":
+                expected_skill = (current_skill_root / "SKILL.md").resolve()
+                if resolved.name.lower() != "skill.md" or nonempty_string(section):
+                    errors.append(
+                        f"{input_prefix} activation-metadata must identify a whole SKILL.md metadata surface"
+                    )
+                    continue
+                try:
+                    routing_skill = load_catalog_skill(resolved.parent)
+                    current_activation = compute_catalog_fingerprint([routing_skill])
+                except (OSError, UnicodeError, ValueError) as exc:
+                    errors.append(f"{input_prefix} activation metadata could not be read: {exc}")
+                    continue
+                routing_skills.append(routing_skill)
+                if resolved == expected_skill:
+                    routing_has_current_child = True
+                if nonempty_string(digest) and current_activation != digest.strip():
+                    errors.append(f"{input_prefix} activation metadata hash is stale")
+                continue
+            try:
+                payload = _section_bytes(resolved, section) if nonempty_string(section) else resolved.read_bytes()
+            except (OSError, UnicodeError) as exc:
+                errors.append(f"{input_prefix} could not be read: {exc}")
+                continue
+            if payload is None:
+                errors.append(f"{input_prefix} section is missing: {section}")
+            elif nonempty_string(digest) and _sha256_bytes(payload) != digest.strip():
+                errors.append(f"{input_prefix} input hash is stale")
+
+        if status == "passed" and kind == "routing" and current_skill_root is not None:
+            if not routing_has_current_child:
+                errors.append(f"{prefix} passed routing evidence must include the current child's activation metadata")
+            if routing_skills and nonempty_string(scope_fingerprint):
+                declared_scope = compute_catalog_fingerprint(routing_skills)
+                if declared_scope != scope_fingerprint.strip():
+                    errors.append(f"{prefix}.scope_fingerprint is stale for the declared routing inputs")
+
+        if status == "passed" and mode == "independent-agent" and kind != "routing":
+            current_independent_kinds.add(kind)
+        if status == "passed" and mode == "independent-agent" and kind == "routing" and nonempty_string(scope_fingerprint):
+            current_routing_fingerprints.add(scope_fingerprint.strip())
+
+    if independent_passed is True and require_current_evidence:
+        if claim_scope == "advice-only":
+            if "instruction-response" not in current_independent_kinds:
+                errors.append("advice-only independent_behavioral_passed requires a current independent instruction-response check")
+        elif claim_scope == "executable-integration":
+            required = {"executable-integration", "lifecycle-failure-cleanup"}
+            missing = sorted(required - current_independent_kinds)
+            if missing:
+                errors.append(
+                    "executable-integration independent_behavioral_passed requires current independent checks: "
+                    + ", ".join(missing)
+                )
+        else:
+            errors.append("independent_behavioral_passed requires an explicit current skill_validation.claim_scope")
+    if catalog_status == "verified" and require_current_evidence:
+        if not nonempty_string(catalog_fingerprint) or catalog_fingerprint.strip() not in current_routing_fingerprints:
+            errors.append("verified catalog routing requires a current independent routing check for catalog_fingerprint")
+
+
+def validate_record(
+    path: Path,
+    data: dict[str, Any],
+    *,
+    current_skill_root: Path | None = None,
+    require_current_evidence: bool = False,
+) -> tuple[list[str], list[str]]:
     errors: list[str] = []
     notes: list[str] = []
 
@@ -412,6 +692,14 @@ def validate_record(path: Path, data: dict[str, Any]) -> tuple[list[str], list[s
         if not nonempty_string(skill_result):
             errors.append("executed independent behavioral validation must record skill_validation.result")
 
+    _validate_skill_checks(
+        data,
+        errors,
+        notes,
+        current_skill_root=current_skill_root.resolve() if current_skill_root else None,
+        require_current_evidence=require_current_evidence,
+    )
+
     catalog_status = dotted_get(data, "skill_validation.catalog_routing_status")
     catalog_fingerprint = dotted_get(data, "skill_validation.catalog_fingerprint")
     catalog_environment = dotted_get(data, "skill_validation.catalog_environment")
@@ -551,6 +839,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Validate a portable Roblox resource evidence record for structural and lifecycle state consistency."
     )
     parser.add_argument("resource_record", type=Path, help="resource-record YAML file")
+    parser.add_argument(
+        "--current-skill",
+        type=Path,
+        help="generated skill root; enables strict current structured-evidence and input-hash checks",
+    )
     return parser.parse_args(argv)
 
 
@@ -566,7 +859,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FAIL\n- {exc}")
         return 1
 
-    errors, notes = validate_record(path, data)
+    current_skill = args.current_skill.resolve() if args.current_skill else None
+    if current_skill is not None and not (current_skill / "SKILL.md").is_file():
+        print(f"FAIL\n- --current-skill must contain SKILL.md: {current_skill}")
+        return 1
+    errors, notes = validate_record(
+        path,
+        data,
+        current_skill_root=current_skill,
+        require_current_evidence=current_skill is not None,
+    )
     if errors:
         print("FAIL")
         for error in errors:

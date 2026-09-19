@@ -69,7 +69,12 @@ def validate_bundle(
     errors: list[str] = []
     notes: list[str] = []
 
-    record_errors, record_notes = validate_record(record_path, record)
+    record_errors, record_notes = validate_record(
+        record_path,
+        record,
+        current_skill_root=skill_root,
+        require_current_evidence=True,
+    )
     skill_errors, skill_warnings = validate_skill(skill_root)
     errors.extend(f"resource record: {message}" for message in record_errors)
     errors.extend(f"generated skill: {message}" for message in skill_errors)

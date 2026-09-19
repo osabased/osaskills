@@ -34,7 +34,9 @@ For an externally owned project dependency, alternatives are informational only:
 - installation/placement;
 - minimal mental model;
 - only the public API surface necessary for common tasks, or an explicit statement that the resource exposes no callable API;
-- initialization and cleanup lifecycle;
+- source-grounded activation ownership and cleanup lifecycle, including constructor/start side effects even when a bundle require is inert, cancellation/invalidation for pending waits or spawned work, ownership established before fallible acquisition, partial-acquisition cleanup, and idempotent teardown;
+- for composed libraries, the exact pinned cleanup owner's real ordering/error-continuation behavior and an explicit producer-before-consumer plan when required; never assume separate cleanup entries provide ordering or best-effort continuation;
+- a boundary between component/feature-owned resources and package/process-global work, following [Respect host ownership](integration-proof.md#respect-host-ownership) before assigning any global finalizer;
 - client/server placement and authority, explicitly covering both sides even when the resource is intentionally one-sided;
 - concise working examples derived from source-grounded APIs, with runtime-verification claims only when the resource verification status supports them;
 - known limitations;
@@ -52,7 +54,9 @@ Include a **Security notes** section in every generated skill. When no resource-
 
 ## Required verification
 
-Provide a small verification recipe an agent can run after installation. It must include a concrete runnable/checkable step and a specific observable pass condition; placeholders or generic statements such as “check it” / “it works” do not satisfy this contract. It must not claim stronger coverage than it provides.
+Provide a small verification recipe an agent can run after installation. It must name the maintained executable fixture that supplies its integration examples and proof, or state a concrete non-executable claim boundary. Executable Luau examples must be strict-analyzed on the canonical project path with the actual adopted resource and material companion libraries. The recipe must include a concrete runnable/checkable step and a specific observable pass condition; placeholders or generic statements such as “check it” / “it works” do not satisfy this contract.
+
+Follow [integration-proof.md](integration-proof.md) for executable integration, composed lifecycle owners, runtime behavior, and diagnostic claims. State which proof lane each command covers. Static analysis, construction, or green CLI assertions do not establish real input, rendered layout, animation, startup, or a clean console. Require Studio/runtime evidence only for claims that need it; advice-only skills and inert utilities retain a fast non-executable or static path.
 
 ## Required operational reconciliation
 
@@ -70,6 +74,7 @@ Include an **Operational reconciliation** section containing these labeled field
 - `Policy`: exactly `required`, `conditional`, or `not-applicable` followed by a concrete reason;
 - `Installed-state check`: a resource-specific command, file/manifest inspection, package/asset identity check, or an explicit immutable-install explanation;
 - `Expected identity/state`: the canonical identity and reviewed version/commit/source state the guidance targets;
+- `Current-block check`: under `required` or `conditional`, run the parent package's read-only `scripts/check_resource_status.py --pair <child> <record>` before affected use, proceed only on `HEALTHY`, and route `BLOCKED`/`UNKNOWN` to full reconciliation; under `not-applicable`, state `not-applicable` and repeat the concrete immutable or version-insensitive reason;
 - `Parent-state check`: a deterministic discovery route for matching schema-version 3 resource records and resource-bound learnings, plus the resource slug/canonical-identity match. For a project-local child, name the project-root-relative canonical record/learnings locations or the exact authoritative locations that apply. For a portable/user child, state the project/user fallback resolution rule. An identity-only instruction such as “load matching records and learnings” is insufficient;
 - `Mismatch/unknown action`: stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode;
 - `Defect handoff`: point to the earlier **Repair interrupt** handoff as the source of truth rather than duplicating a weaker evidence list.
@@ -81,9 +86,9 @@ Conditional policies additionally require:
 
 Use `required` when every version-sensitive use must consult installed and parent lifecycle state before proceeding. Use `conditional` when a cheap declared-pin plus lock/header check can establish the expected ordinary-use state and a canonical verifier will check installed integrity before completion. Use `not-applicable` only when the install is fixed to the exact immutable reviewed state or the documented behavior is demonstrably insensitive to independent drift. Unknown material state never counts as a match.
 
-Put **Repair interrupt** before **Common path**, and **Common path** before the conditional reconciliation branch, so healthy ordinary use is immediately actionable while reusable defects self-activate repair. Under `conditional`, the ordinary path reads only the declared pin and its lock/header counterpart, then proceeds without package-internal, provenance, resource-record, or learning reads. The integrity gate still runs before completion. If a state escalation trigger applies, stop version-sensitive work and execute the full installed-state, parent-state, and mismatch contract before continuing. A soft instruction defect activates repair diagnosis without automatically forcing unrelated parent-state or provenance work.
+Put **Repair interrupt** before **Common path**, and **Common path** before the conditional reconciliation branch, so healthy ordinary use is immediately actionable while reusable defects self-activate repair. Under `conditional`, the ordinary path reads the declared pin and lock/header counterpart, then performs only the narrow query over child provenance labels and matching record identity, version, block, reconciliation, verification, and matching-host status. It does not load package internals, full record proof/skill-validation evidence, or learnings. The integrity gate still runs before completion. If the block query is `BLOCKED`/`UNKNOWN` or another state escalation trigger applies, stop version-sensitive work and execute the full installed-state, parent-state, and mismatch contract before continuing. A soft instruction defect activates repair diagnosis without automatically forcing unrelated parent-state or provenance work.
 
-The child does not bundle the external resource record, project-use state, or learnings store. Records and learnings are lifecycle evidence, not mandatory ordinary-use inputs for a conditional child. A `required` child consults them before version-sensitive direct use; a `conditional` child consults them only after an escalation trigger. Once loaded, a current `blocked_use_or_version` stops the affected use, while adverse learnings remain observations to re-check rather than executable policy.
+The child does not bundle the external resource record, project-use state, or learnings store. A conditional child queries only child provenance labels and matching record identity/version/block plus reconciliation, verification, and matching-host status on the healthy path, and loads full record proof/skill-validation evidence plus learnings only after escalation. `HEALTHY` requires a known usable reconciliation state and no adverse verification or matching-host state. A `required` child consults the full lifecycle inputs before version-sensitive direct use. Any nonempty `blocked_use_or_version` on the exact matching record stops the affected use; free text never supplies evidence that the block does not apply. Adverse learnings remain observations to re-check rather than executable policy.
 
 ## Prohibited behavior
 

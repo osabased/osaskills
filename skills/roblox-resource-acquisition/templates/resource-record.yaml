@@ -57,12 +57,26 @@ skill_validation:
   structural_passed: false
   independent_behavioral_executed: false
   independent_behavioral_passed: false
+  claim_scope: unclaimed # unclaimed | advice-only | executable-integration
   environment: ""
   result: ""
   catalog_routing_status: unverified # not-applicable | unverified | verified | unavailable | failed
   catalog_fingerprint: "" # sha256:<64 lowercase hex characters>
   catalog_environment: ""
   catalog_result: ""
+  # Optional schema-v3 extension. Required for every new current behavioral claim;
+  # legacy booleans/prose remain historical only. Hash only inputs relevant to the
+  # check so unrelated child edits do not invalidate evidence.
+  checks: []
+  # Entry fields: check_id; kind (routing | instruction-response |
+  # executable-integration | lifecycle-failure-cleanup); execution_mode
+  # (independent-agent | same-agent-audit | command | studio-playtest); status
+  # (passed | failed | unavailable | historical); tested_at;
+  # target_version_or_commit; inputs; result; optional command/artifact;
+  # optional tested_child_sha256 (attribution only, never a freshness gate);
+  # optional scope_fingerprint (required for a passed routing check). Each input has role
+  # (fixture | api | contract | configuration | shared-dependency | activation-metadata), path,
+  # optional section (an exact Markdown H2 heading when used), and sha256.
 
 # Empty means validated artifact only. Each entry uses:
 # host, scope (repo | user | admin | plugin | other), location,
@@ -78,4 +92,3 @@ limitations: []
 blocked_use_or_version: ""
 rejection_reason: ""
 reconsider_when: ""
-

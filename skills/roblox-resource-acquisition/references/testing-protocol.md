@@ -2,6 +2,8 @@
 
 Validate the generated skill as an interface for another agent, not as prose.
 
+For executable integration, composed cleanup ownership, or runtime/diagnostic claims, first read [integration-proof.md](integration-proof.md). Enumerate the child claims and run only the applicable proof lanes. Advice-only guidance and inert utilities do not acquire Studio, UI, or lifecycle gates merely because this protocol supports them.
+
 ## Test A - Appropriate activation
 
 Give a task whose requirements closely match the resource. Pass if the skill is selected for a justified reason and the agent does not over-expand scope.
@@ -16,15 +18,21 @@ Start from documented prerequisites only. Pass if an agent can install/place/req
 
 ## Test D - Minimal happy path
 
-Implement the smallest useful behavior. Pass if observed behavior matches the skill and upstream validated behavior.
+Implement the smallest useful behavior from the maintained fixture. For project-authored Luau, pass strict analysis over the authoritative fixture with the actual adopted resource and material companion libraries. Pass if observed behavior matches the skill and upstream validated behavior. A response that merely repeats the instructions is `instruction-response` evidence, not executable proof.
 
 ## Test E - Representative integration
 
-Use a realistic task that exercises the reason the resource was acquired. Pass if the agent uses the correct lifecycle, execution side, and configuration.
+Use a realistic task that executes the maintained representative fixture and exercises the reason the resource was acquired. Pass if the actual implementation uses the correct activation owner, execution side, configuration, and project conventions. When libraries compose, inspect the exact pinned cleanup owner and verify ownership is registered before fallible construction, producers stop before their consumers, and the integration does not assume unsupported cleanup ordering or continuation.
+
+Record static/construction separately from runtime-host evidence. If the child claims real input, focus, rendered layout, animation, or normal startup, exercise that behavior in an appropriate Studio/client path; domain-method calls and construction assertions cannot substitute. Record the fixture, configuration, contract, API, and material companion-dependency inputs and hashes that determine each check.
 
 ## Test F - Edge/failure diagnosis
 
-Introduce one likely integration problem: missing dependency, wrong placement, invalid config, unavailable service, cleanup issue, or similar. Pass if the skill leads to the real cause without hallucinating methods or unrelated rewrites.
+Introduce a likely integration problem: missing dependency, wrong placement, invalid config, unavailable service, cleanup issue, or similar. Pass if the executed fixture exposes the failure and the skill leads to the real cause without hallucinating methods or unrelated rewrites.
+
+When activation owns resources, test the applicable partial-acquisition, teardown, and cancellation cases from [integration-proof.md](integration-proof.md). Cleanup must still run after a failed assertion; a throwing producer/phase must not prevent later top-level phases; repeated destroy runs each resource at most once; and post-disposal producer activity cannot reach the consumer. Distinguish component-owned cleanup from package/process-global work using [Respect host ownership](integration-proof.md#respect-host-ownership).
+
+When claiming clean diagnostics, force an unallowlisted generic warning and a generic error after otherwise passing assertions. Each must make the harness fail and retain an artifact associated with the active/last fixture through the complete runtime boundary the harness owns. Expected diagnostics must be exact and test-local. A green test summary without those red-capability checks does not prove a clean console. Apply [Respect host ownership](integration-proof.md#respect-host-ownership); do not attribute an unknown diagnostic producer until this guard can fail and a reduced reproduction identifies the owner.
 
 ## Test G - Version/provenance/verification truthfulness
 
@@ -40,7 +48,8 @@ For `required`, use a project whose installed resource state is independently mu
 
 For `conditional`, run both branches:
 
-- Healthy ordinary use: make the declared pin and named lock/header match. Pass only if the agent proceeds after those checks without reading package internals, provenance, resource records, or learnings, while retaining the exact integrity gate for completion.
+- Healthy ordinary use: make the declared pin and named lock/header match and supply a compatible unblocked schema-v3 record. Pass only if the narrow `check_resource_status.py` query returns `HEALTHY`, the agent avoids package internals/full record evidence/learnings, and it retains the exact integrity gate for completion.
+- Block query: separately test a matching free-text block, missing/malformed record, identity/version mismatch, adverse or unknown reconciliation/verification/matching-host state, and compatible legacy record. Pass only if the blocked case produces `BLOCKED`; every missing, malformed, mismatched, unknown, or adverse case produces `UNKNOWN`; the compatible unblocked legacy record has a known usable reconciliation state and no adverse verification or matching-host state and is `HEALTHY`; and no evidence command is executed.
 - State escalation: separately introduce a missing/mismatched pin or lock/header, verifier failure or drift, adoption/upgrade, an authorized repair, a hard correctness/security/identity/version defect, and an already-known block. Pass only if each applicable trigger stops version-sensitive use, loads the deterministic parent record/learnings route, and invokes `roblox-resource-acquisition` in `repair/reconcile` mode.
 
 For `not-applicable`, pass only when the child gives a concrete immutable-install or version-insensitivity reason.
@@ -69,16 +78,20 @@ Run each case without naming the parent skill unless the case explicitly tests d
 
 Run the soft case against the previous compliant behavior or an equivalent defective fixture that silently absorbs the recurring workaround. It must fail. This falsifiability control proves that finishing the immediate task is not mistaken for resolving reusable guidance debt.
 
-## Regression rule
+## Change-based invalidation rule
 
-After any repair patch, rerun:
+After a repair patch, rerun the failed check first, then only previously passing checks whose declared inputs changed or whose assumptions depend on those inputs:
 
-- the failed test first;
-- then every previously passing applicable test — a patch voids prior passes until they are re-established, so rerunning only A, B, and D is insufficient.
+- API/example/lifecycle or maintained-fixture changes invalidate the executable integration and affected failure/cleanup checks;
+- activation metadata or host-visible competitor changes invalidate catalog routing for the affected fingerprint;
+- shared contracts, configuration, or dependency changes invalidate every check that declares that input and may require broader relevant integration;
+- unrelated content leaves passing evidence current.
+
+Bind this rule mechanically through structured `skill_validation.checks` input hashes. A whole-child hash may record which artifact ran, but cannot invalidate unrelated checks. Batch related fixes once their common cause is understood; speculative batches that obscure falsifiability remain invalid.
 
 A repaired test must additionally demonstrate that it can still fail: run it against the defective state it was written to catch, or an equivalent. A test weakened until it cannot fail is deleted evidence, not a repair.
 
-From the moment of a patch until these reruns complete and pass, the generated skill's prior behavioral validation is void and `skill_validation` must not continue to claim it. Attempt budgets, convergence, and stop criteria for the repair loop live in [repair-loop.md](repair-loop.md).
+From the moment an input changes until its dependent reruns complete and pass, only those affected claims are stale. Preserve unrelated passing evidence. If a fixture is removed, mark its prior entry `historical`; its result remains truthful history but cannot satisfy current integration. Attempt budgets, convergence, and stop criteria for the repair loop live in [repair-loop.md](repair-loop.md).
 
 ## Reliability threshold
 
@@ -94,6 +107,9 @@ Mark a generated resource skill behaviorally verified only when:
 - no unsupported API statement remains;
 - no high-severity safety/integration defect remains;
 - runtime tests are labeled accurately;
+- static/construction, owned-lifecycle, runtime-host, and diagnostics claims are recorded separately, with every claimed lane actually observed;
+- any clean-console claim passed forced generic warning/error regressions through owned teardown and retained its failure artifacts;
+- every current behavioral claim has structured evidence whose declared inputs still match; booleans plus environment/result prose alone are legacy history;
 - independent behavioral execution was actually performed rather than replaced by a same-agent contract audit;
 - failures are not being hidden by weakening assertions.
 

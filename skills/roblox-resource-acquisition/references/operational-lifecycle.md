@@ -42,13 +42,13 @@ Record `matched` only after applicable installed-state and parent-state checks c
 When reconciliation is conditional:
 
 1. Follow the child's **Common path** and confirm only its declared project pin plus the named lockfile or generated-version header.
-2. If they match, proceed without reading package internals, provenance, resource records, or learnings. Run the child's named integrity gate before task completion and require its documented pass condition.
-3. Escalate to the full required-policy sequence above when the declaration or lock/header is missing or mismatched; the task is adoption, upgrade, or an authorized repair that invalidates evidence; the verifier fails or reports drift; repair diagnosis classifies a defect as hard; or an already-known block applies.
+2. If they match, run `scripts/check_resource_status.py --pair <child-skill-directory> <matching-record.yaml>`. This read-only hot path reads the child's provenance labels and only the record fields needed for schema, exact slug/canonical/package identity, reviewed version/state, block, reconciliation, verification, and matching-host status. It does not inspect skill-validation/resource-proof evidence, load learnings, or execute recorded commands. Proceed only on `HEALTHY`, then run the child's named integrity gate before task completion and require its documented pass condition.
+3. Escalate to the full required-policy sequence above when the query returns `BLOCKED` or `UNKNOWN`; the declaration or lock/header is missing or mismatched; the task is adoption, upgrade, or an authorized repair that invalidates evidence; the verifier fails or reports drift; or repair diagnosis classifies a defect as hard.
 4. On escalation, stop version-sensitive work until the full sequence resolves or truthfully records the mismatch/block.
 
 A soft instruction defect still activates the parent repair interrupt, but it does not automatically activate this full state sequence. Diagnose and surface its reproduction, safe workaround, and durable correction first; enter reconciliation only if diagnosis finds a hard/state trigger or an authorized edit invalidates lifecycle evidence.
 
-This fast path intentionally does not discover newly added external record blocks at initial use. Urgent blocks must be surfaced by updating the child or through the named project-wide integrity gate. Records and learnings remain lifecycle evidence used by reconciliation, not ambient prerequisites for a healthy conditional task.
+The query accepts only a matching schema-version 3 record. `HEALTHY` requires exact current identity/version, a known usable reconciliation state (`matched` or justified `not-applicable`), no nonempty block, no failed verification, and no blocked, disabled, removed, failed, or unavailable adoption that matches the child location. Missing/malformed records, identity/version mismatches, and `unknown`/`mismatched` reconciliation are `UNKNOWN`, never healthy. A nonempty legacy `blocked_use_or_version` is conservatively `BLOCKED`; do not infer a narrower or cleared scope from its prose. Full record evidence and learnings remain reconciliation inputs rather than ambient prerequisites for a healthy conditional task. Use repeated `--pair` arguments for a project verification batch; the command exits nonzero if any pair is blocked or unknown.
 
 ## Adoption gate
 
