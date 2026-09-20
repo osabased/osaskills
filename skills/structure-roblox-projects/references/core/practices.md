@@ -84,6 +84,8 @@ Workspace/Door/
 
 Their execution order is nondeterministic unless the project adds an explicit coordination mechanism.
 
+When a design has more than one entrypoint in the same runtime, name one startup owner or explicitly define their independence, ordering, readiness, and failure coordination. Do not present two scripts that both appear to own the same feature startup without resolving that relationship.
+
 ### Entrypoint rules
 
 - In projects without canonical SSA or another reliable lifecycle loader, require feature roots explicitly.
@@ -91,6 +93,10 @@ Their execution order is nondeterministic unless the project adds an explicit co
 - In projects without an established lifecycle contract, add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
 - Point dependencies toward stable domain/shared modules rather than back toward entrypoints.
 - Split modules by cohesive responsibility rather than arbitrary line count.
+
+Every proposed executable entrypoint must form a consistent execution contract: exact DataModel path, filesystem path when mapped, Roblox class or `RunContext`, startup owner/caller, direct dependency roots, and a validation step that can observe startup. `LocalScript` is valid only in containers where Roblox executes it; for an entrypoint placed in `ReplicatedStorage`, use a `Script` with `RunContext = Client` or move the `LocalScript` to a supported client location such as `StarterPlayerScripts`. A shared ModuleScript in `ReplicatedStorage` is a dependency, not an independently executing client entrypoint.
+
+For every Remote contract, name the instance path and class, direction, caller and handler owners, payload shape, server-side validation and authority rule, and a focused test for accepted and rejected input. A folder name alone is not an integration contract.
 
 ## Module grouping
 

@@ -119,13 +119,14 @@ Keep research proportional to the task. The final acquisition result should make
 
 Report only applicable fields:
 
-- selected resource and why it fits; compare alternatives only when comparison was required or explicitly requested;
+- selected canonical resource identity plus material selector/version and why it fits; compare alternatives only when comparison was required or explicitly requested;
+- trust basis for that exact identity/selector;
 - project-use role/authority and whether project onboarding changed, when applicable;
-- verification performed and result, or explicitly `unverified`/`unavailable`;
-- generated skill location/name;
-- skill validation performed and result;
+- resource/runtime verification performed and result, or explicitly `unverified`/`unavailable`, naming the same exact identity/selector;
+- generated skill location/name, or `not applicable` when reusable child guidance was outside scope;
+- skill validation performed and result, or `not applicable` when no child was in scope;
 - reconciliation status and any blocked use/version;
-- artifact-only versus per-host adoption state, with the evidence supporting `operational` when claimed;
+- artifact-only versus per-host adoption state, with the evidence supporting `operational` when claimed, or `not applicable` when no host adoption was requested;
 - catalog fingerprint, static result, and independent routing result when applicable;
 - important limitations/version pin;
 - learning entries appended to the external store during the run, when any;

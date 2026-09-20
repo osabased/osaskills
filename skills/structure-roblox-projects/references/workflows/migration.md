@@ -27,6 +27,10 @@ For the full Migration route:
    - [`script-sync.md`](script-sync.md) when moving or renaming content into, out of, or within Script Sync management can change sync representation, metadata, child shape, packages, or conflict behavior; and
    - [`rojo.md`](rojo.md) when moving or renaming content into, out of, or within Rojo mapping can change the resulting DataModel through path, filename, `init.*`, suffix, nested-project, metadata, or mapping semantics.
 
+Express the plan as concrete migration slices, not only phases. For each slice record: current item/path and target item/path; affected callers, `require`s, Remotes, mappings, configuration, and tests; the authoritative source before and after; the exact cutover step that prevents dual ownership; required owner actions; the recovery boundary; and the focused verification that closes the slice. Items that do not move but need reference or topology updates still belong in a slice. If any field is unknown, name the evidence needed rather than replacing it with a generic “update references” step.
+
+When the prompt supplies only artifact names or hierarchy categories, treat those as the planning inventory. Produce one provisional slice per material category (entrypoints, shared/server/client roots, packages, metadata-sensitive children, and mapping/configuration as applicable), use explicit placeholders only for unresolved leaf paths, and attach the relevant reference traces and verification to each slice. Missing contents lower path-level confidence; they do not justify returning only a plan-to-plan.
+
 For an ordinary structural change, apply only the items above that are needed to keep the requested change coherent and safe. Do not inventory an unrelated target architecture or satisfy migration-wide accounting merely because one safeguard applies.
 
 ## Slice and recovery
@@ -36,6 +40,8 @@ For an explicit migration, define minimum coherent slices: each slice should mov
 For ordinary structural work, use a coherent slice only when the change is multi-step or a partial application would leave the affected behavior broken.
 
 Give a slice an explicit recovery boundary when it is destructive, topology-sensitive, non-version-controlled, externally stateful, or otherwise difficult to reverse. Version control is sufficient recovery for routine reversible filesystem edits when the affected writes are fully captured there.
+
+For a source-of-truth migration, name when writes freeze in the old owner, how the final state is captured, which side wins any conflict, when the new owner becomes authoritative, and how to return to the old owner without split-brain edits. A tool installation or first successful sync is not itself the cutover.
 
 A slice is blocked when coherent completion requires a protected write that is not authorized. State the minimum owner action instead of applying a partial topology that cannot work.
 

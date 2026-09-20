@@ -65,8 +65,12 @@ def test_relative_markdown_links_and_anchors_resolve():
 def test_evaluate_compare_stops_before_integration_and_generation():
     section = _mode("evaluate/compare")
     assert "qualification-workflow.md" in section
+    assert "evaluation-rubric.md" in section
+    assert section.index("hard gates") < section.index("scoring")
     assert "state-policy.md" in section
-    assert "Do not integrate the resource or generate a child skill as extra scope" in section
+    assert "Integration/project mutation" in section
+    assert "child generation or validation" in section
+    assert "operational host adoption" in section
 
 
 def test_acquire_adopt_routes_project_state_and_keeps_child_adoption_conditional():
@@ -77,6 +81,8 @@ def test_acquire_adopt_routes_project_state_and_keeps_child_adoption_conditional
     assert "When operational host adoption of generated guidance is requested" in section
     assert "operational-lifecycle.md" in section
     assert "state-policy.md" in section
+    assert "Report five statuses separately" in section
+    assert "not applicable" in section
 
 
 def test_portable_record_location_has_one_canonical_owner():
@@ -101,6 +107,10 @@ def test_refresh_preserves_authority_and_target_bound_proof():
     section = _mode("refresh")
     assert "externally owned target" in section
     assert "Prior runtime proof remains bound to its recorded target" in section
+    assert "actual installed state" in section
+    assert "recorded state" in section
+    assert "List the inputs that changed" in section
+    assert "Rerun only proof invalidated" in section
     assert "project-adoption.md" in section
     assert "repair-loop.md" in section
 
@@ -109,9 +119,40 @@ def test_repair_reconcile_keeps_upstream_and_child_revalidation_conditional():
     section = _mode("repair/reconcile")
     assert "project-adoption.md" in section
     assert "qualification-workflow.md" in section
-    assert "only when upstream identity, source facts, qualification, or trust are themselves in question" in section
+    assert "when upstream identity, source facts, qualification, trust, or a hard security boundary is in question" in section
     assert "generation-validation.md" in section
     assert "only for child validation surfaces invalidated by the repair" in section
+
+
+def test_hard_identity_or_security_repair_loads_complete_repair_stack():
+    section = _mode("repair/reconcile")
+    hard = section.split("For a hard identity", 1)[1].split("For other hard defects", 1)[0]
+    for reference in (
+        "operational-lifecycle.md",
+        "repair-loop.md",
+        "qualification-workflow.md",
+        "state-policy.md",
+    ):
+        assert reference in hard
+    for field in (
+        "exact canonical identity and selector",
+        "smallest reproduction",
+        "proposed durable correction",
+        "invalidated evidence",
+        "owner/authority",
+    ):
+        assert field in section
+
+
+def test_verification_reporting_is_bound_to_exact_identity_and_selector():
+    invariants = PARENT.split("## Shared invariants", 1)[1].split("## Completion", 1)[0]
+    assert "every verification claim" in invariants
+    assert "canonical identity and material selector/version" in invariants
+    qualification = REFERENCES["qualification-workflow.md"]
+    state = REFERENCES["state-policy.md"]
+    assert "Every verification sentence" in qualification
+    assert "canonical resource identity plus material selector/version" in state
+    assert "generated skill location/name, or `not applicable`" in state
 
 
 def test_post_adoption_defect_classifies_before_host_state_change():

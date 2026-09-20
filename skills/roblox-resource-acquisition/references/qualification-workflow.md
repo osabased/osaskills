@@ -30,6 +30,8 @@ Search is a means, not the goal.
 
 Stop evaluation when the decision criteria are satisfied, remaining uncertainty is unlikely to change the decision, and additional research has lower value than making a reversible choice and validating it. Avoid both premature adoption and indefinite comparison.
 
+For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly. Apply its hard gates before weighted scoring, score only survivors against the same acquisition brief and evidence standard, and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
+
 ### Positively targeted resources
 
 When the user positively targets one or more resources, preserve the role, ordering, and scope assigned to each identity. Evaluation, comparison, use, replacement, conjunction, ordered preference, fallback, and role-specific selection are different intents. A negative constraint, descriptive/incidental mention, analogy, or resource named only as the source being replaced is not automatically a positive target. Treat a negative constraint as an exclusion from selection/use unless the user changes it; inspect that resource only when another task-relevant rule requires its current state, such as safe removal or replacement.
@@ -162,6 +164,8 @@ Prefer executable evidence in this order when available:
 Treat Open Cloud Luau Execution as mutation-capable. Headless tasks can invoke cloud-backed engine APIs such as DataStores, and supported execution paths can save place changes; current execution limits and persistence behavior should be re-checked in Creator Hub before relying on them. Do not assume a proof is read-only. It is not a substitute for Studio/MCP when the proof depends on physics simulation or automatic `Script`/`LocalScript` execution. Default to a disposable/test place or universe and non-production cloud data. Do not call DataStores, persistence APIs, or place-save operations during proof unless the required behavior needs them and the target is explicitly safe for mutation.
 
 Never label an unexecuted check as a passing runtime test. When executable resource proof runs, record the exact version/commit/source-state target actually exercised; a passing proof may establish `verified` only for that same target. If an applicable claim requires runtime execution and no compatible execution environment is available, resource verification is **unavailable**, not passed. For an untrusted resource, this prevents automatic trust promotion when the unknown is material. For a policy-trusted resource, trust remains granted by its recorded basis, but verification must remain explicitly unavailable/unverified.
+
+Every verification sentence must identify the canonical resource coordinate and material selector/version it describes. Do not write “the package is verified” when the evidence applies only to a repository URL at tag `vX`, a Wally package/version, or a particular vendored source hash. If identity or selector is unresolved, the status is that verification for the exact target cannot yet be determined.
 
 Test only what matters, but cover applicable categories:
 

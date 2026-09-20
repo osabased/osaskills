@@ -18,6 +18,8 @@ For an established project, preserve coherent choices and recommend only relevan
 
 Context is sufficient when the response can state the detected project state, the decisions already resolved by it, and the small set of user inputs that would materially change the recommendation.
 
+Do not make the first useful recommendation contingent on those inputs when a safe default is available. State a concrete provisional setup in the same response, label the assumptions it uses, and explain which answer would change which part. Questions refine that recommendation; they do not replace it with a generic intake form.
+
 ## Learn use cases before naming libraries
 
 Ask only unanswered questions that change the setup. Lead with the detected context and concrete choices; do not ask a generic “what do you want?” question. Keep each round compact, normally one to three independent questions, and skip questions already answered or irrelevant to the project.
@@ -98,6 +100,8 @@ For a bare invocation, present the recommendation with a compact choice such as:
 - keep the result as a design only.
 
 State the important tradeoff beside each alternative. Once the user selects the setup, continue through the applicable Design and Implementation routes. If the user's initial request already explicitly authorizes setup implementation and the material unknowns are resolved, proceed without another confirmation.
+
+The recommendation must be implementable rather than thematic: name the source-of-truth workflow, runtime roots, executable server/client entrypoint form, shared/dependency placement, and the first validation command or Studio check. When context is absent, give one conservative provisional baseline and make its assumptions explicit.
 
 Make the offered action explicit: “set up the recommendation” authorizes implementation when accepted, including a natural-language reply such as “use recommended.” Acceptance of a design-only proposal stays design-only. Ask follow-ups only for still-unresolved material choices, not to reconfirm an accepted setup action.
 

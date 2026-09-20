@@ -1,15 +1,23 @@
 ---
 name: structure-roblox-projects
-description: "Roblox project structure: bootstrap or customize setup, place or organize DataModel/code, review structural boundaries, choose project conventions, or plan/perform migrations across Studio, Script Sync, or Rojo."
+description: "Design, review, or change Roblox project structure when placement, runtime/source-of-truth, startup/lifecycle, mappings, conventions, or migration is material. Do not use for ordinary logic or value edits inside already placed modules."
 ---
 
 # Structure Roblox Projects
 
 Preserve a coherent established structure unless the user requests redesign or migration. Inspect enough context to place and integrate the work correctly, while treating modification authority separately from technical context. Explicit user instructions take precedence over this skill's defaults and recommendations unless higher-priority instructions prevent it.
 
+## Activation gate
+
+Activate this skill only when the request materially depends on at least one structural decision: DataModel or filesystem placement, server/client/shared ownership, executable startup or lifecycle, source-of-truth or mapping behavior, a durable project convention, structural review, or an explicit migration/transition. An ordinary logic, bug, text, tuning, or value edit inside already placed modules selects no route here when it preserves those boundaries. A named package, canonical path, or existing Wally/Rojo mapping does not by itself create a structural task.
+
+Apply this gate before routing. If no structural decision remains, stop without selecting this skill; do not turn incidental project context into a Review or Implementation route.
+
+A fixed-target resource adoption does not activate this skill when the package location, mapping, startup, and source-of-truth topology are already established and the request says to preserve them. Likewise, a resource qualification or repair that mentions client/server security does not activate this skill unless the user also requests a project-structure review/change or a material placement, startup, lifecycle, mapping, or source-of-truth decision remains unresolved.
+
 ## Core loop
 
-1. **Route** the request through the applicable Onboarding, Review, Design, Migration plan, Implementation, or Preference setup route(s).
+1. **Apply the activation gate**, then route an active request through the applicable Onboarding, Review, Design, Migration plan, Implementation, or Preference setup route(s).
 2. **Establish project context:**
    - **Greenfield** means the user is creating or designing the project/experience from scratch. Resolve structure from the request, applicable project preferences/constraints, then recommendations/defaults; do not search for established conventions that do not exist.
    - **Established** means work occurs inside an existing project, including brand-new features and ordinary restructuring. Preserve applicable established conventions unless the user requests redesign.
@@ -34,7 +42,7 @@ Establish the minimum sufficient working model for the current task:
 - **Startup and integration:** the relevant entrypoint, dependency, Remote/Bindable, loader, discovery, or lifecycle path.
 - **Local convention:** the organization, naming, module style, or framework convention the work should preserve.
 - **Validation path:** the focused checks capable of catching the structural failures this task could introduce.
-- **Development artifact intent:** when the task authors or restructures demos, stories, previews, test bootstraps, or similar development tooling, whether each artifact ships or is excluded and how that boundary will be proved.
+- **Development artifact intent:** when the task authors or restructures demos, stories, previews, test bootstraps, or similar development tooling, whether each artifact ships or is excluded and how that boundary will be proved. For Rojo projects, load the Rojo reference for the detailed profile, artifact, and observable-client proof contract.
 
 Skip an item when it cannot affect the task. Prefer concrete paths, instances, entrypoints, and dependency edges over architecture labels.
 
@@ -42,13 +50,7 @@ Bootstrap is complete when every material item above is either established or id
 
 ## Conditional development-tooling setup
 
-Apply this contract only when the authorized task creates or changes development UI/test tooling, its build composition, or a workflow intended to prove interactive behavior. It does not require unrelated projects to adopt profiles, Rojo, a preview framework, or a new test framework, and it does not activate a project-wide migration.
-
-- Give every authored demo, story, preview, and development bootstrap explicit **ship** or **exclude** intent. Absence of an entrypoint proves only that content does not start through that path; it does not prove exclusion from a distributable artifact.
-- When development and release artifacts differ, keep runtime mapping or composition in one source of truth and derive the profiles without duplicating singleton services. Add artifact-level assertions that prove required runtime content remains, development-only content is absent from release output, and singleton services are not duplicated. Keep development-only source in the project's strict analysis and applicable test coverage even when release composition excludes it.
-- For claims about rendered UI, text entry, pointer input, focus, or animation, use an observable client path supported by the available Studio tools. Preserve the established loader, capability boundaries, and user-owned sessions. Verify that the running client corresponds to the intended source and project configuration, including uncommitted source when present, and confirm an expected UI marker before interaction. Exercise actual pointer/text events for input claims; direct domain calls are not evidence that input wiring works.
-
-For a Rojo-backed version of this contract, including the proved profile composition and artifact checker, read [`references/workflows/rojo.md`](references/workflows/rojo.md). If the task instead depends on proving or adopting an external preview/test library, route only that library-evidence question through the available Roblox resource-acquisition workflow; keep artifact composition and project topology here.
+When the authorized task creates or changes demos, stories, previews, test bootstraps, artifact composition, or an interactive proof workflow, load the applicable workflow reference. For Rojo, [`references/workflows/rojo.md`](references/workflows/rojo.md) owns the detailed ship/exclude, profile-composition, artifact-assertion, and observable-client proof contract. If an external preview/test library must be evaluated or adopted, route only that resource-evidence question through Roblox resource acquisition; project topology and artifact composition remain here.
 
 ## Modification scope
 
@@ -62,7 +64,7 @@ Read [`references/core/modification-scope.md`](references/core/modification-scop
 
 Load a reference only when its branch is active. Evaluate specialist triggers against both the current structure and the requested target structure. Multiple specialist references may apply to one task.
 
-An internal edit inside an already placed feature remains on the established-project fast path when it requires no placement, lifecycle, or structural-integration decision. Canonical SSA paths alone do not trigger an SSA reference.
+An internal edit inside an already placed feature that requires no placement, lifecycle, mapping, source-of-truth, or structural-integration decision is outside this skill under the activation gate. Canonical SSA paths alone do not trigger this skill or an SSA reference.
 
 | Branch | Trigger | Read |
 | --- | --- | --- |
@@ -100,7 +102,9 @@ Check for the nearest project-local `.agents/roblox/structure.md` when a materia
 
 ### Onboarding
 
-Read `references/workflows/onboarding.md`. Inspect minimal context, resolve unknown use cases before recommending libraries, and offer a concrete recommended setup or customization rather than a generic request for direction. A bare invocation remains read-only until the user selects a setup. When the user already requested setup implementation, or selects the proposed setup, continue through the applicable Design and Implementation routes without asking for the same authorization again.
+Read `references/workflows/onboarding.md`. Inspect minimal context, resolve unknown use cases before recommending libraries, and give a concrete provisional setup immediately under explicit assumptions. Ask only questions that could materially change it; questions refine the recommendation rather than replace it. A bare invocation remains read-only until the user selects a setup. When the user already requested setup implementation, or selects the proposed setup, continue through the applicable Design and Implementation routes without asking for the same authorization again.
+
+The first answer must contain the provisional recommendation itself: source-of-truth workflow, runtime roots, executable entrypoint form, shared/dependency placement, and one validation path or targeted established-project improvement. Saying that a recommendation will be provided is incomplete.
 
 Finish when the user has a directly implementable recommendation and requested setup work is either completed and validated or blocked with the exact unresolved choice or integration condition.
 
@@ -116,7 +120,9 @@ Finish when every material requested preference is directly implementable and an
 
 Set breadth from the review question, not from modification authority. Inspect adjacent content when it can change the conclusion. Load the references selected by **Reference routing** when the conclusion depends on their structural rules.
 
-For each material finding, report the **evidence**, **impact**, and **smallest compatible improvement**. Add confidence or scope when uncertainty or ownership materially affects interpretation. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
+Treat supplied paths, instance trees, manifests, mappings, diffs, and stated project facts as evidence; do not defer a supported conclusion merely because a full repository is unavailable. For each material finding, name the concrete evidence, explain its runtime, authority/security, source-of-truth, or maintainability impact as applicable, and give the smallest compatible improvement. State meaningful no-change areas, confidence, and the exact missing evidence only when it could change the conclusion. Treat style preferences as findings only when they conflict with an explicit request or established convention, create a supported-platform incompatibility, or have a concrete correctness, security, or maintainability consequence.
+
+Use scenario facts at their stated granularity. For example, “server-only economy modules are accidentally replicated” is direct evidence for a server-authority finding even when individual filenames are absent. Do not relabel supplied evidence as unavailable; qualify only the path-level details that truly remain unknown.
 
 Finish when the material structural risks within the requested boundary are accounted for, including meaningful no-change areas or residual uncertainty when useful. Review remains read-only unless implementation is separately requested.
 
@@ -124,9 +130,13 @@ Finish when the material structural risks within the requested boundary are acco
 
 Preserve established conventions unless redesign is requested. When the project does not already resolve a material design choice, load the branch selected by **Reference routing**.
 
-Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
+Provide the smallest structure that makes the requested work unambiguous: its DataModel/filesystem home, material runtime/replication/authoring boundaries, startup flow, dependency direction, integration contracts, and validation path. For every executable entrypoint, name its exact DataModel and filesystem path when applicable, its Roblox class or `RunContext`, the startup owner or caller, its direct dependencies, and the check that proves it starts. Reject path/class combinations that Roblox will not execute—for example, a `LocalScript` under `ReplicatedStorage`; use an executable client location or a `Script` with `RunContext = Client` there. Load specialist references only for affected specialist branches. Identify any required boundary-crossing changes as approval-dependent or owner actions rather than silently folding them into the authorized design.
+
+Resolve each entrypoint to one concrete path/class/owner contract in the recommended design. Do not leave mutually exclusive placement alternatives in the main topology; mention an alternative only after the chosen contract and state what would replace, rather than coexist with, it. Files named as controller modules are `ModuleScript` dependencies unless the design explicitly makes them independent executable entrypoints and defines their coordination.
 
 Design is read-only unless Implementation is separately requested. Finish when every designed item has an unambiguous home and startup/integration path and every material boundary contract is identified.
+
+Put the complete design in the answer itself. A checklist that says to define filesystem mappings, startup flow, dependency direction, Remote contracts, or validation later does not satisfy Design.
 
 ### Migration plan
 
@@ -134,7 +144,9 @@ Use this route only when the user explicitly requests the migration/transition/c
 
 Read `references/workflows/migration.md` and every specialist reference whose current-state or requested target-state trigger is present. Keep planning read-only unless implementation is also requested.
 
-Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
+Produce concrete migration slices rather than phase headings. Each slice names the current item/path and target item/path, affected callers/requires/remotes/configuration, source-of-truth cutover point, owner action, recovery boundary, and verification. Finish only at the migration reference's exhaustive completion criterion: every move, affected reference, material topology/identity assumption, required owner action, specialist boundary, verification step, and necessary recovery boundary is accounted for.
+
+When only hierarchy categories or proposed artifacts are supplied, produce provisional slices for each supplied category and label path-level assumptions; do not refuse to plan merely because file contents are absent. The answer must contain the slices rather than an action to create them later.
 
 ### Implementation
 
@@ -158,6 +170,8 @@ Then:
 6. Use an explicit recovery boundary when an operation is destructive, topology-sensitive, non-version-controlled, externally stateful, or difficult to reverse. Routine reversible filesystem edits already captured by version control do not need separate rollback bookkeeping.
 7. Inspect the resulting diff or changed-output set when the operation is broad/generated, topology-sensitive, overlaps pre-existing work, or otherwise risks writes outside the intended set.
 8. Run focused validation that covers the credible failure modes introduced by the change, including the persisted profile/onboarding when step 5 applies. Escalate validation when the affected boundary, risk, or a failed check warrants broader evidence.
+
+For any topology-sensitive implementation—moves or renames, mapping/model/meta changes, source-of-truth cutovers, entrypoint or lifecycle rewiring, generated hierarchy output, or multi-step restructuring—completion requires all five safeguards: an explicit intended write set; tracing of affected requires, callers, remotes, mappings, and startup references; a recovery boundary before mutation; inspection of the resulting diff or generated output against the write set; and focused structural plus runtime validation for the changed boundary. If one cannot be performed, report it as a blocker or residual risk rather than implying the restructuring is complete.
 
 Prefer existing static, type, lint, build, test, mapping, or hierarchy checks when they cover the failure mode. Use the smallest relevant Studio runtime checks when runtime/startup/client-server behavior needs execution evidence. Report checks that actually ran and any material residual risk from unavailable validation.
 

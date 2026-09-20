@@ -72,6 +72,10 @@ Apply this section when a Rojo-backed development workflow is intended to prove 
 - Use actual pointer and text events for input claims, inspect observable state and console output, and capture the material rendered states. Calling the domain callback directly establishes domain behavior only. Stop only the play/serve session started by the task and preserve user-owned sessions.
 - UI Labs can complement this path for isolated states and variants. Treat any bridge between its host and the available Studio interaction tools as unproved until the same-session workflow succeeds end to end.
 
+State the planned observable path concretely even when execution is unavailable: the exact client entrypoint and preview/story path, expected UI marker, input event to perform, rendered/state change to observe, and console condition. Artifact inclusion/exclusion checks establish composition only; they do not establish rendering or input wiring. If the same-session client path cannot run, report those claims as unavailable and keep the artifact results separate.
+
+A development-tooling answer is complete only when it names the retained runtime sentinels, excluded development sentinels, singleton services to count exactly once, and the concrete observable-client path above. Do not substitute “document or verify later” for these assertions. Report executed evidence separately from the planned check so unavailable Studio access never becomes a fabricated pass.
+
 If the blocker is whether a third-party preview/test library or integration actually supports the needed runtime, route that bounded evidence question to the available Roblox resource-acquisition workflow. Keep Rojo composition, source-of-truth, and startup topology decisions in this skill.
 
 ## Review
