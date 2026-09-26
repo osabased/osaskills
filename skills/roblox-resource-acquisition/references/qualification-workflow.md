@@ -30,7 +30,7 @@ Search is a means, not the goal.
 
 Stop evaluation when the decision criteria are satisfied, remaining uncertainty is unlikely to change the decision, and additional research has lower value than making a reversible choice and validating it. Avoid both premature adoption and indefinite comparison.
 
-For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly. Apply its hard gates before weighted scoring, score only survivors against the same acquisition brief and evidence standard, and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
+For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Follow its conditional direction-selection routing and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
 
 ### Positively targeted resources
 
@@ -98,13 +98,13 @@ For each serious candidate, record:
 - known limitations and unresolved issues;
 - claims that still need verification.
 
-Use [evaluation-rubric.md](evaluation-rubric.md) to compare **newly discovered** candidates and to choose among multiple curated resources when task fit is genuinely ambiguous. Do not downgrade a curated resource merely because an untrusted alternative scores slightly higher on generic qualities; curation is a policy preference unless task-specific evidence makes the curated choice unsuitable.
+Use [evaluation-rubric.md](evaluation-rubric.md) to compare **newly discovered** candidates and to choose among multiple curated resources when task fit is genuinely ambiguous. Do not downgrade a curated resource merely because an untrusted alternative appears better on generic qualities; curation is a policy preference unless task-specific evidence makes the curated choice unsuitable.
 
 ## 2. Qualify candidates according to actual trust
 
 Apply the untrusted or trusted path according to the resource's actual trust basis, regardless of how it entered consideration. Project presence and positive targeting alone grant no trust. Explicit project approval may supply `project` trust; a user direction that actually authorizes use/adoption may supply `explicit-user` trust after canonical identity is established. Evaluation, comparison, and reusable-child scope alone do not. Resolve conflicts with applicable project policy through its existing authority rules; no trust basis bypasses unrelated installation, runtime, security, or host-adoption constraints.
 
-For **untrusted** candidates, whether discovered, project-present, or directly targeted, reject or heavily penalize a candidate when evidence shows any of the following:
+For **untrusted** candidates, whether discovered, project-present, or directly targeted, reject a candidate that fails an applicable hard gate. Evaluate other demonstrated weaknesses against the brief's criteria. Relevant evidence includes:
 
 - it does not actually satisfy the acquisition brief;
 - source or behavior needed for safe evaluation cannot be inspected;
