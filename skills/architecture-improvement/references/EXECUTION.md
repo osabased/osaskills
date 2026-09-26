@@ -8,7 +8,7 @@ Trace every affected caller, dependency, invariant, state owner, test surface, f
 
 Prefer deep modules, useful interfaces, locality, and real seams. Replace obsolete structure instead of retaining parallel architectures unless compatibility evidence requires a transition.
 
-When a consequential interface has materially different credible shapes, use `$codebase-design`'s design-it-twice method. If supported alternatives remain genuinely competitive, return to route selection and invoke `$direction-selection` before committing to one.
+When a consequential interface has materially different credible shapes, use `codebase-design`'s design-it-twice method. If supported alternatives remain genuinely competitive, return to route selection and invoke `direction-selection` before committing to one.
 
 Define before editing:
 
@@ -20,7 +20,7 @@ Define before editing:
 - observable architectural success evidence;
 - rollback or recovery considerations when material.
 
-When preserved or changed behavior raises a material end-to-end assurance question whose correctness depends on cross-part interactions or operational failure paths, invoke `$system-review` for only those affected scenarios and constraints.
+When preserved or changed behavior raises a material end-to-end assurance question whose correctness depends on cross-part interactions or operational failure paths, invoke `system-review` for only those affected scenarios and constraints.
 
 **Complete when:** the design, migration, and verification plan cover the full objective without an unresolved material gap.
 
@@ -28,7 +28,7 @@ When preserved or changed behavior raises a material end-to-end assurance questi
 
 Preserve pre-existing user changes. Modify only the selected objective and its necessary callers, tests, types, and directly affected documentation.
 
-Use `$tdd` when available and behavior can be captured through a red-green-refactor loop. Otherwise establish the smallest reliable feedback loop before restructuring.
+Use `tdd` when available and behavior can be captured through a red-green-refactor loop. Otherwise establish the smallest reliable feedback loop before restructuring.
 
 Keep externally observable behavior stable except for authorized changes. Migrate every intended caller, then remove obsolete paths, duplicate orchestration, temporary adapters, and dead abstractions.
 
@@ -40,7 +40,7 @@ When implementation evidence weakens the demonstrated need, architectural cause,
 
 Run every relevant repository check, focused behavioral test, and broader regression check justified by the affected surface. Exercise normal usage and material edge, failure, retry, ordering, and migration scenarios where applicable. After a correction, rerun each failed check and each previously passing check whose assumptions changed.
 
-When `$system-review` established affected scenarios, rerun every failed or invalidated scenario rather than beginning a new broad review.
+When `system-review` established affected scenarios, rerun every failed or invalidated scenario rather than beginning a new broad review.
 
 Verify each applicable architecture claim directly:
 

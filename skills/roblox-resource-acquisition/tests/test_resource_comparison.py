@@ -44,7 +44,7 @@ def test_direction_handoff_is_conditional_and_returns_to_acquisition():
         "curated policy preferences",
         "trust into runtime proof",
         "Keep straightforward, supported choices local",
-        "`$direction-selection` when available",
+        "`direction-selection` when available",
         "applicability router, not directly into full mode",
         "do not restart completed qualification",
         "returns bounded resource-evidence answers to the owning comparison",
