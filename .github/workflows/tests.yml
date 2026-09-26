@@ -35,6 +35,9 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Run tests
         run: python -m pytest -q
+      - name: Test Roblox project structure
+        working-directory: .
+        run: python -m pytest -q -ra skills/structure-roblox-projects/tests
 
   coverage:
     name: Branch coverage / Python 3.14
