@@ -55,3 +55,61 @@ jobs:
         run: python -m coverage run -m pytest -q
       - name: Enforce coverage baseline
         run: python -m coverage report
+
+  preference-discovery-checks:
+    name: Preference discovery / static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.10"
+      - name: Check rename and behavioral case definitions
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import subprocess
+
+          root = Path("skills/preference-discovery")
+          skill = (root / "SKILL.md").read_text(encoding="utf-8")
+          frontmatter = skill.split("---", 2)
+          assert len(frontmatter) == 3 and not frontmatter[0].strip(), "Missing front matter"
+          assert "name: preference-discovery" in frontmatter[1].splitlines(), "Wrong skill name"
+          assert any(line.startswith("description: ") and line[13:].strip() for line in frontmatter[1].splitlines()), "Missing description"
+          assert "(./skills/preference-discovery/)" in Path("README.md").read_text(encoding="utf-8"), "Missing catalogue link"
+
+          cases = json.loads((root / "evals/cases.json").read_text(encoding="utf-8"))
+          assert isinstance(cases, list) and cases, "Cases must be a nonempty list"
+          ids = set()
+          for case in cases:
+              assert isinstance(case, dict), "Each case must be an object"
+              for key in ("id", "family", "prompt"):
+                  assert isinstance(case.get(key), str) and case[key].strip(), f"Missing {key}"
+              assert case["id"] not in ids, f"Duplicate case: {case['id']}"
+              ids.add(case["id"])
+              for key in ("accept", "reject"):
+                  values = case.get(key)
+                  assert isinstance(values, list) and values, f"Missing {key}: {case['id']}"
+                  assert all(isinstance(value, str) and value.strip() for value in values), f"Invalid {key}: {case['id']}"
+              if "follow_up" in case:
+                  assert isinstance(case["follow_up"], str) and case["follow_up"].strip(), f"Invalid follow-up: {case['id']}"
+          for case in cases:
+              related = case.get("related", [])
+              assert isinstance(related, list), f"Invalid related cases: {case['id']}"
+              assert all(isinstance(item, str) and item in ids and item != case["id"] for item in related), f"Unknown related case: {case['id']}"
+
+          legacy = ("ui-" + "direction-discovery", "ui-" + "discovery", "UI Direction " + "Discovery", "UI " + "Discovery")
+          paths = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
+          stale = []
+          for name in filter(None, paths):
+              if name == "skills/preference-discovery/evals/README.md":
+                  continue  # This file intentionally identifies the historical baseline.
+              data = Path(name).read_bytes()
+              if any(term in name or term.encode() in data for term in legacy):
+                  stale.append(name)
+          assert not stale, f"Stale skill references: {stale}"
+          print(f"Validated {len(cases)} case definitions and rename consistency across {len(list(filter(None, paths)))} tracked files.")
+          print("Static checks only; no model evaluations were run.")
+          PY
