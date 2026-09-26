@@ -39,17 +39,29 @@ Across discovery calls, mode escalation, caller handoffs, leader changes, and re
 
 Caller-provided diagnosis and evidence remain established inputs when applicable, not privileged rankings or conclusions. Re-check them only when a conflict, scope mismatch, applicability problem, or decision-sensitive uncertainty makes that necessary.
 
+## Comparison semantics
+
+**Deciding criteria:** When a criterion could decide the choice, identify the observable outcome it represents, whether it is a threshold to satisfy or an objective to optimize, and whether its priority is strict or permits tradeoffs. Preserve explicit user priorities; do not substitute "good enough" for requested optimization or invent scores, weights, or tradeoff rates. Resolve only ambiguity that could change the recommendation, using the authority and preference semantics above.
+
+**Fair candidate refinement:** Before rejecting a serious candidate on a decisive weakness, consider one realistic, bounded refinement when a concrete adjustment could remove that weakness and change the result. Give competing candidates comparable opportunities and count added implementation, integration, maintenance, and future reversal costs. Apply the same evidence standard to refined candidates; a hypothetical fix is not established capability. This is a check within the existing comparison, not a requirement to optimize every candidate or authorization to implement changes. Revisit refinement only after materially new evidence warrants it. Changes to framing or candidate class follow the existing full-mode triggers.
+
 ## Support threshold
 
 A direction is **sufficiently supported for the governed commitment** when:
 
 - it satisfies every known hard constraint and invariant;
 - its decisive comparative claims have applicable evidence proportionate to the stakes;
-- no unresolved material assumption has plausible outcomes that could overturn it at this commitment level;
+- remaining uncertainty does not undermine the justification for this commitment under the established objectives, explicit priorities, and acceptable downside;
 - if a credible surviving alternative exists, it has no better-supported case under the ordered criteria; and
 - any material tie is resolved by an applicable ordered tie-breaker; otherwise no nominal winner is claimed.
 
 Scale support to the commitment. Higher-impact or harder-to-reverse commitments require stronger evidence. Seek enough support to decide, not certainty, and spend no more on direction selection than the decision warrants. Do not manufacture an alternative to satisfy the threshold.
+
+### Residual uncertainty
+
+A direction need not win in every plausible outcome. A possible ranking change calls for sensitivity assessment, not an automatic blocker: assess whether the commitment remains justified under the established objectives, explicit priorities, and acceptable downside. Retain material uncertainty and concrete reopen conditions. Use probabilities or tradeoff rates only when supplied or supported by applicable evidence; delegated authority or unavailable research does not establish the user's risk tolerance.
+
+Unverified hard-constraint compliance, a decision-sensitive unresolved user preference, or a plausible consequence outside the established acceptable downside before safe correction still prevents `PASS` for that commitment. Use the existing discovery, blocker, or adaptive routes rather than weakening these boundaries. An acceptable outcome risk does not excuse missing deciding evidence or an unsupported premise that the recommendation depends on.
 
 ### Close comparisons
 
