@@ -51,6 +51,8 @@ When diagnosing a known dimension, keep unrelated content and properties reasona
 
 Allow low-effort reactions: "left is closer," "between these," "keep the pacing but not the captions," "neither," "both are fine," or "use your judgment." The user need not learn terminology or choose one complete reference. Repeated rejection is a reason to reconsider the alternatives or framing, not endlessly refine the same set.
 
+Treat relative feedback such as "closer" or "better" as evidence about the comparison, not automatically as satisfaction or authorization to finalize. Use it to guide the next refinement. Resolve acceptability only when the next commitment depends on it; an explicit instruction such as "use B" is sufficient within its stated scope and needs no redundant confirmation.
+
 ### Use references selectively
 
 Use existing examples when they can resolve ambiguity more cheaply than new work. Search by the specific property at issue, such as composition, rhythm, voice, or feedback behavior, rather than vague aesthetic phrases. Show only a small useful set and explain what each reference helps decide. Ask what to take or reject, not which entire example to copy.
