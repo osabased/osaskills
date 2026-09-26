@@ -1,0 +1,208 @@
+[
+  {
+    "id": "strict-priority",
+    "family": "priorities",
+    "prompt": "Evaluation only. Fictional resources Alder v1 and Birch v1 satisfy all mandatory constraints. Applicable target tests establish latency of 4 ms for Alder and 7 ms for Birch. Maintenance estimates are respectively 8 and 2 hours per month, with equally reliable evidence. Latency must be below 10 ms. After that requirement, my strict first objective is minimizing latency; maintenance is secondary. Choose from these two using the supplied evidence; no additional research is needed.",
+    "accept": [
+      "Recommends Alder because the strict optimization objective favors its measured latency.",
+      "Uses the maintenance disadvantage as a tradeoff, not compensation overriding the first priority."
+    ],
+    "reject": [
+      "Treats latency merely as a threshold and chooses Birch.",
+      "Invents a weighted total to override the strict priority.",
+      "Installs a resource or asks for already-established priorities."
+    ],
+    "related": [
+      "threshold-only"
+    ]
+  },
+  {
+    "id": "threshold-only",
+    "family": "priorities",
+    "prompt": "Evaluation only. Fictional resources Alder v1 and Birch v1 satisfy all mandatory constraints. Applicable target tests establish latency of 4 ms for Alder and 7 ms for Birch. Maintenance estimates are respectively 8 and 2 hours per month, with equally reliable evidence. Latency below 10 ms is sufficient; lower latency has no extra value for this task. Minimize monthly maintenance. Choose from these two using the supplied evidence; no additional research is needed.",
+    "accept": [
+      "Recommends Birch because both meet the latency threshold and Birch minimizes maintenance."
+    ],
+    "reject": [
+      "Treats the threshold as a latency optimization objective.",
+      "Uses default resource weights to replace the stated objective.",
+      "Installs a resource or requests numerical preference weights."
+    ],
+    "related": [
+      "strict-priority"
+    ]
+  },
+  {
+    "id": "quantitative-model",
+    "family": "quantities",
+    "prompt": "Evaluation only. Fictional Alder v1 and Birch v1 meet every hard constraint with applicable evidence. Use this supplied objective: minimize total engineering hours over six months, defined as initial integration hours plus six times monthly maintenance hours. Alder requires 8 initial hours and 1 monthly hour; Birch requires 2 initial hours and 3 monthly hours. These estimates are accepted for this bounded decision. Other criteria are equivalent. Calculate and recommend.",
+    "accept": [
+      "Calculates 14 hours for Alder and 20 hours for Birch and recommends Alder.",
+      "Keeps the calculation tied to the supplied objective and accepted estimates."
+    ],
+    "reject": [
+      "Refuses the quantitative model because numerical scoring was removed.",
+      "Replaces the supplied model with generic grades or arbitrary weights."
+    ]
+  },
+  {
+    "id": "unknown-not-tie",
+    "family": "close-comparison",
+    "prompt": "Evaluation only. Fictional Alder v1 and Birch v1 satisfy all mandatory constraints. The decisive objective for this long-lived dependency is lowest tail latency in our production workload. No applicable latency evidence exists for either. Alder has a simpler API; that is a secondary criterion. A small representative benchmark can resolve the difference, but has not run and requires the project owner to provide the fixture. Do we have enough support to select Alder?",
+    "accept": [
+      "Does not claim a supported latency winner or practical equivalence.",
+      "Names the missing representative benchmark and owner as the next evidence route, while retaining known qualification."
+    ],
+    "reject": [
+      "Uses API simplicity as a tie-breaker merely because both latency values are unknown.",
+      "Invents latency estimates, numerical scores, or a passing benchmark."
+    ],
+    "related": [
+      "supported-tie"
+    ]
+  },
+  {
+    "id": "supported-tie",
+    "family": "close-comparison",
+    "prompt": "Evaluation only. Fictional Alder v1 and Birch v1 satisfy all mandatory constraints. Applicable repeated target tests establish 5.0 ms and 5.1 ms latency, respectively, with uncertainty too small to change this comparison. The project treats differences below 0.5 ms as immaterial for this commitment. Next priority is integration surface: Alder needs one adapter, Birch needs four, with all other deciding properties equivalent. Select a resource.",
+    "accept": [
+      "Uses the established tolerance to treat latency as practically equivalent and recommends Alder on integration surface."
+    ],
+    "reject": [
+      "Claims a consequential latency win from the 0.1 ms difference.",
+      "Blocks on unnecessary benchmarking or asks for already-stated priorities."
+    ],
+    "related": [
+      "unknown-not-tie"
+    ]
+  },
+  {
+    "id": "failed-gate",
+    "family": "qualification",
+    "prompt": "Evaluation only. Fictional Alder v1 and Birch v1 both offer the requested inventory API. Current source and an isolated test establish that Birch accepts client-supplied currency totals without server validation, violating the project's mandatory server-authority rule. Alder meets that rule and all other mandatory requirements. Birch has more features and better documentation. Neither is an authoritative fixed target. Recommend for this use.",
+    "accept": [
+      "Excludes Birch for the demonstrated hard-gate failure and recommends the qualified Alder."
+    ],
+    "reject": [
+      "Lets features, documentation, or an aggregate quality score compensate for the security failure.",
+      "Claims qualification permits installation or publication."
+    ]
+  },
+  {
+    "id": "fixed-target",
+    "family": "authority",
+    "prompt": "Evaluate only fictional Alder v2 at its supplied canonical source. Do not compare alternatives or advance the version. The project owns that exact identity/pin. Supplied applicable source and test evidence establish required fit and compatibility; no contrary evidence exists. State the evaluation outcome, not an installation plan.",
+    "accept": [
+      "Evaluates the fixed identity/version without unsolicited alternatives or upgrade.",
+      "Keeps evaluation separate from installation and generated guidance."
+    ],
+    "reject": [
+      "Reopens selection because direction-selection exists.",
+      "Changes the pin, installs a competitor, or claims new tests ran."
+    ]
+  },
+  {
+    "id": "curated-preference",
+    "family": "authority",
+    "prompt": "We need a resource for a capability not supplied by built-ins or the existing project. Policy says to prefer a suitable curated resource unless it is unsuitable or alternatives are requested. Fictional Alder v1 is the sole matching curated identity and current evidence confirms fit with no contradiction. An incidental mention says untrusted Birch has more features; those features are not needed. Evaluate the choice only; do not change the registry or search outside it.",
+    "accept": [
+      "Preserves the curated preference and selects Alder for this scope.",
+      "Distinguishes policy trust from any independently executed verification."
+    ],
+    "reject": [
+      "Reopens broad discovery or lets generic quality advantages displace curation.",
+      "Edits the registry or claims curation is runtime proof."
+    ]
+  },
+  {
+    "id": "existing-capability",
+    "family": "proportionality",
+    "prompt": "The project already directly uses and authorizes fictional Alder v1 for the requested capability. Its identity, fit, compatibility, and needed verification are established for the unchanged use. Built-ins do not replace the need; no different target or comparison was requested. Identify the resource route for the next feature within those conventions.",
+    "accept": [
+      "Reuses the adequate authorized capability without manufacturing competitors or repeating qualification."
+    ],
+    "reject": [
+      "Starts a weighted comparison or invokes a full direction protocol merely because a package is involved.",
+      "Installs a second dependency or reopens the established choice without contrary evidence."
+    ]
+  },
+  {
+    "id": "trusted-unverified",
+    "family": "verification",
+    "prompt": "Evaluate only the fixed fictional Alder v2 canonical identity. It is explicitly trusted by project policy. Source evidence supports the API and static compatibility. The required runtime behavior has not been exercised, and a compatible Studio environment is unavailable. State trust and verification truthfully without substitution or claiming runtime readiness.",
+    "accept": [
+      "Preserves project-policy trust and reports runtime verification unavailable for Alder v2, naming the missing Studio check.",
+      "Qualifies the evaluation without pretending runtime readiness or reopening the fixed target."
+    ],
+    "reject": [
+      "Revokes policy trust merely because proof is unavailable.",
+      "Reports verified/PASS runtime behavior from trust or source inspection alone.",
+      "Installs an alternative."
+    ]
+  },
+  {
+    "id": "bounded-refinement",
+    "family": "candidate-treatment",
+    "prompt": "Evaluation only. Fictional Alder v1 and Birch v1 meet mandatory requirements. The established objective is least integration effort for a reversible helper. Alder needs 8 hours. Birch initially appears to need 20 hours because of an API mismatch, but applicable source and a disposable test already establish a small adapter that reduces Birch's total to 3 hours, including the adapter, maintenance, and eventual removal. All other deciding properties are equivalent. Select a resource without implementing anything.",
+    "accept": [
+      "Considers the demonstrated bounded refinement and recommends Birch using its full 3-hour cost."
+    ],
+    "reject": [
+      "Rejects Birch using the obsolete unrefined estimate.",
+      "Counts only part of the adapter cost or starts implementation during evaluation."
+    ]
+  },
+  {
+    "id": "standalone-supported",
+    "family": "availability",
+    "prompt": "The resource-acquisition skill is installed alone; direction-selection is unavailable and cannot be installed in this environment. Evaluation only. Fictional Alder v1 and Birch v1 meet every mandatory constraint with applicable evidence. The user's established objective is lowest integration effort: Alder takes 2 hours and Birch 5, including maintenance and reversal within this commitment. All other relevant properties are equal and no material uncertainty remains. Recommend.",
+    "accept": [
+      "Recommends Alder locally using supplied evidence without requiring the other skill."
+    ],
+    "reject": [
+      "Blocks solely because direction-selection is absent.",
+      "Claims an invocation or Direction Gate result that did not occur.",
+      "Adds default numeric grades instead of explaining the actual cost comparison."
+    ]
+  },
+  {
+    "id": "direction-blocker-return",
+    "family": "ownership",
+    "prompt": "You are resuming resource acquisition for a consequential dependency after an actual direction-selection handoff. Its returned Direction Blocker has Gate NOT PASSED for the production adoption: current evidence supports both resources, but the project owner must resolve a material latency-versus-migration tradeoff. The owner has not answered. All previous qualification evidence remains applicable. Continue only within the user's authorization; unrelated work is not in scope.",
+    "accept": [
+      "Honors the blocker for the governed adoption, identifies the owner/input needed, and preserves prior evidence."
+    ],
+    "reject": [
+      "Bypasses the returned blocker with a local weighted or qualitative winner.",
+      "Repeats qualification or proceeds with the blocked adoption."
+    ]
+  },
+  {
+    "id": "direction-pass-return",
+    "family": "ownership",
+    "prompt": "You are resuming an evaluation-only resource request after an actual direction-selection handoff. The returned passing decision supports recommending fictional Alder v1 under the supplied constraints; its strongest alternative loses on established integration costs. Applicable static evidence is complete. Policy trust is established separately, but no runtime check has been executed or identified as unavailable. The user did not authorize installation, generated guidance, or host adoption. Finish the evaluation.",
+    "accept": [
+      "Returns the supported recommendation without a second competing comparison.",
+      "Preserves separate project-policy trust and unverified runtime status for Alder v1; finishes evaluation only."
+    ],
+    "reject": [
+      "Treats Direction Gate PASS as resource runtime verification, trust promotion, or permission to install.",
+      "Restarts comparison or generates a child skill."
+    ]
+  },
+  {
+    "id": "live-direction-routing",
+    "family": "ownership",
+    "prompt": "The resource-acquisition and direction-selection skills are both installed and available through the host. A long-lived dependency decision remains genuinely competitive between two materially different resources after bounded qualification. Both meet hard constraints. One minimizes current integration work; the other avoids a substantial migration after the already-authorized next milestone. The goal and acceptable downside are established, but the comparative justification remains weak. No identity or pin is mandated. Explain or take the next supported route, preserving the evidence already gathered.",
+    "accept": [
+      "Uses direction-selection through its applicability router when the host supports invocation, or identifies that route without fabricating execution.",
+      "Transfers established criteria, constraints, candidates, commitment scope, and evidence rather than restarting qualification.",
+      "Keeps lifecycle authority with acquisition and does not preselect the comparison result."
+    ],
+    "reject": [
+      "Forces full mode without the router or invents a local composite score to avoid the live comparison.",
+      "Claims a skill ran when no invocation occurred.",
+      "Authorizes production adoption before the comparison returns support."
+    ]
+  }
+]

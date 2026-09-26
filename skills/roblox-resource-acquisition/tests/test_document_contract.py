@@ -66,7 +66,7 @@ def test_evaluate_compare_stops_before_integration_and_generation():
     section = _mode("evaluate/compare")
     assert "qualification-workflow.md" in section
     assert "evaluation-rubric.md" in section
-    assert section.index("hard gates") < section.index("scoring")
+    assert section.index("hard gates") < section.index("comparing survivors")
     assert "state-policy.md" in section
     assert "Integration/project mutation" in section
     assert "child generation or validation" in section
