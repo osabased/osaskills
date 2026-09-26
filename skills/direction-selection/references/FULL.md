@@ -1,6 +1,6 @@
 # Full direction-selection protocol
 
-Use this protocol only after `../SKILL.md` routes the current decision to `full`. Apply the parent skill's invocation triggers, authority semantics, Continuation invariant, Support threshold, deciding-evidence applicability rule, Direction Gate scope, future-horizon reversibility rule, and output contracts throughout. If a specific decision-sensitive unknown blocks a stage and no direction meets the Support threshold, read [DISCOVERY.md](DISCOVERY.md) completely and apply its Discovery Entry Test; discovery returns to the exact owning stage.
+Use this protocol only after `../SKILL.md` routes the current decision to `full`. Apply the parent skill's invocation triggers, authority semantics, Continuation invariant, comparison semantics, Support threshold, deciding-evidence applicability rule, Direction Gate scope, future-horizon reversibility rule, and output contracts throughout. If a specific decision-sensitive unknown blocks a stage and no direction meets the Support threshold, read [DISCOVERY.md](DISCOVERY.md) completely and apply its Discovery Entry Test; discovery returns to the exact owning stage.
 
 ## 1. Build and challenge the problem model
 
@@ -26,7 +26,7 @@ Before elaborating a favorite:
 
 1. State every plausible direction found so far in one neutral sentence.
 2. Retain only materially independent candidates that could plausibly win under the ordered criteria.
-3. Describe every serious candidate at comparable, decision-relevant depth.
+3. Describe every serious candidate at comparable, decision-relevant depth, applying [Fair candidate refinement](../SKILL.md#comparison-semantics) before rejecting a candidate on a remediable weakness.
 
 When differing responsibility boundaries or workflow steps could change the comparison, trace each serious candidate from the same representative input and starting state to the required usable outcome. Include decision-relevant integration, manual steps, handoffs, and recovery. Include the surrounding work needed to make a component-only option a complete path. Treat untested steps as assumptions for Stage 3.
 
@@ -34,7 +34,7 @@ This stage owns candidate-space exploration. Perform one serious bounded search 
 
 Known consequential competitors alone do not require another class. An imaginable candidate is not evidence that the space is inadequate. Add any credible candidate found and complete only the affected modeling needed to compare it. Repeat candidate-space exploration only after materially new evidence changes the framing, shared premises, or credible solution space.
 
-Use an available and authorized independent second look for high-impact choices only when its expected decision value justifies the cost. Ask neutrally and treat the result as evidence, not a vote.
+Use an available and authorized independent second look for high-impact choices only when its expected decision value justifies the cost. Ask neutrally. Treat proposed directions as candidates, unverified objections as hypotheses, and traceable observations according to the parent's deciding-evidence applicability rule. Agreement alone does not independently verify a factual claim; applicable evidence remains usable regardless of who reports it.
 
 **Complete when:** known serious candidates are neutrally and comparably stated, any triggered outcome-path comparison is complete, every candidate-space examination required by the invocation trigger has been completed once, and the stage records whether exploration was not required, found no credible alternative, or added candidates for comparison.
 
@@ -58,7 +58,7 @@ Evaluate in order:
 
 1. **Constraint elimination:** remove candidates with demonstrated hard-constraint violations unless that constraint is under review.
 2. **Dominance:** prefer a candidate no worse on important criteria and materially better on at least one, unless uncertainty undermines the comparison.
-3. **Tradeoffs:** compare primary criteria, secondary criteria, then tie-breakers.
+3. **Tradeoffs:** compare primary criteria, secondary criteria, then tie-breakers using the [Deciding criteria](../SKILL.md#comparison-semantics) semantics. Respect established thresholds, optimization objectives, and permitted tradeoffs rather than treating every priority as absolute.
 4. **Uncertainty:** label advantages as evidence-backed, likely, or speculative.
 
 Use measurements when available and ordered qualitative judgment otherwise. Apply symmetric standards. Count concrete future integration, transition, migration, compatibility, schedule, and operating costs without counting already-spent effort as support for an incumbent. Count future requirements in proportion to credible evidence. Treat simplicity as a tie-breaker and risk reducer, not a substitute for requirements. Apply [Close comparisons](../SKILL.md#close-comparisons) when a small or uncertain difference could decide the choice.

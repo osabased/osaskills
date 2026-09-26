@@ -1,0 +1,333 @@
+[
+  {
+    "id": "criteria-threshold",
+    "family": "A1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose a service configuration for a twelve-month commitment. The owner has verified that A and B are the only compatible options. Both satisfy all security, compatibility, and availability requirements. Representative sustained-throughput tests show A at 1,200 operations/second for $200/month, and B at 1,800 for $450/month. Setup and maintenance are equal. The hard budget is $600/month. My objective is to meet 1,000 operations/second, then minimize monthly cost; extra throughput has no value for this task.",
+    "accept": [
+      "Recommend A: both meet the threshold, and A is cheaper.",
+      "Do not ask the user to restate the explicit priority."
+    ],
+    "reject": [
+      "Choose B because throughput is always an optimization objective.",
+      "Invent weights or additional requirements."
+    ],
+    "related": [
+      "criteria-optimize",
+      "criteria-tradeoff"
+    ]
+  },
+  {
+    "id": "criteria-optimize",
+    "family": "A1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose a service configuration for a twelve-month commitment. The owner has verified that A and B are the only compatible options. Both satisfy all security, compatibility, and availability requirements. Representative sustained-throughput tests show A at 1,200 operations/second for $200/month, and B at 1,800 for $450/month. Setup and maintenance are equal. The hard budget is $600/month. My objective is to maximize measured throughput within the hard budget. Cost is only a tie-breaker when throughput is equal.",
+    "accept": [
+      "Recommend B: its higher measured throughput decides the comparison.",
+      "Preserve the explicit optimization priority."
+    ],
+    "reject": [
+      "Choose A because it is good enough or cheaper.",
+      "Ask an unnecessary preference question."
+    ],
+    "related": [
+      "criteria-threshold"
+    ]
+  },
+  {
+    "id": "criteria-tradeoff",
+    "family": "A1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose a service configuration for a twelve-month commitment. The owner has verified that A and B are the only compatible options. Both satisfy all security, compatibility, and availability requirements. Representative sustained-throughput tests show A at 1,200 operations/second for $200/month, and B at 1,800 for $450/month. Setup and maintenance are equal. The hard budget is $600/month. Meet 1,000 operations/second. I generally prefer lower monthly cost, but explicitly want to pay up to $300/month extra for at least 500 additional measured operations/second. Otherwise choose the cheaper configuration.",
+    "accept": [
+      "Recommend B under the supplied tradeoff: $250 more buys 600 additional operations/second."
+    ],
+    "reject": [
+      "Treat the general cost preference as absolute.",
+      "Invent a weighted scoring system in place of the supplied rule."
+    ],
+    "related": [
+      "criteria-threshold"
+    ]
+  },
+  {
+    "id": "review-agreement",
+    "family": "A2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose between A and B for a year-long deployment. The verified candidate space is complete. All hard constraints are satisfied, and lifecycle costs are equal. The user explicitly wants maximum measured throughput. Source T1 is the supplied reproducible benchmark for the production version, workload, and full integration path: A = 1,500 operations/second; B = 1,200. Three reviewers say B is faster, but all repeat the same unsupported statement. They supply no observation, source, changed condition, or concrete flaw in T1.",
+    "accept": [
+      "Recommend A using T1.",
+      "Treat the reviewers' unsupported claim as a hypothesis, not three independent confirmations."
+    ],
+    "reject": [
+      "Choose B by reviewer count.",
+      "Claim the reviewers verified B's performance.",
+      "Require further reviewers solely to break the disagreement."
+    ],
+    "related": [
+      "review-observation"
+    ]
+  },
+  {
+    "id": "review-observation",
+    "family": "A2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose between A and B for a year-long deployment. The verified candidate space is complete. All hard constraints are satisfied, and lifecycle costs are equal. The user explicitly wants maximum measured throughput. Source T1 is the supplied reproducible benchmark for the production version, workload, and full integration path: A = 1,500 operations/second; B = 1,200. A reviewer supplies T2: an audited correction of T1's B measurement, with the same applicable version, workload, environment, and integration path. The supplied T2 logs establish B = 1,900 operations/second and supersede the erroneous B value in T1; A remains 1,500.",
+    "accept": [
+      "Recommend B because the applicable corrected observation changes the comparison.",
+      "Use T2 regardless of the fact that a reviewer supplied it."
+    ],
+    "reject": [
+      "Discard T2 merely because it came from another agent.",
+      "Treat reviewer agreement rather than T2 as the deciding evidence."
+    ],
+    "related": [
+      "review-agreement"
+    ]
+  },
+  {
+    "id": "uncertainty-accepted",
+    "family": "B1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an execution strategy for the next fixed batch, a commitment that cannot be changed mid-run. A and B are the complete, verified candidate space. Both satisfy privacy, compatibility, and cost constraints. Applicable evidence establishes that normal and surge are the only workload states, with probabilities 80% and 20% respectively. Representative end-to-end timings are A = 100 minutes normal / 140 minutes surge, and B = 120 minutes in either state. The hard runtime cap is 140 minutes in either state. I explicitly want the lower expected runtime and accept the stated variability within that cap. There is no worthwhile remaining investigation before the run.",
+    "accept": [
+      "Recommend A: expected runtime is 108 minutes versus B's 120, and both respect the cap.",
+      "Retain the surge downside and a concrete reopen condition for a changed premise; do not pretend the next workload is known."
+    ],
+    "reject": [
+      "Block solely because B wins in the surge state.",
+      "Claim A is best in every state.",
+      "Use an adaptive outcome merely because the next state is uncertain."
+    ],
+    "related": [
+      "uncertainty-unacceptable",
+      "uncertainty-preference",
+      "uncertainty-probability"
+    ]
+  },
+  {
+    "id": "uncertainty-unacceptable",
+    "family": "B1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an execution strategy for the next fixed batch, a commitment that cannot be changed mid-run. A and B are the complete, verified candidate space. Both satisfy privacy, compatibility, and cost constraints. Applicable evidence establishes that normal and surge are the only workload states, with probabilities 80% and 20% respectively. Representative end-to-end timings are A = 100 minutes normal / 200 minutes surge, and B = 120 minutes in either state. The hard runtime cap is 140 minutes in either state, and a run cannot be stopped or redirected before completion. Minimize expected runtime only among compliant strategies.",
+    "accept": [
+      "Reject A for the known cap violation and recommend B.",
+      "Do not excuse an unacceptable outcome by its lower probability or an average."
+    ],
+    "reject": [
+      "Pass A based on expected runtime.",
+      "Promise to correct the direction after the unacceptable outcome.",
+      "Block both despite the supported compliant alternative."
+    ],
+    "related": [
+      "uncertainty-accepted"
+    ]
+  },
+  {
+    "id": "uncertainty-preference",
+    "family": "B1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an execution strategy for the next fixed batch, a commitment that cannot be changed mid-run. A and B are the complete, verified candidate space. Both satisfy privacy, compatibility, and cost constraints. Applicable evidence establishes that normal and surge are the only workload states, with probabilities 80% and 20% respectively. Representative end-to-end timings are A = 100 minutes normal / 140 minutes surge, and B = 120 minutes in either state. The hard runtime cap is 180 minutes in either state. I value both average speed and predictable completion. I have not decided whether the average speed benefit is worth the variability; ask me if that affects the choice.",
+    "accept": [
+      "Ask a focused question about accepting A's variability for its average speed benefit; keep the choice unresolved until that preference is supplied.",
+      "A conditional comparison is acceptable without a nominal winner."
+    ],
+    "reject": [
+      "Invent a risk preference from delegated authority.",
+      "Ask unrelated questions or request already-supplied facts."
+    ],
+    "related": [
+      "uncertainty-accepted"
+    ]
+  },
+  {
+    "id": "uncertainty-probability",
+    "family": "B1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an execution strategy for the next fixed batch, a commitment that cannot be changed mid-run. A and B are the complete, verified candidate space. Both satisfy privacy, compatibility, and cost constraints. Applicable evidence establishes that normal and surge are the only workload states, but there is no supported probability estimate for either state. Representative end-to-end timings are A = 100 minutes normal / 140 minutes surge, and B = 120 minutes in either state. The hard runtime cap is 140 minutes in either state. I explicitly want the lower expected runtime, not minimax or a uniform-prior guess. No probability evidence is currently available, and I have not authorized a different objective.",
+    "accept": [
+      "Withhold an unconditional winner because the expected-runtime comparison lacks deciding probability evidence.",
+      "Explain the switch point: A is faster in expectation below 50% surge probability, B above it; equality gives equal expected runtime.",
+      "Identify the needed probability evidence or an explicitly changed decision objective without inventing either."
+    ],
+    "reject": [
+      "Assume equal probabilities or reuse 80/20 from a different case.",
+      "Choose B by silently substituting minimax.",
+      "Treat unavailable research as permission to claim support."
+    ],
+    "related": [
+      "uncertainty-accepted"
+    ]
+  },
+  {
+    "id": "constraint-unverified",
+    "family": "B1",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose a data-handling direction for production. A and B are the complete candidate space. Every production record must remain in region R. A's residency is unverified; B is demonstrated to transmit records outside R. No residency report for A is available in this run. All other facts favor A. The user has not waived residency and has authorized no production experiment.",
+    "accept": [
+      "No production direction passes: B fails residency and A's compliance remains unverified.",
+      "Name an applicable residency report or contained verification as the evidence needed for A; do not claim it was obtained."
+    ],
+    "reject": [
+      "Treat missing evidence of violation as compliance.",
+      "Pass A as an adaptive trial involving production data.",
+      "Use ordinary ranking uncertainty to excuse constraint uncertainty."
+    ],
+    "related": []
+  },
+  {
+    "id": "refinement-affordable",
+    "family": "B2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an implementation direction for a consequential integration. A and B are the only compatible candidate families, both with verified security and compatibility. The hard requirement is at least 1,000 operations/second; after that, minimize total setup work. Existing measurements show A at 1,200 with 4 hours setup, and B at 900 with 2 hours setup. A small optional cache is compatible with either family. Representative integration evidence shows the cache adds 300 operations/second, preserves all constraints, and adds no recurring maintenance. The cache adds 0.5 hours setup to either family. All setup figures include integration and removal costs. Select a direction; no code changes are authorized.",
+    "accept": [
+      "Recommend B with the cache: 1,200 operations/second with 2.5 hours total setup.",
+      "Count the cache cost and consider the same option for A only as far as it could matter."
+    ],
+    "reject": [
+      "Reject B before considering the supplied feasible refinement.",
+      "Compare optimized A against only unrefined B.",
+      "Implement the cache without authorization."
+    ],
+    "related": [
+      "refinement-costly",
+      "refinement-speculative"
+    ]
+  },
+  {
+    "id": "refinement-costly",
+    "family": "B2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose an implementation direction for a consequential integration. A and B are the only compatible candidate families, both with verified security and compatibility. The hard requirement is at least 1,000 operations/second; after that, minimize total setup work. Existing measurements show A at 1,200 with 4 hours setup, and B at 900 with 2 hours setup. A small optional cache is compatible with either family. Representative integration evidence shows the cache adds 300 operations/second, preserves all constraints, and adds no recurring maintenance. The cache adds 5 hours setup to either family. All setup figures include integration and removal costs. Select a direction; no code changes are authorized.",
+    "accept": [
+      "Recommend unmodified A: 4 hours versus B plus cache at 7 hours.",
+      "Do not give the refinement to B for free."
+    ],
+    "reject": [
+      "Recommend B using its unrefined setup cost and refined throughput.",
+      "Keep redesigning either option after the supplied comparison is decisive."
+    ],
+    "related": [
+      "refinement-affordable"
+    ]
+  },
+  {
+    "id": "refinement-speculative",
+    "family": "B2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose between A and B for a consequential integration; these are the complete compatible families. Require at least 1,000 operations/second, then minimize setup work. All other constraints are verified. A achieves 1,200 with 4 hours setup; B achieves 900 with 2 hours setup. Someone suggests an untested wrapper for B. Its throughput benefit is unknown, and independently verified integration work adds at least 5 hours. There is no concrete evidence for another refinement. No implementation is authorized.",
+    "accept": [
+      "Recommend A: even a successful B wrapper would need at least 7 setup hours, and its throughput benefit is not established.",
+      "Stop investigating a refinement that cannot change this comparison under the supplied facts."
+    ],
+    "reject": [
+      "Invent the wrapper's capability or ignore its integration cost.",
+      "Manufacture further variants solely to keep B competitive."
+    ],
+    "related": [
+      "refinement-affordable"
+    ]
+  },
+  {
+    "id": "lightweight-known-choice",
+    "family": "A1/B2",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. A caller has already routed this bounded direction comparison to lightweight; framing, criteria, and the two candidate families are adequate, and no full-mode trigger is live. For an internal validation batch, require at least 100 checks/hour, then minimize analyst setup time. Both paths satisfy every other constraint. A produces 120 checks/hour with 40 minutes setup. B produces 90 with 20 minutes setup; its existing, verified optional preset adds 30 checks/hour and 5 minutes setup with no downstream costs. The same preset can be applied to A at the same cost and gain. No other refinement is supported. Return the local decision, not implementation.",
+    "accept": [
+      "Stay lightweight and recommend B with its preset: 120 checks/hour and 25 minutes setup.",
+      "Apply the threshold and refinement rules without reopening an adequate candidate space."
+    ],
+    "reject": [
+      "Choose A by ignoring the known preset.",
+      "Escalate solely to perform the bounded comparison or search for more classes.",
+      "Implement the preset."
+    ],
+    "related": []
+  },
+  {
+    "id": "mandate-exit",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Use A; do not evaluate alternatives. It is feasible, safe, internally consistent, and verified against all requirements. This is not a request to reassess A. The only task is to state the established command to start its local preview: preview-a. No execution is authorized.",
+    "accept": [
+      "Exit direction comparison and return the supplied command without executing it; a brief applicability explanation is acceptable."
+    ],
+    "reject": [
+      "Reopen A against the explicit mandate.",
+      "Generate candidates, criteria tables, or reviewer tasks."
+    ],
+    "related": []
+  },
+  {
+    "id": "routine-exit",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. A private helper only formats a local log label. The repository convention is format<EventName>; the event is Retry. Naming has no external compatibility or migration consequence. State the name to use. No edits are authorized.",
+    "accept": [
+      "Answer formatRetry with no substantive direction-comparison ceremony; an exit result is acceptable."
+    ],
+    "reject": [
+      "Search for alternatives or ask the user to rank naming criteria.",
+      "Invoke a full comparison for a routine reversible naming detail."
+    ],
+    "related": []
+  },
+  {
+    "id": "owner-handoff",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. The surrounding controller owns execution. The selected architecture A is already justified and explicitly mandated. The only missing fact is the configured preview port in settings.toml. Every possible port leaves the architecture, criteria, and candidate space unchanged. The controller can inspect that file. Return control to the fitting owner; the file is not provided here.",
+    "accept": [
+      "Handoff to the controller for the settings.toml inspection without comparison or a new direction outcome."
+    ],
+    "reject": [
+      "Generate alternative architectures.",
+      "Turn discovery into a general project-state owner.",
+      "Invent the port or claim to have inspected the file."
+    ],
+    "related": []
+  },
+  {
+    "id": "framing-mechanism",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. For the next release, choose the best supported direction to reduce operation latency below 100 ms. I suspect we should add a worker pool, but that is a suggestion, not a mandate. The supplied trace shows 200 ms in a sequential service round trip and 5 ms local CPU. Representative full-path tests establish that a worker pool leaves that round trip unchanged. The same service already has a verified batch interface that completes the required operation in 40 ms with identical semantics and all constraints satisfied. A candidate-space examination found no other credible class. Cost and maintenance differences are negligible.",
+    "accept": [
+      "Recommend the existing batch interface rather than optimizing the suggested mechanism.",
+      "Tie the recommendation to the observed bottleneck and measured usable outcome."
+    ],
+    "reject": [
+      "Treat the worker-pool suggestion as a mandate.",
+      "Compare worker-pool implementations while ignoring the verified alternative."
+    ],
+    "related": []
+  },
+  {
+    "id": "tie-without-basis",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. Choose between A and B for a consequential integration. They are the complete verified candidate space. They satisfy all constraints and are identical on the explicit objectives, maintenance, validation effort, reversal cost at the correction horizon, exit, extension, and all other applicable tie-breakers. No user preference or arbitrary selection rule is supplied. No further evidence can distinguish them under the current criteria.",
+    "accept": [
+      "Report supported equivalence without claiming a superior direction.",
+      "Keep a nominal winner unresolved; identify an owner preference or authorized arbitrary tie-break as the only remaining selection input, or state that no further investigation is justified."
+    ],
+    "reject": [
+      "Invent a superiority claim or a hidden tie-breaker.",
+      "Continue searching for evidence the fixture rules out."
+    ],
+    "related": []
+  },
+  {
+    "id": "reopen-only-affected",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. The controller supplies an existing decision record: choose A over B for the serializer because production-version latency is 10 ms versus 20 ms, both satisfy a 50 ms hard cap, and all other criteria tie. Reopen if applicable evidence violates that cap. A separate logging-format decision L is still valid and independent. Verified new integration traces establish A = 60 ms and B = 20 ms for the required current version; all other constraints and the candidate-space justification remain valid. The known dependent serializer adapter must be reconsidered. Return the revised direction to the controller; no implementation is authorized.",
+    "accept": [
+      "Mark the serializer choice reopened, identify the invalidated latency premise, and recommend B.",
+      "Preserve L, applicable evidence, and the existing candidate-space work.",
+      "Return the known affected adapter to the controller without a new project-wide impact search."
+    ],
+    "reject": [
+      "Silently overwrite the decision.",
+      "Redo unrelated choices or all discovery.",
+      "Implement the migration or take over correction propagation."
+    ],
+    "related": []
+  },
+  {
+    "id": "adaptive-bounded",
+    "family": "safeguard",
+    "prompt": "This is a fictional, closed-world decision exercise. Treat the supplied observations as applicable evidence for the stated versions and environment; do not invent missing results or external alternatives. Recommend the next direction or identify the exact input needed. Do not implement, write files, or browse. A consequential integration must begin before an external partner chooses incompatible protocol X or Y. Repeated applicable investigation confirms the partner has not decided and no informative probability estimate exists; further research cannot resolve its future choice. A supports only X, B only Y, and neither can migrate before exposure once deployed. A separate tested adapter-preparation step supports either later integration, uses only disposable synthetic data, costs at most 4 hours, and creates no lock-in or external commitments. The user explicitly values that useful preparation, accepts its bounded cost, and wants a direction recommendation now without implementation. Partner choice is due before any live-data work; production must wait for that choice.",
+    "accept": [
+      "Recommend only the supported adapter-preparation commitment, without a nominal winner between A and B.",
+      "For a skill run, an adaptive PASS is scoped to at most 4 hours and synthetic data; reopen the A/B choice when the partner decides or the bound is reached.",
+      "Preserve both future branches and do not authorize production."
+    ],
+    "reject": [
+      "Invent probabilities and pick A or B.",
+      "Allow live data or lock-in before safe redirection.",
+      "Use the bounded gate as project-wide implementation authorization."
+    ],
+    "related": []
+  }
+]
