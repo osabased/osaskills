@@ -32,11 +32,11 @@ Choose the narrowest mode that satisfies the request, then read only the referen
 Use when the task is to inspect, evaluate, compare, or select a resource without using/integrating it or creating/operationally adopting reusable child guidance.
 
 1. Read [references/qualification-workflow.md](references/qualification-workflow.md). For any comparison or selection among candidates, also read [references/evaluation-rubric.md](references/evaluation-rubric.md) directly.
-2. Apply the rubric's hard gates before scoring or ranking survivors. Use the same intended-use criteria and evidence standard for every candidate; popularity is discovery evidence, not a qualification shortcut.
+2. Apply the rubric's hard gates before comparing survivors under the established criteria and priorities. Use the same intended-use criteria and evidence standard for every candidate; popularity is discovery evidence, not a qualification shortcut.
 3. Read [references/state-policy.md](references/state-policy.md) for truthful trust/verification status and output discipline.
 4. Stop after the requested evidence and decision. Integration/project mutation, child generation or validation, and operational host adoption are all out of scope unless separately requested.
 
-The answer itself—not a promised follow-up—must state the acquisition brief, hard-gate result before any scoring, comparison result, and the explicit evaluation-only boundary. When a boundary is not applicable, say so compactly rather than omitting it.
+The answer itself—not a promised follow-up—must state the acquisition brief, hard-gate result before the comparison result, and the explicit evaluation-only boundary. When a boundary is not applicable, say so compactly rather than omitting it.
 
 ### `acquire/adopt`
 
