@@ -18,7 +18,7 @@ Complete one architectural objective per invocation. Preserve unrelated work; ot
 
 Resolve repository-owned facts through the repository and available tools. Escalate only for user-owned product intent, externally visible compatibility policy, reopening an authoritative decision, an irreversible migration, or another material choice the available evidence cannot settle.
 
-Use `$codebase-design` when available. Its vocabulary and principles guide architecture judgment; repository requirements, standards, domain language, and ADRs remain authoritative.
+Use `codebase-design` when available. Its vocabulary and principles guide architecture judgment; repository requirements, standards, domain language, and ADRs remain authoritative.
 
 ## 1. Establish the target
 
@@ -95,7 +95,7 @@ Choose exactly one disposition:
 
 When multiple independent candidates pass, choose the one with the strongest supported engineering benefit relative to migration, regression, and permanent structural cost. If materially equivalent, prefer the narrower blast radius and simpler verification. Treat materially different designs for the same objective as direction alternatives rather than separate improvement candidates.
 
-Resolve ordinary engineering tradeoffs autonomously. When materially different consequential architecture directions remain credible and evidence establishes no winner, invoke `$direction-selection` with the need, constraints, candidates, migration effects, and verification obligations. Continue only if its Direction Gate passes for this commitment.
+Resolve ordinary engineering tradeoffs autonomously. When materially different consequential architecture directions remain credible and evidence establishes no winner, invoke `direction-selection` with the need, constraints, candidates, migration effects, and verification obligations. Continue only if its Direction Gate passes for this commitment.
 
 `EXECUTE` requires traceable callers and compatibility obligations, a complete retirement or intentional transition for the old path, runnable verification, and no unresolved material decision.
 
