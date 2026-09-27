@@ -2,7 +2,6 @@
 
 | Problem | Owning skill |
 |---|---|
-| My agent is having trouble making worthwhile codebase architecture improvements without speculative refactoring | [**architecture-improvement**](./skills/architecture-improvement/) |
 | My agent is having trouble turning findings and suggestions into a defensible, actionable proposal | [**consolidate**](./skills/consolidate/) |
 | My agent is having trouble choosing or reassessing a consequential direction | [**direction-selection**](./skills/direction-selection/) |
 | My agent is having trouble discovering and expressing the preferences that matter to my task | [**preference-discovery**](./skills/preference-discovery/) |
