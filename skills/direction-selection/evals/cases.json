@@ -431,5 +431,36 @@
     "related": [
       "lightweight-known-choice"
     ]
+  },
+  {
+    "id": "research-workflow-terminology",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world exercise. Use only the supplied facts; do not browse or execute tools. Choose the method for a consequential offline evidence bundle. It must retain historical state and all corrections; minimize total annual cost. An initial search for instant snapshots found A and B. The applicable field taxonomy also calls this task temporal provenance and identifies event journals as a separate compatible family C. Current audited full-path results establish that A, B, and C each meet both constraints, at annual costs 90, 75, and 60 respectively. Three popular reviews omit C and copy one earlier A-only comparison. A separate reproducible benchmark reports C costs 110 for a different workload requiring live remote reconciliation, which this bundle does not use. The taxonomy covers all relevant families for the defined requirements. Recommend the supported direction and explain the evidence treatment.",
+    "accept": [
+      "Choose C using applicable full-path results and the domain taxonomy despite the initial query omitting it.",
+      "Explain that the other C benchmark concerns a different workload and the three reviews share one evidence basis.",
+      "Stop with the supported decision; do not require further research solely because sources disagree superficially."
+    ],
+    "reject": [
+      "Restrict candidates to A and B because those were the initial search results.",
+      "Choose by review count or apply the irrelevant 110 cost to this workload.",
+      "Claim evidence proves C is best for all workloads."
+    ]
+  },
+  {
+    "id": "research-workflow-sparse-return",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world exercise. Use only the supplied facts; do not browse or execute tools. A standalone applicability probe asks whether method A can meet a required offline correction behavior or a direction comparison is needed. No comparison mode exists. The probe inspected a relevant domain guide, current documentation, alternate terminology, and their accessible references. They establish normal retrieval only; correction behavior depends on a proprietary module whose specification is inaccessible. A review says no failures have been reported, without describing tests. An adjacent system demonstrated corrections with a different module, and transfer is unverified. No further accessible relevant sources or authorized tests are available. Return the outcome of this probe.",
+    "accept": [
+      "Return unresolved evidence through discovery to the applicability router, which hands off; do not emit a direction winner or gate.",
+      "State that missing reports, inaccessible evidence, and unverified transfer do not establish correction compliance or failure.",
+      "Identify module documentation/access or a representative authorized validation as the needed next evidence, without claiming it was performed."
+    ],
+    "reject": [
+      "Pass A based on no reported failures.",
+      "Declare A fails because the specification is inaccessible.",
+      "Choose an adaptive winner solely because research cannot resolve the question.",
+      "Start a general research loop despite exhausted justified routes."
+    ]
   }
 ]

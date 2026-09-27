@@ -34,6 +34,8 @@ Repeat inconsistent or consequential cases with a fixed, predeclared repeat coun
 
 The `research-*` cases cover apparently supported directions with missing provenance, orientation before precise hypotheses, unfinished candidate coverage after an initial search, source reliability and conflicting claims, challenges to confident leaders, and multiple evidence needs in lightweight mode. They test decisions and proposed evidence work in closed-world fixtures; they do not measure actual browsing breadth or source retrieval.
 
+The `research-workflow-*` cases additionally check terminology-driven candidate coverage, reconciliation of differently scoped studies, and return from an inconclusive standalone applicability probe. For source-retrieval testing, supply the evaluated agent with a separate source collection and an entry document, without grader expectations; record which content was actually retrieved when traces are available. These supplied-fact cases alone cannot establish that an agent will find the relevant sources on the open web.
+
 ## Record limitations and stop
 
 For every run, retain the case ID, condition, exact skill commit, model/settings, response or trace, rubric judgments, and available cost measurements outside the evaluated agent's context. Record unavailable metrics and checks not run explicitly. Do not add model calls to repository CI or assume this suite is automatically executed.

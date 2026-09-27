@@ -28,6 +28,8 @@ When the test fails, return to the owner. The applicability router may exit or h
 
 Choose the methods, breadth, and depth needed to resolve the material uncertainty with applicable evidence. Use online research, documentation, inspections, tests, benchmarks, measurements, prototypes, or disposable experiments as the question requires. Define coverage around the deciding claims, relevant conditions, and credible conflicting evidence; expand the investigation when gaps could change the result. Set effort and commitment in proportion to the stakes and evidence requirements.
 
+When the step uses source research for orientation, candidate coverage, or decision-relevant claims, read [RESEARCH.md](RESEARCH.md) completely and follow its workflow. Research supplies evidence within this discovery call; retain the recorded owner, commitment limits, and return condition. Use experiments or other methods when source research cannot establish the required property.
+
 Record before acting:
 
 1. **Owner and return point:** standalone applicability router or the exact interrupted comparison stage.

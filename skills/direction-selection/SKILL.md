@@ -85,6 +85,8 @@ When domain understanding or coverage is incomplete, orientation may establish t
 
 Research is adequate when the relevant candidate space has a supported coverage rationale, deciding claims have reliable and applicable evidence, and material conflicting evidence, assumptions, and unresolved leads have been examined enough to justify the commitment. State remaining gaps and their effect on support. Stop when these conditions hold and further work has no justified decision value. If access, time, or cost prevents adequate coverage, report that limitation and return the appropriate blocker or supported bounded commitment. Completed search counts and initial confidence do not establish adequacy.
 
+For source research within an admitted discovery investigation, read [RESEARCH.md](references/RESEARCH.md) completely. It provides the dedicated workflow for domain orientation, candidate coverage, source retrieval, conflicting or sparse evidence, and returning traceable findings to the owning stage. Use it in either comparison mode or the standalone applicability probe when those research needs arise.
+
 ## Authoritative full-mode triggers
 
 The following is the single authoritative trigger set for `full` entry and required candidate-space work:
