@@ -37,6 +37,12 @@ The original boundary cases remain unchanged. These additions exercise feedback 
 
 The context and combination cases also test whether the existing general guidance is sufficient. Their presence is not evidence that additional runtime rules are needed. Add those rules only if paired model runs expose a relevant failure and a candidate improves it without causing unnecessary questions or validation gates. Keep the UI, motion, and other original cases in the comparison.
 
+## Ordinary requests and implementation judgment
+
+`ordinary-tone-revision` and `ordinary-layout-draft` omit explicit permission to draft or choose routine details. They test whether the requested work itself provides enough scope for a useful first result, while the layout follow-up checks that agent-selected details remain distinct from confirmed preferences. Pair these with `ordinary-substantial-redesign`, where applying an unresolved direction across 40 screens would create substantial rework.
+
+Keep these prompts as written rather than adding permission reminders. Judge whether the response moves the task forward within scope; optional feedback invitations after a useful draft are different from questions that block it. These are new regression candidates, not evidence of improved behavior. Preserve the existing explicit-boundary cases in comparisons.
+
 ## Judge outcomes, not ceremony
 
 Fix the rubric before reading outputs. Record each acceptance expectation as met, missed, or unclear, supported by an excerpt or tool trace. Record rejected behavior separately. Equivalent wording and explicitly allowed alternatives are valid. A response does not pass just because it prints an Interpretation heading, evidence labels, or the revised skill's terminology. Do not punish baseline or no-skill responses for omitting that vocabulary.

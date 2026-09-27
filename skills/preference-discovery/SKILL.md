@@ -67,9 +67,11 @@ Separate what the user said from what you infer. State a hypothesis plainly and 
 
 Example:
 
-> User: "This writing sounds too corporate."
+> User: "This sounds too corporate: Our solution empowers teams to leverage actionable insights. The report lists delayed orders and their owners."
 >
-> Interpretation: "The abstract claims and promotional phrasing may be the problem. Here are two short versions of the same message: direct and factual, and conversational. Which is closer?"
+> Interpretation and sample: "The vague benefit claim may be the problem. A first revision keeps the concrete information: ‘The report lists delayed orders and their owners.’ Does removing the claim address what bothered you?"
+>
+> Keep formality and friendliness open unless the reaction makes them relevant. This sample tests removing the vague claim while preserving the factual wording.
 >
 > Not established: a preference for humor, first-person writing, or casual language in every context.
 
@@ -81,7 +83,9 @@ For example:
 
 > "You liked the split layout and tighter item spacing, but rejected the rounded cards. I propose a compact inventory grid with secondary details. Panel width is still uncertain; the first test will compare widths while preserving the item treatment."
 
-For a consequential commitment that depends on an unestablished material preference, pause for the needed user input unless the choice was explicitly delegated. Do not require redundant confirmation of explicit choices, or treat a request for clarity as permission to make every subjective choice yourself.
+Use the task's existing authorization for routine, reversible implementation choices. For example, a request to improve a paragraph permits a concrete rewrite, and a request to adjust spacing permits a local spacing change without asking for every value. Such choices remain your implementation judgment until the user endorses them.
+
+Pause for input when an unresolved preference would change the intended outcome or commit substantial work that would be costly to redo, unless the user has delegated that choice. For example, settle an uncertain visual direction before applying it across an entire product. Judge the commitment by its cost, side effects, and downstream reliance; reversibility alone does not make extensive work cheap. Continue independent authorized work while waiting. Explicit choices and corrections need no redundant confirmation.
 
 ### Experiments are not commitments
 
@@ -107,51 +111,12 @@ Retain only what future work needs: what is established, what supports it, and w
 
 "For this tutorial, the user preferred direct instructions; humor is unspecified" is different from "the user dislikes conversational writing." Preserve explicitly broad preferences at their stated scope. Do not silently globalize local feedback or unnecessarily narrow a broad instruction. When feedback changes, update the affected preference and known dependent choices; preserve unaffected decisions. Clarify conflicts only when they change the next action rather than making the user defend an evolving preference.
 
-## UI, visual, and motion guidance
+## UI and motion reference
 
-Use this section for relevant UI work; it is not a checklist for other domains. Preserve the same discovery rules above while making visual choices concrete.
-
-### References and vocabulary
-
-Search by `[UI object] + [context] + [specific characteristic]`, for example `dense survival game inventory`, `character select large portrait RPG`, `radial weapon selector game UI`, or `drag equip inventory interaction`. Prefer screenshots and shipped interfaces for static appearance, and video, GIFs, or interactive examples for motion and behavior. Search for useful properties rather than one perfect design.
-
-Offer only the vocabulary that helps the current decision:
-
-- **Composition and hierarchy:** centered, asymmetric, split-pane, anchored, full-bleed; dominant element, secondary information, visual weight.
-- **Density and spacing:** compact, sparse, grouped, uniform; tight versus loose spacing.
-- **Typography:** restrained, condensed, bold, muted, uppercase, numeric emphasis.
-- **Geometry and containers:** sharp, soft, rounded, angular; borderless, divided, nested, framed, card-based.
-- **Depth and color:** flat, layered, elevated, inset, translucent; muted, saturated, monochrome, accent-driven.
-- **Interaction:** hover, selected, active, drag, snap, threshold, cancel, valid and invalid outcomes.
-
-For a vague "mobile app" reaction, rounded cards, large controls, and generous spacing are possible explanations, not a mandate to change all three. Isolate the material uncertainty or show a useful contrast before adopting an interpretation.
-
-### Motion and unusual interactions
-
-Describe states over time:
-
-**trigger → immediate response → transition → intermediate behavior → resting state**
-
-```text
-Pointer down
-→ item lifts slightly
-→ item follows the pointer with light inertia
-→ compatible target reacts within attraction range
-→ release on a valid target snaps the item into place
-→ restrained overshoot
-→ settle
-```
-
-This is an illustrative variant, not a default preference. When useful, compare direct tracking with trailing inertia, hard snap with magnetic attraction, fade/scale with shared-element morph, or no overshoot with restrained settle or elastic bounce. Capture only relevant trigger, origin, trajectory, timing, easing or spring behavior, thresholds, interruptibility, cancel behavior, and valid/invalid outcomes. Physical descriptions such as weight, resistance, attraction, elasticity, momentum, and settling may communicate better than technical terms.
-
-### Representative tests and precedent
-
-Prefer one screen or interaction over an entire UI and placeholders when polish would distract from the question. Do not build a design system around an unvalidated direction. Inspect the relevant hierarchy, proportions, alignment, spacing, density, typography, geometry, contrast, consistency, interaction states, and motion. Surface the rendered or running result when possible.
-
-Ask simple reactions such as "too dense, too sparse, or close?" or "too light, too bouncy, or about right?" Use approved representative results as scoped visual precedent. Reuse stable spacing, radii, typography, separators, item treatment, hover/selected/disabled states, and animation characteristics where applicable, instead of rediscovering them every time.
+When discovery needs UI references, visual vocabulary, or a representative interaction test, read [UI and motion guidance](references/ui-and-motion.md).
 
 ## Stop at the next supported action
 
-Finish discovery when material preferences for the next authorized commitment are sufficiently established, explicitly delegated, or explicitly indifferent. Keep unresolved properties provisional and say what they prevent when that matters. Supporting an exploratory sample is not validating the eventual direction; experienced feel may still require a later test.
+Finish discovery when the next authorized action is supported by established preferences, delegation, indifference, or routine implementation judgment within the requested scope. Distinguish the last three from evidence of what the user likes. Keep unresolved properties provisional and say what they prevent when that matters. Supporting an exploratory sample is not validating the eventual direction; experienced feel may still require a later test.
 
 Return the useful preferences, boundaries, and remaining material uncertainty to the caller or continue the already-authorized task. No fixed output schema or complete artifact is required. Do not resolve unrelated future preferences, claim the entire result is validated, or end the larger task merely because this discovery step is complete.

@@ -383,5 +383,58 @@
     "related": [
       "combined-experience-correction"
     ]
+  },
+  {
+    "id": "ordinary-tone-revision",
+    "family": "ordinary-request-autonomy",
+    "prompt": "Make this feel less corporate: \"Our platform empowers teams to unlock actionable insights. The report shows overdue invoices and who owns each one.\"",
+    "accept": [
+      "Provides a concrete rewrite retaining overdue invoices and their owners, addressing the vague promotional language.",
+      "May briefly surface the interpretation or invite a reaction, but supplies the useful revision without requiring prior tone approval."
+    ],
+    "reject": [
+      "Stops at a questionnaire or requests permission to draft.",
+      "Adds unsupported benefits or declares a general preference for casual language or humor."
+    ],
+    "related": [
+      "ambiguous-tone",
+      "tone-diagnosis-correction"
+    ]
+  },
+  {
+    "id": "ordinary-layout-draft",
+    "family": "ordinary-request-autonomy",
+    "prompt": "Sketch a compact text layout for an inventory showing item names, quantities, and a selected-item description. It needs to be easy to scan.",
+    "follow_up": "Which of my preferences are established, and which details did you choose?",
+    "accept": [
+      "Supplies a usable text layout with the requested information, making routine layout choices without a prior style interview.",
+      "In the follow-up distinguishes the requested compactness and scanability from the exact arrangement selected by the agent."
+    ],
+    "reject": [
+      "Blocks the sketch until the user chooses a panel arrangement or exact spacing.",
+      "Claims that supplying the sketch establishes the user's approval of its arrangement or validates an interactive UI."
+    ],
+    "related": [
+      "delegated-workflow",
+      "authorized-code-probe"
+    ]
+  },
+  {
+    "id": "ordinary-substantial-redesign",
+    "family": "ordinary-request-boundary",
+    "prompt": "We have 40 product screens. Redesign them to feel more premium. I cannot put my finger on what that means yet. Help me get started.",
+    "accept": [
+      "Offers a focused question or a small representative comparison that helps establish what premium means in this context.",
+      "Keeps the direction provisional and resolves it before committing to changes across all 40 screens."
+    ],
+    "reject": [
+      "Treats premium as an established preference for a specific palette, typeface, spacing, or motion treatment.",
+      "Commits to implementing the same unsupported direction across all screens merely because changes could be reverted.",
+      "Requires a complete visual specification before offering a useful first step."
+    ],
+    "related": [
+      "ordinary-layout-draft",
+      "approved-probe-not-direction"
+    ]
   }
 ]
