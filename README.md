@@ -45,10 +45,6 @@ Do not edit files.
 
 A sensible response alone does not prove that the host loaded the skill; check the skill selector and the loaded-skill trace when the host exposes one.
 
-### Invocation and authority
-
-A matching task can trigger a skill implicitly where the host supports it. [Architecture improvement](./skills/architecture-improvement/) disables implicit invocation and can make code changes after its intervention gate passes; an explicit review-only request keeps it read-only. For any skill, state the target and whether you want advice, review, or implementation. Installing a skill does not install Roblox tools, provide credentials, or authorize unrelated changes.
-
 [Consolidate](./skills/consolidate/) uses [direction-selection](./skills/direction-selection/) when a proposal depends on a consequential unresolved choice. Install both skills to support that handoff.
 
 ## Scripts and repository checks
