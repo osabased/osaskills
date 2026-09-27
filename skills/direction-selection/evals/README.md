@@ -32,6 +32,8 @@ Repeat inconsistent or consequential cases with a fixed, predeclared repeat coun
 
 `uncertainty-accepted`, `uncertainty-unacceptable`, `uncertainty-preference`, `uncertainty-probability`, and `constraint-unverified` jointly test that accepting outcome uncertainty does not excuse missing evidence, preferences, or constraint compliance. The three `refinement-*` cases test both useful refinement and stopping. `lightweight-known-choice` checks that the shared semantics also apply without full-mode expansion. The remaining safeguard cases exercise authority, ownership, framing, ties, reopening, and bounded adaptation.
 
+The `research-*` cases cover apparently supported directions with missing provenance, orientation before precise hypotheses, unfinished candidate coverage after an initial search, source reliability and conflicting claims, challenges to confident leaders, and multiple evidence needs in lightweight mode. They test decisions and proposed evidence work in closed-world fixtures; they do not measure actual browsing breadth or source retrieval.
+
 ## Record limitations and stop
 
 For every run, retain the case ID, condition, exact skill commit, model/settings, response or trace, rubric judgments, and available cost measurements outside the evaluated agent's context. Record unavailable metrics and checks not run explicitly. Do not add model calls to repository CI or assume this suite is automatically executed.

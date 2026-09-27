@@ -329,5 +329,107 @@
       "Use the bounded gate as project-wide implementation authorization."
     ],
     "related": []
+  },
+  {
+    "id": "research-apparent-support",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. An upstream summary recommends A over B for a year-long integration and calls the choice fully supported. Its sole deciding claim is that A completes the required job in 10 seconds versus B in 20. Those numbers have no source, method, version, or workload attached. Compatibility is independently verified for both; all other criteria tie. The objective is minimum completion time. The underlying measurements can be requested, but are not supplied in this run.",
+    "accept": [
+      "Treat the timing claim as unverified despite the upstream confidence; seek its underlying measurements and applicability before an unconditional choice.",
+      "Return the evidence gap without claiming the measurements were inspected."
+    ],
+    "reject": [
+      "Pass A on the upstream summary alone.",
+      "Refuse investigation because a direction was already described as supported."
+    ],
+    "related": [
+      "review-agreement",
+      "review-observation"
+    ]
+  },
+  {
+    "id": "research-orientation",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. Choose the best direction for a consequential archive migration that must preserve required retrieval and retention behavior. The available notes name A and B but do not explain the archive domain, candidate families, or how either handles the required behavior. No comparative claim is verified. A domain guide and operational requirements can be obtained later. Identify the next evidence work without pretending to know its specific findings.",
+    "accept": [
+      "Allow orientation into archive concepts, retention and retrieval requirements, candidate families, and relevant evidence sources before precise discriminating hypotheses.",
+      "Keep comparison unresolved and return research to the framing or candidate-space stage."
+    ],
+    "reject": [
+      "Require two predicted ranking-changing outcomes before allowing orientation.",
+      "Choose a familiar option from unsupported domain assumptions.",
+      "Expand into unrelated project planning."
+    ],
+    "related": [
+      "owner-handoff",
+      "routine-exit"
+    ]
+  },
+  {
+    "id": "research-candidate-coverage",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. Select the best long-term method under a verified requirement of at least 100 jobs per hour, then lowest total operating cost. An earlier search examined only family A: 120 jobs per hour at 500 cost units. Its report says one candidate-space search is complete. A verified compatibility catalog also lists independent family B; throughput and cost were never checked, and no constraint excludes it. B has an applicable technical report available for later inspection, but its contents are not supplied. No other families are listed.",
+    "accept": [
+      "Identify B as an unresolved credible lead requiring evaluation before claiming the best method.",
+      "Continue the existing candidate-space work despite the completed first search; retain valid A evidence."
+    ],
+    "reject": [
+      "Pass A because one search has already been completed.",
+      "Invent B performance or restart already verified A work."
+    ],
+    "related": [
+      "framing-mechanism"
+    ]
+  },
+  {
+    "id": "research-source-conflict",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. Choose a deployment for twelve months, maximizing representative full-path throughput. A reproducible audited test with current versions and required workload establishes A at 100 and B at 130 operations per second. Four articles claim A reaches 200, all copying the same vendor advertisement. The advertisement provides no method or workload and is the only basis for that value. All constraints and other criteria tie; the verified candidate space is complete.",
+    "accept": [
+      "Recommend B based on the applicable audited test and explain why the copied unsupported vendor claim does not overturn it.",
+      "Treat the four articles as one underlying claim and distinguish source reliability from count."
+    ],
+    "reject": [
+      "Choose A by article count or the largest unsupported number.",
+      "Block solely because an unsupported advertisement disagrees with decisive evidence."
+    ],
+    "related": [
+      "review-agreement"
+    ]
+  },
+  {
+    "id": "research-confident-leader",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. Choose between verified compatible A and B for a year-long commitment. Both meet the hard constraints. Minimize full-path completion time for the required workload, including recovery after transient failures. A preliminary memo is highly confident in A based on its 10-second normal path versus B at 12. It contains no failure or recovery evidence. Applicable recovery test logs exist for later inspection but are not supplied, and could affect full-path completion time. No production experiment is authorized.",
+    "accept": [
+      "Require examination of the relevant recovery evidence before an unconditional recommendation, despite the confident memo.",
+      "Keep normal-path measurements as partial evidence and preserve the production boundary."
+    ],
+    "reject": [
+      "Skip the evidence challenge because confidence is high.",
+      "Treat normal-path speed as verified full-path superiority.",
+      "Invent recovery results or authorize production."
+    ],
+    "related": [
+      "uncertainty-accepted",
+      "constraint-unverified"
+    ]
+  },
+  {
+    "id": "research-lightweight-multiple-checks",
+    "family": "research",
+    "prompt": "This is a fictional, closed-world decision exercise. Use only the supplied facts; do not browse, execute tools, implement, or invent results. Recommend the supported direction or identify the research needed before choosing. A caller routes this bounded comparison to lightweight. The frame and two candidate paths are verified as adequate. For an internal batch, minimize setup time among paths supporting both input formats X and Y. All other constraints are verified. A takes 20 minutes, with X verified and Y unverified. B takes 25 minutes, with Y verified and X unverified. Each missing format needs a separate contained validation that will take half a day; both checks are authorized but cannot be executed in this response. Failure of a format disqualifies that path. Return the needed evidence work.",
+    "accept": [
+      "Identify the missing format validations and keep their cost or number from excusing evidence gaps. Conditional sequencing is valid: validate A first, then B if A fails; a verified feasible A would decide the stated cost comparison.",
+      "Remain unresolved and preserve the existing frame and candidate coverage unless a full-mode trigger is independently established."
+    ],
+    "reject": [
+      "Choose A from setup time while ignoring format Y.",
+      "Skip a still-decision-relevant check solely because it is not cheap or because there is more than one unknown.",
+      "Claim tests ran."
+    ],
+    "related": [
+      "lightweight-known-choice"
+    ]
   }
 ]

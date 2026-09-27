@@ -22,7 +22,7 @@ Do not activate or continue this skill merely because a task contains uncertaint
 
 When one clear direction exists and the only unresolved issue is a directly inspectable factual or behavioral unknown, resolve that unknown through its fitting evidence route before generating candidates. With a surrounding controller, return `handoff`, explain why comparison does not own control, and give at most a fitting evidence-route hint. Do not start generic research, benchmarking, persistence, planning, or verification loops merely because an unknown is consequential.
 
-In standalone use, when applicability itself depends on one resolvable fact, use only the minimum bounded applicability evidence probe allowed by [DISCOVERY.md](references/DISCOVERY.md). Return to this router afterward. If the probe cannot resolve the fact within the bounded run, return `handoff` to the fitting owner or user; do not emit a comparison outcome before a comparison mode exists.
+In standalone use, when applicability depends on unresolved facts or insufficient domain understanding, use an applicability evidence probe scoped to establishing whether comparison is needed, as described in [DISCOVERY.md](references/DISCOVERY.md). Return to this router afterward. If the probe cannot establish applicability within its justified scope, return `handoff` to the fitting owner or user; do not emit a comparison outcome before a comparison mode exists.
 
 ### Authority and preference semantics
 
@@ -37,7 +37,7 @@ After `lightweight` or `full`, comparison owns the local direction decision. Aft
 
 Across discovery calls, mode escalation, caller handoffs, leader changes, and reopened directions, preserve all still-applicable boundaries, constraints, authorities, evidence and provenance, assumptions, candidates, and completed results. Transfer control to the receiving owner at the earliest affected stage and repeat only work invalidated by the trigger, new evidence, or changed premise.
 
-Caller-provided diagnosis and evidence remain established inputs when applicable, not privileged rankings or conclusions. Re-check them only when a conflict, scope mismatch, applicability problem, or decision-sensitive uncertainty makes that necessary.
+Preserve verified, applicable caller-provided evidence and its provenance. Distinguish observations from supplied assertions, interpretations, and rankings. Before a supplied claim carries a decision, establish its provenance, applicability, and reliability under the evidence rules below. Reuse passing evidence unless its basis is missing or a conflict, changed condition, or coverage gap makes it inadequate; attribution to a caller alone does not establish a claim.
 
 ## Comparison semantics
 
@@ -50,7 +50,7 @@ Caller-provided diagnosis and evidence remain established inputs when applicable
 A direction is **sufficiently supported for the governed commitment** when:
 
 - it satisfies every known hard constraint and invariant;
-- its decisive comparative claims have applicable evidence proportionate to the stakes;
+- its decisive comparative claims meet the evidence applicability, reliability, and research-adequacy rules below;
 - remaining uncertainty does not undermine the justification for this commitment under the established objectives, explicit priorities, and acceptable downside;
 - if a credible surviving alternative exists, it has no better-supported case under the ordered criteria; and
 - any material tie is resolved by an applicable ordered tie-breaker; otherwise no nominal winner is claimed.
@@ -75,6 +75,16 @@ Evidence may carry a decisive comparative claim only when it represents the prop
 
 For each deciding claim, identify its source or observation and separate what it establishes from what is inferred. Treat repetitions of the same underlying result as one evidentiary basis. Distinguish demonstrated constraint failure, unverified satisfaction, and inapplicable evidence. Missing evidence leaves satisfaction unverified; the selected direction must still establish compliance with every known hard constraint.
 
+### Evidence reliability and research adequacy
+
+Assess the reliability of each deciding claim's evidence: inspect the underlying source or observation, its method, material limitations, currency, and relevant incentives. Prefer primary evidence and authoritative sources for claims within their competence. Seek independent corroboration or representative validation when a consequential claim rests on an interested-party assertion, opaque method, or otherwise weak basis. A directly inspectable, strong source can suffice; count independent evidentiary bases rather than publications or agreements.
+
+Investigate material conflicts by comparing methods, scope, versions, and observations. Record what resolves the conflict or what remains uncertain and apply the Support threshold; source count alone does not resolve disagreement.
+
+When domain understanding or coverage is incomplete, orientation may establish the relevant concepts, constraints, candidate families, and evidence sources before precise hypotheses can be stated. Name the inadequately understood area and its connection to the decision; predicting particular discoveries is unnecessary. Keep this work within the owning stage or standalone applicability probe, using [DISCOVERY.md](references/DISCOVERY.md) for a defined investigation.
+
+Research is adequate when the relevant candidate space has a supported coverage rationale, deciding claims have reliable and applicable evidence, and material conflicting evidence, assumptions, and unresolved leads have been examined enough to justify the commitment. State remaining gaps and their effect on support. Stop when these conditions hold and further work has no justified decision value. If access, time, or cost prevents adequate coverage, report that limitation and return the appropriate blocker or supported bounded commitment. Completed search counts and initial confidence do not establish adequacy.
+
 ## Authoritative full-mode triggers
 
 The following is the single authoritative trigger set for `full` entry and required candidate-space work:
@@ -88,7 +98,7 @@ The following is the single authoritative trigger set for `full` entry and requi
 
 Generic consequential uncertainty alone is not a trigger. Record the exact trigger or triggers that caused `full` entry and carry them forward only while they affect candidate-space obligations, comparison, or stopping conditions.
 
-Multiple known competitive directions alone do not require searching for another class. Triggers 3–5 require one bounded candidate-space examination before `PASS`. For trigger 6, first determine whether the evidence changes ranking only, changes framing, or creates a credible candidate-space signal.
+Multiple known competitive directions alone do not require searching for another class. Triggers 3–5 require candidate-space examination to the research-adequacy standard before `PASS`. For trigger 6, first determine whether the evidence changes ranking only, changes framing, or creates a credible candidate-space signal.
 
 ## Choose the proportional mode
 
@@ -100,7 +110,7 @@ Use this routing order:
 
 For `lightweight`, read [LIGHTWEIGHT.md](references/LIGHTWEIGHT.md) completely, follow it, and return its local record and gate status.
 
-For `full`, record the invocation trigger(s), read [FULL.md](references/FULL.md) completely, and follow it. At any comparison stage, if a specific decision-sensitive unknown blocks that stage and no direction meets the Support threshold, read [DISCOVERY.md](references/DISCOVERY.md) completely and apply its Discovery Entry Test. Discovery returns to the exact owning stage rather than restarting applicability or the protocol.
+For `full`, record the invocation trigger(s), read [FULL.md](references/FULL.md) completely, and follow it. At any comparison stage, when an unresolved fact, coverage gap, reliability concern, or orientation need could affect the decision or its support, read [DISCOVERY.md](references/DISCOVERY.md) completely and apply its Discovery Entry Test. Discovery returns to the exact owning stage rather than restarting applicability or the protocol.
 
 When changing this skill, another decision protocol, or a protocol that invokes it, read [SELF-APPLICATION.md](references/SELF-APPLICATION.md) completely before applying the full protocol.
 
@@ -145,7 +155,7 @@ Use this result only after a comparison mode exists and the gate cannot pass:
 - **Governed commitment:** what cannot yet proceed
 - **Unresolved decision:** the choice still open
 - **Blocking condition:** exact evidence, preference, constraint, tie, or support failure
-- **Owner / next step:** fitting owner, smallest proportionate action, or `none` when no justified action remains
+- **Owner / next step:** fitting owner, action adequate to resolve the blocking condition, or `none` when no justified action remains
 - **Decision effect:** how plausible resolution outcomes could change the result
 - **Resume when:** observable condition sufficient to resume comparison, or `none` when no justified condition is known
 - **Direction Gate:** NOT PASSED
@@ -194,6 +204,6 @@ Omit empty optional sections. For other outcomes, use the matching presentation:
 
 ## Reopening a direction
 
-Reopen only when implementation, tests, benchmarks, changed requirements, or verified facts materially weaken a load-bearing assumption or satisfy a concrete `Reopen if` condition. Identify the exact invalidated premise, mark the direction reopened rather than silently overwriting it, and apply the Continuation invariant.
+Reopen when implementation, tests, benchmarks, changed requirements, verified facts, or an identified material gap in evidence coverage or reliability weakens a load-bearing assumption or satisfies a concrete `Reopen if` condition. Identify the exact invalidated premise, mark the direction reopened rather than silently overwriting it, and apply the Continuation invariant.
 
 When a broader controller exists, hand back the reopened direction, invalidated premise, triggering evidence, and any already-known materially affected downstream commitments or artifacts in the current context. Do not perform a new project-wide impact search, build a dependency graph, or duplicate correction-propagation machinery; implicit or transitive impact discovery belongs to the controller. In standalone use, state that known affected downstream commitments require reconsideration without prescribing a project-wide methodology. Unaffected branches remain untouched.

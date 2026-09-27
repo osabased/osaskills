@@ -1,13 +1,13 @@
 # Lightweight Direction Selection
 
-Use this branch only after the [SKILL.md](../SKILL.md) applicability router returns `lightweight`: a meaningful bounded choice is live, and the framing, ordered criteria, and candidate space are already adequate. The parent skill's authority semantics, Continuation invariant, comparison semantics, Support threshold, deciding-evidence applicability rule, future-horizon reversibility definition, Direction Gate scope, and output contracts apply throughout.
+Use this branch only after the [SKILL.md](../SKILL.md) applicability router returns `lightweight`: a meaningful bounded choice is live, and the framing, ordered criteria, and candidate space are already adequate. The parent skill's authority semantics, Continuation invariant, comparison semantics, Support threshold, evidence applicability, reliability, and research-adequacy rules, future-horizon reversibility definition, Direction Gate scope, and output contracts apply throughout.
 
 ## Procedure
 
 1. Record the goal, hard constraints, ordered criteria, governed commitment, and credible known alternatives. Do not search for another candidate merely to fill the record.
 2. Compare the known serious alternatives under the same decisive criteria. Apply [Comparison semantics](../SKILL.md#comparison-semantics), including bounded refinement of those candidates. Apply [Close comparisons](../SKILL.md#close-comparisons) when a small or uncertain difference could decide the choice. Identify the strongest surviving alternative when one exists. Do not count already-spent effort as support for an incumbent; count concrete future migration, compatibility, schedule, and operating costs.
-3. When one cheap decision-sensitive unknown prevents the Support threshold from passing, resolve it through the fitting evidence route. If bounded discovery is warranted, read [DISCOVERY.md](DISCOVERY.md) completely, preserve this comparison as owner, and resume this step afterward.
-4. Challenge one load-bearing reason only when it remains meaningfully uncertain and one cheap realistic check could change the winner. Apply the parent deciding-evidence applicability rule to the result. Skip this check when its trigger is absent.
+3. Resolve material evidence gaps through the fitting evidence route, including gaps in a seemingly supported direction. For discovery, read [DISCOVERY.md](DISCOVERY.md) completely, preserve this comparison as owner, and resume afterward. Scale investigation to the evidence need; enter full mode when the findings expose an authoritative full-mode trigger.
+4. Challenge material reasons whose uncertainty or evidentiary basis could undermine the result. For consequential or hard-to-reverse commitments, also apply the evidence challenge in [FULL.md, Stage 5](FULL.md#5-challenge-the-leader-against-evidence), even when confidence is high. Use applicable existing evidence and the research-adequacy standard; the cost or number of checks does not establish adequacy.
 5. Judge the selected direction against the Support threshold using future-horizon reversibility. Set a concrete reopen condition, then return a `Direction Decision`, `Direction Blocker`, or justified `Adaptive Direction`.
 
 Lightweight mode does not broaden or re-justify the candidate space. When an authoritative full-mode trigger emerges—including framing ambiguity, candidate-space inadequacy, consequential unresolved competition, weak comparative justification requiring structured challenge, or material evidence that changes the frame or candidate space—preserve all still-applicable work under the Continuation invariant and enter `full` at the earliest affected stage. Do not restart completed work.
@@ -18,8 +18,8 @@ Set `Direction Gate: PASS` only when every applicable condition holds:
 
 - the goal, constraints, ordered criteria, and governed commitment are clear enough to choose;
 - every credible known alternative was compared symmetrically;
-- decisive evidence is applicable and proportionate;
-- any triggered cheap unknown or disconfirming check was resolved enough;
+- decisive evidence and existing candidate coverage meet the parent research-adequacy standard;
+- required investigations and evidence challenges were resolved enough;
 - the selected direction meets the Support threshold;
 - reversibility was assessed at the likely future correction point; and
 - residual uncertainty is acceptable for the governed commitment and has a concrete reopen condition.

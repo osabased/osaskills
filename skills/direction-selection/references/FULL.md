@@ -1,6 +1,6 @@
 # Full direction-selection protocol
 
-Use this protocol only after `../SKILL.md` routes the current decision to `full`. Apply the parent skill's invocation triggers, authority semantics, Continuation invariant, comparison semantics, Support threshold, deciding-evidence applicability rule, Direction Gate scope, future-horizon reversibility rule, and output contracts throughout. If a specific decision-sensitive unknown blocks a stage and no direction meets the Support threshold, read [DISCOVERY.md](DISCOVERY.md) completely and apply its Discovery Entry Test; discovery returns to the exact owning stage.
+Use this protocol only after `../SKILL.md` routes the current decision to `full`. Apply the parent skill's invocation triggers, authority semantics, Continuation invariant, comparison semantics, Support threshold, evidence applicability, reliability, and research-adequacy rules, Direction Gate scope, future-horizon reversibility rule, and output contracts throughout. When an unresolved fact, coverage gap, reliability concern, or orientation need could affect a stage or the support for its result, read [DISCOVERY.md](DISCOVERY.md) completely and apply its Discovery Entry Test; discovery returns to the exact owning stage.
 
 ## 1. Build and challenge the problem model
 
@@ -14,7 +14,7 @@ Record:
 - **Ordered criteria:** hard constraints, primary success criteria, secondary tradeoffs, then tie-breakers such as simplicity, future-horizon reversibility, option value, implementation cost, or consistency.
 - **Unknowns:** known facts, reasonable assumptions, unresolved material uncertainty, and preferences only the user can decide.
 
-Apply the authority and preference semantics from the router. Verify decision-sensitive unstable facts through fitting authoritative evidence routes when the task authorizes it. Preserve applicable caller-provided diagnosis, constraints, and evidence with their provenance; do not inherit an upstream ranking without comparison.
+Apply the authority and preference semantics from the router. Verify decision-sensitive unstable facts through fitting authoritative evidence routes when the task authorizes it. Apply the parent Continuation invariant to supplied evidence and assertions. Use orientation under the parent research-adequacy rule when domain understanding is insufficient to establish the frame or candidate space.
 
 **Complete when:** the trigger, boundary, governed commitment, framing, goal, hard constraints, ordered criteria, and every known material unknown are explicit enough to establish the candidate space; any irreducible user preference is isolated.
 
@@ -30,19 +30,19 @@ Before elaborating a favorite:
 
 When differing responsibility boundaries or workflow steps could change the comparison, trace each serious candidate from the same representative input and starting state to the required usable outcome. Include decision-relevant integration, manual steps, handoffs, and recovery. Include the surrounding work needed to make a component-only option a complete path. Treat untested steps as assumptions for Stage 3.
 
-This stage owns candidate-space exploration. Perform one serious bounded search when invocation triggers 3–5 require it or when Stage 1 establishes another credible omitted-direction signal. Test whether a simpler formulation, changed boundary, relaxed assumption, avoided decision, or coherent hybrid removes the current tradeoff. A hybrid qualifies only when it removes weaknesses rather than combining complexity.
+This stage owns candidate-space exploration. Investigate the candidate space when invocation triggers 3–5 require it or when Stage 1 establishes another credible omitted-direction signal. Explain which relevant candidate families and sources were examined, which were excluded and why, and whether unresolved leads could affect the comparison. Test whether a simpler formulation, changed boundary, relaxed assumption, avoided decision, or coherent hybrid removes the current tradeoff. A hybrid qualifies only when it removes weaknesses rather than combining complexity.
 
-Known consequential competitors alone do not require another class. An imaginable candidate is not evidence that the space is inadequate. Add any credible candidate found and complete only the affected modeling needed to compare it. Repeat candidate-space exploration only after materially new evidence changes the framing, shared premises, or credible solution space.
+Known consequential competitors alone do not require another class. An imaginable candidate is not evidence that the space is inadequate. Add any credible candidate found and complete only the affected modeling needed to compare it. Continue exploration while material coverage gaps or credible leads remain worth investigating. Revisit completed coverage when an identified gap, changed premise, or new evidence weakens its justification.
 
 Use an available and authorized independent second look for high-impact choices only when its expected decision value justifies the cost. Ask neutrally. Treat proposed directions as candidates, unverified objections as hypotheses, and traceable observations according to the parent's deciding-evidence applicability rule. Agreement alone does not independently verify a factual claim; applicable evidence remains usable regardless of who reports it.
 
-**Complete when:** known serious candidates are neutrally and comparably stated, any triggered outcome-path comparison is complete, every candidate-space examination required by the invocation trigger has been completed once, and the stage records whether exploration was not required, found no credible alternative, or added candidates for comparison.
+**Complete when:** known serious candidates are neutrally and comparably stated, any triggered outcome-path comparison is complete, the candidate-space coverage rationale addresses relevant families, exclusions, and material leads, and remaining needs for comparative evidence are identified for Stage 3. If candidate-space adequacy itself remains unresolved, return its evidence need through discovery or a blocker.
 
 ## 3. Gather discriminating, applicable evidence
 
-Investigate only facts that can change the comparison. Prefer actual repository constraints, tests and observed behavior, authoritative documentation, specifications, representative benchmarks, small disposable experiments, migration and operational constraints, and known failure modes.
+Investigate evidence needed to establish the frame, candidate space, constraints, criteria, and comparison. Include orientation where required by the parent research-adequacy rule. Use actual repository constraints, tests and observed behavior, authoritative documentation, specifications, representative benchmarks, disposable experiments, migration and operational constraints, and known failure modes as the question requires.
 
-For each investigation, name the uncertainty it can reduce and how plausible outcomes could change the decision. Stop when no plausible result can affect the choice. Apply the same evidentiary standard to every serious candidate and the parent deciding-evidence applicability rule before any evidence carries a decisive claim.
+For each investigation, name its evidence need and coverage goal. Apply the same evidentiary standard to every serious candidate and the parent evidence applicability, reliability, and research-adequacy rules. These rules govern completion even when a preferred candidate already appears convincing.
 
 For benchmarks, prototypes, tests, or observations, confirm that the evidence represents the property, workload, environment, operating conditions, and integration effects at risk. For documentation, research, reviews, or prior examples, confirm that the version, interface, operating context, and compared claim apply. Inapplicable evidence may inform the model but cannot decide the comparison.
 
@@ -50,7 +50,7 @@ When materially new evidence changes the framing, return to Stage 1. When it cre
 
 Small or reversible actions must advance a commitment already supported at that level or reduce decision-relevant uncertainty. Keep exploratory work contained, observable, replaceable, and future-horizon reversible.
 
-**Complete when:** every decisive comparative claim has traceable, applicable proportionate evidence with material inferences identified, or its remaining uncertainty is explicit and has been accepted, routed through bounded discovery, or identified as the exact gate blocker.
+**Complete when:** research meets the parent adequacy standard with traceable deciding claims and material inferences identified, or remaining gaps are explicit and routed through discovery or identified as the exact gate blocker. Accept residual uncertainty only under the Support threshold.
 
 ## 4. Compare without anchoring
 
@@ -67,26 +67,18 @@ When applicable evidence establishes real dominance and no unresolved higher-pri
 
 **Complete when:** every surviving candidate has been evaluated under the same ordered criteria and evidentiary standard, decisive tradeoffs are explicit, and the strongest surviving alternative is identified when one exists.
 
-## 5. Falsify the leader when triggered
+## 5. Challenge the leader against evidence
 
-Run falsification only when all three conditions substantially hold:
+For consequential or hard-to-reverse recommendations, challenge the central deciding claims against evidence even when confidence is high. For other full-mode choices, use this stage when a material assumption, evidence gap, or source-reliability concern could undermine the leader. Scale the depth to the stakes and reuse applicable challenges already completed.
 
-1. a proposition supporting the leader is load-bearing;
-2. it remains meaningfully uncertain or confidence is suspiciously correlated; and
-3. a realistic decision-changing challenge can be obtained at justified cost.
+- Examine evidence for realistic failure conditions and contrary results affecting the central claims.
+- Check material transition, maintenance, operational, security, and compatibility costs, including conditions that could make the strongest alternative superior.
+- Apply symmetric standards to the leader and strongest alternative, distinguishing supported objections from speculation.
+- Record the evidence examined and whether it supports, limits, or overturns the recommendation. A hypothetical challenge without examination of its evidentiary basis does not complete the stage.
 
-When triggered:
+Existing reliable evidence can resolve the challenge without new research. When the evidence needed is absent, use discovery or report the exact support limitation; apply the Continuation invariant when the leader, framing, candidate space, or decisive evidence changes. For choices outside the stage's applicability, state why no challenge is required.
 
-- target the strongest realistic failure scenario and load-bearing assumptions;
-- surface hidden transition, maintenance, operational, security, and compatibility costs;
-- identify the scale, workload, environment, or future requirement that would break the leader;
-- state evidence that would make the strongest surviving alternative superior;
-- apply symmetric challenge standards to the leader and strongest alternative; and
-- apply the Continuation invariant if the leader, framing, candidate space, or decisive evidence changes.
-
-Skip falsification when its trigger is absent. Route a decision-sensitive material unknown through bounded discovery when appropriate.
-
-**Complete when:** the mechanism was skipped because its trigger is absent, the leader survived a decision-changing challenge, a replacement completed affected revalidation, or the stage entered bounded discovery.
+**Complete when:** the applicable challenge is resolved by evidence, a replacement completed affected revalidation, an unresolved need returns through discovery or a blocker, or the choice does not require this stage. High confidence alone is not a reason to skip a required challenge.
 
 ## 6. Run the zero-based diagnostic when bias risk is present
 
@@ -108,8 +100,8 @@ Set `Direction Gate: PASS` only when every applicable condition holds:
 - hard constraints and invariants are identified;
 - every credible candidate in scope was compared symmetrically;
 - every candidate-space examination required by the invocation trigger was completed;
-- any triggered falsification or zero-based diagnostic was resolved enough;
-- decisive evidence is applicable and proportionate;
+- the required evidence challenge and any triggered zero-based diagnostic were resolved enough;
+- decisive evidence and candidate coverage meet the parent research-adequacy standard;
 - the selected direction meets the Support threshold;
 - no known candidate clearly dominates it, and any credible strongest alternative has no better-supported case;
 - residual uncertainty is acceptable at this commitment level and has a concrete reopen condition; and
