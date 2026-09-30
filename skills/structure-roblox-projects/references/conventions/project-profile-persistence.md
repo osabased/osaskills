@@ -13,7 +13,7 @@ Prepare the overview and separate assessment in the response or a requested draf
 
 Do not write the project guide, assessment, or instruction pointer before the user approves the preview. An explicitly requested separate scratch/review artifact is permissible; it must not become active project instructions before approval. Read-only orientation and design produce a review-ready answer by default.
 
-Approval is specific to the shown documentation operation. Approval of the overview alone does not implement modernization suggestions, install tools, or alter project architecture. If the user already approves an exact save/update request or a setup preview containing the exact documentation writes, continue without another confirmation. A material change in the result or write set needs an updated preview.
+Approval is specific to the shown documentation operation. Approval of the overview alone does not implement modernization suggestions, install tools, or alter project architecture. If the user already approves an exact save/update request or a setup preview containing the exact documentation writes, continue without another confirmation. Routine factual adjustments directly resulting from requested work—such as the final passing-test count—remain covered by that approval. Re-preview changes to scope, ownership, topology, or recommendations. Honor explicit requirements to review every exact edit.
 
 Saving may remain pending while independently authorized project work continues. If a user declines persistence, leave project documentation unchanged and use the reviewed session context as appropriate.
 
