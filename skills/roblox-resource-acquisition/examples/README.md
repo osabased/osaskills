@@ -1,0 +1,14 @@
+# Checked child examples
+
+Read the matching example when generating a module child or a development-tool child. These are worked authoring examples, not adopted dependencies or discoverable installed skills. `SKILL.example.md` becomes `SKILL.md` only in a separate candidate directory. Do not install the example unchanged or copy its source pin, project authority, verification state or evidence into an unrelated adoption.
+
+- [GoodSignal module child](goodsignal/SKILL.example.md) shows an exact commit, owned connections, a maintained Luau fixture and an explicit scheduler/engine proof boundary.
+- [Rojo tool child](rojo-build/SKILL.example.md) shows an actual CLI, independent output contract and a portable smoke generator. Generated project files stay outside the child; the generator is the maintained fixture source, while `check_build.py` is the command helper.
+
+The examples use the same structural validator as generated children. Their accompanying schema-v3 records are illustrative artifact-only state with resource proof and independent child behavior unclaimed. Tests materialize the examples outside discovery, check child/record/bundle structure and run the tool fixture with a fake executable to verify the wrapper's failure behavior. Actual upstream execution is a separate qualification step; a structural or fake-tool pass cannot establish runtime verification or operational host adoption.
+
+Use the [resource record template](../templates/resource-record.yaml) for real evidence. `generated_skill` is the exact child frontmatter name, not its folder path. Input fingerprints use `sha256:` followed by 64 lowercase hexadecimal characters. For example, compute a whole-file input with `"sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()`; for a section-scoped input, use the validator's exact H2 section fingerprint rules. A check entry names its actual kind, execution mode, tested target, input roles/paths/hashes and result. Empty `checks` means no current behavioral proof, even when `structural_passed` is true.
+
+Maintained fixture paths resolve relative to the generated child root unless absolute. A portable generator or fixture shipped with the child can create/load project-owned inputs at use time. A project-owned fixture outside the child is also accepted when its existing path is resolved for the candidate check. A URI or an unresolved variable is not a maintained file path. The Common path should point to this source rather than maintain a second divergent example implementation.
+
+Accepted concrete proof conditions include `The command exits 0.` and `The report status is passed.` Quoting an enum remains useful, such as ``The report status equals `passed`.`` A condition still needs an observable result; `the command works` is insufficient. For provenance with no topic, use `DevForum: No DevForum topic is used/applicable`.

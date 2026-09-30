@@ -121,6 +121,8 @@ Do not publish, spend money, expose credentials, or perform irreversible project
 
 Keep research proportional to the task. The final acquisition result should make the decision auditable without dumping the entire research process.
 
+For a no-acquisition outcome, report the local choice and applicable validation without opening a resource lifecycle. For evaluation-only, report criteria, hard-gate findings, the decision, material evidence/uncertainty and the evaluation-only boundary. Omit unused child and host statuses; still surface relevant supplied trust/verification state, owner conflicts, learnings and current blocks. The fuller fields below apply when their lifecycle stages are in scope.
+
 Report only applicable fields:
 
 - selected canonical resource identity plus material selector/version and why it fits; compare alternatives only when comparison was required or explicitly requested;

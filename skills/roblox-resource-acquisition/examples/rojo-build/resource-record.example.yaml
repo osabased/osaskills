@@ -1,0 +1,61 @@
+# Illustrative artifact-only record; not live adoption state.
+schema_version: 3
+resource: Rojo
+slug: rojo-rbx-rojo
+discovery_origin: project
+project_use:
+  status: not-applicable
+  role: ''
+  scope: ''
+  authority: ''
+trust:
+  level: trusted
+  basis: project
+  reason: Illustrative project trust basis; this example is not a live grant of trust.
+canonical_url: https://github.com/rojo-rbx/rojo
+package_id: rojo-rbx/rojo
+verification:
+  status: unverified
+  validated_at: ''
+  version_or_commit: 7.7.0
+reconciliation:
+  status: unknown
+  checked_at: ''
+  installed_identity: ''
+  installed_version_or_commit: ''
+  detection_method: ''
+  parent_state_sources: []
+  result: ''
+capability: CLI place builds with independent script contracts
+devforum_url: ''
+selection_reason: 'Illustrative only: assumes the project owner selected this exact
+  canonical target.'
+alternatives_considered:
+- Prefer existing authorized project capabilities when sufficient.
+resource_proof:
+  executed: false
+  passed: false
+  target_version_or_commit: ''
+  environment: ''
+  result: ''
+  unavailable_claims: []
+generated_skill: roblox-rojo-build-contract
+skill_validation:
+  structural_passed: true
+  independent_behavioral_executed: false
+  independent_behavioral_passed: false
+  environment: ''
+  result: ''
+  catalog_routing_status: unverified
+  catalog_fingerprint: ''
+  catalog_environment: ''
+  catalog_result: ''
+  claim_scope: unclaimed
+  checks: []
+host_adoptions: []
+limitations:
+- Authoring example only; no upstream runtime, independent child or host proof is
+  claimed.
+blocked_use_or_version: ''
+rejection_reason: ''
+reconsider_when: ''

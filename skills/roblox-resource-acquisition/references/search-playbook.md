@@ -79,6 +79,14 @@ Prefer canonical source for:
 
 The DevForum thread remains useful for provenance, developer discussion, migration warnings, and real-world failure reports.
 
+## When an evidence route fails
+
+Use a bounded fallback that can answer the missing question before declaring canonical evidence or compatible execution unavailable. Inspect relevant available capabilities: a connected repository API may resolve a commit or read an exact source file when browser or shell access fails. For a broken CLI shim, use project/tool-manager configuration to locate an already installed versioned executable in that tool's cache; run its version command and check identity/integrity before using it. A compatible existing harness may cover a non-engine claim. Keep normal permission and mutation boundaries.
+
+Choose fallbacks from the observed failure and required claim, stopping when the claim is established or remaining relevant routes are unavailable, incompatible or disproportionate. Do not impose a universal retry count, sweep unrelated caches, install a new toolchain just to avoid a blocker, or repeat an unchanged failing route. Record what was attempted and the exact remaining unavailable claim.
+
+Resolving today's moving branch head does not bind earlier reads from `main`/`master` or identify a project's installed pin. Re-read material source at the resolved immutable selector, or label the earlier observation as unbound; inspect the actual project pin when that is the target. A discovered executable or source coordinate is a route to proof, not proof itself.
+
 ## 5. Search for alternatives deliberately
 
 After finding one plausible resource, run at least one alternative-oriented query unless the need is truly unique.

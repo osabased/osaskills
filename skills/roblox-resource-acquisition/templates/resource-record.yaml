@@ -52,7 +52,7 @@ resource_proof:
 
 # Optional second product. Leave generated_skill empty when no reusable child is in scope;
 # its validation state never grants/revokes upstream trust or project-use state by itself.
-generated_skill: ""
+generated_skill: "" # exact child frontmatter name, not its directory path
 skill_validation:
   structural_passed: false
   independent_behavioral_executed: false
@@ -76,7 +76,8 @@ skill_validation:
   # optional tested_child_sha256 (attribution only, never a freshness gate);
   # optional scope_fingerprint (required for a passed routing check). Each input has role
   # (fixture | api | contract | configuration | shared-dependency | activation-metadata), path,
-  # optional section (an exact Markdown H2 heading when used), and sha256.
+  # optional section (an exact Markdown H2 heading when used), and sha256
+  # formatted as sha256:<64 lowercase hex characters> (not bare hex).
 
 # Empty means validated artifact only. Each entry uses:
 # host, scope (repo | user | admin | plugin | other), location,

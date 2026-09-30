@@ -4,7 +4,7 @@ Use this reference for resource targeting, discovery, trust qualification, under
 
 ## 0. Decide whether acquisition is warranted
 
-Apply [adoption-policy.md](adoption-policy.md) before deriving scope or priorities. A Roblox implementation request can activate proactive resource consideration without naming a resource; default adoption includes a reusable user-wide child and host adoption. An explicit evaluation-only or narrower request still controls.
+For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. Default adoption includes a reusable user-wide child and host adoption; an explicit evaluation-only or narrower request still controls.
 
 Before searching, derive a compact acquisition brief from the current task:
 
@@ -18,7 +18,7 @@ Before searching, derive a compact acquisition brief from the current task:
 - whether installed resource state can drift independently and how its identity/version can be observed;
 - what a minimal successful verification would demonstrate, when verification is required or useful.
 
-Consult the external learnings store ([learnings-store.md](learnings-store.md)) while deriving the brief. Recorded environment blockers shape which verification route the brief can realistically plan for; recorded gotchas and rejections set expectations early. A learning is a past observation, not current proof — it informs the brief and never decides acquisition by itself.
+Use relevant supplied learnings while deriving the brief. For external evaluation/adoption, consult the applicable external learnings store ([learnings-store.md](learnings-store.md)) for recorded environment blockers, gotchas and rejections. A learning is a past observation, not current proof; confirm whether a blocker still applies through a bounded relevant access check before declaring proof unavailable.
 
 For a capability-directed request with no positive resource target, do **not** acquire a dependency when:
 
@@ -166,6 +166,8 @@ Prefer executable evidence in this order when available:
 5. Static/source reasoning only for claims that genuinely cannot be executed here.
 
 For development tools, use their actual CLI, analyzer, build or project harness when that demonstrates the required behavior; Studio is not a gate for a tool whose claims do not depend on the Roblox engine. Inspect generated outputs and meaningful failure/diagnostic behavior when relevant.
+
+Before recording an access or execution blocker, use the bounded fallbacks in [search-playbook.md](search-playbook.md#when-an-evidence-route-fails). A broken PATH shim or one inaccessible source route does not establish that the underlying tool or canonical evidence is unavailable.
 
 Treat Open Cloud Luau Execution as mutation-capable. Headless tasks can invoke cloud-backed engine APIs such as DataStores, and supported execution paths can save place changes; current execution limits and persistence behavior should be re-checked in Creator Hub before relying on them. Do not assume a proof is read-only. It is not a substitute for Studio/MCP when the proof depends on physics simulation or automatic `Script`/`LocalScript` execution. Default to a disposable/test place or universe and non-production cloud data. Do not call DataStores, persistence APIs, or place-save operations during proof unless the required behavior needs them and the target is explicitly safe for mutation.
 

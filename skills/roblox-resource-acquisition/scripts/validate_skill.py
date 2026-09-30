@@ -370,6 +370,18 @@ EXPECTED_LITERAL_PATTERN = (
     r"(?:`[^`]+`|['\"][^'\"]+['\"]|\b\d+(?:\.\d+)?\b|\b(?:true|false|nil)\b)"
 )
 
+# CLI recipes commonly name an exit code or an unquoted report status.
+# Bind each value directly to its observation; an unrelated version number
+# elsewhere in the sentence must not make an exit claim concrete.
+CLI_PASS_RELATION_RE = re.compile(
+    r"\b(?:command|process|build|test|check|script)\b"
+    r"[^.!?;\n]{0,40}\bexits?\s+(?:with\s+)?(?:exit\s+)?(?:code\s+)?"
+    r"(?:`-?\d+`|-?\d+)(?=\s|[.,;!?]|$)"
+    r"|\bstatus\s+(?:is|equals?|==)\s+"
+    r"(?:passed|failed|success|failure|succeeded|error)\b",
+    re.I,
+)
+
 PASS_RELATION_RE = re.compile(
     r"(?:"
     rf"\b(?:{OBSERVABLE_TARGET_PATTERN})\b"
@@ -942,6 +954,9 @@ def is_concrete_pass_condition(value: str) -> bool:
     if GENERIC_PASS_RE.search(normalized):
         return False
 
+    if CLI_PASS_RELATION_RE.search(value):
+        return True
+
     has_expected_value = bool(EXPECTED_VALUE_RE.search(value))
     has_target = bool(OBSERVABLE_TARGET_RE.search(value))
     has_observable_verb = bool(OBSERVABLE_VERB_RE.search(value))
@@ -1507,7 +1522,7 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
             fixture_path = Path(executable_fixture.strip().strip("`"))
             resolved_fixture = fixture_path if fixture_path.is_absolute() else root / fixture_path
             if not resolved_fixture.resolve().is_file():
-                errors.append("Executable fixture must name an existing maintained file relative to the generated skill root")
+                errors.append("Executable fixture must name an existing maintained file (relative to the generated skill root, or an absolute resolved path)")
 
     if run_step is None:
         errors.append("verification recipe is missing an explicit Run: step in its verification section")

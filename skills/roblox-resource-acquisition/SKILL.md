@@ -5,7 +5,7 @@ description: Proactively evaluate and adopt Roblox libraries/modules and develop
 
 # Roblox Resource Acquisition
 
-During Roblox implementation, proactively consider libraries/modules and development tools when reuse could reduce total implementation and maintenance effort. Read [adoption policy](references/adoption-policy.md) for the agreed scope, autonomy, selection priorities, and completion gate. Default adoption includes integration, verification, and a validated reusable child installed at user scope; explicit evaluation-only or narrower requests retain their boundary. Keep project-use authority, resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
+During Roblox implementation, proactively consider libraries/modules and development tools when reuse could reduce total implementation and maintenance effort. First decide whether an external resource is needed. When adoption is warranted, read [adoption policy](references/adoption-policy.md) for the agreed scope, autonomy, selection priorities, and completion gate. Default adoption includes integration, verification, and a validated reusable child installed at user scope; explicit evaluation-only or narrower requests retain their boundary. Keep project-use authority, resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
 
 ## Core rule
 
@@ -33,16 +33,20 @@ A soft instruction defect does not by itself require unrelated pin, provenance, 
 
 Choose the narrowest mode that satisfies the request, then read only the references required by that mode.
 
+### No acquisition needed
+
+For a capability-directed task without a positive resource target, check whether Roblox built-ins, an adequate authorized project capability, or small local code already solve it cleanly. Use task-relevant supplied constraints, owner decisions, learnings and known blocks; do not open a registry, comparison rubric, or lifecycle ledger just to reject unnecessary acquisition. If local work is sufficient, complete it and briefly report the choice and its validation. No resource record, new child, or host-status ledger is needed for that outcome. A named adoption target or material uncertainty proceeds to the appropriate mode below.
+
 ### `evaluate/compare`
 
 Use when the task is to inspect, evaluate, compare, or select a resource without using/integrating it or creating/operationally adopting reusable child guidance.
 
 1. Read [references/qualification-workflow.md](references/qualification-workflow.md). For any comparison or selection among candidates, also read [references/evaluation-rubric.md](references/evaluation-rubric.md) directly.
 2. Apply the rubric's hard gates before comparing survivors under the established criteria and priorities. Use the same intended-use criteria and evidence standard for every candidate; popularity is discovery evidence, not a qualification shortcut.
-3. Read [references/state-policy.md](references/state-policy.md) for truthful trust/verification status and output discipline.
+3. Keep source findings and executed proof distinct. Read [references/state-policy.md](references/state-policy.md) when recording resource state, reporting an existing trust/verification claim, or encountering an owner conflict or current block.
 4. Stop after the requested evidence and decision. Integration/project mutation, child generation or validation, and operational host adoption are all out of scope unless separately requested.
 
-The answer itself—not a promised follow-up—must state the acquisition brief, hard-gate result before the comparison result, and the explicit evaluation-only boundary. When a boundary is not applicable, say so compactly rather than omitting it.
+Give a concise answer containing the task criteria, hard-gate findings, decision and material evidence or uncertainty. State that the result is evaluation-only; omit unused integration, child-validation and host-adoption status fields. Preserve a relevant supplied owner decision, learning or current block rather than hiding it to shorten the answer.
 
 ### `acquire/adopt`
 
@@ -100,6 +104,7 @@ Hold these across every mode:
 - Bind trust and evidence to canonical identity plus any material selector/version; same-named forks, mirrors, modified vendored copies, and re-uploads do not inherit it automatically.
 - Name that exact canonical identity and material selector/version in every verification claim, including `verified`, `unverified`, `unavailable`, and `failed`. If either coordinate is unknown, say that verification for the exact target cannot yet be determined.
 - Prefer primary/canonical sources for resource behavior and current Roblox Creator Hub documentation for platform behavior when material.
+- When a relevant source lookup or intended verification cannot run, use the [bounded evidence-route fallbacks](references/search-playbook.md#when-an-evidence-route-fails) before declaring it unavailable. This conditional route also applies to verification of a no-acquisition result.
 - Never invent an API from naming conventions or analogous libraries.
 - Never label an unexecuted runtime check as passing. Use `unverified`, `unavailable`, or `failed` truthfully.
 - Keep resource proof proportional to the intended use and use isolated/reversible verification where practical.
