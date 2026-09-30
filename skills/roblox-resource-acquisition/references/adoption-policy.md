@@ -1,0 +1,35 @@
+# Adoption policy
+
+This installation's defaults were agreed with the user on 2026-09-30. Apply them to Roblox development work; honor an explicit narrower request and governing project constraints. Copying this package does not transfer this user's standing authorization to another owner.
+
+## Scope and autonomy
+
+The resources in scope are libraries/modules and development tools used for Roblox development. Proactively consider reuse when it could reduce total implementation and maintenance effort. Prefer built-ins, adequate authorized project capabilities, or small custom code when they are simpler overall. Ordinary healthy resource use does not restart acquisition, and unrelated tasks do not trigger discovery.
+
+A normal implementation or adoption request includes research, comparison, selection, isolated tests, reversible task-scoped integration, a reusable child for every directly adopted resource, child validation and user-wide host installation, and the corresponding owned records/onboarding. Carry that authorization through the process without asking again for routine reversible steps. Inspect and reuse a matching child rather than creating a duplicate. Transitive dependencies are inspected as needed for reliability; they need their own child only when deliberately adopted as a resource in their own right.
+
+Explicit evaluation/comparison requests stop at the decision. An explicit integration-only, artifact-only, project-local, or other narrower request controls its own scope. Proactive discovery does not authorize replacing an adequate project standard, expanding the feature, or changing an externally owned pin.
+
+Bring costs, major architectural changes, unresolved authority/identity collisions, and decisions that cannot be supported by available evidence to the user with a concrete proposal. Respect the execution environment's permissions. Maintenance may apply tested factual corrections under the existing grant; dependency upgrades and changes in recommended practice still return to the user under [on-demand maintenance](on-demand-maintenance.md).
+
+## Selection priorities
+
+Prioritize reliability for the required behavior and sustainable maintenance, supported by source, executable evidence, relevant defect history, compatible releases, maintained documentation and dependency health. Activity timestamps, stars and feature count alone do not establish either. A stable resource need not have frequent releases; inspect relevant outstanding defects and compatibility instead of imposing an arbitrary age cutoff.
+
+Compare total integration, maintenance and reversal effort against built-ins and a local implementation. Prefer the smallest solution that supports the required behavior reliably. User/task-specific performance or other requirements may determine the outcome; preserve explicit priorities and fixed targets. Apply [evaluation-rubric.md](evaluation-rubric.md) to serious candidates without invented aggregate scores. Use [community-evidence.md](community-evidence.md) at its discovery, comparison and new-adoption triggers; keep routine healthy use proportionate.
+
+## Required proof and completion
+
+Before finalizing a new adoption, run the smallest checks that demonstrate the intended use at the exact selected target: installation/import or tool invocation, the required happy path, representative project integration, and material failure/cleanup behavior. Require Roblox runtime evidence only for claims that depend on it; a development tool may be verified with its actual CLI, analyzer or build harness. Existing passing evidence is reusable only when the target and determining inputs remain unchanged.
+
+Policy trust is separate from proof. A trusted resource retains its trust basis, but new adoption remains pending when a required integration or reliability check is unavailable or fails. Continue research, staging and unrelated safe work; state the exact missing check and how it can run. Do not promote incomplete candidate state into a new durable adopted choice. Existing adopted decisions remain recorded with the affected use blocked or limited rather than being silently retired.
+
+Full adoption is complete only after the applicable resource/integration proof passes, an exact-target reusable child passes structural and required behavioral checks, user-wide installation and explicit activation are confirmed, any required catalog-routing test passes, and the relevant records/onboarding agree. Keep project testing and child/host validation separate. Explicit narrower scopes finish at their requested boundary. Use the existing truthful states; `pending` describes incomplete workflow progress, not a new schema status.
+
+## Reuse across projects
+
+Store the canonical validated child at the supported user-wide host location, normally `~/.agents/skills/<skill-name>/` for Codex. Stage outside discovery first. Project records retain their own selected identity, pin, role, integration evidence and use authority, and their onboarding points to the shared child when it is operational. See [project-adoption.md](project-adoption.md#place-generated-project-skills) and [operational-lifecycle.md](operational-lifecycle.md#canonical-child-location).
+
+Write reusable installation, mental model, common APIs, lifecycle, verification and troubleshooting guidance. Resolve the active project, package placement, declared pin and authoritative records at use time; keep task-specific paths/configuration and historical execution evidence outside the shared instructions. Retain portable maintained verification helpers when useful, while project integration fixtures remain owned by their project. Development-tool guidance covers the command/configuration and generated outputs it actually owns; engine/client/server sections state when they are not applicable.
+
+Reuse a child only for its matching canonical identity and reviewed target. Different project pins retain their targets and need separately validated, version-qualified shared children when the exact-target contract cannot be shared. Give variants distinct names and version-specific activation boundaries, and test their catalog routing; do not overwrite another project's working child or imply multi-version proof from one tested pin. Global non-project variant records follow [state-policy.md](state-policy.md#portable-resource-record-location).

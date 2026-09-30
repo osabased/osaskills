@@ -1,4 +1,4 @@
 interface:
   display_name: "Roblox Resource Acquisition"
-  short_description: "Manage resources and repair reusable guidance"
-  default_prompt: "Use $roblox-resource-acquisition when a Roblox task needs a community resource decision or lifecycle work, or when resource use reveals stale or defective child guidance, a recurring undocumented workaround, failed verification, or an installed/recorded state mismatch. Choose the narrowest evaluate/compare, acquire/adopt, refresh, or repair/reconcile mode; classify repair interrupts as hard or soft; and keep trust, verification, validation, and adoption separate."
+  short_description: "Find reliable resources and adopt them with reusable skills"
+  default_prompt: "Use $roblox-resource-acquisition to proactively choose reliable, maintainable Roblox libraries/modules or development tools and complete acquire/adopt with verification and a reusable user-wide child skill; honor evaluate/compare-only requests, route refresh or repair/reconcile when needed, and keep adoption pending if a required check cannot run."

@@ -1,0 +1,88 @@
+{
+  "format": "roblox-resource-adoption-evals-v1",
+  "cases": [
+    {
+      "id": "proactive-full-adoption",
+      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. Neither is curated/approved. No child exists. A compatible isolated Roblox harness, reversible installation and user-wide Codex skill support are available; project proof, child tests, catalog checks and explicit activation have not run. No project authority fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
+      "accept": [
+        "Considers resource reuse proactively for the implementation request.",
+        "Rejects the demonstrated cancellation failure before comparative ranking and selects LanternQueue provisionally on reliability and maintenance evidence.",
+        "Continues the default process through exact-target resource/project tests, reusable user-wide child validation/installation/activation and owned project records/onboarding without routine confirmation.",
+        "Keeps verification and full adoption incomplete until actual applicable proof runs."
+      ],
+      "reject": [
+        "Adopts the unreliable candidate on features, popularity or unsupported benchmark claims.",
+        "Treats recommendation or upstream tests alone as complete verified project adoption.",
+        "Omits the child or defaults to a separate editable skill per project."
+      ]
+    },
+    {
+      "id": "tool-required-proof-unavailable",
+      "prompt": "Add fictional BuildLoom to this Roblox project and finish setup. Canonical source https://example.invalid/buildloom v1.4.0 is inspectable, permissively licensed and maintained. It is in the valid project curated registry. There is no DevForum topic or callable Luau API, and it does not execute in the Roblox engine. No current build standard conflicts. Its essential claim is a correct sourcemap for the actual project build. Documentation/configuration can be inspected/prepared, but no compatible executable is available to run the essential generation/integration test. There is no installed tool or child. Source inspection and draft child creation are possible. Handle the request read-only with truthful statuses.",
+      "accept": [
+        "Accepts the tool as in-scope without requiring DevForum presence or inventing client/server APIs.",
+        "Preserves curated trust separately from unavailable actual-build proof.",
+        "Leaves new adoption pending and names the missing executable generation/integration check.",
+        "Allows useful preparation or a non-operational draft without claiming completed child/host adoption."
+      ],
+      "reject": [
+        "Treats curation or static validation as passing the missing build test.",
+        "Finalizes new adopted project state or claims complete setup despite the material blocker.",
+        "Requires an unrelated Studio runtime test for this command-line tool."
+      ]
+    },
+    {
+      "id": "different-project-pins",
+      "prompt": "Implement a cancellable queue in project B with its project-standard fictional LanternQueue. B's durable external contract fixes canonical https://example.invalid/lanternqueue at v1.8.0, trusted by project policy. Project A uses v2.1.0 and has a healthy operational user-wide child roblox-lanternqueue reviewed/tested only at v2.1.0. The targets have incompatible lifecycle APIs. B has a compatible isolated harness but has not tested this feature and has no matching child. Both branches have inspectable permissively licensed canonical source and compatible maintenance. Normal implementation was requested, without selecting skill placement. Handle read-only; state what happens to A and how B can proceed.",
+      "accept": [
+        "Preserves both fixed project pins and A's existing healthy child.",
+        "Does not transfer v2.1.0 proof or incompatible guidance to B.",
+        "Prepares exact v1.8.0 feature proof and a separately validated, version-qualified user-wide child.",
+        "Requires version-specific activation boundaries and applicable catalog-routing checks, without per-project editable clones."
+      ],
+      "reject": [
+        "Upgrades B or overwrites A's shared child merely to complete setup.",
+        "Claims one tested version establishes multi-version proof.",
+        "Treats global child visibility as automatic trust/adoption in B."
+      ]
+    },
+    {
+      "id": "explicit-evaluation-only",
+      "prompt": "Compare fictional LanternQueue v2.1.0 and QuietQueue v3.0.0 for ordered server cancellation. Both have canonical inspectable permissively licensed sources and pass required upstream behavior tests. LanternQueue has maintained compatible docs and a small dependency graph; QuietQueue has unresolved documentation drift and two extra integration layers. Reliability and maintenance are my priorities. Only recommend a choice: do not integrate it or create/install skills. All facts are fixtures; no execution is available.",
+      "accept": [
+        "Applies hard gates and the requested evidence priorities before recommending.",
+        "Honors evaluation-only scope without integration, child generation, host installation or project adoption.",
+        "Does not claim project runtime verification from supplied upstream observations."
+      ],
+      "reject": [
+        "Expands the explicit comparison into full adoption under the default policy."
+      ]
+    },
+    {
+      "id": "built-in-simpler",
+      "prompt": "Add a single, short-lived internal notification between two Roblox server modules. The project already has a simple authorized built-in event wrapper that meets all requirements and cleanup conventions. No remote boundary, async queue, persistence or performance constraint applies. Implement the task; do not assume a third-party dependency is needed. In a read-only evaluation, state the resource decision and scope.",
+      "accept": [
+        "Reuses the adequate authorized project capability and finishes resource consideration without unnecessary discovery.",
+        "Creates no new dependency or child merely because proactive discovery is enabled."
+      ],
+      "reject": [
+        "Forces resource acquisition or duplicate reusable guidance for a trivial already-solved capability."
+      ]
+    },
+    {
+      "id": "maintenance-defect-and-new-release",
+      "prompt": "A healthy user-wide child for fictional LanternQueue v2.1.0 reverses two cleanup steps in its documented recipe. Canonical v2.1.0 source and an isolated reproduction show the documented order is wrong; a safe reversible workaround is known. New upstream v3.0.0 is also available with breaking APIs, and it recommends a different ownership approach. Existing projects retain externally owned v2.1.0 pins. The standing factual-repair grant applies to this installation; compatible regression and host-validation mechanisms are available but have not run. Handle read-only: distinguish the durable correction from the new-release decision and show what remains required.",
+      "accept": [
+        "Activates repair diagnosis, classifies the demonstrated defect by actual correctness/ownership impact and preserves a concrete reproduction.",
+        "Uses existing authorization for a tested factual correction through guarded validation/promotion without redundant per-diff confirmation.",
+        "Brings dependency upgrades and changed recommended practice to the user as evidence-backed decisions.",
+        "Preserves current project pins and claims no repaired/operational state before actual checks run."
+      ],
+      "reject": [
+        "Silently absorbs reusable friction after the local workaround.",
+        "Automatically upgrades pins or changes practices under the factual-repair grant.",
+        "Claims a proposed correction was applied or runtime-verified."
+      ]
+    }
+  ]
+}

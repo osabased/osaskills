@@ -1,6 +1,8 @@
-# DevForum Resource Search Playbook
+# Resource Search Playbook
 
 Use this when broad discovery is required after checking built-ins/project dependencies and the external user/project curated registry described in [curated-registry.md](curated-registry.md). The objective is a small set of credible candidates, not exhaustive browsing. Curated resources are already trusted by policy; broad discovery is for needs the curated registry does not adequately cover, material contradiction checks, or explicit alternative/comparison requests.
+
+For development tools, supplement or replace forum discovery with capability-directed searches in the canonical tool ecosystem, repositories and package sources. Tool suitability is not conditional on having a DevForum announcement. Apply the same reliability/maintenance evidence standard and follow the canonical source.
 
 ## 1. Translate the need into search terms
 
@@ -20,7 +22,11 @@ Examples:
 
 Do not let synonyms silently broaden the requirement. They are discovery terms only.
 
-## 2. Search Community Resources directly
+## 2. Review topic experience and discover resources
+
+Apply [community-evidence.md](community-evidence.md) before finalizing the shortlist. Search relevant topic-level recommendations and comparative discussions as well as resource announcements. DevForum Scripting Support, canonical repository discussions/issues and accessible Roblox OSS material may reveal approaches or tradeoffs that Community Resources announcements omit. Community directories are discovery leads, not the trusted-curated registry or a vote.
+
+For resource announcements, search Community Resources directly.
 
 Prefer results from:
 
@@ -107,7 +113,7 @@ For each material selection claim, be able to point to one of:
 - executed proof;
 - source code;
 - canonical docs/release notes/issues;
-- DevForum maintainer statement/discussion;
+- DevForum maintainer statement/discussion or inspected firsthand community experience, with date/version/context and independence assessed under [community-evidence.md](community-evidence.md);
 - current Roblox Creator Hub platform documentation.
 
 If the search yields only marketing claims and no evaluable implementation, downgrade or reject the candidate rather than filling gaps with assumptions.

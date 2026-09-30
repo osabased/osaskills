@@ -14,6 +14,8 @@ When the environment has no authoritative resource-record format or storage loca
 
 Use the first applicable location in that order for a new portable record, and use the same precedence when resolving an existing portable record. This location rule does not itself authorize creating or updating persistent state; it only selects the destination when the surrounding task or environment already authorizes that lifecycle write.
 
+For separately maintained global version variants without a project root, select an explicit selector-qualified record path, such as `~/.roblox-resources/records/<slug>--<selector>.yaml`, and write that exact discovery route into the variant child. Keep the resource slug/canonical identity unchanged and bind each record to its actual target and generated child. Do not overwrite an existing target's singleton fallback record to register a different variant. With a project root, that project's authoritative record still wins.
+
 ## Record project use separately
 
 Every current portable record contains `project_use` with `status`, `role`, `scope`, and `authority`.
@@ -22,7 +24,7 @@ Every current portable record contains `project_use` with `status`, `role`, `sco
 - **`retired`** — the resource was a durable project-standard choice but is no longer active. Preserve its former role/scope/authority so the transition remains auditable.
 - **`not-applicable`** — the record is not an active or former project-standard choice. Leave role/scope/authority empty.
 
-An adopted project use requires a trusted canonical resource identity, but trust does not itself imply adoption. Installation, transitive presence, successful verification, or a generated child likewise do not imply adoption.
+An adopted project use requires a trusted canonical resource identity, but trust does not itself imply adoption. Before finalizing a new default adoption, satisfy [adoption-policy.md](adoption-policy.md#required-proof-and-completion), including the reusable child/host gates. Keep incomplete new work as candidate evidence or staged integration with `project_use.status: not-applicable`, not a fictitious `pending` schema value. This does not erase an existing adopted choice when its proof or child later becomes blocked. Installation, transitive presence, successful verification, or a generated child likewise do not imply adoption.
 
 `project_use.authority` identifies the durable project contract that owns the choice. `roblox-resource-acquisition` may change identity/pin/replacement state autonomously only when it owns that decision within the authorized task. When another authority owns it — for example `structure-roblox-projects` for Canonical SSA's ModuleLoader — preserve the supplied target and return contradictions/blocks to that authority instead of silently substituting or upgrading it. Use [project-adoption.md](project-adoption.md) for project-root onboarding and project-local child placement.
 
@@ -125,7 +127,7 @@ Report only applicable fields:
 - trust basis for that exact identity/selector;
 - project-use role/authority and whether project onboarding changed, when applicable;
 - resource/runtime verification performed and result, or explicitly `unverified`/`unavailable`, naming the same exact identity/selector;
-- generated skill location/name, or `not applicable` when reusable child guidance was outside scope;
+- generated skill location/name at the default shared user scope, or `not applicable` only when an explicit narrower request excludes reusable child guidance;
 - skill validation performed and result, or `not applicable` when no child was in scope;
 - reconciliation status and any blocked use/version;
 - artifact-only versus per-host adoption state, with the evidence supporting `operational` when claimed, or `not applicable` when no host adoption was requested;

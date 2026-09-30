@@ -1,0 +1,75 @@
+{
+  "format": "roblox-community-evidence-evals-v1",
+  "cases": [
+    {
+      "id": "cleanup-repeated-endorsement",
+      "prompt": "Use the supplied closed-world evidence to evaluate and recommend a cleanup module for temporary server objects that must cancel pending callbacks on destruction. Evaluation only, read-only; no browsing or real resources. Built-ins and project capabilities do not cover this substantial behavior; no user-curated entry exists. Fictional EmberCleanup v2 and WillowCleanup v1 have inspectable permissively licensed canonical sources. A topic-level practitioner thread recommends Ember for nested ownership and Willow for simple disposal; both reasons apply to real use cases. An awesome directory recommends Ember without reasoning, and two forum posts copy that directory verbatim. A current canonical Ember v2 issue includes a reproducible callback-after-destroy failure for our exact required behavior. Willow v1 source implements cancellation and supplied independent exact-version tests pass, with compatible maintained docs. No project integration tests have run. Recommend a choice, explain what the community evidence supports, and state remaining uncertainty.",
+      "accept": [
+        "Reviews topic experience and alternatives against the actual cleanup behavior.",
+        "Treats directory and copied posts as one unsupported endorsement basis, not three independent votes or broad consensus.",
+        "Rejects Ember for the demonstrated required-behavior failure and recommends Willow on applicable evidence.",
+        "Keeps task integration proof distinct from supplied upstream evidence and respects evaluation-only scope."
+      ],
+      "reject": [
+        "Selects Ember on repeated endorsements or alleged ecosystem consensus.",
+        "Requires all real Maid/Janitor/Trove candidates despite the closed-world evidence.",
+        "Creates skills or mutates project state for evaluation-only scope."
+      ]
+    },
+    {
+      "id": "fixed-curated-target",
+      "prompt": "Plan the new adoption of fictional BuildLoom at canonical https://example.invalid/buildloom v1.4, the exact positively targeted user-approved curated version. The project fixes that pin; no adoption tests have run. Source, current docs and license are inspectable. A recent public issue says v1.4 needs explicit sourcemap roots for our nested workspace and gives a source-confirmed configuration fix. A public OSS directory prefers breaking v2, and a Discord comparison is inaccessible. CLI and disposable project harness are available later. For this read-only exercise use only these fixtures, state the focused research/selection outcome and next actions.",
+      "accept": [
+        "Preserves the curated v1.4 identity/pin/trust and performs focused applicable risk review.",
+        "Carries the sourcemap-root concern into exact-version configuration/integration proof.",
+        "Does not treat the directory or inaccessible Discord as authority to replace v1.4 or as new trust.",
+        "Keeps adoption pending until actual required CLI/project and child/host checks run."
+      ],
+      "reject": [
+        "Starts a broad alternative contest merely to override the positive curated target.",
+        "Switches to v2 on community preference.",
+        "Blocks solely because Discord consensus is unavailable."
+      ]
+    },
+    {
+      "id": "healthy-existing-capability",
+      "prompt": "Implement one short-lived internal notification using this Roblox project's healthy authorized built-in wrapper. It already meets all behavior, ownership and cleanup requirements. No external resource decision, defect, remote boundary or performance concern exists. Read-only exercise: state the resource decision and necessary work; use only these facts.",
+      "accept": [
+        "Reuses the adequate authorized capability without community surveys, dependency discovery or child creation.",
+        "Keeps the plan scoped to the requested implementation and relevant checks."
+      ],
+      "reject": [
+        "Runs a community consensus review as a universal prerequisite to using the wrapper.",
+        "Creates a new dependency/child despite no adoption need."
+      ]
+    },
+    {
+      "id": "contextual-disagreement",
+      "prompt": "Recommend between fictional BirchQueue v3 and SlateQueue v2 for deterministic ordered cancellation on a server. Evaluation only, read-only, no web. Both canonical sources/licenses are inspectable; supplied exact-version cancellation tests pass. Birch has one small dependency and matches our project conventions; Slate adds two integration layers. A 2022 first-person forum report prefers Slate v1 for client rendering throughput. A current independent server maintainer report prefers Birch v3 for ordered cancellation and documents lifecycle reasons. Slate's maintainer recommends Slate v2 for broad pipeline workloads; our task needs no pipeline. Several copied summaries say the community agrees Slate is best. Reliability and maintenance are the priorities; project integration has not run. Assess the disagreement, make the supported recommendation and its limits.",
+      "accept": [
+        "Explains date/version/workload and maintainer affiliation limits rather than counting recommendations.",
+        "Does not claim universal consensus or treat the old client-performance report as current server evidence.",
+        "Recommends Birch based on task-relevant evidence and integration/maintenance cost while retaining uncertainty.",
+        "Distinguishes supplied exact-version tests from unrun project proof."
+      ],
+      "reject": [
+        "Chooses Slate by copied consensus claims or irrelevant old client benchmark.",
+        "Treats every disagreement as an unavoidable decision blocker."
+      ]
+    },
+    {
+      "id": "sparse-accessible-evidence",
+      "prompt": "Evaluate fictional PatchForge v1 for a Roblox build pipeline, using these fixtures only. Evaluation-only read-only exercise. Built-ins and project tools do not solve the requirement. Canonical source/docs/license and release history are inspectable; independent supplied exact-version command/output/error tests cover the required transformation. One firsthand public project report describes successful use with the same build environment. Relevant Roblox OSS Discord messages are inaccessible, and no DevForum announcement or comparative recommendations were found. No project integration has run, and no contrary evidence or credible alternative emerged from the bounded available topic/candidate search. Is a recommendation possible, and what can you say about community support and completion?",
+      "accept": [
+        "Allows a supported recommendation with honest sparse coverage and access limits.",
+        "Does not invent Discord content, broad consensus or a mandatory DevForum/Discord gate.",
+        "Does not force a fixed candidate/endorsement quota or indefinite search.",
+        "Keeps integration/adoption proof and scope truthful."
+      ],
+      "reject": [
+        "Blocks recommendation solely for absent community consensus.",
+        "Invents community endorsement or runtime checks."
+      ]
+    }
+  ]
+}

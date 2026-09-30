@@ -75,7 +75,7 @@ Mutation rules:
 5. If a previous owned block exists in a now-inactive same-directory instruction file because precedence or fallback configuration changed, remove that stale owned block only when that file is within the authorized write boundary; otherwise report the duplicate/inactive block instead of maintaining two authoritative indexes.
 6. Derive active entries from adopted project-use records for that project/scope; do not duplicate version, provenance, verification history, or API guidance in the instruction file.
 7. For externally owned choices, identify the owner only when that prevents authority ambiguity, for example: `Structural selection is governed by .agents/roblox/structure.md.`
-8. Add `Use $<generated_skill>` only when the matching child has an applicable `operational` host adoption visible to fresh agents in the intended scope. A missing/broken child does not remove an otherwise valid adopted resource choice.
+8. Add `Use $<generated_skill>` only when the matching shared user-wide or explicitly project-local child has an applicable `operational` host adoption visible to fresh agents in the intended scope. A missing/broken child does not remove an otherwise valid adopted resource choice.
 9. When the resource itself is currently blocked for its adopted use, keep the project decision visible but mark that use blocked and direct repair/reconciliation; do not present it as normally usable.
 10. Omit `retired` and `not-applicable` resources from the active block. Remove the owned block entirely when no adopted resources remain; preserve all unrelated instruction content.
 
@@ -97,7 +97,9 @@ An ancestor pointer is a visibility aid, not resource authority, and it does not
 
 ## Place generated project skills
 
-Keep generated artifact storage separate from host discovery:
+Default to one reusable user-wide child under [adoption-policy.md](adoption-policy.md#reuse-across-projects). Stage it at `~/.roblox-resources/artifacts/skills/<skill-name>/`, validate it, and install the canonical child at `~/.agents/skills/<skill-name>/` for Codex. Keep project use and integration proof in the project's authoritative resource record and point onboarding to that shared child. Resolve the project at use time; a global child does not grant trust or adopt the resource in other projects.
+
+For an explicit project-local scope, keep generated artifact storage separate from host discovery:
 
 - project-local artifact before host adoption: `<project-root>/.agents/roblox/resources/artifacts/skills/<skill-name>/`;
 - Codex repository skill adoption: `<skill-scope-root>/.agents/skills/<skill-name>/`;
@@ -105,11 +107,11 @@ Keep generated artifact storage separate from host discovery:
 
 Resolve `skill-scope-root` from where fresh agents are expected to work. Codex discovers repository skills from `.agents/skills` directories from the working directory upward to the repository root; therefore a nested Roblox project's `.agents/skills` is not automatically visible to a session started above that project. Prefer the repository/root scope that makes the intended project skill visible to those fresh agents, unless narrower nested visibility is explicitly intended.
 
-Before moving or writing a child into `<skill-scope-root>/.agents/skills/<skill-name>/`, inspect any existing target directory. If it is the same managed generated child, reconcile/update it through the existing host adoption. If it is unrelated or ownership/identity is ambiguous, stop and surface the collision; never overwrite, merge, rename, or repurpose a pre-existing skill merely to complete adoption.
+Before moving or writing a child into the resolved user-wide `~/.agents/skills/<skill-name>/` or project-local `<skill-scope-root>/.agents/skills/<skill-name>/` location, inspect any existing target directory. If it is the same managed generated child, reconcile/update it through the existing host adoption. If it is unrelated or ownership/identity is ambiguous, stop and surface the collision; never overwrite, merge, rename, or repurpose a pre-existing skill merely to complete adoption.
 
 Host adoption remains a separate lifecycle gate. Moving a validated project artifact into a host-recognized `.agents/skills/<skill-name>/` location establishes an installed host copy, not `operational` status. Complete the checks in [operational-lifecycle.md](operational-lifecycle.md) before claiming operational adoption.
 
-Maintain one canonical editable child. When a project artifact is adopted into a project-local host location, move it into the host location or otherwise complete the transition without leaving a second independently editable canonical copy. Record the resulting host location in `host_adoptions`.
+Maintain one canonical editable child. Reuse a matching user-wide child from multiple projects without cloning it into each project. Preserve existing projects' exact pins and use version-qualified shared children for different targets under [adoption-policy.md](adoption-policy.md#reuse-across-projects). When a project artifact is adopted into a project-local host location, move it into the host location or otherwise complete the transition without leaving a second independently editable canonical copy. Record the resulting host location in `host_adoptions`.
 
 ## Refresh, repair, replacement, and removal
 

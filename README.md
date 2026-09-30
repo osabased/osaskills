@@ -7,7 +7,7 @@
 | My agent is having trouble discovering and expressing the preferences that matter to my task | [**preference-discovery**](./skills/preference-discovery/) |
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
 | My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
-| My agent is having trouble finding, choosing, or managing a Roblox community resource | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
+| My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
 
 ## Quickstart: local Codex skills
 

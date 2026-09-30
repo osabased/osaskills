@@ -73,7 +73,7 @@ def test_evaluate_compare_stops_before_integration_and_generation():
     assert "operational host adoption" in section
 
 
-def test_acquire_adopt_routes_project_state_and_keeps_child_adoption_conditional():
+def test_acquire_adopt_routes_project_state_and_preserves_explicit_scope_limits():
     section = _mode("acquire/adopt")
     assert "project-adoption.md" in section
     assert "When reusable child guidance is in scope" in section
@@ -152,7 +152,8 @@ def test_verification_reporting_is_bound_to_exact_identity_and_selector():
     state = REFERENCES["state-policy.md"]
     assert "Every verification sentence" in qualification
     assert "canonical resource identity plus material selector/version" in state
-    assert "generated skill location/name, or `not applicable`" in state
+    assert "generated skill location/name" in state
+    assert "explicit narrower request excludes reusable child guidance" in state
 
 
 def test_post_adoption_defect_classifies_before_host_state_change():

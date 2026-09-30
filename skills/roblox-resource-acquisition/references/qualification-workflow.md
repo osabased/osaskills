@@ -4,6 +4,8 @@ Use this reference for resource targeting, discovery, trust qualification, under
 
 ## 0. Decide whether acquisition is warranted
 
+Apply [adoption-policy.md](adoption-policy.md) before deriving scope or priorities. A Roblox implementation request can activate proactive resource consideration without naming a resource; default adoption includes a reusable user-wide child and host adoption. An explicit evaluation-only or narrower request still controls.
+
 Before searching, derive a compact acquisition brief from the current task:
 
 - capability actually needed;
@@ -30,7 +32,7 @@ Search is a means, not the goal.
 
 Stop evaluation when the decision criteria are satisfied, remaining uncertainty is unlikely to change the decision, and additional research has lower value than making a reversible choice and validating it. Avoid both premature adoption and indefinite comparison.
 
-For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Follow its conditional direction-selection routing and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
+For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly and apply [community-evidence.md](community-evidence.md) for meaningful comparisons. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Follow its conditional direction-selection routing and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
 
 ### Positively targeted resources
 
@@ -39,7 +41,7 @@ When the user positively targets one or more resources, preserve the role, order
 For each positive target:
 
 1. Resolve its canonical identity only as far as the decision needs. Preserve a material version, tag, commit, release, package coordinate, or other selector. Do not transfer identity, trust, verification, or guidance to a same-named fork, mirror, re-upload, modified vendored copy, or different selector.
-2. Inspect the targeted resource directly. Identity-resolution research answers which resource the user meant; it does not become alternative discovery.
+2. Inspect the targeted resource directly. Identity-resolution research answers which resource the user meant; it does not become alternative discovery. For new adoption, apply the focused exact-target community review in [community-evidence.md](community-evidence.md), preserving the assigned target and scope.
 3. Inspect relevant project/installed state only when use, integration, adoption, reconciliation, compatibility, or another requested decision depends on it. Pure source evaluation does not trigger project reconnaissance merely because a project is open. When the same canonical resource is already present, reconcile material identity/version/operational state instead of reacquiring it.
 4. Preserve the narrowest authority actually granted. Evaluation or comparison selects candidates but grants no trust or mutation authority. A clear direction to use/adopt an established canonical identity may supply the existing `explicit-user` trust basis, but authorizes no lifecycle action beyond what that assigned use/adoption scope entails and never bypasses project/runtime/security policy. A request for reusable child guidance places generation in scope but does not independently prove or trust the upstream resource; host adoption remains separate.
 5. Continue through only the understanding, qualification, verification, generation, validation, and adoption stages required by that resource's assigned scope.
@@ -75,9 +77,11 @@ If one or more curated resources match the acquisition brief:
 - search outside the registry only when no curated resource fits, a material current incompatibility/deprecation/security concern is discovered, or the user explicitly asks for alternatives/comparison;
 - record that trust came from curation and separately record any verification actually performed.
 
+For a selected curated new adoption, apply the focused current-risk review in [community-evidence.md](community-evidence.md). Community lists and recommendations are discovery evidence, distinct from this user/project-owned trusted registry.
+
 If no curated resource credibly matches, proceed to broad discovery.
 
-When broad discovery is required, search the Roblox Developer Forum **Community Resources** category first. Use [search-playbook.md](search-playbook.md) for query expansion, thread inspection, alternative discovery, and adversarial follow-up. Follow promising threads to their linked canonical documentation, repository, package, model, or release source.
+When broad discovery is required, start with the Roblox Developer Forum **Community Resources** category for Roblox libraries/modules. For development tools, also search the canonical tool ecosystem, repositories and package sources appropriate to the capability; the absence of a DevForum topic is not a rejection reason. Use [search-playbook.md](search-playbook.md) for query expansion, thread inspection, alternative discovery, and adversarial follow-up. Apply [community-evidence.md](community-evidence.md) for topic-level developer experience before finalizing the shortlist; cover relevant comparative discussions and OSS sources beyond resource announcements. Follow promising threads to their linked canonical documentation, repository, package, model, or release source.
 
 Do not treat search snippets, titles, view counts, likes, or reply counts as proof of quality.
 
@@ -151,7 +155,7 @@ If the resource is too large, inspect the smallest source surface necessary to s
 
 For an untrusted resource, create the smallest isolated test that can falsify the resource's important claims before the workflow itself establishes verified-acquisition trust.
 
-For a resource already trusted through `curated`, `project`, or `explicit-user`, runtime proof is **not required merely to preserve that trust**. Run focused verification when it is cheap, when the task is sensitive to runtime behavior, when current-source evidence is ambiguous, or when you want to record the resource/version as independently verified. Never claim a resource is verified merely because it is trusted.
+For a resource already trusted through `curated`, `project`, or `explicit-user`, runtime proof is **not required merely to preserve that trust**. Run focused verification when it is cheap, when the task is sensitive to runtime behavior, when current-source evidence is ambiguous, or when you want to record the resource/version as independently verified. For new adoption, the applicable integration and reliability checks in [adoption-policy.md](adoption-policy.md#required-proof-and-completion) are required even for a trusted resource. Trust survives an unavailable check; adoption remains pending. Never claim a resource is verified merely because it is trusted.
 
 Prefer executable evidence in this order when available:
 
@@ -160,6 +164,8 @@ Prefer executable evidence in this order when available:
 3. Roblox Open Cloud Luau Execution when the environment and credentials already permit it and its execution limitations are compatible with the test.
 4. The resource's own automated tests plus a locally reproducible focused test.
 5. Static/source reasoning only for claims that genuinely cannot be executed here.
+
+For development tools, use their actual CLI, analyzer, build or project harness when that demonstrates the required behavior; Studio is not a gate for a tool whose claims do not depend on the Roblox engine. Inspect generated outputs and meaningful failure/diagnostic behavior when relevant.
 
 Treat Open Cloud Luau Execution as mutation-capable. Headless tasks can invoke cloud-backed engine APIs such as DataStores, and supported execution paths can save place changes; current execution limits and persistence behavior should be re-checked in Creator Hub before relying on them. Do not assume a proof is read-only. It is not a substitute for Studio/MCP when the proof depends on physics simulation or automatic `Script`/`LocalScript` execution. Default to a disposable/test place or universe and non-production cloud data. Do not call DataStores, persistence APIs, or place-save operations during proof unless the required behavior needs them and the target is explicitly safe for mutation.
 

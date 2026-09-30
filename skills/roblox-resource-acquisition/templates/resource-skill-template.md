@@ -17,6 +17,8 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 
 ## Prerequisites and installation
 
+Resolve the active project and its selected pin/configuration at use time. Keep task-specific absolute paths and execution history outside this reusable skill. For development tools, name the actual command/configuration, prerequisites and owned generated outputs.
+
 1. ...
 
 ## On-demand maintenance
@@ -54,7 +56,7 @@ Provide the shortest source-grounded setup/use sequence. Derive executable code 
 
 ## Client/server placement
 
-State where modules and calls belong on both client and server, what crosses the boundary, and what authority the server must retain. If one side must not use the resource, say so explicitly.
+State where modules and calls belong on both client and server, what crosses the boundary, and what authority the server must retain. If one side must not use the resource, say so explicitly. For a development tool that does not run in the engine, state that client/server placement is not applicable and describe its actual authoring/build boundary.
 
 ## Mental model
 
@@ -69,7 +71,7 @@ Explain the minimum concepts needed to use the resource correctly.
 
 ## API used by this skill
 
-Document only source-grounded public APIs that the agent needs frequently; distinguish source review from runtime verification.
+Document only source-grounded public APIs that the agent needs frequently; distinguish source review from runtime verification. For a development tool without a callable API, say so and document its actual command/configuration instead.
 
 ## Failure modes
 

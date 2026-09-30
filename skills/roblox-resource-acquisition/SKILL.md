@@ -1,11 +1,11 @@
 ---
 name: roblox-resource-acquisition
-description: Find, evaluate, adopt, refresh, or repair Roblox community resources and their reusable guidance; also activate when child instructions are stale or defective, a recurring workaround is undocumented, verification fails, or installed and recorded state disagree.
+description: Proactively evaluate and adopt Roblox libraries/modules and development tools when reuse could reduce development or maintenance effort; compare candidates, create reusable child skills, and refresh or repair resources and guidance when defects, recurring workarounds, verification failures, or state mismatches arise.
 ---
 
 # Roblox Resource Acquisition
 
-Use community resources only when the task actually requires a resource decision or existing resource-lifecycle work. Keep project-use authority, resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
+During Roblox implementation, proactively consider libraries/modules and development tools when reuse could reduce total implementation and maintenance effort. Read [adoption policy](references/adoption-policy.md) for the agreed scope, autonomy, selection priorities, and completion gate. Default adoption includes integration, verification, and a validated reusable child installed at user scope; explicit evaluation-only or narrower requests retain their boundary. Keep project-use authority, resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
 
 ## Core rule
 
@@ -20,6 +20,8 @@ At activated use, check for the sibling `.skill-maintenance/roblox-resource-acqu
 Activate this skill in `repair/reconcile` mode when using a resource or generated child exposes reusable friction, even if a local workaround succeeds and the immediate task can continue.
 
 A workaround is defect evidence when following the reusable guidance requires guessing, bypassing an instruction, rediscovering the same adjustment, or making an undocumented correction likely to recur. A harmless task-local adjustment that does not reveal a reusable instruction, resource, identity, version, or verification problem is not a repair interrupt.
+
+Classify the original defect by its demonstrated correctness, ownership, identity, security, or verification impact. A safe workaround alone does not establish that the defect is soft. When the effect of the defective guidance is unknown, state that uncertainty and the smallest check needed to determine it before continuing the affected use.
 
 - **Hard defect:** Correctness, security, canonical identity, selected version, or verification is unreliable. Stop the dependent work, preserve the smallest reproduction, and enter state reconciliation plus the repair loop before continuing.
 - **Soft defect:** The workaround is safe, reversible, and does not weaken correctness or a trust boundary. The immediate task may continue, but invoke this repair diagnosis and surface the reproduction, workaround, and durable guidance correction before completion. Do not silently absorb the defect as task-local friction.
@@ -44,15 +46,15 @@ The answer itself—not a promised follow-up—must state the acquisition brief,
 
 ### `acquire/adopt`
 
-Use when the task requires selecting, using, installing, or integrating a resource beyond evaluation. Reusable child guidance and operational host adoption are optional subscopes, not prerequisites for this mode.
+Use when a Roblox implementation task benefits from acquiring a library/module or development tool, or the user asks to use, install, integrate, or adopt one. Follow the full adoption scope in [adoption policy](references/adoption-policy.md) unless the current request explicitly narrows it. Ordinary healthy use of an already adopted resource stays on its child's common path.
 
 1. Read [references/qualification-workflow.md](references/qualification-workflow.md).
 2. When the resource is or becomes a durable project-standard dependency, or another project contract supplies a fixed resource target, read [references/project-adoption.md](references/project-adoption.md) before mutation.
-3. Integrate or use the resource only to the authorized task/project scope after its applicable qualification and verification requirements are satisfied. Preserve externally owned identity/pin/role decisions exactly; a verification block returns to that authority rather than authorizing substitution.
-4. When reusable child guidance is in scope, read [references/generation-validation.md](references/generation-validation.md).
-5. When operational host adoption of generated guidance is requested, read [references/operational-lifecycle.md](references/operational-lifecycle.md) for the adoption gate.
+3. Qualify the exact target, stage reversible integration, and execute the applicable resource and project-integration checks. A missing required check leaves adoption pending; continue independent preparation and name the blocker. Preserve externally owned identity/pin/role decisions exactly; a verification block returns to that authority rather than authorizing substitution.
+4. When reusable child guidance is in scope, read [references/generation-validation.md](references/generation-validation.md). It is in scope for every directly adopted library/module or development tool by default; generate or reuse an exact-target child with portable guidance.
+5. When operational host adoption of generated guidance is requested, read [references/operational-lifecycle.md](references/operational-lifecycle.md) for the adoption gate. The full adoption default requests this at user scope; install the validated child and prove the applicable host checks without adding a routine confirmation stop.
 6. Read [references/state-policy.md](references/state-policy.md) before recording state or reporting completion.
-7. Report five statuses separately for the exact adopted target: trust basis; authorized project-use role; resource/runtime verification; generated-child validation; and per-host adoption. Use `not applicable` when child guidance or host adoption was not requested rather than silently implying completion.
+7. Report five statuses separately for the exact adopted target: trust basis; authorized project-use role; resource/runtime verification; generated-child validation; and per-host adoption. Use `not applicable` for child guidance or host adoption only when an explicit narrower request excludes it, rather than silently omitting a required default stage.
 
 Also state technical fit separately from those five lifecycle statuses. The response must contain this status ledger; listing “report statuses” as a future action does not complete adoption reporting.
 
@@ -103,8 +105,8 @@ Hold these across every mode:
 - Keep resource proof proportional to the intended use and use isolated/reversible verification where practical.
 - Preserve Roblox server authority, validate client-controlled inputs, and never expose credentials or secrets merely to validate a resource.
 - Do not publish, spend money, or perform irreversible project mutations merely to prove a resource works.
-- Generate reusable child guidance only when that lifecycle scope is requested or required by the task; evaluation or ordinary resource integration alone grants no generation or host-adoption authority.
+- Generate or reuse a reusable child for every directly adopted resource under the full adoption default. Explicit evaluation-only or narrower requests exclude the stages they limit; mere transitive presence does not create a child-generation task.
 
 ## Completion
 
-A mode is complete only when its requested decision or lifecycle action is finished, every applicable project-use/verification/validation status is truthful and bound to the named canonical identity plus selector, the project onboarding index matches any durable adopted state in scope, and any blocked use, unavailable proof, owner action, authority conflict, or reconciliation mismatch is explicit. Use [references/state-policy.md](references/state-policy.md) for the final reporting contract.
+Full adoption is pending until all required resource/integration, child-validation, and host checks pass; installed files or a recommendation alone do not finish it. A mode is complete only when its requested decision or lifecycle action is finished, every applicable project-use/verification/validation status is truthful and bound to the named canonical identity plus selector, the project onboarding index matches any durable adopted state in scope, and any blocked use, unavailable proof, owner action, authority conflict, or reconciliation mismatch is explicit. Use [references/state-policy.md](references/state-policy.md) for the final reporting contract.

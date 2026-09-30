@@ -29,6 +29,12 @@ Treat the frontmatter `description` as the child's pre-load routing contract. St
 
 For an externally owned project dependency, alternatives are informational only: the child must preserve the supplied identity/pin and hand replacement/upgrade decisions back to the owning project authority.
 
+## Portability and development tools
+
+Under [adoption-policy.md](adoption-policy.md#reuse-across-projects), a child is reusable across projects and normally installed at user scope. Resolve the active project, installed target and authoritative records at use time; retain project-specific configuration, integration fixtures and evidence outside shared instructions. Exact-target matching and separately validated version-qualified variants preserve existing project pins.
+
+For development tools, document the actual command/configuration, prerequisite versions, inputs, owned generated output, diagnostics and verification. State when a callable API, client/server placement or engine lifecycle is not applicable rather than inventing one. Keep applicable cleanup and security boundaries.
+
 ## Required operating knowledge
 
 - installation/placement;

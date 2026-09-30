@@ -56,7 +56,7 @@ Host mutation is a separate gate after artifact validation.
 
 1. Detect the host and its supported skill locations, registration mechanism, enablement control, discovery surface, and explicit invocation mechanism.
 2. For project-local children, read [project-adoption.md](project-adoption.md) and resolve the skill scope before selecting the host path.
-3. Present the exact target and mutation when host adoption is not already authorized by the surrounding project adoption request/policy.
+3. Apply [adoption-policy.md](adoption-policy.md#scope-and-autonomy): full adoption already includes user-wide child installation. Present the exact target and mutation only when host adoption is outside the authorized scope.
 4. Install, update, enable, disable, or remove only after explicit user authorization or an explicit project policy.
 5. Record each available evidence facet rather than inferring unsupported host behavior.
 6. Mark the child `operational` only when all host-applicable facets are confirmed and an explicit activation smoke test passes.
@@ -81,11 +81,13 @@ Current official Codex guidance establishes these checks:
 
 For Codex adoption, resolve the intended fresh-agent working scope first, then confirm the installed path, absence of an applicable disable entry, visibility in that skill surface, and a successful explicit `$skill-name` smoke task. Treat implicit-routing behavior as separate catalog evidence.
 
-Source reviewed 2026-08-29: [OpenAI Codex skill docs](https://learn.chatgpt.com/docs/build-skills)
+User-wide/repository discovery and invocation policy rechecked 2026-09-30: [OpenAI Codex skill docs](https://learn.chatgpt.com/docs/build-skills)
 
 ## Canonical child location
 
-For a project-local generated child, artifact staging and host installation are different locations with different meaning:
+For the default reusable user-wide child, stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install the canonical validated child at `~/.agents/skills/<skill-name>/` for Codex. Match the child's exact reviewed target to each project record; user-wide visibility is not project adoption or runtime proof. Reuse that canonical child across projects, without per-project editable clones.
+
+For an explicitly project-local generated child, artifact staging and host installation are different locations with different meaning:
 
 - staged artifact: `<project-root>/.agents/roblox/resources/artifacts/skills/<skill-name>/`;
 - adopted Codex repository skill: `<skill-scope-root>/.agents/skills/<skill-name>/`.

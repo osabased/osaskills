@@ -17,6 +17,8 @@ Unknown is not automatically failure, but a material unknown must be resolved be
 
 ## Evidence-and-priority comparison
 
+Unless the current task establishes different priorities, apply the reliability and maintenance priorities in [adoption-policy.md](adoption-policy.md#selection-priorities). Judge required behavior, relevant defects and compatibility, documentation and dependency health; a release timestamp alone is not maintenance evidence.
+
 Use only criteria that could change the decision, consistently across serious candidates. For each deciding criterion, identify the observable outcome, whether it is a threshold or an objective to optimize, and whether its priority is strict or permits tradeoffs. Preserve established priorities; do not replace requested optimization with "good enough" or invent scores, weights, or tradeoff rates. Resolve only ambiguity that could change the recommendation.
 
 Keep measurements in meaningful units. Use task-supplied or evidence-backed numerical models with their assumptions and limits; this rubric supplies no generic grades, weights, or aggregate total.
@@ -39,6 +41,10 @@ These are resource-specific evidence prompts, not a mandatory checklist or prior
 | Portability/lock-in | Resource can be replaced without infecting unrelated architecture |
 
 Recommend the best-supported fit under the established criteria, explaining the decisive evidence, strongest alternative's losing tradeoff when one exists, material uncertainty, and what would change the recommendation. Do not manufacture a winner when the deciding support is missing.
+
+## Community experience
+
+For a meaningful comparison, apply [community-evidence.md](community-evidence.md) to the deciding tradeoffs and current limitations. Report the support or disagreement among inspected sources and its effect on the choice. Community advice informs fit and maintenance evidence; it does not establish runtime proof, change trust or override hard gates and fixed targets. Lack of broad consensus alone does not defeat a choice supported by the required source and executable evidence.
 
 ## Decision ownership
 
