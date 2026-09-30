@@ -1,6 +1,8 @@
-# Canonical SSA infrastructure
+# ModuleLoader 3.0.4 SSA compatibility
 
 Use this contract to create canonical Single Script Architecture (SSA), explicitly migrate a project to it, or change its loader, entrypoints, discovery, configuration, acquisition, or upgrade behavior. Read [`ssa.md`](ssa.md) for the feature contract that the infrastructure must expose.
+
+This reference is a fixed-target compatibility contract for projects that deliberately adopted the target below. It is not a greenfield default or a claim about the current recommended release. Research new startup choices through the setup/evidence workflow; preserve an existing project target unless a reviewed change selects another.
 
 Preserve a coherent established startup architecture unless redesign or migration is explicit.
 
@@ -23,7 +25,7 @@ When the project already uses or deliberately selects Wally, declare `ModuleLoad
 
 When acquisition or integration is part of the task, invoke [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) in `acquire/adopt` mode with `structure-roblox-projects` as the project-use authority and the identity/pin above as a fixed positive target. Qualification and verification may block that target, but they do not authorize rediscovery, substitution, or upgrade. If the target cannot be acquired or verified sufficiently for the intended use, surface the block back to this structural workflow. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
 
-When Canonical SSA is durably persisted, record the exact selected acquisition form together with the identity, version, commit, and `ReplicatedStorage/Packages/ModuleLoader` placement under `Structural dependencies` in `.agents/roblox/structure.md`. That project profile is the durable project authority for the ModuleLoader target.
+For existing projects, preserve any exact `Structural dependencies` target in `.agents/roblox/structure.md` and its applicable scope. For a new deliberately selected target, keep identity/version/acquisition in authoritative project manifests or the owned compatibility contract, and explain its placement/lifecycle and upgrade ownership in the project guide by reference. Save new or revised guidance only through the reviewed persistence workflow.
 
 ## Resulting DataModel
 
@@ -105,7 +107,7 @@ Treat a loader load, Init, or Start warning attributable to changed work as a va
 
 For an explicit migration, follow [`migration.md`](../workflows/migration.md) and account for every old entrypoint and registration path, duplicate-start risk, the resulting source-of-truth mapping, and a recovery boundary. Remove or redirect old startup only inside the authorized migration write set.
 
-Changing the ModuleLoader canonical identity, version/commit, acquisition form, or placement is Canonical SSA infrastructure work owned by `structure-roblox-projects`; do not let resource refresh independently advance it. Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Update this contract and the affected project's `Structural dependencies` decision only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md).
+Changing the ModuleLoader canonical identity, version/commit, acquisition form, or placement is Canonical SSA infrastructure work owned by `structure-roblox-projects`; do not let resource refresh independently advance it. Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Change the applicable project compatibility contract only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md), and present affected project-guide/profile changes for review before saving. A project-specific upgrade does not automatically rewrite this shared fixed-target reference.
 
 ## Validation
 

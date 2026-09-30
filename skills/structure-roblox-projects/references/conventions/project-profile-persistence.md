@@ -1,68 +1,44 @@
-# Roblox structure profile persistence
+# Review and save project guidance
 
-Use this reference only when profile/onboarding persistence handling is in scope under [`project-profile.md`](project-profile.md):
+Use when an initial overview, assessment, correction, or setup guide is to be saved. Read [project guide interpretation](project-profile.md) first. The user prefers to review guidance before it is saved, including revisions; normal task implementation does not bypass this gate.
 
-- the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update;
-- an Implementation establishes the durable structure of a greenfield project/experience;
-- an established-project Implementation lacks usable agent onboarding and either a useful profile already exists or the current bootstrap establishes at least one high-confidence durable structural convention;
-- an authorized Implementation encounters a persisted convention that satisfies the `Freshness` contract's verified-drift test; or
-- an explicitly requested project-wide redesign or migration is being implemented and changes durable structural conventions.
+## Review the concrete result
 
-Read [`project-profile.md`](project-profile.md) first. It owns profile meaning, recognized sections, interpretation, the canonical `Freshness` contract, and recognition of usable agent onboarding. This file owns persistence-mode authority, confirmation, project-root `AGENTS.md` onboarding mutation, and fresh-agent instruction-scope visibility. Entering this reference does not itself authorize a write.
+Prepare the overview and separate assessment in the response or a requested draft artifact. Present:
 
-## Agent onboarding mutation
+- the actual proposed content, or a precise diff for an update;
+- project root, destination, and whether the operation creates, appends, or updates;
+- any instruction pointer, its location, and whether it is visible from the intended agent entry directory;
+- material gaps/uncertainty, existing documentation preserved, and whether assessment will also be saved.
 
-When durable project structure is persisted, maintain the canonical owned onboarding block defined in [`project-profile.md`](project-profile.md) in the affected project root's `AGENTS.md`.
+Do not write the project guide, assessment, or instruction pointer before the user approves the preview. An explicitly requested separate scratch/review artifact is permissible; it must not become active project instructions before approval. Read-only orientation and design produce a review-ready answer by default.
 
-Maintain it with these rules:
+Approval is specific to the shown documentation operation. Approval of the overview alone does not implement modernization suggestions, install tools, or alter project architecture. If the user already approves an exact save/update request or a setup preview containing the exact documentation writes, continue without another confirmation. A material change in the result or write set needs an updated preview.
 
-1. Use only the `AGENTS.md` at the affected project root for this detailed onboarding block. Do not create or modify a global `AGENTS.md` or an unrelated nested project's instructions.
-2. If project-root `AGENTS.md` already exists and the owned markers are absent, append the complete block after the existing content. Preserve all pre-existing content byte-for-byte except for any final newline needed to append cleanly.
-3. If the owned markers already exist, update only the content between those markers when the canonical onboarding block changes. Preserve everything outside the markers.
-4. If no project-root `AGENTS.md` exists, create one containing only the owned block.
-5. Never replace, normalize, reorder, summarize, or otherwise rewrite an existing `AGENTS.md` to install agent onboarding. Similar human-authored Roblox guidance outside the owned markers is governing context, not content this skill owns.
-6. Keep detailed structural conventions, structurally owned dependency pins, and freshness behavior in `.agents/roblox/structure.md`; do not duplicate the profile into `AGENTS.md`.
+Saving may remain pending while independently authorized project work continues. If a user declines persistence, leave project documentation unchanged and use the reviewed session context as appropriate.
 
-Task-local use of this skill must not create or modify `AGENTS.md` merely to advertise the skill or record transient findings. The established-project onboarding initialization mode below is the narrow automatic exception because it gives future agents durable project-local structural guidance established from existing project evidence.
+## Save without creating conflicting authorities
 
-## Verify fresh-agent instruction scope
+1. Recheck affected pre-existing content and scope immediately before saving. Preserve concurrent/user edits; reconcile an overlapping change before applying the approved preview.
+2. Use the approved existing destination, or `.agents/roblox/project.md` when no equivalent exists. Preserve unrelated content; update only the approved sections. Do not normalize a legacy profile as an incidental side effect.
+3. Install only the reviewed small instruction pointer. Prefer an existing coherent pointer rather than duplicating it. When a managed block is needed, the following is a starting form; adapt the relative path to the actual instruction file:
 
-Before claiming onboarding is usable, identify the working directory from which fresh Codex agents are expected to enter this project and check whether the affected project root's `AGENTS.md` lies on Codex's repository/project-root-to-working-directory instruction chain.
+```markdown
+<!-- structure-roblox-projects:onboarding:start -->
+## Roblox project guidance
 
-- If it lies on that chain, the project-root onboarding block is visible and no extra pointer is needed.
-- If the expected working directory is above a nested Roblox project, the nested project-root `AGENTS.md` is not loaded by default. Persisting that file is still valid project state, but **do not claim usable fresh-agent onboarding** from it alone.
-- When an ancestor `AGENTS.md` on the loaded instruction chain is already within the authorized write boundary, add only the smallest project-scoped context pointer needed to reach the nested project instructions, for example: `For Roblox structural work under <project-relative-path>/, read <project-relative-path>/AGENTS.md before structural decisions.` Preserve every unrelated ancestor instruction.
-- When that ancestor write is not authorized, leave it unchanged and report the exact onboarding condition: future agents must start Codex from the affected project root (or a descendant) for the nested `AGENTS.md` to apply, or the owner must separately authorize the ancestor pointer.
+Before working in this Roblox project, read `.agents/roblox/project.md`. Verify relevant project facts against their linked sources; investigate affected gaps or drift. Present proposed guide corrections for review before saving them.
+<!-- structure-roblox-projects:onboarding:end -->
+```
 
-An ancestor context pointer is separate from this skill's detailed project-root onboarding block and never grants authority to edit other ancestor instructions. Re-check current OpenAI Codex `AGENTS.md` discovery guidance when this behavior is material and external documentation is available.
+4. For an existing managed block, replace only that block as approved. If absent, append the approved pointer, retaining existing bytes except any newline needed to append cleanly. If creating an instruction file, include only the approved content. Preserve human-authored guidance outside the block.
+5. Check that links resolve and instructions cover the intended project without applying to unrelated nested projects. Ancestor pointers are separate reviewed writes. If host discovery or entry scope is unavailable, report the visibility limitation and required entry point rather than inventing verification.
+6. Inspect the resulting diff against the approved write set. State what was saved, where it can be reached, and remaining evidence gaps. Unrun Studio/host behavior stays unverified.
 
-## Persistence modes
+## Setup and ongoing changes
 
-Choose persistence from the user's requested scope and what is actually implemented:
+A reviewed setup authorizes its selected implementation. The documentation save can be included in the same review when its exact contents/pointer are shown; verify the implemented result before saving that approved guide. If implementation changes the described topology or reveals a material gap, revise the preview for review.
 
-- **Task-local work:** Review, design-only work, and ordinary established-project Implementation do not create or update the profile or onboarding after usable agent onboarding exists unless the user explicitly requests persistence, verified drift repair applies, or another persistence mode applies. The one-time established-project onboarding initialization below is the only other automatic persistence exception for ordinary established-project Implementation.
-- **Established-project onboarding initialization:** during an already-authorized Implementation in an established project, initialize missing agent onboarding without broadening discovery. If a useful profile already exists, leave its conventions unchanged, keep the canonical `Freshness` section, and install or refresh the owned `AGENTS.md` onboarding block. Otherwise, when the current bootstrap has already established one or more high-confidence durable conventions from coherent implemented structure, create or minimally update the sparse profile with only those conventions and maintain agent onboarding. Do not inspect unrelated systems, resolve extra preferences, or persist recommendations/defaults solely to make the profile more complete. If the current bootstrap established no durable convention suitable for persistence, skip automatic onboarding initialization rather than create an empty profile or expand discovery.
-- **Verified drift repair:** during an already-authorized Implementation, repair a persisted decision only when following it produces a verified mismatch and focused inspection establishes a different coherent implemented convention at the same scope. Resolve the applicable source-of-truth representation before comparing filesystem paths with DataModel guidance. Do not treat a coherent local exception, unresolved mapping, dirty/pre-existing/partial change, or otherwise ownership-ambiguous state as proof of staleness. Repair only the smallest unsupported persisted decision, preserve still-supported guidance, and do not inspect unrelated profile fields merely to look for more drift. Review and Design may report proven or unresolved drift but remain read-only.
-- **Foundational setup:** when Implementation creates or sets up a greenfield project's durable structure, persist the durable conventions actually established by that implementation and maintain agent onboarding. This is part of completing the requested setup; it does not require a separate `remember this` request or an extra approval stop solely for persistence.
-- **Implemented project-wide redesign or migration:** when the user explicitly requests and authorizes implementation of a project-wide redesign or migration and the completed target changes durable structural conventions, update only the affected persisted decisions and maintain agent onboarding. A review, proposal, design, or migration plan alone does not update durable guidance.
-- **Explicit profile/preference setup:** when the user directly asks to create, update, repair, normalize, or persist project-level structural preferences, persist only the decisions included in that request.
+An ordinary feature or migration may invalidate saved guidance. Identify the affected clauses, establish the actual new implemented contract, and present the smallest update for approval. Do not automatically expand or repair documentation simply because code work is authorized.
 
-Automatic persistence in established-project onboarding initialization, verified drift repair, foundational setup, or implemented project-wide redesign/migration is narrow modification authority for `.agents/roblox/structure.md` and the owned project-root `AGENTS.md` onboarding block only. It does not authorize unrelated repository instructions or broader project changes. If either destination crosses an unclear, shared, generated, or protected write boundary, apply `../core/modification-scope.md` before writing. An ancestor context pointer is written only when that ancestor instruction file is independently inside the authorized boundary.
-
-## Create or update a profile
-
-1. Determine the active persistence mode above. If none applies, keep the result task-local.
-2. Identify the affected project root, destination `.agents/roblox/structure.md`, project-root `AGENTS.md` onboarding destination, and intended fresh-agent working directory.
-3. Ensure any authorized profile write contains the canonical `Freshness` section from [`project-profile.md`](project-profile.md), then build the smallest sparse convention update required by that mode:
-   - for established-project onboarding initialization, leave an already useful profile's conventions unchanged; otherwise persist only high-confidence durable conventions already established by the current bootstrap, preserving unrelated existing profile content;
-   - for verified drift repair, replace or remove only the smallest persisted decision proven unsupported at its intended scope and preserve every still-supported clause and unrelated section;
-   - for foundational setup, include only durable conventions actually established by the implemented project structure, including exact structurally owned dependency identity/pin/placement when such a dependency is part of that structure;
-   - for an implemented project-wide redesign/migration, update only persisted decisions the implemented target changed or invalidated, preserving every unrelated existing section;
-   - for explicit profile/preference setup, persist only the requested decisions and omit every otherwise unset section.
-4. Prepare the project-root `AGENTS.md` onboarding operation required by **Agent onboarding mutation**: append the owned block, update only the existing owned block, or create a minimal `AGENTS.md` when absent.
-5. Apply **Verify fresh-agent instruction scope**. If the project-root block will not be loaded from the intended fresh-agent working directory, add an ancestor context pointer only when that ancestor write is authorized; otherwise record the visibility limitation instead of claiming onboarding is usable.
-6. For established-project onboarding initialization, verified drift repair, foundational setup, and implemented project-wide redesign/migration, perform the applicable profile/project-root-onboarding writes as part of the authorized Implementation once the durable outcome is known. Do not add a separate approval stop solely for these owned persistence writes.
-7. For explicit profile/preference setup outside an already authorized Implementation, show one exact pre-write preview of the resulting sparse profile and project-root onboarding block, state whether `AGENTS.md` will be appended, the owned block updated, or a new file created, and write them only after the user confirms that persistence operation. Include any separately authorized ancestor pointer in that preview.
-8. Treat every persistence write as authority only for the managed `Freshness` section, sparse profile decisions established by the active mode, the owned project-root `AGENTS.md` onboarding block, and any separately authorized minimal ancestor context pointer.
-
-A profile update is complete when the resulting file contains the canonical `Freshness` guidance plus only the applicable durable convention memory, unrelated persisted conventions remain unchanged, the project-root `AGENTS.md` provides the detailed onboarding block without altering unrelated instructions, and fresh-agent visibility is either verified for the intended working directory or its exact limitation is reported. Any detected drift outside the active persistence scope remains documented rather than silently reconciled.
+Persistence is complete when approved guidance/pointers are saved without unrelated changes, source links resolve, reachability is established or accurately limited, and no recommendation or unavailable check is presented as implemented or verified.

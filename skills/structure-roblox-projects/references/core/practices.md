@@ -6,6 +6,8 @@ When canonical SSA is selected or recognized, [`ssa.md`](../ssa/ssa.md) owns its
 
 Modification authority comes from [`SKILL.md`](../../SKILL.md). For explicit restrictions, ambiguous ownership, or broad/generated writes that may exceed the task, use [`modification-scope.md`](modification-scope.md).
 
+For plugins, packages/models, compiler pipelines, multi-place experiences, and custom/mixed workflows, establish the actual host/consumer, source/generated boundaries, and topology through [project orientation](../workflows/project-orientation.md). The game layouts below are examples, not a classifier for all Roblox projects. Use [evidence and freshness](evidence-and-freshness.md) before relying on current platform/tool or practice claims.
+
 ## Source of truth
 
 | Choice | Meaning | Good fit |

@@ -1,110 +1,50 @@
-# Roblox project onboarding and setup
+# Needs-led Roblox project setup
 
-Use this reference when `structure-roblox-projects` is explicitly invoked without concrete work, or when the user asks for guided project setup, setup customization, or a recommended project foundation.
+Use for creating or setting up a new Roblox project, or deliberately choosing an established project's new foundation. Existing-project orientation uses [project orientation](project-orientation.md). A bare invocation first resolves which of these jobs is needed.
 
-This is interactive project onboarding. The **Agent onboarding** contract in `../conventions/project-profile.md` separately governs durable `.agents/roblox/structure.md` guidance and its `AGENTS.md` pointer.
+The user wants this sequence: learn their needs, research current suitable approaches, present one coherent setup for review, then implement the approved setup. An initial generic invocation is not approval to scaffold, install, sync, or save project guidance.
 
-## Establish the smallest useful context
+## Learn the needs that change the setup
 
-Inspect only facts that can change the first recommendation:
+Inspect supplied context and ask unanswered questions in small rounds, normally one to three independent questions. Resolve material needs before selecting a stack:
 
-- whether the project is greenfield or established;
-- the active source of truth, if one exists;
-- visible tool, package, mapping, test, and project-profile manifests;
-- established entrypoint and module-organization conventions when present; and
-- gaps that matter to the user's stated setup goal.
+- artifact/product: experience and intended systems, multiple places, reusable package/model, plugin, prototypes, or other project type;
+- authoring: Studio and external editor preferences, Luau/TypeScript or another language, ownership of code/assets, collaboration, Git/reproducible builds/CI, and existing Studio content;
+- architecture and dependencies: scale, runtime/lifetime constraints, networking/state/persistence/UI/testing needs, library/framework posture, existing choices, deployment environment, and budget/maintenance constraints when relevant.
 
-For an established project, preserve coherent choices and recommend only relevant gaps or deliberate customizations. For an empty workspace or a greenfield request, do not search for conventions that cannot exist. A bare invocation authorizes this focused read-only inspection, not a repository-wide review or any writes.
+Skip answered or irrelevant subjects. Ask about use cases before naming libraries. If they have not selected defaults, keep architecture, languages, tools, and frameworks open. Reuse an explicitly provided needs brief instead of requiring another intake round.
 
-Context is sufficient when the response can state the detected project state, the decisions already resolved by it, and the small set of user inputs that would materially change the recommendation.
+## Research suitable approaches
 
-Do not make the first useful recommendation contingent on those inputs when a safe default is available. State a concrete provisional setup in the same response, label the assumptions it uses, and explain which answer would change which part. Questions refine that recommendation; they do not replace it with a generic intake form.
+Use [evidence and freshness](../core/evidence-and-freshness.md). Research workflow candidates and tool/library roles under the actual needs, current supported behavior, compatibility, and maintenance constraints. Confirm current authoritative documentation and compatible stable targets before presenting a current recommendation. Separate beta/preview options from established support.
 
-## Learn use cases before naming libraries
+Compare meaningful candidates rather than collecting a catalogue. Plain modules and built-in tooling are valid candidates, as are frameworks or compiler pipelines when their roles fit. No default Canonical SSA, ModuleLoader identity, Rojo, language, package manager, or fixed formatter/linter/test/orchestration stack is assumed.
 
-Ask only unanswered questions that change the setup. Lead with the detected context and concrete choices; do not ask a generic “what do you want?” question. Keep each round compact, normally one to three independent questions, and skip questions already answered or irrelevant to the project.
+When credible approaches compete without a clear project-specific basis for selection, present their fit, costs, and uncertainties as options for the user to choose. Resolve those consequential choices before the final coherent setup. Do not ask the user to choose every trivial folder or configuration value; make routine choices consistent with the selected direction.
 
-Resolve these subjects only when material:
+If a community resource is selected for a role, use the available resource-acquisition workflow for relevant qualification/adoption. Selection does not authorize installation; implementation follows review. Preserve existing project-owned identities and pins when setting up an established project unless the selected change includes replacing them.
 
-1. **Product and systems:** what the experience needs now, such as gameplay services, substantial UI, shared state, client/server protocols, persistence, isolated UI stories, or unusual runtime constraints.
-2. **Authoring workflow:** Studio-first, Script Sync, or filesystem-first development with Git/CI and external editors. Apply the source-of-truth guidance in `../core/practices.md` rather than selecting Rojo from familiarity alone.
-3. **Dependency posture:** plain Luau and Roblox built-ins where they are sufficient, focused libraries for selected roles, or a broader framework whose ownership model the project intentionally adopts.
+## Present one coherent review proposal
 
-Ask about use cases and dependency posture before presenting library names. When the user has already supplied enough product and workflow context, proceed directly to a recommendation.
+Once needs and consequential options are resolved, present an implementable plan with:
 
-Apply a plain/no-library choice to startup and lifecycle dependencies too, unless the user limits that choice to a particular role. Use project-owned explicit startup when community runtime dependencies are excluded. When recommending Canonical SSA, disclose its community ModuleLoader dependency; plain gameplay modules do not make that whole setup dependency-free.
+- requirements/constraints served and why the selected approach fits;
+- artifact/place/project roots, authoring owners, source/generated/asset boundaries, and filesystem-to-DataModel or host mapping;
+- executable entrypoint path/class/context/owner, discovery/lifecycle/readiness and dependency direction;
+- major feature/shared/network/asset boundaries and concrete communication ownership for planned interfaces;
+- selected tools/dependencies by role, compatible targets, preparation and update/restore behavior, and source citations for material current recommendations;
+- canonical local/CI checks where applicable, focused iteration checks, and separate Studio/host runtime checks;
+- intended edits/installations/sync operations, any owner actions, recovery where needed, and proposed project guidance/pointer destination;
+- unresolved evidence and what the user is being asked to approve.
 
-## Recommend one coherent setup
+Use [practices](../core/practices.md) for execution/placement/Remote contracts and relevant specialist references for the chosen workflow. A plugin/package/custom pipeline needs its own host/consumer contract rather than an invented game bootstrap pair.
 
-Separate the recommendation into:
+Present the complete proposal before implementation and wait for user approval. If the request already approves a specific previously reviewed setup, act on that approval. An initial request to help set up a project starts this workflow; it does not waive the review preference. Guidance saving follows [review and persistence](../conventions/project-profile-persistence.md); include the exact guide/pointer preview if it is to be authorized in the same review.
 
-- detected decisions to preserve;
-- the recommended structural and tooling baseline;
-- only the role-specific libraries justified by the use cases;
-- optional or deferred choices; and
-- the exact implementation and validation boundary.
+## Implement and qualify the selected foundation
 
-For a filesystem-first project that wants external editing, Git, reproducible builds, or CI, recommend this reusable Rojo tooling baseline unless established project constraints resolve it differently:
+Implement the reviewed setup through this skill's Implementation route. Use the project's selected/native tools and runtime; make commands portable to the supported host/CI environment. Keep dependency restoration distinct from intentional updates and authored source distinct from compiler outputs. Add only roles justified by the selected setup.
 
-- **Rokit** for pinned project tools;
-- **Rojo** for filesystem/DataModel mapping, sourcemaps, serving, and builds;
-- **Lute** for project-owned Luau orchestration and deterministic tooling scripts;
-- **StyLua** for formatting;
-- **Selene** for linting;
-- **luau-lsp** for strict analysis using the effective Rojo mapping and package types;
-- **Lest** for native tests and opt-in Studio suites when engine behavior requires them; and
-- **Wally** plus a package-type generator when the selected project actually uses Wally packages.
+Prove the relevant gate covers the selected source classes, mappings/host topology, startup and dependencies, development/release boundaries, and intended runtime behavior. For a new/materially changed gate, use small isolated negative probes when needed to establish that it catches meaningful errors rather than merely exits successfully. Restore the clean fixture after a probe. Ordinary feature work reuses this passing evidence while its inputs remain valid.
 
-Recommend the roles and verification contract, not a copy of another repository's scripts, profile names, pins, exclusions, or generated artifacts. Resolve current compatible versions during authorized implementation using the applicable authoritative or resource-acquisition workflow. Studio-native and Script Sync projects should receive the smallest compatible checks rather than an unnecessary Rojo stack.
-
-For an established project, treat the baseline as a gap checklist. Preserve coherent equivalents and avoid replacing working tools merely to match the list.
-
-An implemented baseline needs a documented preparation path and one project-owned verification command used locally and in CI. Cover the selected tools' formatting, lint, type analysis, native tests, and Rojo build checks; provide focused checks for iteration and separate engine-dependent Studio verification. Declare required runtimes and generated inputs, keep locked dependency restoration distinct from intentional updates, and report only checks actually executed. Derive checks from this project's selected stack rather than copying another project's feature assertions.
-
-### Prove the setup's verification boundaries
-
-When creating or materially changing that baseline, establish what the gate covers, not merely which tools it runs:
-
-- **Owned source coverage:** account for runtime modules, tests, and development/tooling scripts using each runtime's appropriate analyzer. Discover files from their owned roots so new files enter coverage automatically. Keep generated dependencies separate; if dependency-internal diagnostics block analysis, use a supported narrowly scoped diagnostic exclusion while retaining analysis of owned files and their imports. Compiling or executing a test is not static type checking. Report any remaining uncovered source class explicitly rather than describing the setup as fully type-checked.
-- **Runtime placement:** follow [Rojo topology validation](rojo.md#validate-runtime-topology) for the selected startup and sharing boundaries. A successful build alone does not establish that an entrypoint will run where intended.
-- **Installed identity:** qualify the actual local and CI installation paths through the resource-acquisition workflow. Declared pins and parsed CI configuration alone do not prove that an installer honors those pins.
-
-Use small isolated negative probes to verify these boundaries: a type error in a newly added file from each owned source class must fail its corresponding gate, and a misplaced critical entrypoint must fail topology validation. Exercise the same checks used by the canonical command, retain reproducible regressions where useful, and restore a clean passing fixture afterward. Keep probes proportional to the setup being established; ordinary feature work does not require rebuilding this qualification suite.
-
-## Choose dependencies by role
-
-Plain Luau or Roblox built-ins are valid recommendations when they keep the ownership model clear and satisfy the use case. Surface only candidates for roles the user actually needs. The links below are discovery starting points supplied for onboarding; they are not equally suitable, pre-vetted, or approved for adoption.
-
-| Role | Lean option | Discovery candidates |
-| --- | --- | --- |
-| UI rendering | Roblox UI instances and plain Luau | [React Luau](https://github.com/Roblox/react-luau), [Fusion](https://github.com/dphfox/Fusion), [Vide](https://github.com/centau/vide) |
-| UI motion and reactive animation | Roblox tween facilities or the selected UI system's own primitives | [Ripple](https://github.com/littensy/ripple), [Seam](https://github.com/MiaGobble/Seam) (reactive state and animation) |
-| Domain/shared reactive state | Plain typed tables and explicit update functions | [Charm](https://github.com/littensy/charm), [Roblox signals](https://github.com/Roblox/signals) |
-| In-process events | `RBXScriptSignal`, Bindables, or a small owned callback surface | [LemonSignal](https://github.com/Data-Oriented-House/LemonSignal) |
-| Client/server protocols | Roblox remotes with explicit validation | [Blink](https://github.com/1Axen/blink) |
-| Lifecycle cleanup | Direct disconnect/destroy for small, obvious ownership | [Janitor](https://github.com/howmanysmall/Janitor) |
-| Persistent player data | A directly owned Roblox persistence layer | [Scribe](https://github.com/ericplane/Scribe) |
-| Isolated UI stories | A small project-owned development harness | [UI Labs](https://github.com/PepeElToro41/ui-labs) |
-| Broader ecosystems and utility collections | The selected entrypoint/module model plus only required utilities | [Nevermore](https://quenty.github.io/NevermoreEngine/), [RbxUtil](https://github.com/Sleitnick/RbxUtil) |
-
-Evaluate a collection's selected packages individually; a utility collection is not automatically an application framework or a commitment to adopt every package. Before recommending a framework that owns architecture, compare its ownership of entrypoints, discovery/lifecycle, dependency access, services/controllers, networking, state, and cleanup with the proposed structure. Select one clear owner for each concern. Do not layer a framework over Canonical SSA when both would own startup or lifecycle; that requires an explicit alternative design or migration decision.
-
-Canonical SSA's ModuleLoader identity, pin, acquisition form, placement, and upgrade behavior remain owned by `structure-roblox-projects` through `../ssa/ssa-bootstrap.md`. For other dependency comparison, qualification, acquisition, or verification, use [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) after the relevant role and intended use are known. A user request for a lightweight recommendation does not require an exhaustive external survey.
-
-## Offer a concrete next choice
-
-For a bare invocation, present the recommendation with a compact choice such as:
-
-- use the recommended setup;
-- customize named decisions; or
-- keep the result as a design only.
-
-State the important tradeoff beside each alternative. Once the user selects the setup, continue through the applicable Design and Implementation routes. If the user's initial request already explicitly authorizes setup implementation and the material unknowns are resolved, proceed without another confirmation.
-
-The recommendation must be implementable rather than thematic: name the source-of-truth workflow, runtime roots, executable server/client entrypoint form, shared/dependency placement, and the first validation command or Studio check. When context is absent, give one conservative provisional baseline and make its assumptions explicit.
-
-Make the offered action explicit: “set up the recommendation” authorizes implementation when accepted, including a natural-language reply such as “use recommended.” Acceptance of a design-only proposal stays design-only. Ask follow-ups only for still-unresolved material choices, not to reconfirm an accepted setup action.
-
-Do not create a profile schema field merely to copy native manifests. Tool identities and versions belong in tool/package manifests and configuration files. Persist only durable structural conventions through `../conventions/project-profile.md` when one of its persistence modes applies; use its existing `Tests` field only for a durable test-placement or validation convention that is not just a duplicate command or version list.
-
-Onboarding is complete when the recommendation is specific enough to implement, every included dependency has a justified role and clear owner, framework overlaps are resolved, and authorized setup is implemented and validated through the existing routes.
+Run the smallest applicable checks and distinguish static/build proof from Studio/host execution. Setup is complete when the reviewed foundation works at the claimed evidence level, selected dependencies have clear roles/owners, applicable checks pass or specific unavailable checks are named, and any approved guidance save is verified. Pending documentation approval or unavailable runtime evidence must remain explicit.

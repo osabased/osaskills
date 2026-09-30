@@ -1,126 +1,29 @@
-# Roblox structure preference resolution
+# Resolve material Roblox project choices
 
-Use this reference only when:
+Use when the current request, project evidence, and applicable instructions/guidance leave a consequential choice open. New-project choices are resolved inside [needs-led setup](../workflows/onboarding.md). This reference supplies decision discipline rather than a fixed preference questionnaire.
 
-- the user explicitly asks to choose structural preferences; or
-- structural bootstrap, applicable project-profile evidence, and existing project conventions leave a material organization decision unresolved and that decision affects the current task.
+## Existing projects
 
-Resolve only choices that are genuinely open and material. A clear established project should produce zero preference questions.
+Preserve coherent implemented conventions and adopted dependency targets for ordinary work. Apply scope correctly: one feature's exception is not a replacement project-wide convention. Resolve authoring mappings before comparing filesystem layout with DataModel guidance.
 
-Read [`practices.md`](../core/practices.md) when technical definitions, diagrams, use cases, constraints, or naming defaults are needed. Applicable project-profile evidence should already be applied before entering this reference. When project-level persistence applies, [`project-profile-persistence.md`](project-profile-persistence.md) owns the authorized write after the open choices are resolved. Resolve preferences without expanding modification authority.
+Ask no preference questions when the task and project already resolve the material decisions. For a missing minor convention, choose a compatible local implementation; do not introduce a project-wide default or save a preference as an incidental step.
 
-## Decision contract
+When conventions conflict or a material gap remains, state the exact choice, evidence already available, and smallest input needed from the user. A demonstrated compatibility/correctness failure is a finding; divergent viable styles are options.
 
-1. Start from the structural bootstrap and current task. Reuse its evidence instead of re-inspecting the whole project.
-2. Separate **detected convention** from **recommended default**:
-   - A detected convention is supported by concrete project evidence and should be preserved in ordinary established-project work.
-   - A recommended default is an agent choice used only when the project, applicable profile, and current request do not resolve a material decision.
-3. For an established project, fit into coherent existing conventions rather than normalizing toward skill defaults unless migration or redesign is requested.
-4. Resolve only choices that are genuinely open and material to the current task or explicit preference request.
-5. If the current request, coherent established conventions, or an applicable project profile already resolve every material choice, ask **zero preference questions** and continue the requested task.
-6. When a choice remains open, recommend the smallest compatible option first. Ask the user only when the decision is material and cannot be selected safely from the task, project constraints, profile, or skill defaults.
-7. Batch independent unresolved choices into one compact prompt when answers do not depend on each other. Serialize only dependent choices or clarification follow-ups. Stop as soon as every material choice is directly implementable.
-8. Accept `use recommended`, `preserve detected`, `customize`, a named option, or a natural-language preference. `use recommended` accepts recommendations for unresolved choices only. `preserve detected` keeps coherent detected conventions and leaves only genuinely open choices to resolve.
-9. Use diagrams or representative trees only when they materially clarify an unresolved entrypoint or module-organization decision, or when the user asks for one. Use diagrams from `../core/practices.md` rather than inventing competing architecture vocabulary.
-10. Preference resolution must produce a directly implementable agent decision. Record enough specificity to guide placement and organization, but do not encode transient repository observations as preferences.
-11. Project-level persistence follows [`project-profile-persistence.md`](project-profile-persistence.md): task-local decisions remain non-persistent unless requested, while implemented foundational setup and implemented project-wide redesign/migration persist the durable conventions that those authorized changes actually establish or change.
+## New or intentionally redesigned projects
 
-## Canonical SSA bundle
+The user has not selected global architecture/tooling defaults. Learn their needs and research choices; do not infer a preference from this skill's examples.
 
-For greenfield work with no conflicting requirement, recommend **Canonical SSA** as one entrypoint/startup selection. It bundles the exact ModuleLoader identity and pin plus the direct server/client bootstrap pair from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md), depth-1 feature-root discovery, feature-first Server/Client/Shared boundaries, and the optional standard Init/Start lifecycle in [`ssa.md`](../ssa/ssa.md).
+Possible decision dimensions include authoring ownership (Studio, Script Sync, filesystem mapping, or custom/mixed), language/compiler, entrypoint/lifecycle ownership, grouping, dependency posture, assets and place boundaries, test strategy, and development/release workflow. Resolve only dimensions relevant to the project. Framework and startup choices must identify a clear owner for each concern rather than layer competing owners.
 
-This is the skill's opinionated default, not a Roblox platform requirement. Its zero-registration startup and fixed lifecycle integration justify the loader when those benefits fit the requested project. Disclose the community dependency and discovery/lifecycle constraints. A no-community-library requirement selects project-owned explicit startup instead. Once the bundle is selected, `structure-roblox-projects` owns the loader identity, version/commit, acquisition form, placement, and upgrade decision as part of the structural architecture. Do not reopen resource comparison or permit another workflow to substitute or upgrade the loader independently.
+Single bootstrap pairs, independent scripts, service/controller modules, feature grouping, components/ECS, explicit requires, and lifecycle loaders are options whose suitability depends on the needs. The [documented ModuleLoader SSA contract](../ssa/ssa-bootstrap.md) is an exact compatibility option for a deliberately adopted target, not the default for new projects or a currentness claim.
 
-Selecting Canonical SSA resolves the entrypoint, module-organization, module-style, and ModuleLoader structural-dependency decisions owned by that bundle. Ask no separate questions for those fields unless a concrete requirement conflicts. Source of truth, naming, tests, and any out-of-bundle requirement remain independently resolvable when material.
+## Present options and carry the choice forward
 
-Preserve coherent established entrypoints and frameworks for existing projects. Canonical SSA becomes their target only through explicit redesign or migration. Requirements such as `Actor` parallelism, object lifetime, character/tool behavior, or isolated scripts can select multiple or custom entrypoints instead.
+For credible competing approaches, present a small useful set with project fit, ownership, costs/constraints, current evidence, and uncertainty. Let the user choose the consequential direction. Batch independent choices; serialize dependent ones. A tool's popularity or release recency does not settle suitability.
 
-When project-profile persistence applies under [`project-profile-persistence.md`](project-profile-persistence.md), normalize Canonical SSA through the existing fields:
+Accept natural-language preferences and preserve previously selected decisions. After the choice, produce one coherent implementable setup/design; routine details follow that direction. Do not add another approval stop for task-local implementation already authorized, except the explicit setup review and documentation save gates.
 
-| Field | Normalized value |
-| --- | --- |
-| `Entrypoints` | `Canonical SSA: ServerMain and ClientMain directly start depth-1 feature roots with the pinned canonical ModuleLoader; only direct children of Server/Client are loader-owned roots, so nest helpers beneath them; ordinary feature work does not edit loader or entrypoint infrastructure.` |
-| `Module organization` | `Feature-first inside separate Server, Client, Shared, and Remotes boundaries.` |
-| `Module style` | `Plain Luau feature roots with explicit dependencies and optional Init/Start lifecycle; all loads precede Init, Init precedes Start, and sibling lifecycle order is not a dependency contract.` |
-| `Structural dependencies` | Persist the exact ModuleLoader repository/package identity, version, commit, selected acquisition form, and `ReplicatedStorage/Packages/ModuleLoader` placement from [`ssa-bootstrap.md`](../ssa/ssa-bootstrap.md). State that changing any of them is Canonical SSA infrastructure work owned by `structure-roblox-projects`. |
+Use [practices](../core/practices.md) for technical contracts and [evidence and freshness](../core/evidence-and-freshness.md) for current facts and developer-practice disputes. [Project guidance](project-profile.md) interprets durable decisions, while [review and persistence](project-profile-persistence.md) governs saving them.
 
-## Decision catalogue
-
-Use this catalogue only for choices that remain open. Do not mechanically resolve every field.
-
-### Source of truth
-
-Options and meanings come from `../core/practices.md`:
-
-- Preserve the detected supported workflow
-- Studio-native
-- Script Sync
-- Rojo
-- Custom / other established workflow
-
-For an established project, preserve the detected supported workflow unless migration or redesign is requested. For greenfield work with no stronger requirement, default to Studio-native. If the user wants external editing, Git, CI, packages, or reproducible filesystem builds, recommend the smallest workflow that actually satisfies those requirements rather than defaulting from tool familiarity alone.
-
-When a detected workflow will be persisted, normalize Studio-native, Script Sync, or Rojo to that concrete workflow rather than the phrase `Preserve detected workflow`. For another established workflow, normalize the `Source of truth` field to `Custom` and preserve the directly implementable durable convention in `Notes` according to [`project-profile.md`](project-profile.md).
-
-### Entrypoints
-
-- Canonical SSA (recommended greenfield)
-- Multiple entrypoints
-- Preserve established entrypoints
-- Custom entrypoints
-
-Preserve coherent established startup topology. For greenfield work, recommend the Canonical SSA bundle unless a concrete runtime requirement makes multiple or custom entrypoints the simpler fit.
-
-For **Multiple entrypoints**, use the derivation rules in `../core/practices.md` and resolve only startup details needed to make each independently starting path unambiguous.
-
-For **Custom entrypoints**, resolve the count, runtime owner, location, startup behavior, and runtime-specific exceptions for every entrypoint the design actually requires.
-
-### Module organization
-
-- Feature-first (greenfield default)
-- Runtime layers
-- Service/controller
-- Components or ECS
-- Preserve established organization
-- Custom
-
-Canonical SSA already resolves this field. Otherwise, preserve a coherent established organization and recommend feature-first grouping inside explicit runtime boundaries when no stronger requirement applies.
-
-For **Custom**, resolve grouping rules inside server, client, and shared boundaries, including naming and material exceptions.
-
-Example normalized preference: `Feature-first inside separate Server, Client, and Shared boundaries.`
-
-### Module style
-
-- Plain Luau (greenfield default)
-- Preserve an existing framework
-- Named framework or custom lifecycle
-
-Canonical SSA already resolves this field. Otherwise, preserve an established framework or lifecycle unless redesign or migration is requested; for greenfield work, recommend plain Luau with explicit dependencies and add lifecycle phases only when ordering or readiness is observable.
-
-For a named framework or custom lifecycle, resolve the framework name, module discovery rule, lifecycle phases, dependency ownership, and material exceptions.
-
-Example normalized preference: `Plain Luau with explicit requires and Init/Start only where readiness ordering is observable.`
-
-### Naming
-
-Use the naming rules in `../core/practices.md`. Ask only when naming is materially unresolved or the user wants a reusable convention different from detected/default behavior.
-
-### Tests
-
-Prefer existing checks and test placement. For a new project with no explicit test convention, use existing static/type/lint/build checks when introduced by the project and the smallest relevant Studio playtests for runtime behavior. Ask only when test placement, framework choice, or validation policy is itself a material organization decision.
-
-## Defaults and summary
-
-When `use recommended` is selected, keep every value already resolved by the explicit request, coherent established conventions, or applicable project profile, then accept recommendations for remaining choices. If a recommendation still needs a fallback, use:
-
-- detected supported source-of-truth workflow, otherwise Studio-native;
-- coherent established entrypoints, organization, and module style, otherwise the Canonical SSA bundle for greenfield work without a conflicting requirement;
-- coherent established naming, otherwise the new-project naming defaults in `../core/practices.md`;
-- existing checks and test placement, otherwise the smallest relevant available validation.
-
-For task-local decisions, summarize only the resolved choices that materially affect the current task, then continue without an extra approval stop unless the user requested one.
-
-When project-profile persistence applies, pass only the durable choices within that persistence scope to [`project-profile-persistence.md`](project-profile-persistence.md) for the authorized write.
-
-Preference resolution is complete when every material open choice is directly implementable or explicitly blocked.
+Resolution is complete when consequential open choices have been selected or the exact unresolved decision is named, and the resulting implementation/design has unambiguous ownership and verification.

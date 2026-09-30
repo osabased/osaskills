@@ -14,14 +14,17 @@ def _markdown_texts(root: Path):
             yield path, path.read_text(encoding="utf-8")
 
 
-def test_structure_profile_has_one_canonical_agents_location():
+def test_structure_guide_prefers_existing_docs_and_preserves_legacy_profile():
     for path, text in _markdown_texts(STRUCTURE_ROOT):
         assert ".codex/roblox-structure.md" not in text, path
     profile = (
         STRUCTURE_ROOT / "references" / "conventions" / "project-profile.md"
     ).read_text(encoding="utf-8")
-    assert ".agents/roblox/structure.md" in profile
-    assert "Structural dependencies" in profile
+    assert "Prefer a coherent existing project guide" in profile
+    assert "When no equivalent destination exists, propose `.agents/roblox/project.md`" in profile
+    assert "Legacy `.agents/roblox/structure.md`" in profile
+    assert "including deliberately owned dependency targets" in profile
+    assert "never automatically delete the profile" in profile
 
 
 def test_canonical_ssa_owns_module_loader_target_end_to_end():
@@ -36,7 +39,9 @@ def test_canonical_ssa_owns_module_loader_target_end_to_end():
     assert "b427a3e03fe9368a26e344b5e37f7466fe2ca878" in ssa
     assert "structure-roblox-projects` owns this dependency" in ssa
     assert "must not select a substitute, advance the pin" in ssa
-    assert "Structural dependencies" in preferences
+    assert "documented ModuleLoader SSA contract" in preferences
+    assert "exact compatibility option for a deliberately adopted target" in preferences
+    assert "not the default for new projects or a currentness claim" in preferences
 
 
 def test_resource_project_state_uses_agents_namespace_and_schema_v3():
@@ -124,17 +129,18 @@ def test_nested_project_onboarding_requires_instruction_scope_visibility():
     persistence = (
         STRUCTURE_ROOT / "references" / "conventions" / "project-profile-persistence.md"
     ).read_text(encoding="utf-8")
-    for path, text in (
-        ("project-adoption.md", adoption),
-        ("project-profile.md", profile),
-        ("project-profile-persistence.md", persistence),
-    ):
-        assert "working directory" in text, path
-        assert "not usable onboarding" in text.lower() or "do not claim usable fresh-agent onboarding" in text.lower(), path
+    assert "working directory" in adoption
+    assert "do not claim usable fresh-agent onboarding" in adoption.lower()
     assert "ancestor active instruction file" in adoption
-    assert "ancestor `AGENTS.md`" in persistence
     assert "not authorized" in adoption
-    assert "not authorized" in persistence
+    assert "intended entry directory and instruction scope" in profile
+    assert "actual host's discovery behavior" in profile
+    assert "not automatically visible to agents starting above that project" in profile
+    assert "within the user's authorized scope" in profile
+    assert "Do not claim usable fresh-agent onboarding" in profile
+    assert "Ancestor pointers are separate reviewed writes" in persistence
+    assert "report the visibility limitation and required entry point" in persistence
+    assert "Do not write the project guide, assessment, or instruction pointer before the user approves the preview" in persistence
 
 
 def test_external_project_authority_is_preserved_not_reselected():

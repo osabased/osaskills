@@ -1,4 +1,4 @@
 interface:
   display_name: "Structure Roblox Projects"
-  short_description: "Bootstrap, review, design, migrate, or organize Roblox structure"
-  default_prompt: "Use $structure-roblox-projects to inspect the current Roblox project context and guide me toward a concrete recommended setup or structural improvement."
+  short_description: "Orient Roblox agents and guide needs-led project setup"
+  default_prompt: "Use $structure-roblox-projects to understand this Roblox project or learn my needs for a new one, then present an overview or researched setup for review."

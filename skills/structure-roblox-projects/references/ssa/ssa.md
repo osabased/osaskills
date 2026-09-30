@@ -2,7 +2,7 @@
 
 Use this contract for structural and lifecycle work in recognized canonical Single Script Architecture (SSA). A canonical SSA area has the applicable `Server/` or `Client/` root, its entrypoint directly calls the pinned `ModuleLoader.Start(...)` on that root, and no conflicting startup convention is evident in the affected area.
 
-Treat this signature as a fast, defeasible recognition check. Inspect bootstrap infrastructure only when evidence conflicts or the task changes it; then read [`ssa-bootstrap.md`](ssa-bootstrap.md). An internal edit with unchanged placement, lifecycle, mapping, and structural integration does not activate this skill.
+Treat this signature as a fast, defeasible recognition check. Inspect bootstrap infrastructure only when evidence conflicts or the task changes it; then read [`ssa-bootstrap.md`](ssa-bootstrap.md). First resolve the actual loader identity, version, configuration, and project-local contract; a matching Start signature alone does not establish this exact compatibility. Routine internal edits in an already oriented project do not require this reference.
 
 ## 1. Choose runtime ownership
 

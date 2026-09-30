@@ -1,123 +1,61 @@
-# Roblox structure project profile
+# Reusable Roblox project guidance
 
-Use this reference when:
+Use when interpreting existing project documentation, building an onboarding overview, or proposing a correction to saved guidance. [Review and persistence](project-profile-persistence.md) owns saving and instruction-pointer edits.
 
-- a material structural convention remains unresolved and the nearest project-local `.agents/roblox/structure.md` may resolve it;
-- a persisted convention materially conflicts with the structure encountered while following it and that mismatch must be classified or repaired;
-- the user explicitly requests reusable project-level structural preferences, profile creation, repair, normalization, or update;
-- an Implementation establishes the durable structure of a greenfield project/experience;
-- an established-project Implementation lacks usable agent onboarding and either a useful profile already exists or the current bootstrap establishes at least one high-confidence durable structural convention; or
-- an explicitly requested project-wide redesign or migration is being implemented and changes durable structural conventions.
+## Find and reuse the project's guide
 
-A project profile is **convention memory**, not modification authority and not a repository snapshot. It records only durable structural rules deliberately selected or coherently established in the project.
+Read applicable instructions and the documentation they identify first. Prefer a coherent existing project guide over creating a competing document. When no equivalent destination exists, propose `.agents/roblox/project.md` under the affected project root. The document describes how to work in that project; it does not grant modification authority.
 
-Read [`project-profile-persistence.md`](project-profile-persistence.md) after this file when persistence handling is in scope: explicit profile/preference setup, foundational setup, established-project onboarding initialization, verified drift repair during an authorized Implementation, or an implemented project-wide redesign/migration that changes durable conventions. Entering that reference does not itself authorize a write; it owns persistence-mode authority, confirmation, and mutation behavior. This file owns profile interpretation and the durable profile contract.
+A useful guide makes the project navigable to an agent without this chat. It covers the applicable orientation areas in [project orientation](../workflows/project-orientation.md), anchors material facts to implemented sources, and exposes relevant missing evidence. Reuse the usable sections even when other sections need investigation. Do not equate a title, fixed headings, an instruction marker, or one convention with verified completeness.
 
-## Read and apply profiles
+Project documentation is evidence whose scope and freshness must be established. The current request and governing instructions prevail; within those bounds, coherent implemented ownership/conventions guide ordinary work. Resolve an apparent filesystem/DataModel conflict through the actual authoring mapping before choosing which description is stale.
 
-1. Locate only the nearest applicable project-local `.agents/roblox/structure.md` under the affected project root.
-2. Treat each recognized non-empty convention section as evidence only for that decision. A missing section means the profile has no preference for that decision. A profile never grants permission to modify project content or override governing instructions, tool rules, or safety rules.
-3. Apply profile evidence only to material choices the explicit request and coherent affected-area convention have not already resolved.
-4. If following a persisted convention produces a material mismatch, apply the profile's **Freshness** contract before treating that convention as stale. Until staleness is established, preserve coherent implementation and treat the profile conflict as unresolved drift rather than reshaping the project to match it.
-5. Do not infer, synthesize, or backfill preferences from omitted sections when reading a profile.
+## Content and structure
 
-Do not read or write a global structure profile. If the affected project root cannot be identified, profile persistence is blocked. Keep normalized decisions task-local and report the missing root as the blocker.
-
-## Profile contract
-
-`.agents/roblox/structure.md` answers:
-
-> What structural rules should agents preserve?
-
-It does not answer:
-
-> What did the repository look like the last time an agent inspected it?
-
-Do not persist:
-
-- current task scope or modification authority;
-- exact dependency graphs;
-- current Remote or Bindable inventory;
-- transient file-layout details;
-- task-specific startup traces;
-- task-specific bootstrap findings;
-- temporary risks, blockers, or validation observations.
-
-Profiles contain one managed interpretation section plus sparse convention sections.
-
-Every profile this skill creates or updates must contain this exact managed section immediately after the title:
+Adapt headings to the project. A useful starting shape is:
 
 ```markdown
-## Freshness
+# Roblox project guide
 
-Treat a persisted convention as stale only when following it produces a verified mismatch and focused inspection, using the applicable source-of-truth representation, establishes a different coherent implemented convention at the same scope. A local exception, unresolved mapping, or ambiguous/pre-existing change is not enough. During authorized implementation, repair only the smallest unsupported persisted decision and preserve still-supported guidance; otherwise leave the profile unchanged and report the mismatch.
+## Scope and evidence
+Project/target boundaries, evidence reviewed, relevant inaccessible surfaces.
+
+## Authoring and topology
+Owned source, generated/vendor/Studio-owned content, runtime or host mapping.
+
+## Startup and systems
+Bootstrap/lifecycle owners, major feature areas, dependency and authority rules.
+
+## Working conventions
+Placement, naming/API/lifecycle/cleanup/test conventions and intentional exceptions.
+
+## Development and verification
+Authoritative preparation/check/build/sync definitions, Studio/host checks, delivery ownership.
+
+## Rechecking this guide
+Sources of truth and change signals that require focused reinspection.
 ```
 
-`Freshness` is interpretation guidance, not project convention evidence. Keep it canonical rather than customizing it from project observations.
+Explain stable relationships and non-obvious rules. Link entry files, manifests, configurations, tests, and existing docs. Commands can be shown when needed for an executable handoff, but cite their owning definition and verify rather than treating the displayed copy as authoritative forever. Do not duplicate inventories or version lists cheaply discoverable from native configuration.
 
-Use only the recognized convention sections that contain intentionally persisted durable conventions:
+Include the review date and evidence scope; dates do not substitute for checking changed facts. Explicitly label supported project facts, provisional inferences, inaccessible surfaces, and checks that were or were not run. The guide can be useful with declared gaps; do not hide them behind a claim of full onboarding.
 
-- `Source of truth`
-- `Entrypoints`
-- `Module organization`
-- `Module style`
-- `Structural dependencies`
-- `Naming`
-- `Tests`
-- `Notes`
+Keep the assessment separate from factual working instructions. If the user approves saving assessment, use a clearly labeled section or a separate destination named in the preview. Optional proposals remain proposals until chosen. Do not persist temporary task logs, access secrets, or unselected defaults as conventions.
 
-`Structural dependencies` is reserved for dependencies whose exact identity, pin, placement, or upgrade behavior is owned by the project's structural architecture. Do not use it as a general dependency list. A structurally owned dependency remains a structural decision even when another workflow performs its acquisition or verification.
+## Freshness and drift
 
-Every convention section is optional. Missing sections express no project-profile preference and contribute no evidence during convention resolution. Do not populate an omitted section with a recommendation, detected convention, or default merely to make the profile look complete.
+Recheck relevant claims when a source link, mapping, target, tool/dependency contract, startup path, ownership, or canonical command changes or contradicts observed behavior. Investigate at the claimed scope before declaring a convention stale. A local exception, unresolved mapping, or dirty/pre-existing change alone is insufficient.
 
-Example:
+Preserve reliable sections and existing human-authored documentation. Present the smallest evidence-backed guide correction for review; do not silently repair even during authorized implementation. A user's explicit request to save/update documentation can approve that operation; otherwise the exact preview waits for their approval.
 
-```markdown
-# Roblox Structure Profile
+## Legacy `.agents/roblox/structure.md`
 
-## Freshness
+Existing profiles are narrow convention memory and remain valid evidence at their stated scope. Preserve their `Freshness` guidance and supported choices, including deliberately owned dependency targets. Missing fields express no preference. Do not reinterpret a sparse profile as an exhaustive project overview or fill it with inferred defaults.
 
-Treat a persisted convention as stale only when following it produces a verified mismatch and focused inspection, using the applicable source-of-truth representation, establishes a different coherent implemented convention at the same scope. A local exception, unresolved mapping, or ambiguous/pre-existing change is not enough. During authorized implementation, repair only the smallest unsupported persisted decision and preserve still-supported guidance; otherwise leave the profile unchanged and report the mismatch.
+When broader onboarding is needed, propose an extension to existing documentation or a project guide that references the legacy profile. Show any pointer replacement, content migration, or profile edit in the review preview; never automatically delete the profile or duplicate its rules into a second authority.
 
-## Source of truth
-Rojo
+## Agent reachability
 
-## Module organization
-Feature-first inside separate Server, Client, and Shared boundaries.
-```
+Provide a small pointer in the applicable project instructions so future agents can reach the guide before Roblox work. Preserve existing human instructions and pointer conventions. Verify the intended entry directory and instruction scope using the actual host's discovery behavior. A nested guide/pointer is not automatically visible to agents starting above that project.
 
-A profile is useful when it contains at least one recognized non-empty durable convention. Profiles this skill creates or updates use the title above and canonical `Freshness` section. For a custom selection, keep the existing normalized representation: write `Custom` in the relevant field and preserve the directly implementable durable convention in `Notes`. Put a named framework and lifecycle summary in `Module style` and preserve extra durable wording in `Notes`. When `Notes` supplies required detail for a custom selection, treat it as part of that persisted decision rather than as an unrelated preference.
-
-## Agent onboarding recognition
-
-Usable agent onboarding requires all of the following:
-
-1. a useful profile with the canonical `Freshness` section;
-2. the canonical owned block below in the affected project root's `AGENTS.md`; and
-3. that project-root `AGENTS.md` lies on the instruction-discovery chain for the intended fresh-agent working directory.
-
-For Codex, instructions are discovered from the repository/project root down to the working directory. A nested project's `AGENTS.md` is therefore not loaded by a fresh session started above that project. When the intended fresh-agent working directory is above the affected project root, treat the project-root block as persisted but **not usable onboarding**. [`project-profile-persistence.md`](project-profile-persistence.md) owns the visibility check plus any authorized ancestor pointer or explicit onboarding limitation.
-
-Canonical project-root block:
-
-```markdown
-<!-- structure-roblox-projects:onboarding:start -->
-## Roblox structure onboarding
-
-Before making a structural placement, startup, source-of-truth, organization, or structurally owned dependency decision, read `.agents/roblox/structure.md` for the project's durable structural conventions.
-<!-- structure-roblox-projects:onboarding:end -->
-```
-
-Use this contract only to recognize whether onboarding is already usable. It does not authorize an `AGENTS.md` write. When persistence or onboarding mutation is active, [`project-profile-persistence.md`](project-profile-persistence.md) owns append/update/create behavior, instruction-scope visibility, and write authority.
-
-## Existing profiles
-
-- Treat recognized non-empty convention sections as durable convention evidence and missing sections as intentionally unset.
-- Preserve unrelated existing convention sections during targeted updates. Do not normalize, add, remove, or rewrite them merely because another field is being changed.
-- When a persisted convention and implementation differ, use the **Freshness** test before classifying the persisted decision as stale. A coherent local exception does not invalidate a broader project convention, and a filesystem/DataModel mismatch is not established until the applicable source-of-truth mapping is resolved.
-- Treat dirty, pre-existing, partial, or otherwise ownership-ambiguous changes as insufficient evidence of a replacement convention until the relevant state is established.
-- Remove or replace only the smallest unsupported persisted decision. Preserve still-supported clauses in the same section when the section bundles multiple durable rules.
-
-When profile evidence still leaves a material choice unresolved for the current task, resolve that choice with [`preference-resolution.md`](preference-resolution.md). Do not persist the resulting task-local recommendation unless [`project-profile-persistence.md`](project-profile-persistence.md) requires it or the user explicitly requests project-level persistence for that choice.
-
-Profile interpretation is complete when every material recognized persisted convention has been applied, classified as unresolved drift, or proven stale under the `Freshness` contract. If a persistence mode becomes applicable, continue with [`project-profile-persistence.md`](project-profile-persistence.md).
+When an ancestor pointer is needed, propose only a project-scoped link in an instruction file within the user's authorized scope. If visibility cannot be established or that write is unavailable, say exactly where agents must start or what owner action is needed. Do not claim usable fresh-agent onboarding merely because a file was created.
