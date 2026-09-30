@@ -24,6 +24,7 @@ from validate_resource_bundle import (
 )
 from validate_resource_record import load_record, nonempty_string
 from validate_skill import NO_PACKAGE_IDENTITY_RE
+from guard_skill_update import marker_path
 
 RECONCILIATION_STATES = {"matched", "mismatched", "blocked", "unknown", "not-applicable"}
 VERIFICATION_STATES = {"unverified", "unavailable", "verified", "failed"}
@@ -60,6 +61,11 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         "reason": "",
     }
     try:
+        guard = marker_path(skill_root.resolve())
+        if guard.exists() or guard.is_symlink():
+            result["status"] = "blocked"
+            result["reason"] = "skill promotion is pending or interrupted; reconcile its maintenance transaction"
+            return result
         if not (skill_root / "SKILL.md").is_file():
             raise ValueError("generated skill directory does not contain SKILL.md")
         if not record_path.is_file() or record_path.suffix.lower() not in {".yaml", ".yml"}:

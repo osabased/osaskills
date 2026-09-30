@@ -1,4 +1,4 @@
-"""Deterministic checks for the structure skill's routing contract."""
+"""Packaging and reference integrity; behavior is evaluated with scenario runs."""
 from __future__ import annotations
 
 import re
@@ -39,15 +39,11 @@ def _anchors(path: Path) -> set[str]:
     return anchors
 
 
-def test_frontmatter_is_valid_and_activation_description_is_discriminating():
+def test_frontmatter_is_valid():
     data = _frontmatter()
-    assert data["name"] == "structure-roblox-projects"
-    description = data["description"].lower()
-    for material_boundary in ("placement", "source-of-truth", "startup", "migration"):
-        assert material_boundary in description
-    assert "do not use" in description
-    assert "ordinary logic" in description
-    assert len(description) <= 360
+    assert data["name"] == ROOT.name
+    assert isinstance(data["description"], str)
+    assert 0 < len(data["description"]) <= 360
 
 
 def test_relative_markdown_links_and_anchors_resolve():
@@ -64,57 +60,21 @@ def test_relative_markdown_links_and_anchors_resolve():
                 assert anchor in _anchors(target_path), f"{source}: missing anchor {target}"
 
 
-def test_activation_gate_precedes_routing_and_excludes_internal_edits():
-    activation = PARENT.index("## Activation gate")
-    core_loop = PARENT.index("## Core loop")
-    routing = PARENT.index("## Reference routing")
-    assert activation < core_loop < routing
-    gate = PARENT[activation:core_loop].lower()
-    assert "ordinary logic" in gate
-    assert "inside already placed modules" in gate
-    assert "selects no route" in gate
-    assert "apply this gate before routing" in gate
-
-
-def test_route_table_connects_each_route_to_its_reference():
-    table = PARENT.split("## Reference routing", 1)[1].split("## Resolve conventions", 1)[0]
-    expected = {
-        "Onboarding/setup": "references/workflows/onboarding.md",
-        "Ordinary structure": "references/core/practices.md",
-        "Write boundary": "references/core/modification-scope.md",
-        "Script Sync": "references/workflows/script-sync.md",
-        "Rojo": "references/workflows/rojo.md",
-        "Migration workflow": "references/workflows/migration.md",
-        "Structural-change safeguards": "references/workflows/migration.md",
-    }
-    for branch, reference in expected.items():
-        row = next(line for line in table.splitlines() if f"**{branch}**" in line)
-        assert reference in row
-
-
-def test_route_completion_contracts_are_concrete():
-    assert "concrete provisional setup immediately" in PARENT
-    assert "Treat supplied paths, instance trees, manifests, mappings, diffs" in PARENT
-    assert "For every executable entrypoint" in PARENT
-    assert "Produce concrete migration slices rather than phase headings" in PARENT
-    topology = PARENT.split("For any topology-sensitive implementation", 1)[1]
-    for requirement in (
-        "intended write set",
-        "tracing of affected requires",
-        "recovery boundary",
-        "inspection of the resulting diff",
-        "focused structural plus runtime validation",
-    ):
-        assert requirement in topology
-
-
-def test_development_tooling_detail_lives_in_rojo_reference():
-    parent_section = PARENT.split("## Conditional development-tooling setup", 1)[1].split(
-        "## Modification scope", 1
-    )[0]
-    rojo = (ROOT / "references" / "workflows" / "rojo.md").read_text(encoding="utf-8")
-    assert "owns the detailed ship/exclude" in parent_section
-    assert len(parent_section.splitlines()) <= 6
-    assert "## Development and release artifacts" in rojo
-    assert "## Observable client previews" in rojo
-
+def test_all_references_are_reachable_from_the_entrypoint():
+    pending = [PARENT_PATH.resolve()]
+    visited = set()
+    link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    while pending:
+        source = pending.pop()
+        if source in visited:
+            continue
+        visited.add(source)
+        for target in link_re.findall(source.read_text(encoding="utf-8")):
+            if "://" in target or target.startswith("mailto:"):
+                continue
+            path_part = target.partition("#")[0]
+            destination = (source.parent / path_part).resolve() if path_part else source
+            if destination.is_relative_to(ROOT.resolve()) and destination.suffix == ".md":
+                pending.append(destination)
+    expected = {p.resolve() for p in (ROOT / "references").rglob("*.md")}
+    assert expected <= visited, f"Unreachable references: {expected - visited}"

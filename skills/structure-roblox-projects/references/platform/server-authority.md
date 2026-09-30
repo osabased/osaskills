@@ -6,6 +6,7 @@ Treat Server Authority as an engine simulation model, not as a synonym for ordin
 
 ## Structural rules
 
+- When setting `AuthorityMode` to `Server`, inspect the prerequisite settings it changes automatically: next-generation replication, the input action system, deferred signals, fixed simulation, and streaming. Account for those configuration effects in the write set and validation; verify their current properties in the official setup documentation.
 - Custom predicted gameplay can intentionally execute core deterministic simulation on both client and server. Shared simulation code therefore belongs in a client-visible location such as `ReplicatedStorage` when both sides must execute it; final state authority still belongs to the server.
 - Keep secrets, privileged validation, persistence, purchases, and authoritative-only data server-only. Replicated deterministic code and rollback-aware state are inspectable by clients.
 - Preserve a clear simulation-to-presentation boundary. Effects, sounds, smoothing, and other irreversible presentation work should not accidentally become part of rollback-sensitive simulation.
@@ -21,7 +22,7 @@ Trace the affected:
 - InputActions or InputContexts that drive core simulation;
 - rollback-aware attributes or synchronized state;
 - `RunService.Rollback` handling for custom Luau state;
-- predictive instance creation; and
+- predictive instance creation, including source script/instance identity used for deterministic stitching (identical code in separate scripts is not the same source); and
 - simulation-to-presentation boundaries.
 
 ## Validation

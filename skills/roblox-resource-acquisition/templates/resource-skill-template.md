@@ -19,12 +19,18 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 
 1. ...
 
+## On-demand maintenance
+
+- Promotion guard: At activated use, check `<skill-directory-parent>/.skill-maintenance/<skill-directory-name>.json`; ordinary dependent use waits while it exists. For `required`/`conditional`, the Current-block check below also honors this guard. This presence check still applies to `not-applicable` children. Controlled candidate validation is separate from ordinary operational use.
+- Freshness triggers: For a task-relevant current platform/tool claim, acquisition/upgrade or generation/refresh, source drift, reusable defect, or consequential practice decision, invoke `roblox-resource-acquisition` once for the affected scope and read its `references/on-demand-maintenance.md`. Carry the exact target, claim and source/reproduction evidence; an already active maintenance handoff need not recursively invoke itself.
+- Target and economy: Resolve the project's adopted target and applicable local compatibility guidance first. Healthy immutable-target use keeps the declared pin/lock/header check, narrow status query and deferred integrity gate; it needs no unrelated latest-release research. Tested factual repairs use the parent's approved policy; dependency versions, architecture/defaults and changed practices return to the user. No scheduled upkeep.
+
 ## Repair interrupt
 
 - Trigger: Invoke `roblox-resource-acquisition` in `repair/reconcile` mode when using this guidance requires guessing, bypassing an instruction, repeating a previously discovered workaround, or making an undocumented adjustment likely to recur. A harmless task-local adjustment with no reusable guidance defect is not an interrupt.
 - Hard defect: If correctness, security, canonical identity, selected version, or verification is unreliable, stop dependent work and enter the parent reconciliation and repair path before continuing.
 - Soft defect: If the workaround is safe and reversible, the immediate task may continue, but invoke the parent repair diagnosis and surface the reproduction, workaround, and durable guidance correction before completion.
-- Handoff: Capture the task, installed state, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction. Parent invocation authorizes diagnosis and reporting, not package edits outside current task authorization.
+- Handoff: Capture the task, installed state, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction. Parent invocation authorizes diagnosis and reporting. Edits require current task authorization or the parent's applicable standing factual-repair grant in `references/on-demand-maintenance.md#approved-authority`; reuse either within its scope without another permission request.
 
 ## Common path
 

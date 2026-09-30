@@ -44,6 +44,8 @@ For an externally owned project dependency, alternatives are informational only:
 
 ## Required safety guidance
 
+Every newly generated or refreshed child carries the [on-demand maintenance hook](on-demand-maintenance.md#cheap-use-and-triggered-research): check its sibling promotion guard before ordinary use, hand triggered current-source claims or defects to the parent once per affected scope, and preserve cheap immutable-target use. This guard applies even when resource reconciliation is `not-applicable`. Project-local compatibility guidance resolves the adopted exact target before newer shared instructions. Existing children require explicit enrollment and validation before maintained coverage is claimed.
+
 Include a **Security notes** section in every generated skill. When no resource-specific trust boundary exists, state that explicitly and preserve normal Roblox server-authoritative expectations. When applicable, cover:
 
 - remote/client input validation expectations;

@@ -4,6 +4,8 @@ Use this reference when the current or target structure is under `Workspace.Sand
 
 Treat the effective sandbox container and capability set as a structural security boundary. The mere existence of `Sandboxed` or `Capabilities` properties in the engine API is not evidence that capability enforcement is active.
 
+Nested sandbox containers intersect capability sets. Requires outside the sandbox and cross-boundary Bindable/Remote communication are subject to capability constraints. A script can move only to a container with the same or a subset of its capabilities. Execution capabilities are an additional requirement alongside class, RunContext, and location; verify the affected operation against the current documentation.
+
 Before moving code across an active or materially suspected boundary:
 
 1. Identify the effective sandbox container and capability set.

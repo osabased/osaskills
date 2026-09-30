@@ -4,7 +4,7 @@ Use this reference when choosing an unresolved layout, placement, entrypoint, gr
 
 When canonical SSA is selected or recognized, [`ssa.md`](../ssa/ssa.md) owns its feature placement, discovery, and lifecycle contract. Use this file only for ordinary choices that contract does not resolve.
 
-Modification authority comes from [`SKILL.md`](../../SKILL.md). If a proposed write crosses an unclear, shared, generated, or protected boundary, use [`modification-scope.md`](modification-scope.md).
+Modification authority comes from [`SKILL.md`](../../SKILL.md). For explicit restrictions, ambiguous ownership, or broad/generated writes that may exceed the task, use [`modification-scope.md`](modification-scope.md).
 
 ## Source of truth
 
@@ -40,6 +40,7 @@ Treat platform-specific statements as architectural guidance rather than frozen 
 
 - Put server-only code in server containers, client-only code in supported client locations, and code intentionally executed or consumed on both sides in a client-visible shared container such as `ReplicatedStorage`.
 - A `Script` with `RunContext = Client` can run from `ReplicatedStorage`; a `LocalScript` cannot run there.
+- Use `LocalScript` for client entrypoints in `StarterPlayerScripts` or `StarterCharacterScripts`. A Client-RunContext `Script` there can run both the original and its runtime clone, causing duplicate startup.
 - A ModuleScript executes independently in each Luau environment that requires it. Do not treat mutable module return state as shared across client/server or across `Actor` boundaries.
 - Treat replicated code and data as visible to clients. Keep privileged authority and validation on the server.
 - Avoid restricted requires from a desynchronized parallel phase.

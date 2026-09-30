@@ -2,7 +2,7 @@
 
 Use this contract for structural and lifecycle work in recognized canonical Single Script Architecture (SSA). A canonical SSA area has the applicable `Server/` or `Client/` root, its entrypoint directly calls the pinned `ModuleLoader.Start(...)` on that root, and no conflicting startup convention is evident in the affected area.
 
-Treat this signature as a fast, defeasible recognition check. Inspect bootstrap infrastructure only when evidence conflicts or the task changes it; then read [`ssa-bootstrap.md`](ssa-bootstrap.md). An internal edit inside an already placed feature that changes no placement, lifecycle, or structural integration remains on the established-project fast path.
+Treat this signature as a fast, defeasible recognition check. Inspect bootstrap infrastructure only when evidence conflicts or the task changes it; then read [`ssa-bootstrap.md`](ssa-bootstrap.md). An internal edit with unchanged placement, lifecycle, mapping, and structural integration does not activate this skill.
 
 ## 1. Choose runtime ownership
 

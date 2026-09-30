@@ -62,6 +62,8 @@ When adopting these assertions as a project gate, make the checker a repository-
 
 Test the project's selected assertions as well as the generic checker: removing an implementation subtree while retaining a similarly named bootstrap, removing a required server/shared dependency while retaining entrypoints, and leaking development content must each fail. Mutate either artifact independently so a clean sourcemap cannot hide a broken place build. Fragment matching is useful for exclusion classes such as `.story`; use exact paths for identity and required-content claims.
 
+The bundled checker proves only its requested path, fragment, and global class-count invariants. It does not verify per-path classes, source identity/duplicate mappings, RunContext, or execution. Supply project-owned assertions for those parts of the runtime-topology contract above.
+
 ## Observable client previews
 
 Apply this section when a Rojo-backed development workflow is intended to prove rendered client behavior or actual input.

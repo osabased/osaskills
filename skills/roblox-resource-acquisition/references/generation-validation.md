@@ -28,6 +28,8 @@ Every `required` or `conditional` child also names the read-only `scripts/check_
 
 Pin claims to the exact source version/release/commit reviewed when possible. If no stable identifier exists, record the exact review date and source state instead of pretending it is version-pinned. In the generated skill, record resource verification separately as `verified`, `unverified`, or `unavailable`; source review is not runtime proof.
 
+Include the template's on-demand maintenance hook in every newly generated or refreshed child. Before claiming direct-use coverage for an existing legacy child, enroll and independently validate that hook under [on-demand maintenance](on-demand-maintenance.md#coverage-and-observations). Preserve the conditional common path: trigger source research only for relevant current claims, lifecycle decisions or defects. A template update alone does not enroll existing host copies. Any repair promotion, including a `not-applicable` resource-reconciliation child, honors the sibling promotion guard before ordinary use.
+
 For an externally owned project dependency, generated guidance documents the exact target supplied by its authority. It does not gain authority to recommend a replacement or newer pin. If source review or verification contradicts that target, hand the block back through [project-adoption.md](project-adoption.md) instead of silently retargeting the child.
 
 Do not treat trust in the upstream resource as proof that the generated instructions are correct. A generated skill must carry its own validation/verification state and must not claim behavioral validation merely because its resource was curated.

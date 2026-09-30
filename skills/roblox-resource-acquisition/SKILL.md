@@ -11,6 +11,10 @@ Use community resources only when the task actually requires a resource decision
 
 Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification. When another durable project contract supplies the resource identity, pin, role, or replacement policy, preserve that target and authority rather than reopening selection.
 
+## On-demand upkeep
+
+At activated use, check for the sibling `.skill-maintenance/roblox-resource-acquisition.json` promotion guard; ordinary dependent use waits while it exists. For a task-relevant current fact, acquisition/upgrade or generation/refresh, source drift, reusable defect, or consequential practice decision, read [on-demand maintenance](references/on-demand-maintenance.md). It holds the user's narrow standing factual-repair grant, source-observation and guarded-promotion rules. Keep a healthy immutable child's conditional fast path; use-time upkeep adds no schedule or unrelated source survey.
+
 ## Repair interrupt
 
 Activate this skill in `repair/reconcile` mode when using a resource or generated child exposes reusable friction, even if a local workaround succeeds and the immediate task can continue.
@@ -19,7 +23,7 @@ A workaround is defect evidence when following the reusable guidance requires gu
 
 - **Hard defect:** Correctness, security, canonical identity, selected version, or verification is unreliable. Stop the dependent work, preserve the smallest reproduction, and enter state reconciliation plus the repair loop before continuing.
 - **Soft defect:** The workaround is safe, reversible, and does not weaken correctness or a trust boundary. The immediate task may continue, but invoke this repair diagnosis and surface the reproduction, workaround, and durable guidance correction before completion. Do not silently absorb the defect as task-local friction.
-- **Authority:** Invocation authorizes diagnosis and reporting. Edit this package, a generated child, lifecycle state, or another artifact only when the current request authorizes that mutation. Otherwise propose the precise durable correction and leave the affected artifact unchanged.
+- **Authority:** Invocation authorizes diagnosis and reporting. Edit this package, a generated child, lifecycle state, or another artifact only when the current request or the approved on-demand maintenance policy authorizes that mutation. Otherwise propose the precise durable correction and leave the affected artifact unchanged.
 
 A soft instruction defect does not by itself require unrelated pin, provenance, record, or learning reconciliation. Escalate into full state reconciliation only when the classification is hard, state is missing or mismatched, a current block exists, verification fails or drifts, or an authorized repair invalidates lifecycle evidence.
 
