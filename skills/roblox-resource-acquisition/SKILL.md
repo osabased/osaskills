@@ -9,7 +9,7 @@ During Roblox implementation, proactively consider libraries/modules and develop
 
 ## Core rule
 
-Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification. When another durable project contract supplies the resource identity, pin, role, or replacement policy, preserve that target and authority rather than reopening selection.
+Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification. For open-ended selection, establish the actual use before choosing; use the [qualification workflow](references/qualification-workflow.md#0-decide-whether-acquisition-is-warranted) for decision-sensitive intake and supported recommendations, including native/custom acquisition choices when restoration or updating matters. Narrow download-only scope does not remove that decision work. When another durable project contract supplies the resource identity, pin, role, or replacement policy, preserve that target and authority rather than reopening selection.
 
 ## On-demand upkeep
 

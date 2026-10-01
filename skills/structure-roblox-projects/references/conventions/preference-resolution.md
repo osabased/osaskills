@@ -20,7 +20,7 @@ Single bootstrap pairs, independent scripts, service/controller modules, feature
 
 ## Present options and carry the choice forward
 
-For credible competing approaches, present a small useful set with project fit, ownership, costs/constraints, current evidence, and uncertainty. Let the user choose the consequential direction. Batch independent choices; serialize dependent ones. A tool's popularity or release recency does not settle suitability.
+For credible competing approaches, present a small useful set with project fit, ownership, costs/constraints, current evidence, and uncertainty, and recommend the supported fit with its decisive tradeoff and what would change it. Let the user choose genuinely consequential unresolved directions; make supported routine choices within the authorized task. An options list does not replace a justified recommendation. Batch independent choices; serialize dependent ones. A tool's popularity or release recency does not settle suitability.
 
 Accept natural-language preferences and preserve previously selected decisions. After the choice, produce one coherent implementable setup/design; routine details follow that direction. Do not add another approval stop for task-local implementation already authorized, except the explicit setup review and documentation save gates.
 

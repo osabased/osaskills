@@ -6,9 +6,10 @@ Use this reference for resource targeting, discovery, trust qualification, under
 
 For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. Default adoption includes a reusable user-wide child and host adoption; an explicit evaluation-only or narrower request still controls.
 
-Before searching, derive a compact acquisition brief from the current task:
+Before selecting, derive a compact acquisition brief from the request, relevant project evidence, and prior answers:
 
-- capability actually needed;
+- actual intended purpose and capability needed, beyond API names alone;
+- relevant behavior/lifecycle and deciding priorities;
 - each named resource's intended role and selector, if any;
 - requested lifecycle scope: evaluation/comparison, current-task use, project acquisition/adoption, reusable child guidance, or host adoption;
 - project/runtime constraints;
@@ -17,6 +18,8 @@ Before searching, derive a compact acquisition brief from the current task:
 - installation/dependency constraints;
 - whether installed resource state can drift independently and how its identity/version can be observed;
 - what a minimal successful verification would demonstrate, when verification is required or useful.
+
+When purpose or another missing input could change an open-ended choice, ask one concise question or a small batch and wait before selecting, downloading a selected candidate, or creating its dependency files. Continue independent inspection or research while waiting. Resolve only decision-sensitive gaps; reuse adequate supplied context and do not repeat answered questions. A narrow evaluation/download-only request still needs this intake when the answer could change the choice. Do not reopen fixed identities/selectors or block routine use of an adequate authorized capability; ask about a fixed target only for a genuinely missing compatibility input.
 
 Use relevant supplied learnings while deriving the brief. For external evaluation/adoption, consult the applicable external learnings store ([learnings-store.md](learnings-store.md)) for recorded environment blockers, gotchas and rejections. A learning is a past observation, not current proof; confirm whether a blocker still applies through a bounded relevant access check before declaring proof unavailable.
 
@@ -33,6 +36,14 @@ Search is a means, not the goal.
 Stop evaluation when the decision criteria are satisfied, remaining uncertainty is unlikely to change the decision, and additional research has lower value than making a reversible choice and validating it. Avoid both premature adoption and indefinite comparison.
 
 For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly and apply [community-evidence.md](community-evidence.md) for meaningful comparisons. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Follow its conditional direction-selection routing and keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
+
+Once the brief is sufficient, ground a recommendation in current canonical behavior sources and relevant maintained practice evidence. Apply the rubric rather than inventing a second ranking scheme. State the decisive tradeoff, material uncertainty, and what would change the recommendation; an options list alone does not complete selection. Leave genuinely consequential unresolved directions to the user while making supported routine choices locally. Missing evidence does not establish a winner or developer consensus.
+
+### Compare acquisition and maintenance workflows
+
+When delivery, restoration, updating, or dependency workflow matters, evaluate it separately from the library identity. Inspect an existing manager's actual configuration and role. Preserve a healthy established workflow for ordinary work unless the task authorizes reconsideration or evidence shows a material problem; another tool's newer release alone is not a migration reason.
+
+Assess suitable maintained native acquisition routes and any proposed custom route against the same needs: exact target availability and pin enforcement, restore/update behavior, environment and authoring compatibility, delivery constraints, and ongoing maintenance cost. Read the relevant canonical docs/source for decisive capability claims. A missing manifest does not establish that custom lock/restore tooling is needed. If custom tooling is justified, name the actual constraint that native routes do not meet and account for its upkeep rather than assuming vendoring or a universal manager. A download-only request limits writes and lifecycle work, not this decision-sensitive comparison.
 
 ### Positively targeted resources
 
