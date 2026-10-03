@@ -9,7 +9,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-from review_queue import (SCHEMA, Store, Conflict, atomic_json, cards_for, digest,
+from review_queue import (SCHEMA, Store, Conflict, Preferences, DEFAULT_KEYS, atomic_json, cards_for, digest,
                           file_hash, identity, make_server, selected_xml)
 
 
@@ -112,7 +112,8 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertTrue(Path(a['path']).with_name('decisions.json').exists())
 
     def test_http_ranges_access_controls_and_persistent_save(self):
-        server=make_server(self.store)
+        profile=Preferences(self.root/'shared'/'keys.json')
+        server=make_server(self.store,preferences=profile)
         thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
         self.addCleanup(server.server_close);self.addCleanup(server.shutdown)
         port=server.server_port
@@ -133,6 +134,13 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(request('POST','/api/save',body,headers)[0],200)
         self.assertEqual(request('POST','/api/save',body,headers)[0],409)
         self.assertEqual(Store(self.root).state()['decisions']['fight']['decision'],'keep')
+        keys=json.loads(request('GET','/api/keys')[1])
+        self.assertEqual(keys['profile']['keys'],DEFAULT_KEYS)
+        changed=dict(keys['profile'],keys={**DEFAULT_KEYS,'pov':'KeyV'})
+        self.assertEqual(request('POST','/api/keys',json.dumps(changed),headers)[0],200)
+        self.assertEqual(request('POST','/api/keys',json.dumps(changed),headers)[0],409)
+        self.assertEqual(Preferences(profile.path).read()['keys']['pov'],'KeyV')
+        self.assertEqual(Store(self.root).state()['revision'],1)
 
     def test_occupied_port_is_rejected_instead_of_sharing_a_listener(self):
         with make_server(self.store) as server:
@@ -149,6 +157,43 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(playback['cards'][1]['sync_links'],[])  # Later reaction is not simultaneous.
         for name,raw in before.items():self.assertEqual((self.root/name).read_bytes(),raw)
         self.assertNotIn('sync_links',self.store.queue['cards'][0])
+
+    def test_timeline_stacks_local_alternates_and_matches_exported_part_origins(self):
+        data=self.store.playback_queue()['timeline']
+        self.assertEqual(data['total'],1400)
+        self.assertEqual(data['parts'][1]['start'],600)
+        self.assertEqual([l['id'] for l in data['lanes']],['b','main'])
+        alt=next(s for s in data['segments'] if s['lane']=='b')
+        self.assertEqual((alt['start'],alt['end'],alt['offset'],alt['view']),(108,118,82,1))
+        self.assertNotIn('social',[s['eid'] for s in data['segments']])
+        self.data['sources'][0]['duration_sec']=600.011
+        atomic_json(self.root/'events.json',self.data)
+        updated=self.store.timeline_data()
+        self.assertAlmostEqual(updated['parts'][1]['start'],600+1/60)
+        xml,_=selected_xml(self.data,self.plan,self.probes,self.state['decisions'],'all')
+        second=ET.fromstring(xml).findall('.//sequence/media/video/track/clipitem')[1]
+        self.assertAlmostEqual(updated['parts'][1]['start'],int(second.findtext('start'))/60)
+
+    def test_keyboard_profile_shares_across_instances_and_rejects_lost_updates(self):
+        path=self.root/'shared'/'keys.json'
+        first,second=Preferences(path),Preferences(path)
+        self.assertFalse(path.exists())
+        self.assertEqual(first.read()['revision'],0)
+        value=first.save(dict(revision=0,keys={**DEFAULT_KEYS,'pov':'KeyV'}))
+        self.assertEqual(second.read(),value)
+        with self.assertRaises(Conflict):second.save(dict(revision=0,keys=DEFAULT_KEYS))
+        before=path.read_bytes()
+        for keys in [{**DEFAULT_KEYS,'pov':'Digit1'},{**DEFAULT_KEYS,'pov':'Ctrl+KeyW'},dict(pov='KeyV')]:
+            with self.assertRaises(ValueError):second.save(dict(revision=1,keys=keys))
+            self.assertEqual(path.read_bytes(),before)
+        self.assertEqual(second.save(dict(revision=1,keys=DEFAULT_KEYS))['keys'],DEFAULT_KEYS)
+
+    def test_profile_os_lock_prevents_cross_server_writes(self):
+        first=Preferences(self.root/'shared'/'keys.json')
+        second=Preferences(first.path)
+        with first.exclusive():
+            with self.assertRaises(Conflict):second.save(dict(revision=0,keys=DEFAULT_KEYS))
+        self.assertEqual(second.save(dict(revision=0,keys=DEFAULT_KEYS))['revision'],1)
 
 
 if __name__=='__main__':unittest.main()

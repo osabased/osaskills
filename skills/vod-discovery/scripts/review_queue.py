@@ -1,6 +1,8 @@
 """Local, persistent moment review. Python standard library + FFmpeg only."""
 import argparse
 from copy import deepcopy
+from contextlib import contextmanager
+from fractions import Fraction
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -18,6 +20,7 @@ import webbrowser
 
 from vod import export_events, number, probe, read
 from review_timeline import build_review
+from premiere_xml import frame_rate
 
 SCHEMA = 'vod-review-queue/v1'
 DECISIONS = ('unreviewed', 'keep', 'later', 'skip')
@@ -165,6 +168,79 @@ class Conflict(ValueError):
     pass
 
 
+DEFAULT_KEYS = dict(previous='ArrowLeft', next='ArrowRight', pov='KeyP', povBack='Shift+KeyP',
+                    play='Space', back='Shift+ArrowLeft', forward='Shift+ArrowRight',
+                    keep='Digit1', later='Digit2', skip='Digit3', undo='KeyU')
+KEY_CODES = ([f'Key{c}' for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'] + [f'Digit{n}' for n in range(10)] +
+             ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'Enter', 'Backspace',
+              'Delete', 'Home', 'End', 'PageUp', 'PageDown', 'Comma', 'Period', 'Slash',
+              'Semicolon', 'Quote', 'BracketLeft', 'BracketRight', 'Backslash', 'Minus', 'Equal'])
+
+
+class Preferences:
+    """One keyboard profile for all queues/ports; independent of review decisions."""
+    def __init__(self, path=None):
+        base = Path(os.environ.get('LOCALAPPDATA') or os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config')
+        self.path = Path(path) if path else base / 'vod-discovery' / 'keybinds.json'
+        self.lock = threading.Lock()
+
+    @staticmethod
+    def validate(keys):
+        if not isinstance(keys, dict) or set(keys) != set(DEFAULT_KEYS):
+            raise ValueError('Provide every keyboard action')
+        allowed = set(KEY_CODES) | {'Shift+' + code for code in KEY_CODES}
+        if any(not isinstance(v, str) or v not in allowed for v in keys.values()):
+            raise ValueError('Use a letter, number, navigation or punctuation key, optionally with Shift')
+        if len(set(keys.values())) != len(keys):
+            raise ValueError('Each shortcut must be unique')
+
+    def read(self):
+        if not self.path.exists():
+            return dict(schema=1, revision=0, keys=deepcopy(DEFAULT_KEYS))
+        value = read(self.path)
+        if value.get('schema') != 1 or type(value.get('revision')) is not int or value['revision'] < 0:
+            raise ValueError('Invalid saved keyboard profile')
+        self.validate(value.get('keys'))
+        return value
+
+    @contextmanager
+    def exclusive(self):
+        # Separate lock file stays stable across atomic profile replacements.
+        with self.lock:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.with_suffix('.lock').open('a+b') as lock:
+                if lock.tell() == 0:
+                    lock.write(b'0'); lock.flush()
+                lock.seek(0)
+                try:
+                    if os.name == 'nt':
+                        import msvcrt
+                        msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+                    else:
+                        import fcntl
+                        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except OSError as exc:
+                    raise Conflict('Keyboard settings are being saved by another project. Try again.') from exc
+                try:
+                    yield
+                finally:
+                    lock.seek(0)
+                    if os.name == 'nt':
+                        msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+                    else:
+                        fcntl.flock(lock, fcntl.LOCK_UN)
+
+    def save(self, patch):
+        self.validate(patch.get('keys'))
+        with self.exclusive():
+            current = self.read()
+            if type(patch.get('revision')) is not int or patch['revision'] != current['revision']:
+                raise Conflict('Keyboard settings changed in another project. Reopen Keys and try again.')
+            value = dict(schema=1, revision=current['revision'] + 1, keys=deepcopy(patch['keys']))
+            atomic_json(self.path, value)
+            return value
+
+
 class Store:
     def __init__(self, folder):
         self.folder = Path(folder).resolve(strict=True)
@@ -175,7 +251,43 @@ class Store:
         self.cards = {c['id']: c for c in self.queue['cards']}
         self.playback_plan = read(self.folder / 'plan.json')
         self.validate_inputs()
+        self.timeline = self.timeline_data()
         self.state()
+
+    def timeline_data(self):
+        sources = {s['id']: s for s in read(self.folder / 'events.json')['sources']}
+        probes = read(self.folder / 'probes.json')
+        mains = self.playback_plan['main_sources']
+        fps = frame_rate(next(s for s in probes[mains[0]]['streams'] if s['codec_type'] == 'video'))[2]
+        parts, cursor = [], 0
+        for sid in mains:
+            source = sources[sid]
+            frames = round(Fraction(str(source['duration_sec'])) * fps)
+            parts.append(dict(id=sid, label=source.get('label', sid), start=float(cursor / fps),
+                              end=float((cursor + frames) / fps)))
+            cursor += frames
+        origins = {p['id']: p['start'] for p in parts}
+        segments = []
+        for card in self.cards.values():
+            for index, view in enumerate(card['views']):
+                if view['source_id'] in origins:
+                    origin = origins[view['source_id']]
+                    segments.append(dict(eid=card['id'], view=index, lane='main', origin=origin, offset=0,
+                        start=origin+view['start_sec'], end=origin+view['end_sec'], label=view['title'], uncertainty=0))
+        lanes = []
+        for alt in self.playback_plan.get('alternates', []):
+            card = self.cards[alt['event_id']]
+            index = next(i for i, v in enumerate(card['views']) if v['source_id'] == alt['source_id'])
+            sid = alt['source_id']
+            if sid not in [lane['id'] for lane in lanes]:
+                lanes.append(dict(id=sid, label=sources[sid].get('label', sid)))
+            origin = origins[alt['main_source_id']]
+            offset = alt['source_anchor_sec'] - alt['main_anchor_sec']
+            segments.append(dict(eid=card['id'], view=index, lane=sid, origin=origin, offset=offset,
+                start=origin+alt['source_start_sec']-offset, end=origin+alt['source_end_sec']-offset,
+                label=card['views'][index]['title'], uncertainty=alt['uncertainty_sec']))
+        return dict(parts=parts, segments=segments, total=float(cursor / fps),
+                    lanes=lanes + [dict(id='main', label=sources[mains[0]].get('pov', 'Main'))])
 
     def validate_inputs(self):
         for name, expected in self.queue['snapshots'].items():
@@ -210,6 +322,7 @@ class Store:
     def playback_queue(self):
         # Derive from the validated immutable plan; preserve manifest/state hashes.
         queue = deepcopy(self.queue)
+        queue['timeline'] = self.timeline
         plan = self.playback_plan
         for card in queue['cards']:
             card['sync_links'] = [dict(
@@ -275,8 +388,9 @@ class Store:
             return dict(url=f'/exports/{name}/review.xml', path=str(folder / 'review.xml'), count=len(selected))
 
 
-def make_server(store, port=0):
+def make_server(store, port=0, preferences=None):
     token = secrets.token_urlsafe(32)
+    preferences = preferences or Preferences()
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -312,8 +426,10 @@ def make_server(store, port=0):
             try:
                 if path == '/api/queue':
                     return self.json_response(dict(queue=store.playback_queue(), state=store.state(), token=token))
+                if path == '/api/keys':
+                    return self.json_response(dict(profile=preferences.read(), defaults=DEFAULT_KEYS, codes=KEY_CODES))
                 assets = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css',
-                          '/playback.js': 'playback.js'}
+                          '/playback.js': 'playback.js', '/timeline.js': 'timeline.js', '/keys.js': 'keys.js'}
                 if path in assets:
                     target = ASSETS / assets[path]
                 elif path.startswith('/previews/') and path.removeprefix('/previews/') in {
@@ -375,6 +491,8 @@ def make_server(store, port=0):
                     return self.json_response(store.mutate(patch, undo=self.path == '/api/undo'))
                 if self.path == '/api/export':
                     return self.json_response(store.export(patch))
+                if self.path == '/api/keys':
+                    return self.json_response(preferences.save(patch))
                 return self.json_response({'error': 'Not found'}, 404)
             except Conflict as exc:
                 self.json_response({'error': str(exc)}, 409)
@@ -406,6 +524,7 @@ def main():
     serve.add_argument('--queue', required=True)
     serve.add_argument('--port', type=int, default=8765)
     serve.add_argument('--open', action='store_true')
+    serve.add_argument('--preferences', help='Override the shared keyboard-profile path (for isolated testing)')
     args = parser.parse_args()
     if args.command == 'init':
         print(initialize(args.events, args.plan, args.out, args.padding))
@@ -425,7 +544,7 @@ def main():
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
             raise SystemExit('This queue is already open in another server. Use its URL.')
-        with make_server(store, args.port) as server:
+        with make_server(store, args.port, Preferences(args.preferences)) as server:
             url = f'http://127.0.0.1:{server.server_port}'
             print(url, flush=True)
             if args.open:

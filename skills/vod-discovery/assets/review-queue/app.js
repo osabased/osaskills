@@ -3,7 +3,7 @@ const $ = id => document.getElementById(id);
 const {mapSwitch, nextView} = VODPlayback;
 const labels = {unreviewed:'Not reviewed', keep:'Keep', later:'Later', skip:'Skip'};
 const video = $('video');
-let queue, state, token, current, viewIndex = 0;
+let queue, state, token, current, timeline, keys, viewIndex = 0;
 let chain = Promise.resolve(), broken = false, busy = true, timer, lastTick = 0, autoMuted = false;
 function clock(seconds, decimals = false) {
   const n = Math.max(0, seconds), whole = Math.floor(n);
@@ -93,11 +93,12 @@ function refreshTime() {
     if (mapping) uncertainties.push(mapping.uncertainty_sec);
     button.disabled = !active && !mapping;
     button.title = active ? 'Current POV' : mapping ?
-      'Same moment · sync ±' + mapping.uncertainty_sec + 's (P)' : 'No aligned coverage at this time';
+      'Same moment · sync ±' + mapping.uncertainty_sec + 's (' + (keys?.label('pov') || '') + ')' : 'No aligned coverage at this time';
   }
   if (current.views.length > 1) $('sync-status').textContent = uncertainties.length ?
     'Local sync ±' + Math.max(...uncertainties) + 's' :
     (current.sync_links?.length ? 'No alternate here' : 'No verified sync');
+  timeline?.tick();
 }
 async function autoplay() {
   try { await video.play(); }
@@ -107,7 +108,7 @@ async function autoplay() {
     video.muted = true; autoMuted = true; $('enable-audio').hidden = false;
     try { await video.play(); }
     catch (second) {
-      if (second.name === 'NotAllowedError') notice('Press Space or Play to start.');
+      if (second.name === 'NotAllowedError') notice('Press Play to start.');
       else if (second.name !== 'AbortError') throw second;
     }
   }
@@ -118,6 +119,8 @@ function activateSound() {
   if (!video.paused) video.play().catch(error => { if (error.name !== 'AbortError') notice('Press Play to enable sound.'); });
 }
 async function loadView(position) {
+  $('unavailable').hidden = true;
+  for (const choice of ['keep','later','skip']) $(choice).disabled = false;
   const view = current.views[viewIndex];
   $('title').textContent = view.title; $('summary').textContent = view.summary;
   $('clock').textContent = view.label + ' · ' + clock(view.start_sec) + '–' + clock(view.end_sec);
@@ -149,6 +152,7 @@ async function loadView(position) {
     video.load();
   });
   refreshTime();
+  timeline?.changed();
   await autoplay();
 }
 async function display(id) {
@@ -176,12 +180,15 @@ async function action(fn) {
   try { await fn(); } catch (error) { fail(error); } finally { busy = false; }
 }
 function navigate(id) {
-  if (id === current.id) return;
+  if (id === current.id) {
+    if (!$('unavailable').hidden) return action(async () => { await loadView(video.currentTime); notice(''); });
+    return;
+  }
   return action(async () => {
     video.pause(); await flush();
     if (broken) return;
     await display(id); await save({event_id:id, view:viewIndex});
-    if (innerWidth < 850) { $('queue-panel').hidden = true; $('toggle-queue').setAttribute('aria-expanded','false'); }
+    closeMobileTimeline();
   });
 }
 function switchView(index) {
@@ -202,6 +209,36 @@ function cyclePOV(direction = 1) {
   const result = nextView(current, viewIndex, video.currentTime, direction);
   if (result) switchView(result.index); else notice('No alternate coverage at this time.');
 }
+function closeMobileTimeline() {
+  $('queue-panel').classList.remove('mobile-open'); $('toggle-queue').setAttribute('aria-expanded','false');
+}
+function timelineJump(time, segment) {
+  return action(async () => {
+    video.pause(); await flush();
+    if (broken) return;
+    if (!segment) {
+      timeline.browse = time; timeline.tick(); $('unavailable').hidden = false;
+      for (const choice of ['keep','later','skip']) $(choice).disabled = true;
+      notice('Choose a shaded moment to preview.'); return;
+    }
+    const card = queue.cards.find(c => c.id === segment.eid), view = card.views[segment.view];
+    const position = time - segment.origin + segment.offset - view.preview_start_sec;
+    if (position < 0 || position >= view.preview_end_sec - view.preview_start_sec) {
+      notice('No prepared preview at this time.'); return;
+    }
+    await save({event_id:card.id,view:segment.view,position_sec:position});
+    if (!broken) await display(card.id);
+    closeMobileTimeline();
+  });
+}
+$('return-preview').onclick = () => action(async () => { await loadView(video.currentTime); notice(''); });
+function updateKeyHints() {
+  if (!keys?.profile) return;
+  for (const name of ['keep','later','skip']) $(name).querySelector('kbd').textContent = keys.label(name);
+  for (const name of ['previous','next','undo']) $(name).title = VODKeys.labels[name]+' ('+keys.label(name)+')';
+  $('key-hints').textContent = keys.label('previous')+' / '+keys.label('next')+' moments · '+keys.label('pov')+' POV · '+keys.label('play')+' play';
+  refreshTime();
+}
 function step(delta) {
   if (!current) return;
   const cards = filtered(); let index = cards.findIndex(c => c.id === current.id);
@@ -209,6 +246,7 @@ function step(delta) {
   if (cards[index + delta]) navigate(cards[index + delta].id);
 }
 function decide(decision) {
+  if (!$('unavailable').hidden) return;
   return action(async () => {
     video.pause(); await flush({decision});
     if (broken) return;
@@ -236,7 +274,11 @@ $('note').addEventListener('blur', () => { if (!busy && !broken) flush(); });
 $('filter').onchange = renderList;
 $('speed').onchange = () => { video.playbackRate = Number($('speed').value); };
 $('previous').onclick = () => step(-1); $('next').onclick = () => step(1);
-for (const [button, panel] of [['toggle-queue','queue-panel'],['toggle-info','info'],['toggle-notes','notes']]) {
+$('toggle-queue').onclick = () => {
+  const shown = $('queue-panel').classList.toggle('mobile-open');
+  $('toggle-queue').setAttribute('aria-expanded',String(shown)); timeline?.draw();
+};
+for (const [button, panel] of [['toggle-info','info'],['toggle-notes','notes']]) {
   $(button).onclick = () => { $(panel).hidden = !$(panel).hidden; $(button).setAttribute('aria-expanded', String(!$(panel).hidden)); };
 }
 video.addEventListener('timeupdate', () => {
@@ -254,27 +296,23 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && cur
 window.addEventListener('beforeunload', () => { if (current && !busy && !broken) flush(); });
 document.addEventListener('keydown', event => {
   if (/INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable ||
-      event.ctrlKey || event.metaKey || event.altKey || event.repeat || broken || !current) return;
+      $('keys-dialog').open || event.target.closest?.('.segment') || event.repeat || broken || !current) return;
   activateSound();
-  if (['1','2','3'].includes(event.key)) {
-    event.preventDefault(); decide({'1':'keep','2':'later','3':'skip'}[event.key]);
-  } else if (event.key.toLowerCase() === 'u') {
-    event.preventDefault(); $('undo').click();
-  } else if (event.key.toLowerCase() === 'p') {
-    event.preventDefault(); cyclePOV(event.shiftKey ? -1 : 1);
-  } else if (event.code === 'Space') {
-    event.preventDefault();
-    if (!busy) video.paused ? autoplay().catch(fail) : video.pause();
-  } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-    event.preventDefault();
-    const delta = event.key === 'ArrowRight' ? 1 : -1;
-    if (event.shiftKey) {
-      if (!busy) video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + delta * 5));
-    } else step(delta);
-  } else if (event.key === 'Escape') {
+  if (event.key === 'Escape') {
     $('info').hidden = true; $('toggle-info').setAttribute('aria-expanded','false');
-    $('queue-panel').hidden = true; $('toggle-queue').setAttribute('aria-expanded','false');
+    closeMobileTimeline(); return;
   }
+  const command = keys?.match(event);
+  if (!command) return;
+  event.preventDefault();
+  if (busy) return;
+  if (['keep','later','skip'].includes(command)) decide(command);
+  else if (command === 'undo') $('undo').click();
+  else if (command === 'pov' || command === 'povBack') cyclePOV(command === 'pov' ? 1 : -1);
+  else if (command === 'previous' || command === 'next') step(command === 'next' ? 1 : -1);
+  else if (!$('unavailable').hidden) notice('Return to a prepared moment to play or seek.');
+  else if (command === 'play') video.paused ? autoplay().catch(fail) : video.pause();
+  else video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + (command === 'forward' ? 5 : -5)));
 }, true);
 function exportQueue(mode) {
   return action(async () => {
@@ -296,6 +334,9 @@ $('export').onclick = () => exportQueue('keep'); $('export-all').onclick = () =>
     const response = await fetch('/api/queue'), data = await response.json();
     if (!response.ok) throw new Error(data.error);
     queue = data.queue; state = data.state; token = data.token;
+    keys = new VODKeys(token,updateKeyHints,() => video.pause());
+    await keys.load();
+    timeline = new VODTimeline(queue.timeline,() => ({card:current,index:viewIndex,position:video.currentTime}),timelineJump,clock);
     $('coverage').textContent = queue.coverage;
     await display(state.current_id); $('saved').textContent = 'Saved';
   } catch (error) { fail(error); } finally { busy = false; }
