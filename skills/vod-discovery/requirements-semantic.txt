@@ -1,0 +1,5 @@
+# Optional CPU retrieval environment; keep separate from the preparation/Audalign environments.
+fastembed==0.8.1
+onnxruntime==1.30.0
+numpy==2.5.3
+tokenizers==0.23.2

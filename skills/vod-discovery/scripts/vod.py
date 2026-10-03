@@ -73,6 +73,15 @@ def prepare(args):
     out.mkdir(parents=True, exist_ok=True)
     metadata, duration = probe(source)
     settings = {k: getattr(args, k) for k in ("window", "overlap", "interval", "width", "model", "language", "no_transcribe")}
+    cpp_config = None
+    if getattr(args, 'asr_backend', 'faster-whisper') == 'whisper-cpp' and not args.no_transcribe:
+        from whisper_cpp import runtime_identity
+        if not args.whisper_cli or not args.whisper_model:
+            raise ValueError('whisper-cpp requires --whisper-cli and --whisper-model')
+        cpp_config = runtime_identity(args.whisper_cli, args.whisper_model, args.whisper_device,
+                                      args.whisper_threads, args.whisper_gpu)
+        settings['asr'] = cpp_config
+        settings['model'] = Path(args.whisper_model).name
     stat = source.stat()
     identity = {"path": str(source), "size": stat.st_size, "mtime_ns": stat.st_mtime_ns}
     source_id = hashlib.sha256(str(source).casefold().encode()).hexdigest()[:12]
@@ -107,17 +116,22 @@ def prepare(args):
             transcript_status = "not_requested" if args.no_transcribe else "no_audio_stream"
             stream_status = {}
             if audio_streams and not args.no_transcribe:
-                if model is None:
+                if model is None and cpp_config is None:
                     from faster_whisper import WhisperModel
                     model = WhisperModel(args.model, device="cpu", compute_type="int8")
                 for audio_index in audio_streams:
                     audio = attempt / f"audio-stream-{audio_index}.wav"
                     subprocess.run(["ffmpeg", "-v", "error", "-ss", str(start), "-i", str(source), "-t", str(end-start),
                                     "-map", f"0:{audio_index}", "-vn", "-ac", "1", "-ar", "16000", str(audio)], check=True)
-                    iterator, _ = model.transcribe(str(audio), language=None if args.language == "auto" else args.language,
-                                                   vad_filter=True, condition_on_previous_text=False)
-                    stream_segments = [{"start": round(s.start + start, 3), "end": round(s.end + start, 3),
-                                        "text": s.text, "audio_stream": audio_index} for s in iterator]
+                    if cpp_config is not None:
+                        from whisper_cpp import transcribe
+                        stream_segments = transcribe(audio, attempt / f'whisper-stream-{audio_index}',
+                                                     start, audio_index, cpp_config, args.language)
+                    else:
+                        iterator, _ = model.transcribe(str(audio), language=None if args.language == "auto" else args.language,
+                                                       vad_filter=True, condition_on_previous_text=False)
+                        stream_segments = [{"start": round(s.start + start, 3), "end": round(s.end + start, 3),
+                                            "text": s.text, "audio_stream": audio_index} for s in iterator]
                     stream_status[str(audio_index)] = "transcribed" if stream_segments else "no_speech_detected"
                     segments.extend(stream_segments)
                 segments.sort(key=lambda s: s["start"])
@@ -295,6 +309,10 @@ def main():
             p.add_argument("--window", type=float, default=300); p.add_argument("--overlap", type=float, default=15)
             p.add_argument("--model", default="small"); p.add_argument("--language", default="auto")
             p.add_argument("--no-transcribe", action="store_true"); p.add_argument("--limit-packets", type=int, default=0)
+            p.add_argument('--asr-backend', choices=['faster-whisper', 'whisper-cpp'], default='faster-whisper')
+            p.add_argument('--whisper-cli'); p.add_argument('--whisper-model')
+            p.add_argument('--whisper-device', choices=['vulkan', 'cpu'], default='vulkan')
+            p.add_argument('--whisper-threads', type=int, default=4); p.add_argument('--whisper-gpu', type=int, default=0)
         else:
             p.add_argument("--start", type=float, required=True); p.add_argument("--end", type=float, required=True)
     p = sub.add_parser("export"); p.add_argument("--events", required=True); p.add_argument("--out", required=True)

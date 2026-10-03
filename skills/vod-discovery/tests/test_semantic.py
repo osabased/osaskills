@@ -1,0 +1,109 @@
+from pathlib import Path
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+import semantic
+from evidence import input_signature
+from vod import read, write
+
+
+def row(start, end, value, stream=1):
+    return {'start': start, 'end': end, 'text': value, 'occurrences': [
+        {'start_sec': start, 'end_sec': end, 'audio_stream': stream, 'segment_index': 0,
+         'transcript_file': 'raw.json', 'evidence_file': 'evidence.json'}]}
+
+
+class SemanticPassages(unittest.TestCase):
+    def test_context_keeps_source_clocks_streams_and_gaps(self):
+        source = {'source_id': 'a', 'source': 'a.mp4'}
+        rows = [row(310, 314, 'first'), row(314, 317, 'second'), row(311, 319, 'other', 2), row(370, 374, 'later')]
+        docs = semantic.passages([(source, rows)], len)
+        context = next(d for d in docs if d['passage_kind'] == 'context')
+        self.assertEqual((context['start_sec'], context['end_sec'], context['text']), (310, 317, 'first\nsecond'))
+        self.assertEqual({o['audio_stream'] for s in context['segments'] for o in s['occurrences']}, {1})
+        self.assertTrue(any(d['text'] == 'later' for d in docs))
+        self.assertFalse(any('other' in d['text'] and 'first' in d['text'] for d in docs))
+
+    def test_long_text_keeps_every_character_without_inventing_word_times(self):
+        value = 'This is a long transcript. ' * 80
+        pieces = semantic.split_text(value, len)
+        self.assertEqual(''.join(x[0] for x in pieces), value)
+        self.assertTrue(all(len(x[0]) <= 384 and value[x[1]:x[2]] == x[0] for x in pieces))
+        docs = semantic.passages([({'source_id': 'a', 'source': 'a.mp4'}, [row(30, 40, value)])], len)
+        self.assertTrue(all(d['start_sec'] == 30 and d['end_sec'] == 40 for d in docs))
+
+    def test_overlap_grouping_preserves_other_povs_streams_and_repeated_events(self):
+        docs = [{'source_id': sid, 'audio_stream': stream, 'start_sec': a, 'end_sec': b}
+                for sid, stream, a, b in [('a', 1, 10, 20), ('a', 1, 11, 22), ('b', 1, 11, 22),
+                                         ('a', 2, 11, 22), ('a', 1, 110, 120)]]
+        hits, info = semantic.rank(docs, [.9, .8, .7, .6, .5], 3)
+        self.assertEqual(len(hits), 3)
+        self.assertEqual(info['distinct_results'], 4)
+        self.assertTrue(info['more_available'])
+        self.assertEqual(info['overlapping_results_grouped'], 1)
+        self.assertEqual(semantic.rank([], [], 10)[0], [])
+
+
+class SemanticSnapshots(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name); self.prepared = self.root / 'prepared'; self.index = self.root / 'literal'
+        self.out = self.root / 'semantic'
+        write(self.prepared / 'source.json', {'id': 'a', 'path': 'a.mp4', 'duration_sec': 600, 'settings': {'window': 300}})
+        attempt = self.prepared / 'packet-0000/attempt-a'
+        write(attempt / 'packet.json', {'source_id': 'a', 'start_sec': 0, 'end_sec': 300})
+        write(attempt / 'frames.json', {'frames': []}); write(attempt / 'transcript.json', {'segments': []})
+        write(attempt.parent / 'complete.json', {'attempt': 'attempt-a'})
+        self.aggregate = self.index / 'build-a/source-000/transcript.json'
+        write(self.aggregate, {'segments': [row(10, 20, 'Let us make peace.')]})
+        write(self.index / 'index.json', {'schema': 'vod-search/v1', 'build': 'build-a',
+              'inputs': {str(self.prepared): input_signature(self.prepared)},
+              'sources': [{'source_id': 'a', 'source': 'a.mp4', 'aggregate': 'source-000'}],
+              'summary': {'invalid_transcript_segments': 0}})
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def test_raw_changes_are_stale_but_review_notes_are_not(self):
+        before = semantic.snapshot(self.index)[1]
+        write(self.prepared / 'packet-0000/review.json', {'human_note': 'Keep'})
+        self.assertEqual(semantic.snapshot(self.index)[1], before)
+        write(self.prepared / 'packet-0000/attempt-a/transcript.json', {'segments': ['changed']})
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            semantic.snapshot(self.index)
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_reuse_and_failed_rebuild_preserve_published_snapshot(self, loader, identity):
+        class FakeModel:
+            def passage_embed(self, texts, **kwargs):
+                return [[1.] * 384 for _ in texts]
+        loader.return_value = (FakeModel(), len)
+        self.assertFalse(semantic.build(self.index, self.out, 'unused')['reused'])
+        published = (self.out / 'semantic.json').read_bytes()
+        self.assertTrue(semantic.build(self.index, self.out, 'unused')['reused'])
+        self.assertEqual(loader.call_count, 1)
+        write(self.aggregate, {'segments': [row(10, 20, 'Different evidence')]})
+        loader.side_effect = RuntimeError('Inference failed')
+        with self.assertRaises(RuntimeError): semantic.build(self.index, self.out, 'unused')
+        self.assertEqual((self.out / 'semantic.json').read_bytes(), published)
+        with self.assertRaisesRegex(ValueError, 'stale'):
+            semantic.search(self.out, 'unused', 'peace')
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_changed_vectors_are_rejected_before_query_inference(self, loader, identity):
+        loader.return_value = (type('FakeModel', (), {'passage_embed': lambda self, docs, **kw: [[1.] * 384 for _ in docs]})(), len)
+        semantic.build(self.index, self.out, 'unused')
+        manifest = read(self.out / 'semantic.json')
+        (self.out / manifest['build'] / 'vectors.npy').write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'artifacts changed'):
+            semantic.search(self.out, 'unused', 'peace')
+        self.assertEqual(loader.call_count, 1)
+
+
+if __name__ == '__main__':
+    unittest.main()

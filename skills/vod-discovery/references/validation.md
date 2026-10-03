@@ -1,5 +1,30 @@
 # Local validation — 2026-10-03
 
+## Vulkan transcription and semantic retrieval — pilot and integration checks
+
+The skill now has a selectable whisper.cpp backend for `prepare` and a separate `semantic.py` retrieval helper. Forty-two Python tests, the Node Premiere host mock, the skill validator and the isolated semantic dependency check pass. Added tests cover millisecond/source-clock conversion, stream identity, actual backend selection, per-stream context construction, long-text preservation, overlap grouping, stale evidence, failed rebuild preservation and changed embedding artifacts.
+
+whisper.cpp v1.9.4 (`927cfce34f31707e17f2bff35c349632fb9e2c3a`) was built with Vulkan using local MSVC/CMake and unpacked LunarG 1.4.357.0 development files. The runtime log confirms the AMD Radeon RX 5700 XT and selection of `Vulkan0`. No driver or system SDK installation was performed. The original long build path exceeded MSBuild's path limit; the build used a shorter folder and the resulting executable/DLLs were copied into the project.
+
+Reusable local runtime and models:
+
+- CLI: `work/whisper-runtime/whisper-cli.exe`
+- GGML model: `work/downloads/ggml-small.en-q5_1.bin`
+- Semantic Python: `work/semantic-env/Scripts/python.exe`
+- Semantic model folder: `work/semantic-model`
+
+These dependencies are not bundled with the skill archive or GitHub copy. Check their presence and recorded hashes before reuse; [speech-search.md](speech-search.md) contains portable setup and commands.
+
+One 40-second Johan sample took 8.55 seconds through Vulkan versus 10.37 seconds through CPU with the same small.en-q5_1 model, including CLI startup: about 1.21x speed. This single sample does not predict whole-session throughput. Both original five-minute copies were prepared into **fresh** folders (`work/valorantsmp-pilot/whisper-johan` and `whisper-josh`). Each completed two overlapping packets; the new Johan preparation resumed with zero packets reprocessed. Its transcript includes opening dialogue absent from the earlier tiny-model output, but names and other wording still differ or are wrong. No human-reference error rate was measured for real footage, and the model/quantization/VAD settings differ from the old pilot.
+
+A generated 14-second video with two actual audio streams recovered both known speech scripts in the first packet. The second packet starts at source second 6 and retains independent stream IDs and source-local times. A non-speech placeholder extending beyond its packet is preserved as invalid evidence. The real pilot's new transcript index similarly flags one tail segment instead of clamping it. Older transcripts and discovery decisions remain available.
+
+Semantic retrieval uses FastEmbed 0.8.1, ONNX Runtime 1.30.0 and the pinned English BGE-small model, with no PyTorch or database server. It indexed 127 valid transcript rows into 250 individual/context passages across the two newly prepared POVs, reused the unchanged index, and ran with model downloads disabled. Four paraphrased/control queries were tested. A query about watching instead of helping retrieved Johan's matching complaint at 261.12 seconds first. Initially, indexing only broad context diluted that query; adding individual statements resolved this example. Every returned hit's text slice, source time, stream and raw segment reference was verified. Queries after the first model load took about 0.3 seconds on this small corpus.
+
+An unrelated spaceship/surgery query still returned nearest passages. Similarity is not calibrated confidence; no score cutoff or automatic event promotion was added. This pilot does not establish full-session recall, broad semantic accuracy, non-English performance, speaker identity or frame-accurate audio/visual sync. Raw ASR and search output do not update approved events or XML by themselves. No Premiere import or full-length VOD discovery was performed.
+
+See `review/whisper-semantic-verification.json` in the pilot output for the measured runs, provenance, query results, synthetic checks and artifact paths.
+
 ## Optional audio matching and OCR — bounded pilot
 
 Added `audio_match.py`, a pinned optional Audalign requirements file, and `ocr_frames.ps1`; commands and limits are in [optional-tools.md](optional-tools.md). The core preparation requirements remain unchanged. Thirty-three Python tests, the Node Premiere host mock, the skill validator and isolated Audalign dependency check pass.

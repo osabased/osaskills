@@ -32,7 +32,7 @@ Repeated indexing with unchanged inputs reuses the snapshot. A rebuild creates a
 
 - Hits identify the source file and source-local start time, plus exact transcript/evidence files and segment indices for every matching occurrence. Read the relevant joined evidence and open the actual images; text search does not establish visual coverage or synchronize POVs.
 - Coverage lists completed/total packet counts and prepared core ranges. These measure preparation, not human/AI review. Search cannot cover unprepared footage.
-- Queries match literal phrases, case-insensitively. Try shorter phrases, alternate spellings and transcription variants. There are no embeddings, automatic speaker identities or visual/OCR search.
+- This command matches literal phrases, case-insensitively. Try shorter phrases, alternate spellings and transcription variants. Optional meaning-based retrieval uses a separate `semantic.py` command and index; see [speech-search.md](speech-search.md). Neither route establishes speaker identities or searches visual/OCR evidence.
 - The default limit is 20, configurable from 1 to 200. `at_limit: true` means additional matches may have been omitted; narrow the query or raise the limit. This retrieval limit is not a top-N limit on discovered moments.
 - Raw transcript defects and excluded-invalid-segment counts remain visible. An empty search result never establishes that an event did not occur.
 - If a source record or completed packet's transcript, frame map or timing changes, search refuses the stale index. Rebuild it before continuing. Review-ledger changes alone do not require rebuilding.
