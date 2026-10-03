@@ -7,6 +7,7 @@
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
 | My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
 | My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
+| I need to find useful moments across long VODs and prepare concise Premiere markers with relevant alternate POVs | [**vod-discovery**](./skills/vod-discovery/) |
 
 ## Quickstart: local Codex skills
 
@@ -63,3 +64,12 @@ python -m pytest -q -ra skills/structure-roblox-projects/tests
 ```
 
 The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive Codex skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison](./skills/roblox-resource-acquisition/evals/README.md), [direction-selection](./skills/direction-selection/evals/README.md), or [preference-discovery](./skills/preference-discovery/evals/README.md) evaluation guide.
+
+The VOD discovery adapters and panel mock can be checked without footage, model downloads, or Premiere:
+
+```sh
+python -m unittest discover -s skills/vod-discovery/tests -p "test_*.py" -v
+node skills/vod-discovery/tests/test_panel.js
+```
+
+See [VOD discovery setup](./skills/vod-discovery/references/setup.md) for media-processing dependencies and [validation notes](./skills/vod-discovery/references/validation.md) for the limits of the Premiere pilot.
