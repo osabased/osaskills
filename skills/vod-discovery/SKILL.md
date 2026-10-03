@@ -79,6 +79,8 @@ When potentially shared audio could narrow an uncertain correspondence, use the 
 
 ## Export and report
 
+When the editor wants saved Keep/Later/Skip decisions, use the optional [local review queue](references/review-queue.md). It reuses validated events and the authored timeline plan, makes short local previews, and resumes choices/notes/playback in a browser. Keep discovery and alignment status separate from the editor's decisions. Export chosen markers and alternate excerpts while preserving full main chronology; do not silently turn review choices into a final cut. Evaluate the added review step with a small trial rather than promising reduced fatigue. Ordinary marker delivery does not require the dashboard.
+
 Read [references/events.md](references/events.md) for the event format. Write `events.json` with source paths and durations from prepared metadata, evidence references, roles, rationale, source-local intervals, editorial status, and alignment uncertainty. Run `export` to validate it and create `markers.json`.
 
 Author display copy separately from analysis. **Name answers “What moment is this?”** Use a 1–4-word `marker_title` such as `Gear Up`, `Spawn Attack`, or `Truce Talk`. Front-load the distinguishing action/event: assume only the first 10–15 characters are visible. Do not repeat the POV/person already established by the source, track or sequence; another participant's name can distinguish a moment (`Josh's Offer`). No IDs, POV metadata, confidence, review flags, explanations or provenance in Name. Never truncate prose mechanically. Read each source's labels together and compare their first 10–15 characters before export.

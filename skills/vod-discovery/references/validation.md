@@ -130,3 +130,11 @@ The previous XML split a stereo stream into two mono groups. Grouped FCP channel
 The layered import exposed two integration faults, now corrected: Windows URLs must follow Premiere’s `file://localhost/C%3a/...` encoding; sequence In/Out values use sequence-rate frames for mixed-rate sources. The first bad timeline import was moved into the work folder. The corrected project imported its three original source paths without a relink prompt. Fifteen Python tests pass. Saved-project checks verify marker owners/copy/times, complete main parts, exact alternate source and timeline ranges, disabled states, and one stereo group per source with L/R retained.
 
 In the final native project, all five 720p Josh clips were fitted to the 1080p sequence using **Fit to frame**. Enabling the truce alternate displayed Josh full-frame; returning it to disabled restored Johan. Brief playback showed Johan and active stereo meters. The saved project, not raw XML alone, includes this native framing step; see timeline.md.
+
+## Saved review queue
+
+The local browser pilot contains all 17 existing moments and 22 separate POV previews, with three-second context handles where media bounds allow. No additional footage discovery or new alignment was inferred. Decisions are saved separately from evidence and remain initially unreviewed for the editor.
+
+Eight queue tests cover persisted choices/positions/notes, Undo after reload, conflicting revisions, invalid writes preserving previous state, selected/all XML exports, unselected related-event references, unchanged full main chronology, disabled alternate video/audio, stereo grouping, changed-media rejection, unique export snapshots, HTTP byte ranges and request/path restrictions. Together with existing adapters, the Python suite contains 50 passing tests. The Premiere panel mock and skill validator also pass. Browser checks use a disposable copy of the actual pilot queue; the editor's queue is not populated with test choices.
+
+This adds a review interface, not measured proof of lower fatigue or full-session recall. The new selected XML is checked structurally; its actual Premiere import is left to the editor. The previous XML adapter's host verification remains the basis for layout/audio behavior.

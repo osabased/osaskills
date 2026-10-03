@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moment review</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<header><div><span class="eyebrow">VOD DISCOVERY / LOCAL REVIEW</span><h1>One moment at a time.</h1></div><div class="top-actions"><span id="saved" role="status">Loading…</span><button id="export" disabled>Export kept moments</button></div></header>
+<div id="error" role="alert" hidden></div>
+<main>
+<aside aria-label="Moment queue">
+  <div class="queue-heading"><h2>Your moments</h2><span id="count"></span></div>
+  <label class="sr-only" for="filter">Filter moments</label><select id="filter"><option value="all">All moments</option><option value="unreviewed">Not reviewed</option><option value="keep">Keep</option><option value="later">Later</option><option value="skip">Skip</option></select>
+  <nav id="list" aria-label="Choose a moment"></nav>
+  <details><summary>Review coverage</summary><p id="coverage"></p><button id="export-all">Export all moments</button></details>
+</aside>
+<section id="review" aria-label="Current moment">
+  <div class="moment-heading"><div><p id="clock" class="eyebrow"></p><h2 id="title">Loading your queue…</h2></div><span id="decision" class="badge"></span></div>
+  <p id="summary" class="summary"></p><p id="check" class="check" hidden></p>
+  <div id="views" class="views" role="group" aria-label="POV preview"></div>
+  <video id="video" controls preload="metadata" playsinline></video>
+  <div class="playback-meta"><span id="preview-meta"></span><label>Speed <select id="speed"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div>
+  <div class="decision-area"><p>Might you use this in the video?</p><div class="choices"><button id="keep" class="keep"><kbd>1</kbd> Keep</button><button id="later"><kbd>2</kbd> Later</button><button id="skip"><kbd>3</kbd> Skip</button><button id="undo" title="Undo last decision"><kbd>U</kbd> Undo</button></div><p class="hint">Choices are reversible. Later keeps a question open. Skip keeps the moment recoverable.</p></div>
+  <label class="note-label" for="note">Your note <span>optional</span></label><textarea id="note" rows="2" maxlength="4000" placeholder="e.g. Use Josh’s view for the first hit"></textarea>
+  <div id="related"></div>
+  <footer><button id="previous">← Previous</button><span>Space: play / pause · ← →: seek 5s</span><button id="next">Next →</button></footer>
+  <p id="done" class="done" hidden></p>
+</section>
+</main>
+<section class="export-help"><strong>Premiere handoff</strong><span>Export keeps the full main VOD, with chosen source markers and relevant alternatives above it. Main picture and audio play by default. Import into a new review project; existing Premiere timelines do not update.</span><div id="export-result" role="status"></div></section>
+</body></html>
