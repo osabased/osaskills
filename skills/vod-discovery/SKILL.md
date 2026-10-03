@@ -55,6 +55,8 @@ Review across packet boundaries and across the full session. Carry short factual
 
 For unclear, fast, or important events, run `detail` on a narrow interval with denser frames and larger image width. Expand before/after until the causal context is understandable. Inspect the new images. Preserve the uncertainty if the evidence remains insufficient. Do not reject a moment solely because transcription failed, was empty, or sounds uninteresting.
 
+When visible notices or other small text could resolve a question, the optional Windows OCR helper in [references/optional-tools.md](references/optional-tools.md) can read selected detail frames. Preserve their exact frame-map timestamps and raw OCR; verify identities and actions in the images. OCR can misread names and is separate from the speech search index.
+
 ## Relate POVs despite drift
 
 Investigate leads into other POVs when they may explain an off-screen action, add setup/payoff, show the event more clearly, supply useful audio, or reveal a reaction. Follow another hop when new evidence warrants it; stop when the connection becomes speculative or stops adding editorial information. Reuse reviewed ranges and combine overlapping investigations. If a primary POV is designated, use it to organize the first pass without treating unrelated secondary-POV moments as automatically irrelevant. Track secondary coverage gaps explicitly.
@@ -71,7 +73,7 @@ Use the project's `search` command for distinctive phrases or name variants acro
 
 Keep separate fields for editorial status and alignment. Use `observed` only for locally verified timing; `estimated` requires an explicit uncertainty in seconds and an explanation. An estimated correspondence may remain an uncertain suggestion. If no correspondence is established, omit that link and report it as unresolved; do not invent a timestamp or claim an independent event is simultaneous.
 
-Optional audio fingerprinting is discussed in setup.md; it is a search aid, not a required new system. Do not stretch or retime media. When building the requested review timeline, trim only alternate coverage to relevant windows and place it using supported local timing.
+When potentially shared audio could narrow an uncertain correspondence, use the optional Audalign helper in [references/optional-tools.md](references/optional-tools.md). It compares short windows using fingerprinting and waveform correlation in a separate Python environment. Its output is a candidate requiring local review or an unresolved result; normalized scores are not synchronization confidence. Preserve weak matches for other investigation, and never place clips directly from an audio score. Do not stretch or retime media. When building the requested review timeline, trim only alternate coverage to relevant windows and place it using supported local timing.
 
 ## Export and report
 

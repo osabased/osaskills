@@ -1,5 +1,19 @@
 # Local validation — 2026-10-03
 
+## Optional audio matching and OCR — bounded pilot
+
+Added `audio_match.py`, a pinned optional Audalign requirements file, and `ocr_frames.ps1`; commands and limits are in [optional-tools.md](optional-tools.md). The core preparation requirements remain unchanged. Thirty-three Python tests, the Node Premiere host mock, the skill validator and isolated Audalign dependency check pass.
+
+Audalign 1.3.1 was installed in a separate Python 3.12.14 environment at `work/audalign-env/Scripts/python.exe`. Its pins include NumPy 1.26.4 and SciPy 1.12.0; do not mix it into the main Python 3.13 environment. NumPy import stalled in the restricted sandbox and completed outside it; the exact cause was not established. Bounded local matching runs succeeded outside that sandbox. This observation does not establish that every installation needs broader permissions.
+
+Eighteen method/case trials compared fingerprinting, waveform correlation and spectrogram correlation on three real local windows, unrelated footage, a known +2-second delay, and independent synthetic noise. The delay established offset direction. Fingerprinting and waveform correlation agreed around the truce (+81.652 seconds B minus A) and fight (+82.04175 seconds). The later window, unrelated footage and noise remained unresolved under the helper's pilot heuristics. The thresholds were chosen using these examples, not validated on an independent dataset. Spectrogram correlation assigned the independent noise its top rank and normalized score; it is not included in the helper.
+
+The bundled helper reproduced both real candidates and the unrelated-pair rejection end to end using the five-minute video copies. The final version also verified source size/mtime provenance and analysis WAV hashes. Its output remains a review candidate, not a visually verified anchor. This does not validate whole-VOD drift, shared-music cases, frame-accurate picture sync, or full-session recall.
+
+Windows.Media.Ocr with the installed `en-US` language processed four source-timed detail frames. Kill-notice text was detected at Johan 113 seconds and Josh 195 seconds, absent in the preceding 112/194-second samples. Some names and words were misread; raw text and word rectangles are retained. Source timestamps/image hashes, negative-timestamp rejection and preservation of existing output were checked. The machine's execution policy blocked `-File`; the inspected helper ran as a command block without changing that policy. No native UI control or cloud OCR was used.
+
+`review/tool-trial-verification.json` in the pilot output records the controls, raw-result locations, helper runs and OCR checks. These optional tools do not alter the approved events, marker XML, audio grouping or timeline placements. No new Premiere import or full-session discovery was performed.
+
 ## Transcript search and joined evidence — adapter and pilot verification
 
 The skill now reuses CRV 0.10.7 `timeline_lite.build_spans` and `memory.remember/search`. Preparation produces source-timed joined evidence, with independent audio-stream views and explicit nearby-frame labels. A project-local index aggregates all completed packets per VOD before indexing; search preserves exact occurrence references and rejects stale prepared inputs.
