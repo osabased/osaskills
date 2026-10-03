@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import socket
 import subprocess
 import threading
 from urllib.parse import urlsplit
@@ -365,7 +366,17 @@ def make_server(store, port=0):
             except (ValueError, KeyError, TypeError, OSError) as exc:
                 self.json_response({'error': str(exc)}, 400)
 
-    return ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    class LoopbackServer(ThreadingHTTPServer):
+        # HTTPServer's default SO_REUSEADDR can let two Windows servers bind
+        # the same port and send the browser to the wrong process.
+        allow_reuse_address = os.name != 'nt'
+
+        def server_bind(self):
+            if os.name == 'nt':
+                self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+            super().server_bind()
+
+    return LoopbackServer(('127.0.0.1', port), Handler)
 
 
 def main():

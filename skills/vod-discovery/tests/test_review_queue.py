@@ -134,5 +134,10 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(request('POST','/api/save',body,headers)[0],409)
         self.assertEqual(Store(self.root).state()['decisions']['fight']['decision'],'keep')
 
+    def test_occupied_port_is_rejected_instead_of_sharing_a_listener(self):
+        with make_server(self.store) as server:
+            with self.assertRaises(OSError):
+                make_server(self.store, server.server_port)
+
 
 if __name__=='__main__':unittest.main()
