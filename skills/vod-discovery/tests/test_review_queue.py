@@ -139,5 +139,16 @@ class ReviewQueueTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 make_server(self.store, server.server_port)
 
+    def test_playback_metadata_uses_local_plan_without_changing_saved_choices(self):
+        self.store.mutate(dict(revision=0,event_id='fight',decision='keep',note='Preserve me',position_sec=4))
+        before={name:(self.root/name).read_bytes() for name in ('queue.json','state.json','plan.json')}
+        playback=self.store.playback_queue()
+        link=playback['cards'][0]['sync_links'][0]
+        self.assertEqual(link,dict(main_source_id='a',source_id='b',offset_sec=82,
+                         source_start_sec=190,source_end_sec=200,uncertainty_sec=1))
+        self.assertEqual(playback['cards'][1]['sync_links'],[])  # Later reaction is not simultaneous.
+        for name,raw in before.items():self.assertEqual((self.root/name).read_bytes(),raw)
+        self.assertNotIn('sync_links',self.store.queue['cards'][0])
+
 
 if __name__=='__main__':unittest.main()

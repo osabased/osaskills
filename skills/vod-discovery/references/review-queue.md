@@ -18,14 +18,18 @@ The URL is `http://127.0.0.1:8765`. The server binds only to loopback and serves
 ## Editor experience
 
 - Default order: main POV chronology, then independent secondary moments in their own source order. This is not a combined synchronized clock.
-- `1` Keep, `2` Later, `3` Skip, `U` Undo. Space plays/pauses; arrows seek five seconds. Shortcuts do not intercept note entry. Each choice saves before moving forward.
+- `1` Keep, `2` Later, `3` Skip, `U` Undo. Left/right arrows change moments; Shift + left/right seeks five seconds. `P` cycles available POVs; Shift + P cycles backwards. Space plays/pauses. Shortcuts do not intercept note entry or select controls. Each choice saves before moving forward.
 - Keep means potentially useful. Later preserves uncertainty. Skip is recoverable and deletes neither discoveries nor footage. No decision is made from playback completion or preview failure.
-- Auto-save preserves each moment's note, chosen preview, playback position and current moment. Playback position saves approximately every five seconds and on pause/navigation. Wait for **Saved on this computer** before closing. A crashed browser may lose the last few seconds of position or an unconfirmed note, not previously confirmed choices.
-- POV buttons play separate, source-local excerpts with that POV's audio. They are not a synchronized angle switcher; they show timing uncertainty. Premiere exports keep the main picture/audio enabled and the alternative picture/audio disabled.
+- Auto-save preserves each moment's note, chosen preview, playback position and current moment. Playback position saves approximately every five seconds and on pause/navigation. Wait for **Saved** before closing. A crashed browser may lose the last few seconds of position or an unconfirmed note, not previously confirmed choices.
+- POV buttons and `P` translate the current source timestamp through that event's authored local anchor, then subtract the destination preview's source start. They do not use stale saved alternate positions. Translation is allowed only inside each traversed anchor's authored excerpt and the destination preview's bounds; unavailable buttons are disabled. Missing anchors and earlier/later related events do not produce simultaneous switching. Offsets are event-specific, never a whole-VOD drift correction. Switching between two alternatives can use their shared main anchor, conservatively summing uncertainty. The UI displays the plan's timing uncertainty; synchronized navigation does not improve underlying timing precision.
+- Moment navigation and successful POV switches autoplay, including after a pause. On initial browser autoplay rejection, playback starts muted with an **Enable sound** button; user interaction enables audio. Ordinary pausing and seeking do not force playback. Each POV plays its own audio in the browser; Premiere exports keep the main picture/audio enabled and alternative picture/audio disabled.
+- The compact neutral dark layout prioritizes the player and decision buttons. The moment list, notes, and help are hidden until requested. Current source time, brief factual description, uncertainty and material review checks remain visible.
 - Filter to Later to revisit unresolved choices. Related-event buttons navigate to the earlier/later event without moving its media to a false simultaneous position.
 - Undo restores the last decision, including after restart, while preserving notes and playback positions. The complete history and all candidates remain in the queue folder.
 
 ## Save and export contract
+
+Sync links are derived at runtime from the validated placement-plan snapshot. Existing queue manifests and state hashes remain unchanged, so upgrading the interface preserves choices, notes, history and positions without re-encoding previews or migrating decisions.
 
 `queue.json` contains the preview manifest and input identities; `state.json` holds choices independently from discovery/alignment status. Snapshot events, placement plan and probes stay beside them. Writes replace the state atomically after validation; revision conflicts stop the second tab instead of overwriting the first tab's changes. Reload after a conflict. Preserve the whole folder for portability together with access to the original media; file-path changes need explicit remapping, not silent identity reuse.
 

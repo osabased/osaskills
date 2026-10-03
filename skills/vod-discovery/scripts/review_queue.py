@@ -173,6 +173,7 @@ class Store:
             raise ValueError('Unknown queue schema')
         self.lock = threading.RLock()
         self.cards = {c['id']: c for c in self.queue['cards']}
+        self.playback_plan = read(self.folder / 'plan.json')
         self.validate_inputs()
         self.state()
 
@@ -205,6 +206,19 @@ class Store:
                 if number(position, 'saved position') > view['preview_end_sec'] - view['preview_start_sec'] + .25:
                     raise ValueError('Invalid saved playback position')
         return state
+
+    def playback_queue(self):
+        # Derive from the validated immutable plan; preserve manifest/state hashes.
+        queue = deepcopy(self.queue)
+        plan = self.playback_plan
+        for card in queue['cards']:
+            card['sync_links'] = [dict(
+                main_source_id=a['main_source_id'], source_id=a['source_id'],
+                offset_sec=a['source_anchor_sec'] - a['main_anchor_sec'],
+                source_start_sec=a['source_start_sec'], source_end_sec=a['source_end_sec'],
+                uncertainty_sec=a['uncertainty_sec'])
+                for a in plan.get('alternates', []) if a['event_id'] == card['id']]
+        return queue
 
     def mutate(self, patch, undo=False):
         with self.lock:
@@ -297,8 +311,9 @@ def make_server(store, port=0):
             path = urlsplit(self.path).path
             try:
                 if path == '/api/queue':
-                    return self.json_response(dict(queue=store.queue, state=store.state(), token=token))
-                assets = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css'}
+                    return self.json_response(dict(queue=store.playback_queue(), state=store.state(), token=token))
+                assets = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css',
+                          '/playback.js': 'playback.js'}
                 if path in assets:
                     target = ASSETS / assets[path]
                 elif path.startswith('/previews/') and path.removeprefix('/previews/') in {

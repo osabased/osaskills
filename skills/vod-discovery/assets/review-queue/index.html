@@ -1,28 +1,22 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Moment review</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark"><title>Moment review</title><link rel="stylesheet" href="/style.css"><script src="/playback.js" defer></script><script src="/app.js" defer></script></head>
 <body>
-<header><div><span class="eyebrow">VOD DISCOVERY / LOCAL REVIEW</span><h1>One moment at a time.</h1></div><div class="top-actions"><span id="saved" role="status">Loading…</span><button id="export" disabled>Export kept moments</button></div></header>
+<header><div class="header-left"><button id="toggle-queue" aria-expanded="false" aria-controls="queue-panel">☰ Moments</button><span id="count"></span></div><div class="header-right"><span id="saved" role="status">Loading…</span><button id="export" disabled>Export kept</button><button id="toggle-info" aria-label="Help and export details" aria-expanded="false" aria-controls="info">?</button></div></header>
 <div id="error" role="alert" hidden></div>
 <main>
-<aside aria-label="Moment queue">
-  <div class="queue-heading"><h2>Your moments</h2><span id="count"></span></div>
-  <label class="sr-only" for="filter">Filter moments</label><select id="filter"><option value="all">All moments</option><option value="unreviewed">Not reviewed</option><option value="keep">Keep</option><option value="later">Later</option><option value="skip">Skip</option></select>
-  <nav id="list" aria-label="Choose a moment"></nav>
-  <details><summary>Review coverage</summary><p id="coverage"></p><button id="export-all">Export all moments</button></details>
-</aside>
+<aside id="queue-panel" aria-label="Moment queue" hidden><label class="sr-only" for="filter">Filter moments</label><select id="filter"><option value="all">All moments</option><option value="unreviewed">Not reviewed</option><option value="keep">Keep</option><option value="later">Later</option><option value="skip">Skip</option></select><nav id="list" aria-label="Choose a moment"></nav></aside>
 <section id="review" aria-label="Current moment">
-  <div class="moment-heading"><div><p id="clock" class="eyebrow"></p><h2 id="title">Loading your queue…</h2></div><span id="decision" class="badge"></span></div>
-  <p id="summary" class="summary"></p><p id="check" class="check" hidden></p>
-  <div id="views" class="views" role="group" aria-label="POV preview"></div>
-  <video id="video" controls preload="metadata" playsinline></video>
-  <div class="playback-meta"><span id="preview-meta"></span><label>Speed <select id="speed"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div>
-  <div class="decision-area"><p>Might you use this in the video?</p><div class="choices"><button id="keep" class="keep"><kbd>1</kbd> Keep</button><button id="later"><kbd>2</kbd> Later</button><button id="skip"><kbd>3</kbd> Skip</button><button id="undo" title="Undo last decision"><kbd>U</kbd> Undo</button></div><p class="hint">Choices are reversible. Later keeps a question open. Skip keeps the moment recoverable.</p></div>
-  <label class="note-label" for="note">Your note <span>optional</span></label><textarea id="note" rows="2" maxlength="4000" placeholder="e.g. Use Josh’s view for the first hit"></textarea>
-  <div id="related"></div>
-  <footer><button id="previous">← Previous</button><span>Space: play / pause · ← →: seek 5s</span><button id="next">Next →</button></footer>
-  <p id="done" class="done" hidden></p>
-</section>
-</main>
-<section class="export-help"><strong>Premiere handoff</strong><span>Export keeps the full main VOD, with chosen source markers and relevant alternatives above it. Main picture and audio play by default. Import into a new review project; existing Premiere timelines do not update.</span><div id="export-result" role="status"></div></section>
+<div class="moment-heading"><h1 id="title">Loading…</h1><span id="decision" class="badge"></span><span id="clock"></span></div>
+<p id="summary"></p>
+<div class="view-bar"><div id="views" role="group" aria-label="POV preview"></div><span id="sync-status"></span><label class="speed-label"><span class="sr-only">Playback speed</span><select id="speed"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div>
+<div class="player"><video id="video" controls preload="auto" playsinline></video><button id="enable-audio" hidden>Enable sound</button></div>
+<div class="transport"><span id="source-clock"></span><span id="preview-meta"></span><span id="position"></span></div>
+<p id="check" hidden></p>
+<div class="actions"><div class="choices"><button id="keep" class="primary"><kbd>1</kbd> Keep</button><button id="later"><kbd>2</kbd> Later</button><button id="skip"><kbd>3</kbd> Skip</button><button id="undo" title="Undo last decision (U)">Undo</button></div><div class="navigation"><button id="toggle-notes" aria-expanded="false" aria-controls="notes">Note</button><button id="previous" aria-label="Previous moment" title="Previous moment (Left arrow)">←</button><button id="next" aria-label="Next moment" title="Next moment (Right arrow)">→</button></div></div>
+<div id="notes" hidden><label class="sr-only" for="note">Your note</label><textarea id="note" rows="2" maxlength="4000" placeholder="Add a note…"></textarea><div id="related"></div></div>
+<div class="bottom-line"><span>← → moments <span class="separator">·</span> P POV <span class="separator">·</span> Space play <span class="separator">·</span> Shift + ← → seek</span><span id="notice" role="status"></span></div>
+<p id="done" hidden></p><div id="export-result" role="status"></div>
+</section></main>
+<aside id="info" hidden><h2>Review</h2><p>1 Keep · 2 Later · 3 Skip · U Undo<br>P next POV · Shift + P previous POV<br>← → moments · Shift + ← → seek 5s<br>Space play / pause</p><p>POV switching keeps the same local timeline position within supported coverage. Approximate sync is labelled ± seconds. Each POV plays its own audio.</p><h2>Coverage</h2><p id="coverage"></p><h2>Premiere</h2><p>Export keeps the full main VOD, chosen source markers and disabled alternatives. Import into a new review project. Existing Premiere timelines do not update. Notes stay in your saved decisions.</p><button id="export-all">Export all moments</button></aside>
 </body></html>
