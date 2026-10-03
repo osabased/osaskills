@@ -1,6 +1,7 @@
 """Local, persistent moment review. Python standard library + FFmpeg only."""
 import argparse
 from copy import deepcopy
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import contextmanager
 from fractions import Fraction
 import hashlib
@@ -23,6 +24,8 @@ from review_timeline import build_review
 from premiere_xml import frame_rate
 
 SCHEMA = 'vod-review-queue/v1'
+BUILD_SCHEMA = 'vod-review-build/v1'
+PREVIEW_VERSION = 1
 DECISIONS = ('unreviewed', 'keep', 'later', 'skip')
 ASSETS = Path(__file__).resolve().parents[1] / 'assets' / 'review-queue'
 
@@ -32,7 +35,11 @@ def digest(value):
 
 
 def file_hash(path):
-    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+    result = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            result.update(block)
+    return result.hexdigest()
 
 
 def atomic_json(path, value):
@@ -103,8 +110,109 @@ def cards_for(data, plan, padding):
     return sorted(cards, key=lambda c: (order.index(c['views'][0]['source_id']), c['views'][0]['start_sec'], c['id']))
 
 
-def initialize(events_path, plan_path, out, padding=3):
+@contextmanager
+def build_lock(folder):
+    with (folder / '.build.lock').open('a+b') as lock:
+        if lock.tell() == 0:
+            lock.write(b'0'); lock.flush()
+        lock.seek(0)
+        try:
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.locking(lock.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            raise Conflict('This queue is already being prepared by another process.') from exc
+        try:
+            yield
+        finally:
+            lock.seek(0)
+            if os.name == 'nt':
+                msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(lock, fcntl.LOCK_UN)
+
+
+def render_preview(source, metadata, view, dest):
+    # Publish only a validated file. Interrupted encodes cannot replace a good preview.
+    temp = dest.with_name(dest.stem + '.' + uuid.uuid4().hex + '.tmp.mp4')
+    video = next(s for s in metadata['streams'] if s['codec_type'] == 'video')
+    audio = [s for s in metadata['streams'] if s['codec_type'] == 'audio']
+    expected = view['preview_end_sec'] - view['preview_start_sec']
+    command = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-nostdin', '-n',
+               '-ss', str(view['preview_start_sec']), '-threads', '2', '-i', source['path'],
+               '-t', str(expected), '-map', f"0:{video['index']}"]
+    if audio:
+        command += ['-map', f"0:{audio[0]['index']}", '-c:a', 'aac', '-b:a', '128k']
+    else:
+        command += ['-an']
+    command += ['-filter_threads', '1', '-vf', 'scale=960:-2,fps=24', '-c:v', 'libx264',
+                '-preset', 'veryfast', '-crf', '25', '-pix_fmt', 'yuv420p', '-threads', '2',
+                '-movflags', '+faststart', str(temp)]
+    try:
+        subprocess.run(command, check=True, capture_output=True)
+        _, duration = probe(temp)
+        if abs(duration - expected) > .25:
+            raise ValueError(f'Preview duration differs from requested source interval: {dest.name}')
+        checksum = file_hash(temp)
+        os.replace(temp, dest)
+        return dict(sha256=checksum, duration_sec=duration)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
+def prepare_previews(cards, sources, probes, out, record, jobs):
+    pending = []
+    total = sum(len(c['views']) for c in cards)
+    reused = 0
+    for i, card in enumerate(cards):
+        for j, view in enumerate(card['views']):
+            name = f'{i:04d}-{j:02d}.mp4'
+            view['file'] = name
+            dest = out / 'previews' / name
+            cached = record['completed'].get(name, {})
+            expected = view['preview_end_sec'] - view['preview_start_sec']
+            if (dest.is_file() and cached.get('sha256') == file_hash(dest) and
+                    isinstance(cached.get('duration_sec'), (int, float)) and
+                    abs(cached['duration_sec'] - expected) <= .25):
+                reused += 1
+            else:
+                record['completed'].pop(name, None)
+                pending.append((name, view, dest))
+    atomic_json(out / 'build.json', record)
+    if reused:
+        print(f'Reusing {reused}/{total} verified previews.', flush=True)
+    error = None
+    executor = ThreadPoolExecutor(max_workers=jobs)
+    try:
+        futures = {executor.submit(render_preview, sources[v['source_id']], probes[v['source_id']], v, dest): name
+                   for name, v, dest in pending}
+        for future in as_completed(futures):
+            if future.cancelled():
+                continue
+            name = futures[future]
+            try:
+                record['completed'][name] = future.result()
+                atomic_json(out / 'build.json', record)
+                print(f"Prepared {len(record['completed'])}/{total} previews.", flush=True)
+            except Exception as exc:
+                if error is None:
+                    error = exc
+                    for other in futures:
+                        other.cancel()
+    finally:
+        # Ctrl+C must not wait for every queued encode to run. Finish active jobs only.
+        executor.shutdown(wait=True, cancel_futures=True)
+    if error is not None:
+        raise error
+
+
+def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False):
     out = Path(out).resolve()
+    if type(jobs) is not int or jobs < 1:
+        raise ValueError('Preview jobs must be a positive integer')
     data, plan = read(events_path), read(plan_path)
     export_events(data)
     if not data['events']:
@@ -114,54 +222,60 @@ def initialize(events_path, plan_path, out, padding=3):
         event = event_map.get(alt.get('event_id'))
         if not event or not {alt['source_id'], alt['main_source_id']} <= {v['source_id'] for v in event['perspectives']}:
             raise ValueError('Every alternate needs an event_id with both referenced perspectives')
-    probes, identities = {}, {}
-    for source in data['sources']:
-        identities[source['id']] = identity(source)
-        metadata, duration = probe(Path(source['path']))
-        if abs(duration - source['duration_sec']) > .1:
-            raise ValueError('Media duration changed; review source mapping')
-        probes[source['id']] = metadata
+    identities = {s['id']: identity(s) for s in data['sources']}
+    inputs = [dict(path=str(Path(p).resolve()), sha256=file_hash(p)) for p in (events_path, plan_path)]
+    request = dict(schema=BUILD_SCHEMA, identities=identities, inputs=inputs,
+                   settings=dict(padding=padding, preview_version=PREVIEW_VERSION))
     cards = cards_for(data, plan, padding)
     decisions = {c['id']: dict(decision='unreviewed', note='', view=0, positions={}) for c in cards}
-    selected_xml(data, plan, probes, decisions, 'all')  # Validate exporter/layout before rendering.
-    out.mkdir(parents=True, exist_ok=False)
-    (out / 'previews').mkdir()
-    atomic_json(out / 'events.json', data)
-    atomic_json(out / 'plan.json', plan)
-    atomic_json(out / 'probes.json', probes)
-    sources = {s['id']: s for s in data['sources']}
-    for i, card in enumerate(cards):
-        for j, view in enumerate(card['views']):
-            name = f'{i:04d}-{j:02d}.mp4'
-            dest = out / 'previews' / name
-            source = sources[view['source_id']]
-            video = next(s for s in probes[source['id']]['streams'] if s['codec_type'] == 'video')
-            audio = [s for s in probes[source['id']]['streams'] if s['codec_type'] == 'audio']
-            command = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-nostdin', '-n',
-                '-ss', str(view['preview_start_sec']), '-i', source['path'],
-                '-t', str(view['preview_end_sec'] - view['preview_start_sec']), '-map', f"0:{video['index']}"]
-            if audio:
-                command += ['-map', f"0:{audio[0]['index']}", '-c:a', 'aac', '-b:a', '128k']
-            else:
-                command += ['-an']
-            command += ['-vf', 'scale=960:-2,fps=24', '-c:v', 'libx264', '-preset', 'veryfast',
-                        '-crf', '25', '-pix_fmt', 'yuv420p', '-threads', '2', '-movflags', '+faststart', str(dest)]
-            subprocess.run(command, check=True, capture_output=True)
-            _, duration = probe(dest)
-            expected = view['preview_end_sec'] - view['preview_start_sec']
-            if abs(duration - expected) > .25:
-                raise ValueError(f'Preview duration differs from requested source interval: {name}')
-            view['file'] = name
-        print(f"Prepared {i + 1}/{len(cards)}: {card['title']}", flush=True)
-    # Publish only after every preview succeeds. A failed build is never served.
-    manifest = dict(schema=SCHEMA, title='Moment review', cards=cards, identities=identities,
-        coverage=plan.get('coverage_note', 'Review coverage not supplied.'),
-        snapshots={n: file_hash(out / n) for n in ('events.json', 'plan.json', 'probes.json')},
-        inputs=[dict(path=str(Path(p).resolve()), sha256=file_hash(p)) for p in (events_path, plan_path)])
-    atomic_json(out / 'queue.json', manifest)
-    atomic_json(out / 'state.json', dict(schema=SCHEMA, queue_hash=digest(manifest), revision=0,
-        current_id=cards[0]['id'], decisions=decisions, history=[]))
-    return out
+    if resume:
+        if not out.is_dir():
+            raise ValueError('No incomplete build to resume in this folder')
+        probes = None
+    else:
+        probes = {}
+        for source in data['sources']:
+            metadata, duration = probe(Path(source['path']))
+            if abs(duration - source['duration_sec']) > .1:
+                raise ValueError('Media duration changed; review source mapping')
+            probes[source['id']] = metadata
+        selected_xml(data, plan, probes, decisions, 'all')  # Validate layout before rendering.
+        out.mkdir(parents=True, exist_ok=False)
+    with build_lock(out):
+        if resume:
+            if (out / 'queue.json').exists():
+                raise ValueError('This queue is complete. Run serve to resume reviewing it.')
+            if not (out / 'build.json').is_file():
+                raise ValueError('No resumable build record. Use a new output folder.')
+            record = read(out / 'build.json')
+            if any(record.get(key) != value for key, value in request.items()):
+                raise ValueError('Build inputs, media or preview settings changed. Use a new output folder.')
+            for name in ('events.json', 'plan.json', 'probes.json'):
+                if file_hash(out / name) != record['snapshots'].get(name):
+                    raise ValueError('Build snapshot changed. Use a new output folder.')
+            probes = read(out / 'probes.json')
+            selected_xml(data, plan, probes, decisions, 'all')
+        else:
+            (out / 'previews').mkdir()
+            atomic_json(out / 'events.json', data)
+            atomic_json(out / 'plan.json', plan)
+            atomic_json(out / 'probes.json', probes)
+            record = dict(request, completed={}, snapshots={n: file_hash(out / n)
+                          for n in ('events.json', 'plan.json', 'probes.json')})
+            atomic_json(out / 'build.json', record)
+        prepare_previews(cards, {s['id']: s for s in data['sources']}, probes, out, record, jobs)
+        # Recheck inputs after a long encode; never publish previews for changed originals.
+        if ({s['id']: identity(s) for s in data['sources']} != identities or
+                any(file_hash(item['path']) != item['sha256'] for item in inputs)):
+            raise ValueError('Build inputs or media changed during preparation. Use a new output folder.')
+        manifest = dict(schema=SCHEMA, title='Moment review', cards=cards, identities=identities,
+            coverage=plan.get('coverage_note', 'Review coverage not supplied.'),
+            snapshots=record['snapshots'], inputs=inputs)
+        # queue.json is the completion record; publish it after the initial state.
+        atomic_json(out / 'state.json', dict(schema=SCHEMA, queue_hash=digest(manifest), revision=0,
+            current_id=cards[0]['id'], decisions=decisions, history=[]))
+        atomic_json(out / 'queue.json', manifest)
+        return out
 
 
 class Conflict(ValueError):
@@ -247,6 +361,7 @@ class Store:
         self.queue = read(self.folder / 'queue.json')
         if self.queue['schema'] != SCHEMA:
             raise ValueError('Unknown queue schema')
+        self.queue_hash = digest(self.queue)
         self.lock = threading.RLock()
         self.cards = {c['id']: c for c in self.queue['cards']}
         self.playback_plan = read(self.folder / 'plan.json')
@@ -302,7 +417,7 @@ class Store:
 
     def state(self):
         state = read(self.folder / 'state.json')
-        if state['schema'] != SCHEMA or state['queue_hash'] != digest(self.queue) or set(state['decisions']) != set(self.cards):
+        if state['schema'] != SCHEMA or state['queue_hash'] != self.queue_hash or set(state['decisions']) != set(self.cards):
             raise ValueError('Decisions belong to a different queue')
         if state['current_id'] not in self.cards or type(state['revision']) is not int or state['revision'] < 0:
             raise ValueError('Invalid review state')
@@ -323,14 +438,15 @@ class Store:
         # Derive from the validated immutable plan; preserve manifest/state hashes.
         queue = deepcopy(self.queue)
         queue['timeline'] = self.timeline
-        plan = self.playback_plan
-        for card in queue['cards']:
-            card['sync_links'] = [dict(
+        links = {}
+        for a in self.playback_plan.get('alternates', []):
+            links.setdefault(a['event_id'], []).append(dict(
                 main_source_id=a['main_source_id'], source_id=a['source_id'],
                 offset_sec=a['source_anchor_sec'] - a['main_anchor_sec'],
                 source_start_sec=a['source_start_sec'], source_end_sec=a['source_end_sec'],
-                uncertainty_sec=a['uncertainty_sec'])
-                for a in plan.get('alternates', []) if a['event_id'] == card['id']]
+                uncertainty_sec=a['uncertainty_sec']))
+        for card in queue['cards']:
+            card['sync_links'] = links.get(card['id'], [])
         return queue
 
     def mutate(self, patch, undo=False):
@@ -391,6 +507,7 @@ class Store:
 def make_server(store, port=0, preferences=None):
     token = secrets.token_urlsafe(32)
     preferences = preferences or Preferences()
+    preview_files = frozenset(v['file'] for c in store.queue['cards'] for v in c['views'])
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
@@ -432,8 +549,7 @@ def make_server(store, port=0, preferences=None):
                           '/playback.js': 'playback.js', '/timeline.js': 'timeline.js', '/keys.js': 'keys.js'}
                 if path in assets:
                     target = ASSETS / assets[path]
-                elif path.startswith('/previews/') and path.removeprefix('/previews/') in {
-                    v['file'] for c in store.queue['cards'] for v in c['views']}:
+                elif path.startswith('/previews/') and path.removeprefix('/previews/') in preview_files:
                     target = store.folder / path.lstrip('/')
                 elif re.fullmatch(r'/exports/review-r\d+-[0-9a-f]{8}/review\.xml', path):
                     target = store.folder / path.lstrip('/')
@@ -520,6 +636,8 @@ def main():
     init.add_argument('--plan', required=True)
     init.add_argument('--out', required=True)
     init.add_argument('--padding', type=float, default=3)
+    init.add_argument('--jobs', type=int, default=2, help='Maximum concurrent preview encodes (default: 2; use 1 for serial)')
+    init.add_argument('--resume', action='store_true', help='Resume an incomplete build with unchanged inputs and settings')
     serve = sub.add_parser('serve')
     serve.add_argument('--queue', required=True)
     serve.add_argument('--port', type=int, default=8765)
@@ -527,7 +645,7 @@ def main():
     serve.add_argument('--preferences', help='Override the shared keyboard-profile path (for isolated testing)')
     args = parser.parse_args()
     if args.command == 'init':
-        print(initialize(args.events, args.plan, args.out, args.padding))
+        print(initialize(args.events, args.plan, args.out, args.padding, args.jobs, args.resume))
         return
     store = Store(args.queue)
     # Hold an OS lock so a second server cannot race writes to the same state.

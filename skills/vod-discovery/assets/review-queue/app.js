@@ -4,6 +4,8 @@ const {mapSwitch, nextView} = VODPlayback;
 const labels = {unreviewed:'Not reviewed', keep:'Keep', later:'Later', skip:'Skip'};
 const video = $('video');
 let queue, state, token, current, timeline, keys, viewIndex = 0;
+let cardsById, cardOrder, listedIds = null, listedCurrentId;
+const listRows = new Map();
 let chain = Promise.resolve(), broken = false, busy = true, timer, lastTick = 0, autoMuted = false;
 function clock(seconds, decimals = false) {
   const n = Math.max(0, seconds), whole = Math.floor(n);
@@ -41,11 +43,14 @@ function save(patch) {
   $('saved').textContent = 'Saving…';
   return enqueue(async () => {
     const item = state.decisions[patch.event_id], view = patch.view ?? item.view;
+    const decisionChanged = 'decision' in patch && patch.decision !== item.decision;
     const changed = state.current_id !== patch.event_id ||
       ['decision','note','view'].some(key => key in patch && patch[key] !== item[key]) ||
       ('position_sec' in patch && Math.abs(patch.position_sec - (item.positions[String(view)] || 0)) > .05);
     if (changed) state = await post('/api/save', patch);
-    $('saved').textContent = 'Saved'; renderList();
+    $('saved').textContent = 'Saved';
+    // Position and note saves do not change the list. Keep focus and scroll intact.
+    if (decisionChanged) renderList();
     $('undo').disabled = !state.history.length;
   });
 }
@@ -56,22 +61,42 @@ function filtered() {
 function renderList() {
   const decided = queue.cards.filter(c => state.decisions[c.id].decision !== 'unreviewed').length;
   $('count').textContent = decided + ' / ' + queue.cards.length + ' reviewed';
-  $('list').replaceChildren();
-  for (const card of filtered()) {
-    const button = document.createElement('button');
-    button.dataset.id = card.id;
-    button.setAttribute('aria-current', String(card.id === current?.id));
-    const dot = document.createElement('span');
-    dot.className = 'dot ' + state.decisions[card.id].decision;
-    dot.textContent = state.decisions[card.id].decision === 'unreviewed' ? '•' : labels[state.decisions[card.id].decision];
-    const title = document.createElement('strong'); title.textContent = card.title;
-    const meta = document.createElement('small');
-    meta.textContent = card.views[0].label + ' · ' + clock(card.views[0].start_sec);
-    button.append(dot, title, meta); button.onclick = () => navigate(card.id);
-    $('list').append(button);
+  const cards = filtered();
+  for (const card of cards) {
+    let row = listRows.get(card.id);
+    if (!row) {
+      const button = document.createElement('button');
+      button.dataset.id = card.id; button.setAttribute('aria-current', 'false');
+      const dot = document.createElement('span');
+      const title = document.createElement('strong'); title.textContent = card.title;
+      const meta = document.createElement('small');
+      meta.textContent = card.views[0].label + ' · ' + clock(card.views[0].start_sec);
+      button.append(dot, title, meta); button.onclick = () => navigate(card.id);
+      row = {button, dot}; listRows.set(card.id, row);
+    }
+    const decision = state.decisions[card.id].decision;
+    if (row.decision !== decision) {
+      row.dot.className = 'dot ' + decision;
+      row.dot.textContent = decision === 'unreviewed' ? '•' : labels[decision];
+      row.decision = decision;
+    }
   }
-  if (!$('list').children.length) {
-    const p = document.createElement('p'); p.textContent = 'No moments in this group.'; $('list').append(p);
+  if (!listedIds || cards.length !== listedIds.length || cards.some((c,i) => c.id !== listedIds[i])) {
+    const fragment = document.createDocumentFragment();
+    for (const card of cards) fragment.append(listRows.get(card.id).button);
+    if (!cards.length) {
+      const p = document.createElement('p'); p.textContent = 'No moments in this group.'; fragment.append(p);
+    }
+    $('list').replaceChildren(fragment);
+    listedIds = cards.map(c => c.id);
+  }
+  if (listedCurrentId !== current?.id) {
+    listRows.get(listedCurrentId)?.button.setAttribute('aria-current', 'false');
+    listedCurrentId = current?.id;
+  }
+  // A row may just have become visible after changing filters.
+  if (listedCurrentId) {
+    listRows.get(listedCurrentId)?.button.setAttribute('aria-current', 'true');
   }
   $('export').disabled = !queue.cards.some(c => state.decisions[c.id].decision === 'keep');
   updateNav();
@@ -124,7 +149,7 @@ async function loadView(position) {
   const view = current.views[viewIndex];
   $('title').textContent = view.title; $('summary').textContent = view.summary;
   $('clock').textContent = view.label + ' · ' + clock(view.start_sec) + '–' + clock(view.end_sec);
-  $('position').textContent = (queue.cards.indexOf(current) + 1) + ' / ' + queue.cards.length;
+  $('position').textContent = (cardOrder.get(current.id) + 1) + ' / ' + queue.cards.length;
   $('preview-meta').textContent = view.label + ' audio';
   const links = current.sync_links || [];
   $('sync-status').textContent = current.views.length < 2 ? '' : links.length ?
@@ -156,7 +181,7 @@ async function loadView(position) {
   await autoplay();
 }
 async function display(id) {
-  current = queue.cards.find(c => c.id === id);
+  current = cardsById.get(id);
   viewIndex = state.decisions[id].view;
   $('note').value = state.decisions[id].note;
   $('toggle-notes').textContent = state.decisions[id].note ? 'Note •' : 'Note';
@@ -165,7 +190,7 @@ async function display(id) {
   $('done').hidden = true; notice('');
   $('related').replaceChildren();
   for (const relation of current.related) {
-    const related = queue.cards.find(c => c.id === relation.event_id);
+    const related = cardsById.get(relation.event_id);
     if (!related) continue;
     const button = document.createElement('button'); button.textContent = relation.relationship + ': ' + related.title;
     button.title = 'Related moment; not simultaneous coverage'; button.onclick = () => navigate(related.id);
@@ -221,7 +246,7 @@ function timelineJump(time, segment) {
       for (const choice of ['keep','later','skip']) $(choice).disabled = true;
       notice('Choose a shaded moment to preview.'); return;
     }
-    const card = queue.cards.find(c => c.id === segment.eid), view = card.views[segment.view];
+    const card = cardsById.get(segment.eid), view = card.views[segment.view];
     const position = time - segment.origin + segment.offset - view.preview_start_sec;
     if (position < 0 || position >= view.preview_end_sec - view.preview_start_sec) {
       notice('No prepared preview at this time.'); return;
@@ -251,10 +276,10 @@ function decide(decision) {
     video.pause(); await flush({decision});
     if (broken) return;
     $('decision').textContent = labels[decision];
-    const pos = queue.cards.indexOf(current);
+    const pos = cardOrder.get(current.id);
     const pending = filtered().filter(c => c.id !== current.id &&
       (['all','unreviewed'].includes($('filter').value) ? state.decisions[c.id].decision === 'unreviewed' : true));
-    const next = pending.find(c => queue.cards.indexOf(c) > pos) || pending[0];
+    const next = pending.find(c => cardOrder.get(c.id) > pos) || pending[0];
     if (next) { await display(next.id); await save({event_id:next.id, view:viewIndex}); }
     else { $('done').hidden = false; $('done').textContent = 'Group reviewed. Revisit Later or export your choices.'; }
   });
@@ -334,6 +359,8 @@ $('export').onclick = () => exportQueue('keep'); $('export-all').onclick = () =>
     const response = await fetch('/api/queue'), data = await response.json();
     if (!response.ok) throw new Error(data.error);
     queue = data.queue; state = data.state; token = data.token;
+    cardsById = new Map(queue.cards.map(c => [c.id, c]));
+    cardOrder = new Map(queue.cards.map((c,i) => [c.id, i]));
     keys = new VODKeys(token,updateKeyHints,() => video.pause());
     await keys.load();
     timeline = new VODTimeline(queue.timeline,() => ({card:current,index:viewIndex,position:video.currentTime}),timelineJump,clock);
