@@ -1,5 +1,15 @@
 # Local validation — 2026-10-03
 
+## Transcript search and joined evidence — adapter and pilot verification
+
+The skill now reuses CRV 0.10.7 `timeline_lite.build_spans` and `memory.remember/search`. Preparation produces source-timed joined evidence, with independent audio-stream views and explicit nearby-frame labels. A project-local index aggregates all completed packets per VOD before indexing; search preserves exact occurrence references and rejects stale prepared inputs.
+
+Twenty-nine Python tests and the Node host mock pass. New tests exercise nonzero packet starts, simultaneous audio streams, speech gaps, invalid transcript bounds, cross-POV search, overlapping packets, literal punctuation, repeated events, index reuse/rebuild, failed rebuild preservation, and visible result limits. Testing caught CRV's shared frame-dictionary references causing repeated time offsets across audio streams; independent copies fixed the adapter before delivery.
+
+The original five-minute Johan/Josh pilot now has 162 searchable transcript lines and joined evidence for both packets. One Josh transcript segment outside the clip duration is retained and flagged, but excluded from joined speech and search. Searches for `truce`, `kill`, and `Josh` returned source-local references checked against the exact raw segments. `Johan` and `fog` returned no hits in the rough tiny-model transcripts, illustrating why search must supplement visual review. Raw transcripts, frame maps, and review ledgers were unchanged by enrichment. The pilot resumed with zero packets reprocessed. A fresh 12-second generated visual-only source produced three overlapping packets with every frame timestamp retained in joined evidence. See `review/discovery-tools-verification.json` in the pilot output.
+
+No new full-session discovery, model-quality benchmark, alignment validation or Premiere import was performed for this feature. Requirements are unchanged; no additional packages or models are needed.
+
 ## Bin organization revision — offline verification
 
 Both XML exporters now organize source masters under `01 Media` with one bin per POV. Parts sharing the same source `pov` value stay together; original filenames remain visible. Layered review timelines go under `02 Sequences`. Empty bins are omitted. The existing clip elements are moved rather than copied, preserving their IDs and references.

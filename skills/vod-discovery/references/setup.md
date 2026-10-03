@@ -2,7 +2,7 @@
 
 ## Components and boundaries
 
-- [claude-real-video 0.10.7](https://github.com/HUANGCHIHHUNGLeo/claude-real-video): MIT, existing FFmpeg frame extraction, timestamp mapping, contact sheets. The adapter imports `core.extract_frames`, `write_frames_json`, and `make_grids`; these internal interfaces are version-pinned. It avoids the high-level `process` function, which copies the full input into each output and applies deduplication/caps. No project code is vendored.
+- [claude-real-video 0.10.7](https://github.com/HUANGCHIHHUNGLeo/claude-real-video): MIT, existing FFmpeg frame extraction, timestamp mapping, contact sheets, joined frame/transcript spans, and local transcript search. Adapters reuse `core.extract_frames`, `write_frames_json`, `make_grids`, `timeline_lite.build_spans`, and `memory.remember/search`; these interfaces are version-pinned. They avoid the high-level `process` function, which copies the full input into each output and applies deduplication/caps. No project code is vendored.
 - [faster-whisper](https://github.com/SYSTRAN/faster-whisper): local speech recognition, `WhisperModel(..., device="cpu", compute_type="int8")`. The RX 5700 XT does not provide its CUDA backend. Use `small` initially; benchmark quality on overlapping voices. Models download once at no charge. Do not download a huge model just to run a smoke check.
 - [FFmpeg](https://ffmpeg.org/): local probing, extraction, and audio decoding. Discover existing installations first.
 - [Adobe UXP samples](https://github.com/AdobeDocs/uxp-premiere-pro-samples) and [Markers API](https://developer.adobe.com/premiere-pro/uxp/ppro-reference/classes/markers/): the bundled small panel uses Adobe's documented source-clip marker interface and transaction pattern. It is original integration code, not a fork of the sample app.
@@ -44,6 +44,8 @@ work/vod-env/Scripts/python.exe <skill>/scripts/vod.py export --events outputs/e
 ```
 
 `detail` produces images only. Read the surrounding packet transcript or obtain more audio evidence separately. Source seconds are relative to the media playback beginning, not wall-clock time, sequence time, or displayed SMPTE timecode. Never derive seconds by dividing a VFR frame index by an assumed constant frame rate.
+
+After preparation, index the supplied POV folders for local phrase search; see [discovery-tools.md](discovery-tools.md). Joined evidence is generated automatically for new and resumed packets. These additions reuse the pinned package and SQLite, with no new dependencies or model downloads.
 
 ## Native XML delivery for a new review project
 

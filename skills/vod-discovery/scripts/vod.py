@@ -67,6 +67,7 @@ def extract(source, folder, start, end, interval, width):
 
 
 def prepare(args):
+    from evidence import packet_evidence
     source = Path(args.source).resolve(strict=True)
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -91,6 +92,7 @@ def prepare(args):
             attempt = folder / record["attempt"]
             if not all((attempt / f).is_file() for f in ["packet.json", "frames.json", "transcript.json"]):
                 raise RuntimeError(f"Incomplete cached packet {folder}; inspect it before resuming")
+            packet_evidence(attempt)
             continue
         if args.limit_packets and processed >= args.limit_packets:
             break
@@ -124,6 +126,7 @@ def prepare(args):
             write(attempt / "packet.json", {"source_id": source_id, "start_sec": start, "end_sec": end,
                                             "core_start_sec": index * args.window, "core_end_sec": min(duration, (index+1)*args.window),
                                             "transcript_status": transcript_status, **visual})
+            packet_evidence(attempt)
             write(folder / "review.json", {"status": "unreviewed", "inspected_sheets": [], "event_ids": []})
             write(folder / "complete.json", {"attempt": attempt.name})
         except Exception as exc:
@@ -295,6 +298,10 @@ def main():
         else:
             p.add_argument("--start", type=float, required=True); p.add_argument("--end", type=float, required=True)
     p = sub.add_parser("export"); p.add_argument("--events", required=True); p.add_argument("--out", required=True)
+    p = sub.add_parser("evidence"); p.add_argument("--prepared", required=True)
+    p = sub.add_parser("index"); p.add_argument("--prepared", nargs='+', required=True); p.add_argument("--out", required=True)
+    p = sub.add_parser("search"); p.add_argument("--index", required=True); p.add_argument("--query", required=True)
+    p.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
     if args.command == "doctor":
         result = {k: shutil.which(k) for k in ("ffmpeg", "ffprobe")}
@@ -304,6 +311,12 @@ def main():
         print(json.dumps(result, indent=2)); return 0 if all(result.values()) else 1
     if args.command == "export":
         write(args.out, export_events(read(args.events))); print(f"Wrote {args.out}"); return 0
+    if args.command in ('evidence', 'index', 'search'):
+        from evidence import enrich, build_index, search_index
+        if args.command == 'evidence': result = enrich(args.prepared)
+        elif args.command == 'index': result = build_index(args.prepared, args.out)
+        else: result = search_index(args.index, args.query, args.limit)
+        print(json.dumps(result, ensure_ascii=True, indent=2)); return 0
     number(args.interval, "interval", .01); number(args.width, "width", 64)
     if args.command == "prepare":
         number(args.window, "window", 1); number(args.overlap, "overlap"); number(args.limit_packets, "limit-packets")
