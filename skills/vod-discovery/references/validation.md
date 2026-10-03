@@ -1,4 +1,12 @@
-# Local validation — 2026-10-02
+# Local validation — 2026-10-03
+
+## Bin organization revision — offline verification
+
+Both XML exporters now organize source masters under `01 Media` with one bin per POV. Parts sharing the same source `pov` value stay together; original filenames remain visible. Layered review timelines go under `02 Sequences`. Empty bins are omitted. The existing clip elements are moved rather than copied, preserving their IDs and references.
+
+Twenty-one Python tests, the Node host mock, and the official skill validator pass. Added checks cover interleaved POV parts, XML escaping, preserved source labels, empty exports, and sequence references after grouping. All three pilot XML exports were regenerated. `review/bin-verification.json` confirms that every master clip and sequence is internally identical to the pre-bin snapshot, including all 22 source markers, timing, enabled states and stereo grouping. `review/Johan-Organized.xml` is a copy of the current layered export for import.
+
+The user confirmed the preceding short-label import looked fine. This bin revision has been verified at file level only; no Computer Use or native project edits were performed. The user will verify the new bin layout in Premiere. Open the Project panel with Shift+1, then expand `02 Sequences` and open the review sequence. The earlier records below describe the revisions as checked at their respective times.
 
 ## Current short-label revision — offline verification
 

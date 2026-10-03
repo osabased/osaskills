@@ -6,8 +6,8 @@ Times are finite seconds from each original media file's playback start. Retain 
 {
   "schema_version": 1,
   "sources": [
-    {"id": "alice", "path": "D:/VODs/alice.mp4", "duration_sec": 7400},
-    {"id": "bob", "path": "D:/VODs/bob.mp4", "duration_sec": 7500}
+    {"id": "alice", "path": "D:/VODs/alice.mp4", "label": "Alice", "pov": "Alice", "duration_sec": 7400},
+    {"id": "bob", "path": "D:/VODs/bob.mp4", "label": "Bob", "pov": "Bob", "duration_sec": 7500}
   ],
   "events": [
     {
@@ -45,6 +45,7 @@ Keep partial/unresolved links in analysis notes without inventing a perspective.
 Keep `title`, `why`, `evidence`, source IDs, and timing fields as the full analysis record. Author these display fields when preparing the editor-facing export:
 
 - Source `label`: a short unambiguous POV label, such as `Josh` (or `Josh part 2` when needed).
+- Source `pov`: shared human-readable bin name for all recordings/parts from that POV. For example, `label: "Johan part 2"` and `pov: "Johan"` keeps the part-specific marker links while grouping both parts under `01 Media/Johan`. XML falls back to `label` when `pov` is omitted. Set `pov` explicitly for multipart recordings; do not infer identity by stripping words from filenames. This field affects project organization, not marker names, IDs or timestamps.
 - Event `marker_title` (required): a 1–4-word visual label answering “What moment is this?” Front-load the distinguishing event/action for the first 10–15 visible characters. No IDs, POV/source metadata, confidence, review flags, explanations or provenance. Omit the current POV's redundant name; retain another participant's name when it distinguishes the moment. `Gear Up`, `Spawn Attack`, `Truce Talk`, `Josh's Offer` are examples. Do not truncate a sentence or add an ellipsis.
 - Event `marker_summary` (required): one short factual sentence saying who did what and the observed outcome. Keep the editorial rationale in `why`; do not substitute "setup", "payoff", or "progression" for the actual action/dialogue.
 - Perspective `marker_title`: overrides the label when this POV depicts a different aspect (`Fatal Fall` on Johan, `Death Notice` on Josh). It follows the same visual-label rules.

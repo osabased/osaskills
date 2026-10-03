@@ -199,6 +199,8 @@ def export_events(data):
         label = src.get("label", Path(path.replace(chr(92), '/')).stem)
         sources[sid] = {"id": sid, "path": path, "label": text(label, "source label"),
                         "duration_sec": number(src["duration_sec"], "duration", .001), "markers": []}
+        if 'pov' in src:
+            sources[sid]['pov'] = text(src['pov'], 'source POV bin').strip()
     ids = set()
     event_map = {e["id"]: e for e in data["events"]}
 

@@ -20,7 +20,7 @@ class XmlDelivery(unittest.TestCase):
     def test_master_source_markers_and_media_references(self):
         r = ET.fromstring(build_xml(self.markers, self.probes))
         self.assertEqual(r.findall('.//sequence'), [])
-        c = r.find('./project/children/clip')
+        c = r.find('.//clip')
         self.assertEqual(c.findtext('marker/in'), '6480')
         self.assertEqual(c.findtext('marker/out'), '7140')
         self.assertEqual(c.findtext('marker/name'), 'Kill & Reaction')
@@ -37,8 +37,39 @@ class XmlDelivery(unittest.TestCase):
             data['sources'][0]['markers'][0].update(changes)
             with self.assertRaises(ValueError): build_xml(data, self.probes)
 
+    def test_interleaved_pov_parts_share_bins_and_references_stay_valid(self):
+        original = self.markers['sources'][0]
+        self.markers['sources'] = [dict(copy.deepcopy(original), id=sid, label=label, pov=pov,
+            path=str(Path(filename).resolve())) for sid, label, pov, filename in [
+                ('a', 'Alice part 1', 'Alice & friends', 'a1.mp4'),
+                ('b', 'Bob', 'Bob', 'b.mp4'),
+                ('c', 'Alice part 2', 'Alice & friends', 'a2.mp4')]]
+        self.probes.update(b=copy.deepcopy(self.probes['a']), c=copy.deepcopy(self.probes['a']))
+        root = ET.fromstring(build_xml(self.markers, self.probes))
+        top = root.find('./project/children')
+        self.assertEqual(top.findall('clip'), [])
+        self.assertEqual([b.findtext('name') for b in top.findall('bin')], ['01 Media'])
+        bins = top.findall('bin/children/bin')
+        self.assertEqual([b.findtext('name') for b in bins], ['Alice & friends', 'Bob'])
+        self.assertEqual([c.get('id') for c in bins[0].findall('children/clip')],
+                         ['vod-master-0', 'vod-master-2'])
+        clips = root.findall('.//clip')
+        self.assertEqual(len(clips), 3)
+        items = {c.get('id'): c for c in root.findall('.//clipitem')}
+        for master in clips:
+            self.assertEqual(master.findtext('marker/name'), 'Kill & Reaction')
+            for item in master.findall('.//clipitem'):
+                self.assertEqual(item.findtext('masterclipid'), master.get('id'))
+                for link in item.findall('link'):
+                    self.assertEqual(items[link.findtext('linkclipref')].findtext('masterclipid'), master.get('id'))
+        self.assertEqual(len([f for f in root.findall('.//file') if f.find('pathurl') is not None]), 3)
+
+    def test_empty_export_has_no_empty_bins(self):
+        root = ET.fromstring(build_xml({'sources': []}, {}))
+        self.assertEqual(list(root.find('./project/children')), [])
+
     def test_stereo_channels_form_one_group_without_losing_right_channel(self):
-        c = ET.fromstring(build_xml(self.markers, self.probes)).find('./project/children/clip')
+        c = ET.fromstring(build_xml(self.markers, self.probes)).find('.//clip')
         tracks = c.findall('./media/audio/track')
         self.assertEqual([t.get('currentExplodedTrackIndex') for t in tracks], ['0', '1'])
         for channel, track in enumerate(tracks, 1):
@@ -52,7 +83,7 @@ class XmlDelivery(unittest.TestCase):
 
     def test_mono_is_not_duplicated_into_stereo(self):
         self.probes['a']['streams'][1]['channels'] = 1
-        c = ET.fromstring(build_xml(self.markers, self.probes)).find('./project/children/clip')
+        c = ET.fromstring(build_xml(self.markers, self.probes)).find('.//clip')
         tracks = c.findall('./media/audio/track')
         self.assertEqual(len(tracks), 1)
         self.assertEqual(tracks[0].get('premiereTrackType'), 'Mono')
@@ -60,7 +91,7 @@ class XmlDelivery(unittest.TestCase):
 
     def test_fractional_frame_quantization_is_bounded(self):
         self.probes['a']['streams'][0]['r_frame_rate'] = '30000/1001'
-        c = ET.fromstring(build_xml(self.markers, self.probes)).find('./project/children/clip')
+        c = ET.fromstring(build_xml(self.markers, self.probes)).find('.//clip')
         self.assertEqual(c.findtext('rate/ntsc'), 'TRUE')
         actual = Fraction(int(c.findtext('marker/in'))) / Fraction(30000, 1001)
         self.assertLessEqual(abs(actual - 108), Fraction(1001, 60000))

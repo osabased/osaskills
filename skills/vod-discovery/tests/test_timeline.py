@@ -12,6 +12,8 @@ class TimelineDelivery(unittest.TestCase):
     def setUp(self):
         self.markers = {'sources': [dict(id=s,path=str(Path(s+'.mp4').resolve()),duration_sec=d,markers=[])
                                    for s,d in [('a',600),('b',900),('c',800)]]}
+        for source, pov in zip(self.markers['sources'], ['Main', 'Alternate', 'Main']):
+            source['pov'] = pov
         self.markers['sources'][0]['markers'] = [dict(key='e1', name='Boss Defeated',
             comments='Alice defeats the boss.\nRef [VOD:e1]', start_sec=108, end_sec=119)]
         self.probes = {s:{'streams':[{'codec_type':'video','r_frame_rate':fps,'width':1920,'height':1080},
@@ -23,15 +25,22 @@ class TimelineDelivery(unittest.TestCase):
 
     def test_full_main_parts_mixed_rates_disabled_alternate_and_audio_groups(self):
         root = ET.fromstring(build_review(self.markers,self.probes,self.plan))
-        self.assertEqual(root.findtext('./project/children/clip/marker/name'), 'Boss Defeated')
-        self.assertEqual(root.findtext('./project/children/clip/marker/comment'),
+        top = root.find('./project/children')
+        self.assertEqual([b.findtext('name') for b in top.findall('bin')], ['01 Media', '02 Sequences'])
+        self.assertEqual(top.findall('sequence'), [])
+        sequence_bin = top.findall('bin')[1]
+        self.assertEqual(len(sequence_bin.findall('children/sequence')), 1)
+        self.assertEqual(root.findtext('.//clip/marker/name'), 'Boss Defeated')
+        self.assertEqual(root.findtext('.//clip/marker/comment'),
                          'Alice defeats the boss. / Ref [VOD:e1]')
         seq = root.find('.//sequence')
         self.assertEqual(seq.findtext('duration'), str(1400*60))
         main, alt = seq.findall('./media/video/track')
         parts = main.findall('clipitem')
+        self.assertEqual([p.findtext('masterclipid') for p in parts], ['vod-master-0', 'vod-master-2'])
         self.assertEqual([(p.findtext('start'),p.findtext('end')) for p in parts], [('0','36000'),('36000','84000')])
         clip = alt.find('clipitem')
+        self.assertEqual(clip.findtext('masterclipid'), 'vod-master-1')
         self.assertEqual((clip.findtext('start'),clip.findtext('end')), ('6480','7080'))
         self.assertEqual((clip.findtext('in'),clip.findtext('out')), ('11400','12000'))
         self.assertEqual(clip.findtext('enabled'),'FALSE')

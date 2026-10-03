@@ -23,6 +23,15 @@ def fixture():
 
 
 class ExportTests(unittest.TestCase):
+    def test_source_pov_group_survives_export_without_changing_display_label(self):
+        data = fixture()
+        data['sources'][0].update(label='Alice part 2', pov='Alice')
+        source = vod.export_events(data)['sources'][0]
+        self.assertEqual(source['pov'], 'Alice')
+        self.assertEqual(source['label'], 'Alice part 2')
+        data['sources'][0]['pov'] = ' '
+        with self.assertRaises(ValueError): vod.export_events(data)
+
     def test_preserves_uncertain_and_independent_source_clocks(self):
         result = vod.export_events(fixture())
         a, b = [s["markers"][0] for s in result["sources"]]

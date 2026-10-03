@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import quote
 import xml.etree.ElementTree as ET
 
-from vod import export_events, probe, read, validate_marker_presentation
+from vod import export_events, probe, read, text, validate_marker_presentation
 
 
 def element(parent, tag, value=None, **attrs):
@@ -44,7 +44,41 @@ def media_url(path):
     return path.as_uri()
 
 
-def build_xml(markers, probes, title='VOD discovery'):
+def bin_children(parent, name, bin_id):
+    folder = element(parent, 'bin', id=bin_id)
+    element(folder, 'name', name)
+    return element(folder, 'children')
+
+
+def organize_project(root, sources):
+    """Move existing master clips and sequences into bins without copying them.
+
+    Organize after timeline construction: grouping interleaved POVs changes
+    document order, which must not change master/source identity or references.
+    """
+    children = root.find('./project/children')
+    masters = {clip.get('id'): clip for clip in children.findall('clip')}
+    if len(masters) != len(sources):
+        raise ValueError('Organization requires one ungrouped master clip per source')
+    if sources:
+        media = bin_children(children, '01 Media', 'vod-bin-media')
+        folders = {}
+        for index, source in enumerate(sources):
+            label = text(source.get('pov', source.get('label', 'Other')), 'source POV bin').strip()
+            if label not in folders:
+                folders[label] = bin_children(media, label, f'vod-bin-pov-{len(folders)}')
+            clip = masters[f'vod-master-{index}']
+            children.remove(clip)
+            folders[label].append(clip)
+    sequences = children.findall('sequence')
+    if sequences:
+        timelines = bin_children(children, '02 Sequences', 'vod-bin-sequences')
+        for sequence in sequences:
+            children.remove(sequence)
+            timelines.append(sequence)
+
+
+def build_xml(markers, probes, title='VOD discovery', *, organize=True):
     root = ET.Element('xmeml', version='5')
     project = element(root, 'project')
     element(project, 'name', title)
@@ -152,6 +186,8 @@ def build_xml(markers, probes, title='VOD discovery'):
             element(m, 'comment', ' / '.join(marker['comments'].splitlines()))
             element(m, 'in', start)
             element(m, 'out', end)
+    if organize:
+        organize_project(root, markers['sources'])
     ET.indent(root)
     return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE xmeml>\n' + ET.tostring(root, encoding='unicode')
 

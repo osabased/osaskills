@@ -10,12 +10,12 @@ from fractions import Fraction
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from premiere_xml import build_xml, element, frame_rate, rate
+from premiere_xml import build_xml, element, frame_rate, organize_project, rate
 from vod import export_events, number, probe, read, text
 
 
 def build_review(markers, probes, plan):
-    root = ET.fromstring(build_xml(markers, probes, plan['title']))
+    root = ET.fromstring(build_xml(markers, probes, plan['title'], organize=False))
     children = root.find('./project/children')
     sources = {s['id']: s for s in markers['sources']}
     masters = dict(zip(sources, children.findall('clip')))
@@ -152,6 +152,7 @@ def build_review(markers, probes, plan):
         element(marker, 'comment', text(plan['coverage_note'], 'coverage note'))
         element(marker, 'in', 0)
         element(marker, 'out', 1)
+    organize_project(root, markers['sources'])
     ET.indent(root)
     return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE xmeml>\n'+ET.tostring(root,encoding='unicode')
 

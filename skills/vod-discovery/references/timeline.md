@@ -2,6 +2,8 @@
 
 Use the same factual events/source markers plus a separate, evidence-authored placement plan. Full main sources remain chronological; alternates are trimmed suggestions on upper video tracks, with one corresponding audio track per actual stream. Both alternate video and audio clips start disabled.
 
+The XML places source items in `01 Media/<POV>` and the timeline in `02 Sequences`. All main parts share their POV bin through the source `pov` field. Bins change project organization only: the sequence keeps references to the same source masters, including when input order interleaves multiple POVs. After import, show the Project panel with Shift+1, expand `02 Sequences`, and open the review timeline.
+
 ```powershell
 python <skill>/scripts/review_timeline.py --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/discovery-timeline.xml
 ```
