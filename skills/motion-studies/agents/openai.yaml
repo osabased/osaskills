@@ -1,0 +1,5 @@
+interface:
+  display_name: "Motion Studies"
+  short_description: "Preview rough motion in the target application"
+policy:
+  allow_implicit_invocation: true

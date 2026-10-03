@@ -5,6 +5,7 @@
 | My agent is having trouble turning findings and suggestions into a defensible, actionable proposal | [**consolidate**](./skills/consolidate/) |
 | My agent is having trouble choosing or reassessing a consequential direction | [**direction-selection**](./skills/direction-selection/) |
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
+| My agent needs feedback on uncertain motion before costly production work | [**motion-studies**](./skills/motion-studies/) |
 | My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
 | My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
 | I need to find useful moments across long VODs and prepare concise Premiere markers with relevant alternate POVs | [**vod-discovery**](./skills/vod-discovery/) |
