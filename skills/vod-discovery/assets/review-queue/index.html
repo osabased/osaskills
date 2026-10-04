@@ -11,8 +11,9 @@
 <p id="summary"></p>
 <div class="view-bar"><div id="views" role="group" aria-label="POV preview"></div><span id="sync-status"></span><label class="speed-label"><span class="sr-only">Playback speed</span><select id="speed"><option value="1">1×</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div>
 <div class="player"><video id="video" controls preload="auto" playsinline></video><button id="enable-audio" hidden>Enable sound</button><div id="unavailable" hidden><p>No prepared preview at this time.</p><button id="return-preview">Return to current moment</button></div></div>
-<div class="transport"><span id="source-clock"></span><span id="preview-meta"></span><span id="position"></span></div>
+<div class="transport"><span id="source-clock"></span><span id="preview-meta"></span><div class="context-controls" role="group" aria-label="Extend preview context"><button id="extend-before" aria-label="More context before, 15 seconds">← 15s</button><button id="extend-after" aria-label="More context after, 15 seconds">15s →</button><span id="context-status" role="status"></span></div><span id="position"></span></div>
 <p id="check" hidden></p>
+<p id="migration-status" hidden></p>
 </div><div class="inspector">
 <div class="actions"><div class="choices"><button id="keep" class="primary"><kbd>1</kbd> Keep</button><button id="later"><kbd>2</kbd> Later</button><button id="skip"><kbd>3</kbd> Skip</button><button id="undo" title="Undo last decision (U)">Undo</button></div><div class="navigation"><button id="toggle-notes" aria-expanded="false" aria-controls="notes">Note</button><button id="previous" aria-label="Previous moment" title="Previous moment (Left arrow)">←</button><button id="next" aria-label="Next moment" title="Next moment (Right arrow)">→</button></div></div>
 <div id="notes" hidden><label class="sr-only" for="note">Your note</label><textarea id="note" rows="2" maxlength="4000" placeholder="Add a note…"></textarea><div id="related"></div></div>

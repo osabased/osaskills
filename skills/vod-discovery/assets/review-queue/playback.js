@@ -39,7 +39,18 @@
     }
     return null;
   }
-  const api = {mapSwitch, nextView};
+  function rebasePosition(from, to, position) {
+    const source = from.preview_start_sec + position;
+    if (!Number.isFinite(source) || source < to.preview_start_sec || source > to.preview_end_sec) return null;
+    return source - to.preview_start_sec;
+  }
+  function resumePosition(item, index, view) {
+    const key = String(index);
+    const source = item.source_positions?.[key] ??
+      (view.base_preview_start_sec ?? view.preview_start_sec) + (item.positions[key] || 0);
+    return Math.max(0, Math.min(view.preview_end_sec - view.preview_start_sec, source - view.preview_start_sec));
+  }
+  const api = {mapSwitch, nextView, rebasePosition, resumePosition};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.VODPlayback = api;
 })(globalThis);

@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const {mapSwitch, nextView} = require('../assets/review-queue/playback.js');
+const {mapSwitch, nextView, rebasePosition, resumePosition} = require('../assets/review-queue/playback.js');
 const card = {
   views:[
     {source_id:'main',preview_start_sec:68,preview_end_sec:105},
@@ -33,4 +33,16 @@ assert.equal(nextView(card,0,36),null);
 const drift=structuredClone(card);drift.sync_links[0].offset_sec=80;
 near(mapSwitch(drift,0,1,12).source_sec,160); // A different event uses its own offset.
 assert.equal(card.sync_links[0].offset_sec,82.91);
-console.log('Playback checks passed: reversible clocks, per-event offsets, bounded coverage, missing anchors and POV cycling.');
+const extended = structuredClone(card);
+extended.views[0] = {...card.views[0],base_preview_start_sec:68,preview_start_sec:53,preview_end_sec:120};
+extended.views[1] = {...card.views[1],base_preview_start_sec:147,preview_start_sec:132,preview_end_sec:202};
+near(rebasePosition(card.views[0],extended.views[0],12),27); // Source 80 stays source 80.
+near(mapSwitch(extended,0,1,27).source_sec,162.91);
+near(mapSwitch(extended,0,1,27).position_sec,30.91);
+assert.equal(mapSwitch(extended,0,1,7),null); // Added source 60 is outside the local anchor.
+assert.equal(mapSwitch(extended,1,0,68),null); // Added alternate source 200 is also outside.
+near(resumePosition({positions:{'0':12}},0,extended.views[0]),27); // Old saved relative position.
+near(resumePosition({positions:{'0':12},source_positions:{'0':60}},0,extended.views[0]),7);
+assert.equal(rebasePosition(card.views[0],{preview_start_sec:90,preview_end_sec:120},12),null);
+assert.equal(rebasePosition(card.views[0],extended.views[0],NaN),null);
+console.log('Playback checks passed: reversible source clocks, context rebasing/legacy resume, bounded local anchors and POV cycling.');

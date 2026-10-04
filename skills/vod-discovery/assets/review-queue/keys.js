@@ -1,13 +1,15 @@
 'use strict';
 window.VODKeys = class {
   static labels = {previous:'Previous moment',next:'Next moment',pov:'Next POV',povBack:'Previous POV',
-    play:'Play / pause',back:'Seek back 5s',forward:'Seek forward 5s',keep:'Keep',later:'Later',skip:'Skip',undo:'Undo'};
+    play:'Play / pause',back:'Seek back 5s',forward:'Seek forward 5s',keep:'Keep',later:'Later',skip:'Skip',undo:'Undo',
+    extendBack:'More context before 15s',extendForward:'More context after 15s'};
   static pressed(event) {
     return [event.ctrlKey?'Ctrl':null,event.altKey?'Alt':null,event.shiftKey?'Shift':null,event.metaKey?'Meta':null,event.code].filter(Boolean).join('+');
   }
   static pretty(key) {
     return key.replace(/Key|Digit/g,'').replace('ArrowLeft','←').replace('ArrowRight','→')
-      .replace('ArrowUp','↑').replace('ArrowDown','↓').split('+').join(' + ');
+      .replace('ArrowUp','↑').replace('ArrowDown','↓').replace('BracketLeft','[').replace('BracketRight',']')
+      .split('+').join(' + ');
   }
   constructor(token, changed, opened) {
     this.token = token; this.changed = changed; this.opened = opened;

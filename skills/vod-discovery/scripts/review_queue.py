@@ -26,6 +26,8 @@ from premiere_xml import frame_rate
 SCHEMA = 'vod-review-queue/v1'
 BUILD_SCHEMA = 'vod-review-build/v1'
 PREVIEW_VERSION = 1
+CONTEXT_SCHEMA = 'vod-review-context/v1'
+CONTEXT_STEP = 15
 DECISIONS = ('unreviewed', 'keep', 'later', 'skip')
 ASSETS = Path(__file__).resolve().parents[1] / 'assets' / 'review-queue'
 
@@ -50,6 +52,18 @@ def atomic_json(path, value):
             json.dump(value, f, ensure_ascii=False, indent=2, allow_nan=False)
             f.flush()
             os.fsync(f.fileno())
+        os.replace(temp, path)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
+def atomic_snapshot(path, text):
+    """Keep old snapshot bytes, including the hashes recorded in its manifest."""
+    path = Path(path)
+    temp = path.with_name(path.name + '.' + uuid.uuid4().hex + '.tmp')
+    try:
+        with temp.open('wb') as stream:
+            stream.write(text.encode('utf-8')); stream.flush(); os.fsync(stream.fileno())
         os.replace(temp, path)
     finally:
         temp.unlink(missing_ok=True)
@@ -111,8 +125,8 @@ def cards_for(data, plan, padding):
 
 
 @contextmanager
-def build_lock(folder):
-    with (folder / '.build.lock').open('a+b') as lock:
+def build_lock(folder, name='.build.lock', message='This queue is already being prepared by another process.'):
+    with (folder / name).open('a+b') as lock:
         if lock.tell() == 0:
             lock.write(b'0'); lock.flush()
         lock.seek(0)
@@ -124,7 +138,7 @@ def build_lock(folder):
                 import fcntl
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as exc:
-            raise Conflict('This queue is already being prepared by another process.') from exc
+            raise Conflict(message) from exc
         try:
             yield
         finally:
@@ -152,7 +166,7 @@ def render_preview(source, metadata, view, dest):
                 '-preset', 'veryfast', '-crf', '25', '-pix_fmt', 'yuv420p', '-threads', '2',
                 '-movflags', '+faststart', str(temp)]
     try:
-        subprocess.run(command, check=True, capture_output=True)
+        subprocess.run(command, check=True, capture_output=True, timeout=max(120, expected * 5))
         _, duration = probe(temp)
         if abs(duration - expected) > .25:
             raise ValueError(f'Preview duration differs from requested source interval: {dest.name}')
@@ -209,7 +223,7 @@ def prepare_previews(cards, sources, probes, out, record, jobs):
         raise error
 
 
-def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False):
+def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False, migration=None):
     out = Path(out).resolve()
     if type(jobs) is not int or jobs < 1:
         raise ValueError('Preview jobs must be a positive integer')
@@ -227,6 +241,18 @@ def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False):
     request = dict(schema=BUILD_SCHEMA, identities=identities, inputs=inputs,
                    settings=dict(padding=padding, preview_version=PREVIEW_VERSION))
     cards = cards_for(data, plan, padding)
+    if migration is not None:
+        from review_migration import prepare_migration
+        report = prepare_migration(migration, data, plan, probes=None, identities=identities)
+        request['migration'] = digest(migration)
+        # Retain already requested context and source positions on unchanged views.
+        for card in cards:
+            if report['moments'][card['id']]['status'] == 'unchanged':
+                old = migration['cards'][report['moments'][card['id']]['previous_id']]
+                for view in card['views']:
+                    prior = next(v for v in old['views'] if v['source_id'] == view['source_id'])
+                    view['preview_start_sec'] = min(view['preview_start_sec'], prior['preview_start_sec'])
+                    view['preview_end_sec'] = max(view['preview_end_sec'], prior['preview_end_sec'])
     decisions = {c['id']: dict(decision='unreviewed', note='', view=0, positions={}) for c in cards}
     if resume:
         if not out.is_dir():
@@ -263,6 +289,8 @@ def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False):
             record = dict(request, completed={}, snapshots={n: file_hash(out / n)
                           for n in ('events.json', 'plan.json', 'probes.json')})
             atomic_json(out / 'build.json', record)
+        if migration is not None:
+            atomic_json(out / 'migration-input.json', migration)
         prepare_previews(cards, {s['id']: s for s in data['sources']}, probes, out, record, jobs)
         # Recheck inputs after a long encode; never publish previews for changed originals.
         if ({s['id']: identity(s) for s in data['sources']} != identities or
@@ -271,9 +299,24 @@ def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False):
         manifest = dict(schema=SCHEMA, title='Moment review', cards=cards, identities=identities,
             coverage=plan.get('coverage_note', 'Review coverage not supplied.'),
             snapshots=record['snapshots'], inputs=inputs)
+        initial_state = dict(schema=SCHEMA, queue_hash=digest(manifest), revision=0,
+            current_id=cards[0]['id'], decisions=decisions, history=[])
+        if migration is not None:
+            from review_migration import prepare_migration, migrated_state
+            report = prepare_migration(migration, data, plan, probes=probes, identities=identities)
+            manifest['migration'] = report
+            initial_state = migrated_state(manifest, migration)
+            archive = out / 'migration' / 'previous'
+            archive.mkdir(parents=True, exist_ok=True)
+            for name, value in migration['snapshots'].items():
+                atomic_snapshot(archive / name, migration['raw_snapshots'][name])
+            for name, text in migration.get('ancestor_snapshots', {}).items():
+                target = out / 'migration' / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                atomic_snapshot(target, text)
+            atomic_json(out / 'migration.json', report)
         # queue.json is the completion record; publish it after the initial state.
-        atomic_json(out / 'state.json', dict(schema=SCHEMA, queue_hash=digest(manifest), revision=0,
-            current_id=cards[0]['id'], decisions=decisions, history=[]))
+        atomic_json(out / 'state.json', initial_state)
         atomic_json(out / 'queue.json', manifest)
         return out
 
@@ -284,7 +327,9 @@ class Conflict(ValueError):
 
 DEFAULT_KEYS = dict(previous='ArrowLeft', next='ArrowRight', pov='KeyP', povBack='Shift+KeyP',
                     play='Space', back='Shift+ArrowLeft', forward='Shift+ArrowRight',
-                    keep='Digit1', later='Digit2', skip='Digit3', undo='KeyU')
+                    keep='Digit1', later='Digit2', skip='Digit3', undo='KeyU',
+                    extendBack='BracketLeft', extendForward='BracketRight')
+LEGACY_KEYS = set(DEFAULT_KEYS) - {'extendBack', 'extendForward'}
 KEY_CODES = ([f'Key{c}' for c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'] + [f'Digit{n}' for n in range(10)] +
              ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', 'Enter', 'Backspace',
               'Delete', 'Home', 'End', 'PageUp', 'PageDown', 'Comma', 'Period', 'Slash',
@@ -314,6 +359,13 @@ class Preferences:
         value = read(self.path)
         if value.get('schema') != 1 or type(value.get('revision')) is not int or value['revision'] < 0:
             raise ValueError('Invalid saved keyboard profile')
+        if isinstance(value.get('keys'), dict) and set(value['keys']) == LEGACY_KEYS:
+            # Preserve customized old bindings, even if they occupy the new defaults.
+            keys = dict(value['keys'])
+            for action in ('extendBack', 'extendForward'):
+                options = [DEFAULT_KEYS[action], 'Shift+' + DEFAULT_KEYS[action]] + KEY_CODES
+                keys[action] = next(key for key in options if key not in keys.values())
+            value['keys'] = keys
         self.validate(value.get('keys'))
         return value
 
@@ -355,8 +407,172 @@ class Preferences:
             return value
 
 
+class ContextPreviews:
+    """On-demand encodes; completion is separate from decisions and discovery."""
+    def __init__(self, store, repair=True):
+        self.store = store
+        self.path = store.folder / 'context.json'
+        self.record = (read(self.path) if self.path.exists() else
+                       dict(schema=CONTEXT_SCHEMA, queue_hash=store.queue_hash, completed={}, cached={}))
+        if self.record.get('schema') != CONTEXT_SCHEMA or self.record.get('queue_hash') != store.queue_hash:
+            raise ValueError('Context previews belong to a different queue')
+        if not isinstance(self.record.get('completed'), dict) or not isinstance(self.record.get('cached', {}), dict):
+            raise ValueError('Invalid saved context registry')
+        self.jobs, self.pending = {}, {}
+        self.record.setdefault('cached', {e['file']: e for e in self.record['completed'].values()})
+        for key, entry in self.record['completed'].items():
+            if (key != self.key(entry['event_id'], entry['view']) or
+                    self.record['cached'].get(entry['file']) != entry):
+                raise ValueError('Invalid context moment/cache binding')
+        self.executor = None
+        for name, entry in self.record['cached'].items():
+            if name != entry['file'] or not re.fullmatch(r'context-[0-9a-f]{64}\.mp4', name):
+                raise ValueError('Invalid registered context preview')
+        for entry in list(self.record['completed'].values()) + list(self.record['cached'].values()):
+            if (entry['event_id'] not in store.cards or type(entry['view']) is not int or
+                    not 0 <= entry['view'] < len(store.cards[entry['event_id']]['views'])):
+                raise ValueError('Invalid context moment or POV')
+            base = store.cards[entry['event_id']]['views'][entry['view']]
+            duration = store.sources[base['source_id']]['duration_sec']
+            if (entry['source_id'] != base['source_id'] or
+                    not 0 <= entry['preview_start_sec'] <= base['preview_start_sec'] or
+                    not base['preview_end_sec'] <= entry['preview_end_sec'] <= duration or
+                    not re.fullmatch(r'context-[0-9a-f]{64}\.mp4', entry['file']) or
+                    not re.fullmatch(r'[0-9a-f]{64}', entry['sha256']) or
+                    abs(entry['duration_sec'] - (entry['preview_end_sec'] - entry['preview_start_sec'])) > .25):
+                raise ValueError('Invalid saved context preview')
+        if repair:
+            # A saved source position may lie outside the base preview. Repair
+            # damaged/missing current context before serving it rather than
+            # loading a shorter file and overwriting that source position.
+            for key, entry in list(self.record['completed'].items()):
+                if self.valid(entry):
+                    continue
+                store.validate_inputs()
+                view = self.view(entry['event_id'], entry['view'])
+                source = store.sources[view['source_id']]
+                result = render_preview(source, store.probes[source['id']], view,
+                                        store.folder / 'previews' / view['file'])
+                store.validate_inputs()
+                candidate = deepcopy(self.record)
+                candidate['completed'][key] = {**entry, **result}
+                candidate['cached'][entry['file']] = candidate['completed'][key]
+                atomic_json(self.path, candidate)
+                self.record = candidate
+
+    @staticmethod
+    def key(eid, index):
+        return digest([eid, index])
+
+    def view(self, eid, index):
+        with self.store.lock:
+            base = deepcopy(self.store.cards[eid]['views'][index])
+            base['base_preview_start_sec'] = base['preview_start_sec']
+            base['source_duration_sec'] = self.store.sources[base['source_id']]['duration_sec']
+            entry = self.record['completed'].get(self.key(eid, index))
+            if entry:
+                base.update({k: entry[k] for k in ('preview_start_sec', 'preview_end_sec', 'file')})
+            return base
+
+    def registered(self, name):
+        with self.store.lock:
+            return name in self.record['cached']
+
+    def request(self, patch):
+        eid, index, direction = patch.get('event_id'), patch.get('view'), patch.get('direction')
+        if eid not in self.store.cards or type(index) is not int or not 0 <= index < len(self.store.cards[eid]['views']):
+            raise ValueError('Unknown context moment or view')
+        if direction not in ('before', 'after'):
+            raise ValueError('Context direction must be before or after')
+        # Bounds from the caller make network retries idempotent. A stale tab's
+        # request unions with newer context instead of adding another 15 seconds.
+        start = number(patch.get('preview_start_sec'), 'context start')
+        end = number(patch.get('preview_end_sec'), 'context end')
+        with self.store.lock:
+            base = self.store.cards[eid]['views'][index]
+            current = self.view(eid, index)
+            duration = current['source_duration_sec']
+            if not 0 <= start <= base['preview_start_sec'] < base['preview_end_sec'] <= end <= duration:
+                raise ValueError('Context request must contain the original preview within media bounds')
+            requested_start = max(0, start - CONTEXT_STEP) if direction == 'before' else start
+            requested_end = min(duration, end + CONTEXT_STEP) if direction == 'after' else end
+            if (requested_start < current['preview_start_sec'] - CONTEXT_STEP or
+                    requested_end > current['preview_end_sec'] + CONTEXT_STEP):
+                raise ValueError('Request at most 15 seconds of additional context per side')
+            target = dict(current, preview_start_sec=min(current['preview_start_sec'], requested_start),
+                          preview_end_sec=max(current['preview_end_sec'], requested_end))
+            key = self.key(eid, index)
+            if key in self.pending:
+                job = self.jobs[self.pending[key]]
+                if (job['target']['preview_start_sec'] <= target['preview_start_sec'] and
+                        job['target']['preview_end_sec'] >= target['preview_end_sec']):
+                    return self.status(job['id'])
+                raise Conflict('Context for this POV is already preparing. Try again when it is ready.')
+            entry = self.record['completed'].get(key)
+            if (target['preview_start_sec'] == current['preview_start_sec'] and
+                    target['preview_end_sec'] == current['preview_end_sec'] and
+                    (not entry or self.valid(entry))):
+                return dict(status='ready', event_id=eid, view=index, preview=current)
+            if len(self.pending) >= 8:
+                raise Conflict('Context preparation is busy. Try again shortly.')
+            self.store.validate_inputs()
+            name = 'context-' + digest([self.store.queue_hash, eid, index, target['preview_start_sec'],
+                                       target['preview_end_sec'], PREVIEW_VERSION]) + '.mp4'
+            target['file'] = name
+            jobid = uuid.uuid4().hex
+            job = dict(id=jobid, status='pending', event_id=eid, view=index, target=target)
+            self.jobs[jobid] = job; self.pending[key] = jobid
+            if self.executor is None:
+                self.executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix='vod-context')
+            self.executor.submit(self.encode, key, job)
+            return self.status(jobid)
+
+    def valid(self, entry):
+        target = self.store.folder / 'previews' / entry['file']
+        return target.is_file() and file_hash(target) == entry['sha256']
+
+    def encode(self, key, job):
+        try:
+            source = self.store.sources[job['target']['source_id']]
+            result = render_preview(source, self.store.probes[source['id']], job['target'],
+                                    self.store.folder / 'previews' / job['target']['file'])
+            with self.store.lock:
+                self.store.validate_inputs()
+                entry = dict(event_id=job['event_id'], view=job['view'], source_id=source['id'],
+                             **{k: job['target'][k] for k in ('preview_start_sec', 'preview_end_sec', 'file')}, **result)
+                candidate = deepcopy(self.record)
+                candidate['completed'][key] = entry
+                candidate['cached'][entry['file']] = entry
+                atomic_json(self.path, candidate)
+                self.record = candidate
+                job['status'] = 'ready'
+        except Exception as exc:
+            with self.store.lock:
+                job.update(status='error', error=str(exc))
+        finally:
+            with self.store.lock:
+                self.pending.pop(key, None)
+
+    def status(self, jobid):
+        with self.store.lock:
+            if jobid not in self.jobs:
+                raise ValueError('Context request expired. Retry the same request.')
+            job = self.jobs[jobid]
+            result = {k: job[k] for k in ('id', 'status', 'event_id', 'view')}
+            if job['status'] == 'ready':
+                result['preview'] = self.view(job['event_id'], job['view'])
+            if job['status'] == 'error':
+                result['error'] = job['error']
+            return result
+
+    def close(self):
+        if self.executor is not None:
+            self.executor.shutdown(wait=True, cancel_futures=True)
+            self.executor = None
+
+
 class Store:
-    def __init__(self, folder):
+    def __init__(self, folder, allow_stale=False):
         self.folder = Path(folder).resolve(strict=True)
         self.queue = read(self.folder / 'queue.json')
         if self.queue['schema'] != SCHEMA:
@@ -364,8 +580,13 @@ class Store:
         self.queue_hash = digest(self.queue)
         self.lock = threading.RLock()
         self.cards = {c['id']: c for c in self.queue['cards']}
+        self.sources = {s['id']: s for s in read(self.folder / 'events.json')['sources']}
+        self.probes = read(self.folder / 'probes.json')
         self.playback_plan = read(self.folder / 'plan.json')
-        self.validate_inputs()
+        self.validate_snapshots()
+        if not allow_stale:
+            self.validate_inputs()
+        self.context = ContextPreviews(self, repair=not allow_stale)
         self.timeline = self.timeline_data()
         self.state()
 
@@ -404,10 +625,13 @@ class Store:
         return dict(parts=parts, segments=segments, total=float(cursor / fps),
                     lanes=lanes + [dict(id='main', label=sources[mains[0]].get('pov', 'Main'))])
 
-    def validate_inputs(self):
+    def validate_snapshots(self):
         for name, expected in self.queue['snapshots'].items():
             if name not in ('events.json', 'plan.json', 'probes.json') or file_hash(self.folder / name) != expected:
                 raise ValueError('Queue snapshot changed. Preserve this queue and create a new one.')
+
+    def validate_inputs(self):
+        self.validate_snapshots()
         for item in self.queue['inputs']:
             if file_hash(item['path']) != item['sha256']:
                 raise ValueError('Discovery inputs changed. Preserve choices; build a new queue for revised discoveries.')
@@ -415,8 +639,8 @@ class Store:
             if identity(source) != self.queue['identities'][source['id']]:
                 raise ValueError('Source media changed. Review mapping before exporting.')
 
-    def state(self):
-        state = read(self.folder / 'state.json')
+    def state(self, state=None):
+        state = read(self.folder / 'state.json') if state is None else state
         if state['schema'] != SCHEMA or state['queue_hash'] != self.queue_hash or set(state['decisions']) != set(self.cards):
             raise ValueError('Decisions belong to a different queue')
         if state['current_id'] not in self.cards or type(state['revision']) is not int or state['revision'] < 0:
@@ -432,6 +656,12 @@ class Store:
                 view = self.cards[eid]['views'][int(key)]
                 if number(position, 'saved position') > view['preview_end_sec'] - view['preview_start_sec'] + .25:
                     raise ValueError('Invalid saved playback position')
+            for key, position in item.get('source_positions', {}).items():
+                if not key.isdecimal() or not 0 <= int(key) < len(self.cards[eid]['views']):
+                    raise ValueError('Invalid saved source view')
+                sid = self.cards[eid]['views'][int(key)]['source_id']
+                if number(position, 'saved source position') > self.sources[sid]['duration_sec']:
+                    raise ValueError('Invalid saved source position')
         return state
 
     def playback_queue(self):
@@ -447,6 +677,10 @@ class Store:
                 uncertainty_sec=a['uncertainty_sec']))
         for card in queue['cards']:
             card['sync_links'] = links.get(card['id'], [])
+            for index, view in enumerate(card['views']):
+                view.update(self.context.view(card['id'], index))
+            card['migration'] = queue.get('migration', {}).get('moments', {}).get(card['id'])
+        queue['context_step_sec'] = CONTEXT_STEP
         return queue
 
     def mutate(self, patch, undo=False):
@@ -480,6 +714,16 @@ class Store:
                     if position > v['preview_end_sec'] - v['preview_start_sec'] + .25:
                         raise ValueError('Playback position outside preview')
                     item['positions'][str(view)] = position
+                    item.setdefault('source_positions', {})[str(view)] = min(v['preview_end_sec'], v['preview_start_sec'] + position)
+                if 'source_position_sec' in patch:
+                    position = number(patch['source_position_sec'], 'source playback position')
+                    effective = self.context.view(eid, view)
+                    if not effective['preview_start_sec'] <= position <= effective['preview_end_sec'] + .25:
+                        raise ValueError('Source playback position outside preview')
+                    item.setdefault('source_positions', {})[str(view)] = min(position, effective['preview_end_sec'])
+                    original = self.cards[eid]['views'][view]
+                    if original['preview_start_sec'] <= position <= original['preview_end_sec']:
+                        item['positions'][str(view)] = position - original['preview_start_sec']
                 state['current_id'] = eid
             state['revision'] += 1
             atomic_json(self.folder / 'state.json', state)
@@ -504,12 +748,76 @@ class Store:
             return dict(url=f'/exports/{name}/review.xml', path=str(folder / 'review.xml'), count=len(selected))
 
 
+def update_queue(previous, events_path, plan_path, out, padding=3, jobs=2, resume=False, event_map=None):
+    previous, out = Path(previous).resolve(strict=True), Path(out).resolve()
+    if previous == out or previous in out.parents or out in previous.parents:
+        raise ValueError('Update into a new, separate folder; preserve the previous queue')
+    mapping = {}
+    if event_map is not None:
+        supplied = read(event_map)
+        if supplied.get('schema') != 'vod-review-event-map/v1' or not isinstance(supplied.get('matches'), list):
+            raise ValueError('Use a vod-review-event-map/v1 mapping with explicit matches')
+        for match in supplied['matches']:
+            eid, old = match.get('event_id'), match.get('previous_id')
+            if not isinstance(eid, str) or not isinstance(old, str) or eid in mapping:
+                raise ValueError('Each explicit event match must be unique')
+            mapping[eid] = old
+    # Changed external inputs/media are allowed here, but never changed queue
+    # snapshots or an active server that could save decisions during migration.
+    with build_lock(previous, '.server.lock', 'Stop the previous queue server before updating; its choices remain saved.'):
+        store = Store(previous, allow_stale=True)
+        snapshot_names = ('queue.json', 'state.json', 'events.json', 'plan.json', 'probes.json', 'context.json', 'build.json', 'migration.json')
+        raw = {name: (previous / name).read_bytes().decode('utf-8')
+               for name in snapshot_names if (previous / name).is_file()}
+        ancestors = {}
+        ancestor_folders = []
+        prior = previous / 'migration' / 'previous'
+        if (prior / 'queue.json').is_file():
+            ancestor_folders.append((digest(read(prior / 'queue.json')), prior))
+        old_ancestors = previous / 'migration' / 'ancestors'
+        if old_ancestors.is_dir():
+            ancestor_folders.extend((folder.name, folder) for folder in old_ancestors.iterdir() if folder.is_dir())
+        for key, folder in ancestor_folders:
+            if (not re.fullmatch(r'[0-9a-f]{64}', key) or folder.is_symlink() or
+                    previous not in folder.resolve().parents):
+                raise ValueError('Invalid previous history archive')
+            for name in snapshot_names:
+                path = folder / name
+                if path.is_file():
+                    if path.is_symlink():
+                        raise ValueError('History snapshot must stay inside the previous queue')
+                    text = path.read_bytes().decode('utf-8')
+                    relative = 'ancestors/' + key + '/' + name
+                    if relative in ancestors and ancestors[relative] != text:
+                        raise ValueError('Conflicting previous history snapshots')
+                    ancestors[relative] = text
+        migration = dict(folder=str(previous), event_map=mapping,
+                         raw_snapshots=raw, ancestor_snapshots=ancestors,
+                         snapshots={name: json.loads(text) for name, text in raw.items()},
+                         cards={card['id']: card for card in store.playback_queue()['cards']})
+        try:
+            if digest(migration['snapshots']['queue.json']) != store.queue_hash:
+                raise ValueError('Previous queue changed during migration snapshot')
+            for name, expected in store.queue['snapshots'].items():
+                if hashlib.sha256(raw[name].encode('utf-8')).hexdigest() != expected:
+                    raise ValueError('Previous snapshot changed during migration capture')
+            store.state(migration['snapshots']['state.json'])
+            return initialize(events_path, plan_path, out, padding, jobs, resume, migration)
+        finally:
+            store.context.close()
+
+
 def make_server(store, port=0, preferences=None):
     token = secrets.token_urlsafe(32)
     preferences = preferences or Preferences()
     preview_files = frozenset(v['file'] for c in store.queue['cards'] for v in c['views'])
 
     class Handler(BaseHTTPRequestHandler):
+        def setup(self):
+            super().setup()
+            # Bound abandoned requests and paused range downloads.
+            self.connection.settimeout(15)
+
         def log_message(self, *args):
             pass
 
@@ -520,6 +828,8 @@ def make_server(store, port=0, preferences=None):
             self.send_response(status)
             self.send_header('Content-Type', content_type)
             self.send_header('Content-Length', str(length))
+            self.send_header('Connection', 'close')
+            self.close_connection = True
             self.send_header('Cache-Control', 'no-store')
             self.send_header('X-Content-Type-Options', 'nosniff')
             self.send_header('Content-Security-Policy', "default-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'")
@@ -545,11 +855,14 @@ def make_server(store, port=0, preferences=None):
                     return self.json_response(dict(queue=store.playback_queue(), state=store.state(), token=token))
                 if path == '/api/keys':
                     return self.json_response(dict(profile=preferences.read(), defaults=DEFAULT_KEYS, codes=KEY_CODES))
+                if re.fullmatch(r'/api/context/[0-9a-f]{32}', path):
+                    return self.json_response(store.context.status(path.rsplit('/', 1)[-1]))
                 assets = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css',
                           '/playback.js': 'playback.js', '/timeline.js': 'timeline.js', '/keys.js': 'keys.js'}
                 if path in assets:
                     target = ASSETS / assets[path]
-                elif path.startswith('/previews/') and path.removeprefix('/previews/') in preview_files:
+                elif path.startswith('/previews/') and (path.removeprefix('/previews/') in preview_files or
+                        store.context.registered(path.removeprefix('/previews/'))):
                     target = store.folder / path.lstrip('/')
                 elif re.fullmatch(r'/exports/review-r\d+-[0-9a-f]{8}/review\.xml', path):
                     target = store.folder / path.lstrip('/')
@@ -585,7 +898,8 @@ def make_server(store, port=0, preferences=None):
                                 break
                             self.wfile.write(block)
                             remaining -= len(block)
-            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, TimeoutError):
+                self.close_connection = True
                 pass
             except (ValueError, KeyError, OSError) as exc:
                 self.json_response({'error': str(exc)}, 400)
@@ -609,6 +923,8 @@ def make_server(store, port=0, preferences=None):
                     return self.json_response(store.export(patch))
                 if self.path == '/api/keys':
                     return self.json_response(preferences.save(patch))
+                if self.path == '/api/context':
+                    return self.json_response(store.context.request(patch))
                 return self.json_response({'error': 'Not found'}, 404)
             except Conflict as exc:
                 self.json_response({'error': str(exc)}, 409)
@@ -619,6 +935,10 @@ def make_server(store, port=0, preferences=None):
         # HTTPServer's default SO_REUSEADDR can let two Windows servers bind
         # the same port and send the browser to the wrong process.
         allow_reuse_address = os.name != 'nt'
+
+        def server_close(self):
+            super().server_close()
+            store.context.close()
 
         def server_bind(self):
             if os.name == 'nt':
@@ -638,6 +958,15 @@ def main():
     init.add_argument('--padding', type=float, default=3)
     init.add_argument('--jobs', type=int, default=2, help='Maximum concurrent preview encodes (default: 2; use 1 for serial)')
     init.add_argument('--resume', action='store_true', help='Resume an incomplete build with unchanged inputs and settings')
+    update = sub.add_parser('update', help='Create a revised queue and conservatively preserve prior review choices')
+    update.add_argument('--from-queue', required=True)
+    update.add_argument('--events', required=True)
+    update.add_argument('--plan', required=True)
+    update.add_argument('--out', required=True)
+    update.add_argument('--padding', type=float, default=3)
+    update.add_argument('--jobs', type=int, default=2)
+    update.add_argument('--resume', action='store_true')
+    update.add_argument('--event-map', help='Explicit one-to-one stable-ID mapping for renamed moments')
     serve = sub.add_parser('serve')
     serve.add_argument('--queue', required=True)
     serve.add_argument('--port', type=int, default=8765)
@@ -647,9 +976,13 @@ def main():
     if args.command == 'init':
         print(initialize(args.events, args.plan, args.out, args.padding, args.jobs, args.resume))
         return
-    store = Store(args.queue)
-    # Hold an OS lock so a second server cannot race writes to the same state.
-    with (store.folder / '.server.lock').open('a+b') as lock:
+    if args.command == 'update':
+        print(update_queue(args.from_queue, args.events, args.plan, args.out, args.padding,
+                           args.jobs, args.resume, args.event_map))
+        return
+    folder = Path(args.queue).resolve(strict=True)
+    # Lock before Store can repair context, not just before serving choices.
+    with (folder / '.server.lock').open('a+b') as lock:
         if lock.tell() == 0:
             lock.write(b'0'); lock.flush()
         lock.seek(0)
@@ -662,6 +995,7 @@ def main():
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
             raise SystemExit('This queue is already open in another server. Use its URL.')
+        store = Store(folder)
         with make_server(store, args.port, Preferences(args.preferences)) as server:
             url = f'http://127.0.0.1:{server.server_port}'
             print(url, flush=True)

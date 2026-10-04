@@ -1,11 +1,12 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const {mapSwitch, nextView} = VODPlayback;
+const {mapSwitch, nextView, rebasePosition, resumePosition} = VODPlayback;
 const labels = {unreviewed:'Not reviewed', keep:'Keep', later:'Later', skip:'Skip'};
 const video = $('video');
 let queue, state, token, current, timeline, keys, viewIndex = 0;
 let cardsById, cardOrder, listedIds = null, listedCurrentId;
 const listRows = new Map();
+const contextRequests = new Map();
 let chain = Promise.resolve(), broken = false, busy = true, timer, lastTick = 0, autoMuted = false;
 function clock(seconds, decimals = false) {
   const n = Math.max(0, seconds), whole = Math.floor(n);
@@ -24,11 +25,18 @@ function fail(error) {
   document.querySelectorAll('main button, main select, main textarea, #export').forEach(b => b.disabled = true);
 }
 async function post(path, body) {
-  const response = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json','X-Review-Token':token},
-    body:JSON.stringify({...body, revision:state.revision}), keepalive:true});
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'Could not save');
-  return data;
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch(path, {method:'POST',signal:controller.signal,
+      headers:{'Content-Type':'application/json','X-Review-Token':token},
+      body:JSON.stringify({...body, revision:state.revision}), keepalive:true});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Could not save');
+    return data;
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('The local server did not respond. Check it before reloading saved choices.');
+    throw error;
+  } finally {clearTimeout(timeout);}
 }
 function enqueue(fn) {
   chain = chain.then(async () => { if (!broken) return fn(); }).catch(fail);
@@ -36,7 +44,7 @@ function enqueue(fn) {
 }
 function snapshot(extra = {}) {
   const patch = {event_id:current.id, note:$('note').value, view:viewIndex, ...extra};
-  if (video.readyState >= 1) patch.position_sec = video.currentTime;
+  if (video.readyState >= 1) patch.source_position_sec = current.views[viewIndex].preview_start_sec + video.currentTime;
   return patch;
 }
 function save(patch) {
@@ -46,6 +54,9 @@ function save(patch) {
     const decisionChanged = 'decision' in patch && patch.decision !== item.decision;
     const changed = state.current_id !== patch.event_id ||
       ['decision','note','view'].some(key => key in patch && patch[key] !== item[key]) ||
+      ('source_position_sec' in patch && Math.abs(patch.source_position_sec -
+        (item.source_positions?.[String(view)] ?? (cardsById.get(patch.event_id).views[view].base_preview_start_sec ??
+          cardsById.get(patch.event_id).views[view].preview_start_sec) + (item.positions[String(view)] || 0))) > .05) ||
       ('position_sec' in patch && Math.abs(patch.position_sec - (item.positions[String(view)] || 0)) > .05);
     if (changed) state = await post('/api/save', patch);
     $('saved').textContent = 'Saved';
@@ -124,6 +135,7 @@ function refreshTime() {
     'Local sync ±' + Math.max(...uncertainties) + 's' :
     (current.sync_links?.length ? 'No alternate here' : 'No verified sync');
   timeline?.tick();
+  contextControls();
 }
 async function autoplay() {
   try { await video.play(); }
@@ -143,7 +155,7 @@ function activateSound() {
   autoMuted = false; video.muted = false; $('enable-audio').hidden = true;
   if (!video.paused) video.play().catch(error => { if (error.name !== 'AbortError') notice('Press Play to enable sound.'); });
 }
-async function loadView(position) {
+async function loadView(position, play = true) {
   $('unavailable').hidden = true;
   for (const choice of ['keep','later','skip']) $(choice).disabled = false;
   const view = current.views[viewIndex];
@@ -178,7 +190,7 @@ async function loadView(position) {
   });
   refreshTime();
   timeline?.changed();
-  await autoplay();
+  if (play) await autoplay();
 }
 async function display(id) {
   current = cardsById.get(id);
@@ -187,6 +199,7 @@ async function display(id) {
   $('toggle-notes').textContent = state.decisions[id].note ? 'Note •' : 'Note';
   $('decision').textContent = labels[state.decisions[id].decision];
   $('check').hidden = !current.check; $('check').textContent = current.check ? 'Check: ' + current.check : '';
+  migrationStatus();
   $('done').hidden = true; notice('');
   $('related').replaceChildren();
   for (const relation of current.related) {
@@ -197,7 +210,7 @@ async function display(id) {
     $('related').append(button);
   }
   renderList(); $('undo').disabled = !state.history.length;
-  await loadView(state.decisions[id].positions[String(viewIndex)] || 0);
+  await loadView(resumePosition(state.decisions[id], viewIndex, current.views[viewIndex]));
 }
 async function action(fn) {
   if (busy || broken) return;
@@ -225,7 +238,7 @@ function switchView(index) {
     if (broken) return;
     viewIndex = index;
     await loadView(mapping.position_sec);
-    await save({event_id:current.id, view:viewIndex, position_sec:mapping.position_sec});
+    await save({event_id:current.id, view:viewIndex, source_position_sec:mapping.source_sec});
     notice('');
   });
 }
@@ -234,6 +247,93 @@ function cyclePOV(direction = 1) {
   const result = nextView(current, viewIndex, video.currentTime, direction);
   if (result) switchView(result.index); else notice('No alternate coverage at this time.');
 }
+function migrationStatus() {
+  const migration = current?.migration, target = $('migration-status');
+  target.hidden = !migration || !['changed','new','ambiguous'].includes(migration.status);
+  if (target.hidden) return;
+  if (migration.status === 'changed') {
+    const prefix = state.decisions[current.id].decision === 'unreviewed' ? 'Reconsider' : 'Revised moment';
+    target.textContent = prefix+' · Previously '+labels[migration.previous_decision]+'. '+migration.reasons.join('; ')+'.';
+  } else target.textContent = migration.status === 'ambiguous' ?
+    'New review required · Prior matches are ambiguous; no choice was transferred.' : 'New moment · No prior choice transferred.';
+}
+function contextControls() {
+  if (!current) return;
+  const view = current.views[viewIndex], request = contextRequests.get(current.id+':'+viewIndex);
+  const pending = request?.status === 'pending';
+  $('extend-before').disabled = broken || pending || !$('unavailable').hidden || view.preview_start_sec <= 0;
+  $('extend-after').disabled = broken || pending || !$('unavailable').hidden || view.preview_end_sec >= view.source_duration_sec;
+  $('context-status').textContent = pending ? 'Preparing context…' : request?.status === 'error' ? 'Context failed · retry the arrow' : '';
+  $('context-status').title = request?.error || '';
+}
+async function contextCall(path, request) {
+  const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 15000);
+  try {
+    const response = await fetch(path, request ? {method:'POST',signal:controller.signal,
+      headers:{'Content-Type':'application/json','X-Review-Token':token},body:JSON.stringify(request)} : {signal:controller.signal});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Could not extend this preview');
+    return data;
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('Context request timed out. Retry the arrow.');
+    throw error;
+  } finally {clearTimeout(timeout);}
+}
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+async function applyContext(card, index, preview) {
+  while (busy && !broken) await delay(100);
+  if (broken) return;
+  if (current.id !== card.id || viewIndex !== index) { card.views[index] = preview; return; }
+  busy = true;
+  const old = card.views[index], position = video.currentTime, play = !video.paused;
+  const browse = timeline?.browse, unavailable = !$('unavailable').hidden;
+  try {
+    video.pause(); await flush();
+    if (broken) return;
+    const rebased = rebasePosition(old, preview, position);
+    if (rebased === null) throw new Error('New context does not contain the current source time');
+    card.views[index] = preview;
+    try { await loadView(rebased, play && !unavailable); }
+    catch (error) {
+      card.views[index] = old;
+      await loadView(position, play && !unavailable);
+      throw error;
+    }
+    await flush();
+  } finally {
+    if (unavailable) {
+      $('unavailable').hidden = false;
+      for (const choice of ['keep','later','skip']) $(choice).disabled = true;
+      if (timeline) { timeline.browse = browse; timeline.tick(); }
+    }
+    busy = false;
+  }
+}
+async function extendContext(direction) {
+  if (busy || broken || !current || !$('unavailable').hidden) return;
+  const card = current, index = viewIndex, key = card.id+':'+index, view = card.views[index];
+  const previous = contextRequests.get(key);
+  if (previous?.status === 'pending') return;
+  const request = previous?.status === 'error' && previous.request.direction === direction ? previous.request :
+    {event_id:card.id,view:index,direction,preview_start_sec:view.preview_start_sec,preview_end_sec:view.preview_end_sec};
+  const task = {status:'pending',request}; contextRequests.set(key,task); contextControls();
+  try {
+    await flush();
+    if (broken) return;
+    let result = await contextCall('/api/context',request);
+    while (result.status === 'pending') {
+      await delay(750);
+      try { result = await contextCall('/api/context/'+result.id); }
+      catch (error) { result = await contextCall('/api/context',request); }
+    }
+    if (result.status !== 'ready') throw new Error(result.error || 'Preview context was not prepared');
+    await applyContext(card,index,result.preview);
+    contextRequests.delete(key);
+  } catch (error) { task.status = 'error'; task.error = error.message; }
+  finally { contextControls(); }
+}
+$('extend-before').onclick = () => extendContext('before');
+$('extend-after').onclick = () => extendContext('after');
 function closeMobileTimeline() {
   $('queue-panel').classList.remove('mobile-open'); $('toggle-queue').setAttribute('aria-expanded','false');
 }
@@ -251,7 +351,7 @@ function timelineJump(time, segment) {
     if (position < 0 || position >= view.preview_end_sec - view.preview_start_sec) {
       notice('No prepared preview at this time.'); return;
     }
-    await save({event_id:card.id,view:segment.view,position_sec:position});
+    await save({event_id:card.id,view:segment.view,source_position_sec:view.preview_start_sec+position});
     if (!broken) await display(card.id);
     closeMobileTimeline();
   });
@@ -261,6 +361,8 @@ function updateKeyHints() {
   if (!keys?.profile) return;
   for (const name of ['keep','later','skip']) $(name).querySelector('kbd').textContent = keys.label(name);
   for (const name of ['previous','next','undo']) $(name).title = VODKeys.labels[name]+' ('+keys.label(name)+')';
+  $('extend-before').title = 'More context before · 15s ('+keys.label('extendBack')+')';
+  $('extend-after').title = 'More context after · 15s ('+keys.label('extendForward')+')';
   $('key-hints').textContent = keys.label('previous')+' / '+keys.label('next')+' moments · '+keys.label('pov')+' POV · '+keys.label('play')+' play';
   refreshTime();
 }
@@ -276,6 +378,7 @@ function decide(decision) {
     video.pause(); await flush({decision});
     if (broken) return;
     $('decision').textContent = labels[decision];
+    migrationStatus();
     const pos = cardOrder.get(current.id);
     const pending = filtered().filter(c => c.id !== current.id &&
       (['all','unreviewed'].includes($('filter').value) ? state.decisions[c.id].decision === 'unreviewed' : true));
@@ -337,6 +440,7 @@ document.addEventListener('keydown', event => {
   else if (command === 'previous' || command === 'next') step(command === 'next' ? 1 : -1);
   else if (!$('unavailable').hidden) notice('Return to a prepared moment to play or seek.');
   else if (command === 'play') video.paused ? autoplay().catch(fail) : video.pause();
+  else if (command === 'extendBack' || command === 'extendForward') extendContext(command === 'extendBack' ? 'before' : 'after');
   else video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + (command === 'forward' ? 5 : -5)));
 }, true);
 function exportQueue(mode) {

@@ -27,6 +27,7 @@ The URL is `http://127.0.0.1:8765`. The server binds only to loopback and serves
 
 - Default order: main POV chronology, then independent secondary moments in their own source order. This is not a combined synchronized clock.
 - Default keys: `1` Keep, `2` Later, `3` Skip, `U` Undo. Left/right arrows change moments; Shift + left/right seeks five seconds. `P` cycles available POVs; Shift + P cycles backwards. Space plays/pauses. **Keys** changes each binding, rejects duplicates and restores defaults. Bind letters, numbers, navigation or punctuation keys, optionally with Shift; browser control combinations and Escape are reserved. Hints update with the saved bindings. Shortcuts do not intercept note entry, select/range controls or the key editor. Each choice saves before moving forward.
+- **← 15s** and **15s →** add context to the current POV without leaving the moment. Defaults are `[` and `]`, configurable in **Keys**. Each request expands the prepared interval by up to fifteen source seconds, clipped to media bounds. Preparation runs locally with the existing FFmpeg recipe and at most two workers; you can keep watching, writing notes or navigating while it runs. The player resumes at its source timestamp when the new file becomes ready, preserving whether it was paused. A small pending/error message accompanies the controls; retrying a failed request does not add a second increment. Longer previews never expand the event boundaries, export ranges or verified anchor excerpts.
 - Keep means potentially useful. Later preserves uncertainty. Skip is recoverable and deletes neither discoveries nor footage. No decision is made from playback completion or preview failure.
 - Auto-save preserves each moment's note, chosen preview, playback position and current moment. Playback position saves approximately every five seconds and on pause/navigation. Wait for **Saved** before closing. A crashed browser may lose the last few seconds of position or an unconfirmed note, not previously confirmed choices.
 - Position and note saves leave the moment list intact. Navigation reuses existing rows, retaining keyboard focus and list scroll; decision and filter changes update the relevant list contents.
@@ -44,13 +45,41 @@ Sync links and timeline geometry are derived at runtime from the validated snaps
 
 Keyboard settings are shared across queues and localhost ports on this computer. Windows stores them at `%LOCALAPPDATA%/vod-discovery/keybinds.json`; other systems use `$XDG_CONFIG_HOME/vod-discovery/keybinds.json` or `~/.config/vod-discovery/keybinds.json`. Opening Keys refreshes settings from other projects; returning focus to the browser refreshes them too. Writes use an atomic replacement, a separate OS file lock and an independent revision to prevent concurrent projects overwriting changes. Settings never modify queue decisions. For isolated testing, `serve --preferences <temporary-profile.json>` overrides the shared path. Do not use the editor's real profile or queue for automated decision tests.
 
+Older keyboard profiles retain every customized binding. The two context actions receive unused bindings, preferring their defaults and then Shift variants. Reading an old profile does not rewrite it; the next explicit settings save persists the complete profile. Restart the server and refresh the browser after installing an update that adds backend actions.
+
 `queue.json` contains the preview manifest and input identities; `state.json` holds choices independently from discovery/alignment status. Snapshot events, placement plan and probes stay beside them. Writes replace the state atomically after validation; revision conflicts stop the second tab instead of overwriting the first tab's changes. Reload after a conflict. Preserve the whole folder for portability together with access to the original media; file-path changes need explicit remapping, not silent identity reuse.
+
+On-demand previews publish only after duration, checksum and input/media checks. `context.json` is a separate cache manifest bound to the immutable queue hash; earlier registered preview URLs stay available to other tabs. Failures retain the last completed preview and do not change choices. Startup checksum-checks current context files and repairs missing/damaged files before serving, so a shorter fallback cannot overwrite a source position in added context. A failed repair leaves decisions intact and can be retried by restarting the server. Playback saves use optional `source_positions` in original source seconds; legacy relative `positions` remain readable. An extension does not change `queue.json` or its state binding. Cache files add storage as context grows; retain them with the queue when preserving playback positions in added context.
 
 **Export kept moments** filters source markers and authored alternate excerpts to Keep decisions. It retains the complete main VOD chronology, the original source clocks, media/POV bins, disabled alternate picture/audio and grouped stereo. Independent secondary-only kept moments remain available as source markers in their POV bin; they are not placed at invented main times. Related references can still point to unselected events by source time, without selecting their markers. **Export all moments**, under Review coverage, includes every discovery regardless of review choices.
 
-Each export creates a new `exports/review-r<revision>-<unique>/` containing `review.xml`, `decisions.json` and `selection.json`. Notes remain in the saved decisions, not marker names. Export validates original media size/mtime and discovery snapshot/input hashes first. Changed inputs require a new queue; automatic decision migration is not implemented. The same queue can export repeatedly without overwriting past exports or a Premiere project.
+Each export creates a new `exports/review-r<revision>-<unique>/` containing `review.xml`, `decisions.json` and `selection.json`. Notes remain in the saved decisions, not marker names. Export validates original media size/mtime and discovery snapshot/input hashes first. Changed inputs require a new queue through the update workflow below. The same queue can export repeatedly without overwriting past exports or a Premiere project.
 
 Download/import the XML into a new Premiere review project. Use Shift+1, expand `02 Sequences`, and open the sequence. Reimport is not a live update of an existing timeline. Mixed-resolution alternate fitting and actual Premiere playback still need the checks in [timeline.md](timeline.md); this dashboard does not operate Premiere.
+
+## Update discoveries without losing review choices
+
+Keep event IDs stable across discovery revisions. Stop the old queue server after **Saved**, then create a sibling output folder:
+
+```powershell
+python <skill>/scripts/review_queue.py update --from-queue outputs/review-queue --events outputs/events-v2.json --plan outputs/timeline-plan-v2.json --out outputs/review-queue-v2
+python <skill>/scripts/review_queue.py serve --queue outputs/review-queue-v2 --port 8765 --open
+```
+
+The previous folder, choices, history, previews and exports stay intact. The new folder contains `migration.json` and byte-preserved previous queue/state/evidence/plan/probe/context snapshots under `migration/previous/`. On subsequent updates, older snapshots carry forward under `migration/ancestors/<queue-hash>/`; archived changed choices never reactivate through that history. The report records the donor revision and hash, matches, change reasons and removed IDs. A failed update retains its preview checkpoint; repeat `update` with `--resume` and the same donor, inputs, map and padding. Changed donor decisions or context require a fresh output so resumed work cannot silently miss newer review choices. An active previous server or changed snapshot refuses migration; revised external input files and media can be compared against the preserved old snapshots.
+
+- **Unchanged:** a matching stable ID and unchanged editing material retain Keep/Later/Skip, notes, selected POV, source positions and applicable Undo history. Requested context also carries forward. Perspective order and integer/float representations of the same clock do not cause a new review.
+- **Changed:** source path/size/mtime or playback layout, footage ranges, authored descriptions/rationale/checks, freeform evidence prose, roles/alignment/uncertainty, local anchors/excerpts, relevant related-moment references or main placement changes return the moment to **Not reviewed**. Its prior note remains available; the dashboard shows **Reconsider · Previously Keep/Later/Skip** with reasons. The old choice and history stay archived. Compatible source positions are retained; positions outside the revised preview or in changed media remain in the previous snapshot.
+- **Operational evidence updates:** additional/reorganized structured `evidence_refs`, `frame_refs`, `transcript_refs`, `packet_refs`, `provenance`, preparation/review locator metadata, project title and coverage text alone do not reset a choice. Freeform evidence prose can change the interpretation and is conservatively material. Unknown authored fields are compared rather than silently ignored.
+- **New/removed:** a new ID starts unreviewed; a removed ID stays in the old queue and archived history. Title/time similarity never transfers a decision. Identical repeated material under several old IDs is flagged as ambiguous with possible previous IDs and receives no prior choice.
+
+For deliberately renamed IDs, supply `--event-map path/to/map.json` with explicit one-to-one matches:
+
+```json
+{"schema":"vod-review-event-map/v1","matches":[{"event_id":"new-id","previous_id":"old-id"}]}
+```
+
+The map establishes identity only; material changes still require reconsideration. It cannot map one previous moment to multiple revised events. Relocated media is considered changed by this workflow; matching a filename or label does not establish original-media identity. The update prepares previews for the revised queue and does not update an existing Premiere project.
 
 ## Assess whether it helps
 

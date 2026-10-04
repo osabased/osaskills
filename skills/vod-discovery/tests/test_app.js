@@ -46,11 +46,16 @@ const initial = {revision:0, current_id:'e0', history:[],
   decisions:Object.fromEntries(cards.map(c => [c.id, {decision:'unreviewed', note:'', view:0, positions:{}}]))};
 let persisted = structuredClone(initial);
 let requests = 0;
-const context = vm.createContext({document, window:{addEventListener(){}}, setTimeout, clearTimeout,
+let unanswered = false;
+document.getElementById('video').pause = () => {};
+const context = vm.createContext({document, window:{addEventListener(){}},
+  setTimeout:(fn,ms) => setTimeout(fn,unanswered ? 1 : ms),clearTimeout,AbortController,
   VODPlayback:require('../assets/review-queue/playback.js'), fixture:{cards, state:initial},
   fetch:async (url, options) => {
     // Let tests supply the fixture directly rather than running the browser startup.
     if (url === '/api/queue') return new Promise(() => {});
+    if (unanswered) return new Promise((resolve,reject) =>
+      options.signal.addEventListener('abort',() => reject(new Error('Aborted')),{once:true}));
     assert.equal(url, '/api/save'); requests++;
     const patch = JSON.parse(options.body);
     assert.equal(patch.revision, persisted.revision);
@@ -111,5 +116,13 @@ vm.runInContext(`queue = {cards:fixture.cards}; state = fixture.state; current =
   assert.equal(originalRows[250].children[0].textContent, '•');
   assert.equal(elements.get('count').textContent, '0 / 500 reviewed');
   assert.equal(elements.get('export').disabled, true);
-  console.log('Queue UI checks passed: no list work on autosave, stable rows/focus on navigation, decisions, filters and restored state.');
+  const confirmed = structuredClone(persisted);
+  unanswered = true;
+  await vm.runInContext("save({event_id:'e250', note:'Unconfirmed note'})",context);
+  assert.deepEqual(persisted,confirmed,'An unanswered save must retain the last confirmed state');
+  assert(vm.runInContext('broken',context));
+  assert.equal(elements.get('saved').textContent,'Not saved');
+  assert.equal(elements.get('error').hidden,false);
+  assert(elements.get('error').textContent.includes('server did not respond'));
+  console.log('Queue UI checks passed: stable rows/focus, autosave, decisions, filters, restored state and unanswered-save recovery.');
 })().catch(error => {console.error(error); process.exitCode = 1;});
