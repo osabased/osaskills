@@ -32,6 +32,8 @@ Invalid ASR bounds remain raw and are flagged/excluded by the existing evidence 
 
 ## Search by meaning
 
+For one query combining literal/keyword speech, meaning and selected frame OCR, use [unified-search.md](unified-search.md) after building the indexes below. The unified helper reuses `SearchSession` for a batch, keeps speech and visible-text hits distinct, and fuses channel ranks without interpreting cosine similarity or keyword scores as confidence. The standalone commands here remain useful for inspecting an individual retrieval channel.
+
 The optional semantic helper uses [FastEmbed](https://github.com/qdrant/fastembed) with a small English BGE retrieval model on CPU through ONNX Runtime. This implements the semantic-search addition without a PyTorch installation or a vector-database service. It reuses the project's existing literal-index aggregates and exact occurrence references. Literal phrase search remains useful for names, exact wording and checking a semantic lead.
 
 Create or reuse a **separate Python 3.12 environment**, then download the pinned model once:

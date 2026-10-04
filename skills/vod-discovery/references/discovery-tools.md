@@ -1,6 +1,8 @@
-# Joined evidence and cross-POV transcript search
+# Joined evidence and cross-POV search
 
 Use these during discovery to retrieve candidate ranges and read their visual/speech context. They use CRV 0.10.7 locally and do not alter Premiere XML, original media, raw transcripts, or packet review decisions.
+
+For one investigation across available speech, keyword ranking, meaning and visible text, build the existing literal index below, then use [unified-search.md](unified-search.md). The unified helper indexes explicitly supplied, frame-map-validated OCR reports and can include the existing local semantic model. It labels evidence types and exposes missing channels and coverage. The original `vod.py search` remains a literal-only phrase check.
 
 ## Prepare evidence
 
