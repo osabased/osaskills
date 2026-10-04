@@ -39,7 +39,18 @@ Defaults: 300-second packets, 15-second overlap on both sides, at most roughly f
 
 All audio streams are transcribed separately and labeled by stream index; inspect duplicate/mixed tracks in the evidence instead of assuming track zero contains every participant. VAD/no-speech results are not proof that no meaningful sound occurred.
 
-`--limit-packets` controls how many newly prepared packets this invocation processes; remove it for the overnight preparation. Each packet writes a completion record only after extraction and requested transcription succeed. A failure retains diagnostic files and is retried into a new attempt folder. Resume requires the same source size/mtime and settings, or use a fresh output directory. Do not claim a partial run is complete.
+`--limit-packets` controls how many newly prepared packets this invocation processes; remove it for the overnight preparation. Each packet writes a completion record only after extraction and requested transcription succeed. A failure retains diagnostic files and is retried into a new attempt folder. Frames/contact sheets, analysis audio, and each stream's transcript are cached independently: a failed speech stream can retry while reusing completed visual/audio work and successful other streams. Checksums verify cached artifacts before copying them into an attempt; corrupt entries are rebuilt. Completed packets and their review decisions are retained. Do not claim a partial run is complete.
+
+Resume requires the same source size/mtime and settings. Use a fresh output directory when changing them, with a shared `--cache-dir` to reuse stages whose inputs still match. The default cache belongs to the output folder. Cache keys include source identity and window, stage settings/versions, audio stream, and the selected speech runtime/model; a speech model change reuses matching frames and audio, while a frame width change rebuilds visual artifacts. A no-transcription pilot never supplies a speech cache result. Source size/mtime checks are practical identity checks, not a full hash of a many-hour VOD; use a new cache if media was replaced while preserving those attributes.
+
+```powershell
+work/vod-env/Scripts/python.exe <skill>/scripts/vod.py prepare --source 'D:/VODs/alice.mp4' --out work/vods/alice-small --cache-dir work/vods/stage-cache --model small --limit-packets 1
+work/vod-env/Scripts/python.exe <skill>/scripts/vod.py prepare --source 'D:/VODs/alice.mp4' --out work/vods/alice-other --cache-dir work/vods/stage-cache --model <local-model-folder> --limit-packets 1
+```
+
+Keep the cache local and project-owned. It contains extracted images, audio and transcripts, adds storage, and has no automatic eviction. Attempts receive independent copies so reviewing or editing an attempt does not alter shared cache artifacts. Compare processing time and storage with the reviewed benchmark workflow in [benchmark.md](benchmark.md); cache hits establish reuse, not discovery quality.
+
+New speech preparations record effective runtime/model hashes separately in `asr-runtime.json`. Extending a partial preparation rejects changed weights even if the model argument is unchanged. Fully completed older folders resume without loading a model. An older partial faster-whisper folder lacks that identity record, so use a fresh output rather than combining transcripts with unverifiable model provenance. Local faster-whisper models need their own `tokenizer.json` for a complete cache identity; aliases resolve to the actual downloaded snapshot.
 
 ```powershell
 work/vod-env/Scripts/python.exe <skill>/scripts/vod.py detail --source 'D:/VODs/alice.mp4' --out work/vods/alice-detail-01 --start 3560 --end 3590 --interval 0.5 --width 1440

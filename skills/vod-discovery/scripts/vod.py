@@ -10,7 +10,9 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 import uuid
+import wave
 
 
 def read(path):
@@ -66,8 +68,60 @@ def extract(source, folder, start, end, interval, width):
     return {"frame_count": count, "max_sample_gap_sec": max(gaps), "interval_sec": interval}
 
 
+def media_identity(source):
+    stat = source.stat()
+    return {"path": str(source), "size": stat.st_size, "mtime_ns": stat.st_mtime_ns}
+
+
+def tool_identity(name):
+    executable = shutil.which(name)
+    if not executable:
+        raise RuntimeError(f'{name} is not installed')
+    path = Path(executable).resolve(strict=True)
+    version = subprocess.run([str(path), '-version'], check=True, capture_output=True, encoding='utf-8').stdout.splitlines()[0]
+    return {**media_identity(path), 'version': version}
+
+
+def faster_whisper_identity(model_name):
+    """Resolve the actual model snapshot before keying transcripts, not just its alias."""
+    from faster_whisper.utils import download_model
+    from stage_cache import file_hash
+    folder = Path(model_name)
+    folder = folder.resolve(strict=True) if folder.is_dir() else Path(download_model(model_name)).resolve(strict=True)
+    names = ['config.json', 'model.bin', 'preprocessor_config.json', 'tokenizer.json']
+    names.extend(p.name for p in folder.glob('vocabulary.*'))
+    hashes = {name: file_hash(folder / name) for name in sorted(set(names)) if (folder / name).is_file()}
+    if 'model.bin' not in hashes or 'config.json' not in hashes:
+        raise ValueError('Missing effective faster-whisper model files')
+    # Some local models omit their tokenizer, making WhisperModel fetch another
+    # tokenizer. That external dependency cannot provide a reliable cache key.
+    if 'tokenizer.json' not in hashes:
+        raise ValueError('Transcript caching requires a local tokenizer.json alongside the faster-whisper model')
+    identity = {'backend': 'faster-whisper', 'model': str(folder), 'model_sha256': hashes,
+                'versions': {name: importlib.metadata.version(name) for name in
+                             ('faster-whisper', 'ctranslate2', 'tokenizers')},
+                'device': 'cpu', 'compute_type': 'int8', 'vad_filter': True,
+                'condition_on_previous_text': False}
+    return identity, str(folder)
+
+
+def load_faster_whisper(model_folder):
+    from faster_whisper import WhisperModel
+    return WhisperModel(model_folder, device='cpu', compute_type='int8')
+
+
 def prepare(args):
+    from stage_cache import file_lock
+    out = Path(args.out).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    with file_lock(out / '.prepare.lock'):
+        return prepare_locked(args)
+
+
+def prepare_locked(args):
     from evidence import packet_evidence
+    from stage_cache import StageCache, file_hash, safe_artifact
+    started = time.perf_counter()
     source = Path(args.source).resolve(strict=True)
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -82,57 +136,145 @@ def prepare(args):
                                       args.whisper_threads, args.whisper_gpu)
         settings['asr'] = cpp_config
         settings['model'] = Path(args.whisper_model).name
-    stat = source.stat()
-    identity = {"path": str(source), "size": stat.st_size, "mtime_ns": stat.st_mtime_ns}
+    identity = media_identity(source)
+
+    def guard_source():
+        if media_identity(source) != identity:
+            raise RuntimeError('Source changed during preparation; no incomplete packet was published. Use a new output folder.')
+
     source_id = hashlib.sha256(str(source).casefold().encode()).hexdigest()[:12]
     info = {"id": source_id, **identity, "duration_sec": duration, "settings": settings}
     if (out / "source.json").exists() and read(out / "source.json") != info:
         raise ValueError("Source or settings changed. Use a new output folder.")
     write(out / "source.json", info)
     write(out / "probe.json", metadata)
+    cache = StageCache(getattr(args, 'cache_dir', None) or out / '.cache')
+    cache_counts = {stage: {'reused': 0, 'generated': 0, 'elapsed_sec': 0.0} for stage in ('frames', 'audio', 'transcript')}
+
+    def cached(stage, inputs, produce, attempt):
+        stage_started = time.perf_counter()
+        data, result, reused = cache.get(stage, inputs, produce, guard_source)
+        cache.materialize(data, attempt)
+        cache_counts[stage]['reused' if reused else 'generated'] += 1
+        cache_counts[stage]['elapsed_sec'] += time.perf_counter() - stage_started
+        return result
+
     audio_streams = [s["index"] for s in metadata["streams"] if s["codec_type"] == "audio"]
     model = None
+    asr_identity, effective_model = cpp_config, None
+    ffmpeg_identity = None
     processed = 0
     total = math.ceil(duration / args.window)
     for index in range(total):
         folder = out / f"packet-{index:04d}"
         if (folder / "complete.json").exists():
             record = read(folder / "complete.json")
-            attempt = folder / record["attempt"]
+            name = text(record['attempt'], 'completed attempt')
+            attempt = (folder / name).resolve(strict=True)
+            if attempt.parent != folder.resolve():
+                raise ValueError('Completed attempt must belong to its packet folder')
             if not all((attempt / f).is_file() for f in ["packet.json", "frames.json", "transcript.json"]):
                 raise RuntimeError(f"Incomplete cached packet {folder}; inspect it before resuming")
             packet_evidence(attempt)
+            guard_source()
             continue
         if args.limit_packets and processed >= args.limit_packets:
             break
+        if audio_streams and not args.no_transcribe:
+            if asr_identity is None:
+                asr_identity, effective_model = faster_whisper_identity(args.model)
+            runtime_record = {'schema': 'vod-asr-runtime/v1', 'runtime': asr_identity}
+            runtime_path = out / 'asr-runtime.json'
+            if runtime_path.exists():
+                if read(runtime_path) != runtime_record:
+                    raise ValueError('Effective speech model or runtime changed. Use a fresh output folder with the same --cache-dir to reuse media stages.')
+            else:
+                if any(out.glob('packet-*/complete.json')) and cpp_config is None:
+                    raise ValueError('This partial legacy preparation has no effective speech-model identity. Use a fresh output folder with the same --cache-dir; completed reviews are preserved.')
+                # Older whisper.cpp source.json already records exact CLI/model/DLL
+                # hashes and is checked above; faster-whisper aliases cannot prove this.
+                guard_source()
+                write(runtime_path, runtime_record)
         start = max(0, index * args.window - args.overlap)
         end = min(duration, (index + 1) * args.window + args.overlap)
         attempt = folder / ("attempt-" + uuid.uuid4().hex[:8])
         attempt.mkdir(parents=True)
         print(f"Preparing {index + 1}/{total}: {start:.3f}–{end:.3f}s", flush=True)
         try:
-            visual = extract(source, attempt, start, end, args.interval, args.width)
+            if ffmpeg_identity is None:
+                ffmpeg_identity = tool_identity('ffmpeg')
+            window_identity = {'source': identity, 'start_sec': start, 'end_sec': end}
+
+            def produce_frames(data):
+                visual = extract(source, data, start, end, args.interval, args.width)
+                frames = read(data / 'frames.json')['frames']
+                if len(frames) != visual['frame_count'] or not frames:
+                    raise ValueError('Invalid cached frame count')
+                for frame in frames:
+                    timestamp = number(frame['timestamp_sec'], 'frame timestamp')
+                    if not start <= timestamp <= end:
+                        raise ValueError('Frame outside packet interval')
+                    safe_artifact(data, 'frames/' + frame['file'])
+                if not any((data / 'grids').glob('grid_*.jpg')):
+                    raise ValueError('Missing contact sheets')
+                return visual
+
+            visual = cached('frames', {**window_identity, 'version': 1,
+                    'interval_sec': args.interval, 'width': args.width, 'scene': .30,
+                    'extractor': importlib.metadata.version('claude-real-video'),
+                    'ffmpeg': ffmpeg_identity}, produce_frames, attempt)
             segments = []
             transcript_status = "not_requested" if args.no_transcribe else "no_audio_stream"
             stream_status = {}
             if audio_streams and not args.no_transcribe:
-                if model is None and cpp_config is None:
-                    from faster_whisper import WhisperModel
-                    model = WhisperModel(args.model, device="cpu", compute_type="int8")
                 for audio_index in audio_streams:
-                    audio = attempt / f"audio-stream-{audio_index}.wav"
-                    subprocess.run(["ffmpeg", "-v", "error", "-ss", str(start), "-i", str(source), "-t", str(end-start),
-                                    "-map", f"0:{audio_index}", "-vn", "-ac", "1", "-ar", "16000", str(audio)], check=True)
-                    if cpp_config is not None:
-                        from whisper_cpp import transcribe
-                        stream_segments = transcribe(audio, attempt / f'whisper-stream-{audio_index}',
-                                                     start, audio_index, cpp_config, args.language)
-                    else:
-                        iterator, _ = model.transcribe(str(audio), language=None if args.language == "auto" else args.language,
-                                                       vad_filter=True, condition_on_previous_text=False)
-                        stream_segments = [{"start": round(s.start + start, 3), "end": round(s.end + start, 3),
-                                            "text": s.text, "audio_stream": audio_index} for s in iterator]
-                    stream_status[str(audio_index)] = "transcribed" if stream_segments else "no_speech_detected"
+                    audio_name = f'audio-stream-{audio_index}.wav'
+
+                    def produce_audio(data):
+                        audio = data / audio_name
+                        subprocess.run(['ffmpeg', '-v', 'error', '-nostdin', '-n', '-ss', str(start), '-i', str(source),
+                                        '-t', str(end-start), '-map', f'0:{audio_index}', '-vn', '-ac', '1', '-ar', '16000',
+                                        '-c:a', 'pcm_s16le', str(audio)], check=True)
+                        with wave.open(str(audio), 'rb') as wav:
+                            actual = wav.getnframes() / wav.getframerate()
+                            if (wav.getnchannels(), wav.getframerate(), wav.getsampwidth()) != (1, 16000, 2) or not 0 < actual <= (end-start) + .25:
+                                raise ValueError('Extracted audio format or duration is invalid for the requested interval')
+                        return {'audio_stream': audio_index, 'duration_sec': actual}
+
+                    cached('audio', {**window_identity, 'version': 1, 'audio_stream': audio_index,
+                           'recipe': 'mono-16000-pcm_s16le', 'ffmpeg': ffmpeg_identity}, produce_audio, attempt)
+                    audio = attempt / audio_name
+
+                    def produce_transcript(data):
+                        nonlocal model
+                        if cpp_config is not None:
+                            from whisper_cpp import transcribe
+                            prefix = data / f'whisper-stream-{audio_index}'
+                            stream_segments = transcribe(audio, prefix, start, audio_index, cpp_config, args.language)
+                            run_path = Path(str(prefix) + '-run.json')
+                            if run_path.exists():
+                                run = read(run_path)
+                                run['raw_json'] = Path(run['raw_json']).name
+                                run['log'] = Path(run['log']).name
+                                run['artifact_paths_relative_to_run_file'] = True
+                                run['command_paths_are_historical'] = True
+                                write(run_path, run)
+                        else:
+                            if model is None:
+                                model = load_faster_whisper(effective_model)
+                            iterator, _ = model.transcribe(str(audio), language=None if args.language == 'auto' else args.language,
+                                                           vad_filter=True, condition_on_previous_text=False)
+                            stream_segments = [{'start': round(s.start + start, 3), 'end': round(s.end + start, 3),
+                                                'text': s.text, 'audio_stream': audio_index} for s in iterator]
+                        result = {'status': 'transcribed' if stream_segments else 'no_speech_detected', 'segments': stream_segments}
+                        write(data / f'transcript-stream-{audio_index}.json', result)
+                        return {'audio_stream': audio_index, 'segment_count': len(stream_segments)}
+
+                    cached('transcript', {'version': 1, 'audio_sha256': file_hash(audio), 'source_start_sec': start,
+                           'audio_stream': audio_index, 'language': args.language, 'runtime': asr_identity}, produce_transcript, attempt)
+                    stream_transcript = read(attempt / f'transcript-stream-{audio_index}.json')
+                    stream_segments = stream_transcript['segments']
+                    stream_status[str(audio_index)] = stream_transcript['status']
                     segments.extend(stream_segments)
                 segments.sort(key=lambda s: s["start"])
                 transcript_status = "transcribed" if segments else "no_speech_detected"
@@ -141,14 +283,19 @@ def prepare(args):
                                             "core_start_sec": index * args.window, "core_end_sec": min(duration, (index+1)*args.window),
                                             "transcript_status": transcript_status, **visual})
             packet_evidence(attempt)
-            write(folder / "review.json", {"status": "unreviewed", "inspected_sheets": [], "event_ids": []})
+            guard_source()
+            if not (folder / 'review.json').exists():
+                write(folder / "review.json", {"status": "unreviewed", "inspected_sheets": [], "event_ids": []})
             write(folder / "complete.json", {"attempt": attempt.name})
         except Exception as exc:
             write(attempt / "error.json", {"error": str(exc)})
             raise
         processed += 1
+    guard_source()
     complete = sum((out / f"packet-{i:04d}" / "complete.json").exists() for i in range(total))
     print(json.dumps({"prepared_packets": complete, "total_packets": total, "new_packets": processed,
+                      "cache": {'directory': str(cache.root), 'stages': cache_counts},
+                      "elapsed_sec": time.perf_counter() - started,
                       "review_status": "See each review.json; preparation is not review"}))
 
 
@@ -313,6 +460,7 @@ def main():
             p.add_argument('--whisper-cli'); p.add_argument('--whisper-model')
             p.add_argument('--whisper-device', choices=['vulkan', 'cpu'], default='vulkan')
             p.add_argument('--whisper-threads', type=int, default=4); p.add_argument('--whisper-gpu', type=int, default=0)
+            p.add_argument('--cache-dir', help='Shared stage cache; defaults to <out>/.cache. Use a fresh --out with the same cache when changing models/settings.')
         else:
             p.add_argument("--start", type=float, required=True); p.add_argument("--end", type=float, required=True)
     p = sub.add_parser("export"); p.add_argument("--events", required=True); p.add_argument("--out", required=True)

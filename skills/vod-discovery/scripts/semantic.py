@@ -18,6 +18,10 @@ FILES = ('model_optimized.onnx', 'config.json', 'tokenizer.json', 'tokenizer_con
          'special_tokens_map.json', 'ort_config.json', 'vocab.txt')
 ONNX_SHA = '51f1bd0addd6e859e42c2c8021a5e5461385bb676a649f4b269aa445449f2431'
 POLICY = {'version': 2, 'token_budget': 384, 'context_seconds': 30, 'gap_seconds': 10, 'single_segments': True}
+CACHE_RECIPE = {'schema': 'vod-passage-embedding/v1', 'adapter': 'fastembed/0.8.1',
+                'dimension': 384, 'dtype': 'float32', 'normalization': 'l2/v1',
+                'passage_method': 'passage_embed', 'query_method': 'query_embed',
+                'providers': ['CPUExecutionProvider']}
 LIMITS = 'English transcript retrieval only. Similarity is not confidence, event importance, or proof of simultaneity. '
 LIMITS += 'Even an unrelated query can return nearest results. Inspect raw speech and images. Missing results do not establish absence.'
 
@@ -133,7 +137,83 @@ def load_model(folder):
     return model, lambda value: len(tokenizer.encode(value, add_special_tokens=False).ids)
 
 
-def build(index_folder, out, model_folder):
+def embedding_scope(identity):
+    value = {'recipe': CACHE_RECIPE, 'model': identity, 'policy': POLICY}
+    return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False,
+                                     allow_nan=False, separators=(',', ':')).encode('utf-8')).hexdigest()
+
+
+def vector_digest(vector):
+    return hashlib.sha256(vector.astype('<f4', copy=False).tobytes()).hexdigest()
+
+
+def cached_vector(path, scope, key):
+    import numpy as np
+    try:
+        entry = read(path)
+        if (entry.get('schema') != CACHE_RECIPE['schema'] or entry.get('scope') != scope
+                or entry.get('text_sha256') != key):
+            return None
+        values = entry['vector']
+        if not isinstance(values, list) or any(type(v) not in (int, float) for v in values):
+            return None
+        vector = np.asarray(values, dtype=np.float32)
+        if (vector.shape != (384,) or not np.isfinite(vector).all()
+                or not np.isclose(np.linalg.norm(vector), 1., rtol=1e-5, atol=1e-6)
+                or vector_digest(vector) != entry['vector_sha256']):
+            return None
+        return vector
+    except (OSError, ValueError, TypeError, KeyError, AttributeError, OverflowError):
+        return None
+
+
+def save_cached_vector(path, scope, key, vector):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_name(path.name + '.' + uuid.uuid4().hex + '.tmp')
+    try:
+        temp.write_text(json.dumps({'schema': CACHE_RECIPE['schema'], 'scope': scope,
+              'text_sha256': key, 'vector_sha256': vector_digest(vector), 'vector': vector.tolist()},
+              ensure_ascii=False, allow_nan=False), encoding='utf-8')
+        temp.replace(path)
+    finally:
+        temp.unlink(missing_ok=True)
+
+
+def passage_embeddings(model, docs, cache_folder, identity):
+    """Cache exact passage text independently of its source clocks and references."""
+    import numpy as np
+    scope = embedding_scope(identity)
+    folder = Path(cache_folder).resolve() / scope
+    unique = dict.fromkeys(d['text'] for d in docs)
+    vectors, missing = {}, []
+    for value in unique:
+        key = hashlib.sha256(value.encode('utf-8')).hexdigest()
+        vector = cached_vector(folder / (key + '.json'), scope, key)
+        if vector is None:
+            missing.append((value, key))
+        else:
+            vectors[value] = vector
+    reused = len(vectors)
+    for start in range(0, len(missing), 32):
+        batch = missing[start:start + 32]
+        embedded = np.asarray(list(model.passage_embed([value for value, _ in batch], batch_size=32)), dtype=np.float32)
+        if embedded.shape != (len(batch), 384) or not np.isfinite(embedded).all():
+            raise ValueError('Invalid embeddings')
+        norms = np.linalg.norm(embedded, axis=1, keepdims=True)
+        if not np.isfinite(norms).all() or (norms <= 0).any():
+            raise ValueError('Invalid or zero embedding norm')
+        embedded /= norms
+        if not np.isfinite(embedded).all() or not np.allclose(np.linalg.norm(embedded, axis=1), 1., rtol=1e-5, atol=1e-6):
+            raise ValueError('Invalid normalized embeddings')
+        # Validate the entire batch before publishing any of its entries.
+        for (value, key), vector in zip(batch, embedded):
+            save_cached_vector(folder / (key + '.json'), scope, key, vector)
+            vectors[value] = vector
+    matrix = np.asarray([vectors[d['text']] for d in docs], dtype=np.float32) if docs else np.empty((0, 384), dtype=np.float32)
+    return matrix, {'embeddings_reused': reused, 'embeddings_computed': len(missing)}
+
+
+def build(index_folder, out, model_folder, cache_folder=None):
     import numpy as np
     index_folder, out = Path(index_folder).resolve(), Path(out).resolve()
     identity = model_identity(model_folder)
@@ -141,29 +221,24 @@ def build(index_folder, out, model_folder):
     pointer = out / 'semantic.json'
     if pointer.exists():
         previous = read(pointer)
-        if previous.get('schema') == 'vod-semantic/v1' and previous.get('policy') == POLICY and previous['literal_index'] == str(index_folder) and previous['inputs'] == hashes and previous['model'] == identity:
-            folder = out / previous['build']
-            if all((folder / name).is_file() and digest(folder / name) == sha for name, sha in previous['artifacts'].items()):
+        if previous.get('schema') == 'vod-semantic/v1' and previous.get('policy') == POLICY and previous.get('embedding_recipe') == CACHE_RECIPE and previous['literal_index'] == str(index_folder) and previous['inputs'] == hashes and previous['model'] == identity:
+            folder = (out / previous['build']).resolve()
+            artifacts = previous['artifacts']
+            if folder.parent == out and set(artifacts) == {'passages.json', 'vectors.npy'} and all((folder / name).is_file() and digest(folder / name) == sha for name, sha in artifacts.items()):
                 return {'passages': previous['passages'], 'reused': True}
     model, count = load_model(model_folder)
     docs = passages(aggregates, count)
-    vectors = np.asarray(list(model.passage_embed([d['text'] for d in docs], batch_size=32)), dtype=np.float32) if docs else np.empty((0, 384), dtype=np.float32)
-    if vectors.shape != (len(docs), 384) or not np.isfinite(vectors).all():
-        raise ValueError('Invalid embeddings')
-    if len(docs):
-        norms = np.linalg.norm(vectors, axis=1, keepdims=True)
-        if (norms <= 0).any(): raise ValueError('Zero embedding')
-        vectors /= norms
+    vectors, cache_info = passage_embeddings(model, docs, cache_folder or out / 'embedding-cache', identity)
     folder = out / ('build-' + uuid.uuid4().hex[:12]); folder.mkdir(parents=True)
     write(folder / 'passages.json', docs)
     np.save(folder / 'vectors.npy', vectors, allow_pickle=False)
     if snapshot(index_folder)[1] != hashes:
         raise RuntimeError('Transcript inputs changed during embedding; previous index preserved')
-    write(pointer, {'schema': 'vod-semantic/v1', 'policy': POLICY, 'literal_index': str(index_folder), 'inputs': hashes,
+    write(pointer, {'schema': 'vod-semantic/v1', 'policy': POLICY, 'embedding_recipe': CACHE_RECIPE, 'literal_index': str(index_folder), 'inputs': hashes,
           'model': identity, 'build': folder.name, 'passages': len(docs), 'coverage': index['sources'],
           'excluded_invalid_segments': index['summary']['invalid_transcript_segments'],
           'artifacts': {n: digest(folder / n) for n in ('passages.json', 'vectors.npy')}})
-    return {'passages': len(docs), 'reused': False}
+    return {'passages': len(docs), 'reused': False, **cache_info}
 
 
 def rank(docs, scores, limit):
@@ -197,6 +272,8 @@ def search(out, model_folder, query, limit=10):
     manifest = read(out / 'semantic.json')
     if manifest.get('schema') != 'vod-semantic/v1': raise ValueError('Unsupported semantic index')
     if manifest.get('policy') != POLICY: raise ValueError('Semantic passage policy changed; rebuild the index')
+    if 'embedding_recipe' in manifest and manifest['embedding_recipe'] != CACHE_RECIPE:
+        raise ValueError('Semantic embedding recipe changed; rebuild the index')
     if snapshot(manifest['literal_index'])[1] != manifest['inputs']:
         raise ValueError('Semantic index is stale; rebuild it')
     if model_identity(model_folder) != manifest['model']:
@@ -224,11 +301,12 @@ def main():
     commands = parser.add_subparsers(dest='command', required=True)
     p = commands.add_parser('download-model'); p.add_argument('--out', required=True)
     p = commands.add_parser('index'); p.add_argument('--literal-index', required=True); p.add_argument('--out', required=True); p.add_argument('--model-dir', required=True)
+    p.add_argument('--cache-dir', help='Reusable passage embeddings (default: OUT/embedding-cache)')
     p = commands.add_parser('search'); p.add_argument('--index', required=True); p.add_argument('--model-dir', required=True)
     p.add_argument('--query', required=True); p.add_argument('--limit', type=int, default=10); p.add_argument('--out')
     args = parser.parse_args()
     if args.command == 'download-model': result = download_model(args.out)
-    elif args.command == 'index': result = build(args.literal_index, args.out, args.model_dir)
+    elif args.command == 'index': result = build(args.literal_index, args.out, args.model_dir, args.cache_dir)
     else:
         result = search(args.index, args.model_dir, args.query, args.limit)
         if args.out: write(args.out, result)

@@ -1,4 +1,5 @@
 from pathlib import Path
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -8,6 +9,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import semantic
 from evidence import input_signature
 from vod import read, write
+
+
+class FakeModel:
+    def __init__(self):
+        self.batches = []
+
+    def passage_embed(self, texts, **kwargs):
+        self.batches.append(list(texts))
+        return [[1.] * 384 for _ in texts]
+
+    def query_embed(self, text):
+        yield [1.] * 384
 
 
 def row(start, end, value, stream=1):
@@ -103,6 +116,159 @@ class SemanticSnapshots(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'artifacts changed'):
             semantic.search(self.out, 'unused', 'peace')
         self.assertEqual(loader.call_count, 1)
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_shared_cache_reuses_text_when_references_change_and_inputs_expand(self, loader, identity):
+        model = FakeModel(); loader.return_value = (model, len)
+        cache = self.root / 'shared-cache'
+        first = semantic.build(self.index, self.out, 'unused', cache)
+        self.assertEqual((first['embeddings_computed'], first['embeddings_reused']), (1, 0))
+        changed = row(60, 70, 'Let us make peace.')
+        changed['occurrences'][0]['transcript_file'] = 'new-exact-reference.json'
+        write(self.aggregate, {'segments': [changed, row(110, 120, 'A new passage')]})
+        second_out = self.root / 'new-semantic'
+        second = semantic.build(self.index, second_out, 'unused', cache)
+        self.assertEqual((second['embeddings_computed'], second['embeddings_reused']), (1, 1))
+        self.assertEqual(model.batches, [['Let us make peace.'], ['A new passage']])
+        manifest = read(second_out / 'semantic.json')
+        docs = read(second_out / manifest['build'] / 'passages.json')
+        self.assertEqual(docs[0]['start_sec'], 60)
+        self.assertEqual(docs[0]['segments'][0]['occurrences'][0]['transcript_file'], 'new-exact-reference.json')
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_recipe_and_model_changes_do_not_reuse_embeddings(self, loader, identity):
+        model = FakeModel(); loader.return_value = (model, len)
+        semantic.build(self.index, self.out, 'unused')
+        with patch.dict(semantic.CACHE_RECIPE, {'normalization': 'l2/next'}):
+            with self.assertRaisesRegex(ValueError, 'recipe changed'):
+                semantic.search(self.out, 'unused', 'peace')
+            self.assertEqual(semantic.build(self.index, self.out, 'unused')['embeddings_computed'], 1)
+        identity.return_value = {'test': 'other-model'}
+        self.assertEqual(semantic.build(self.index, self.out, 'unused')['embeddings_computed'], 1)
+        with patch.dict(semantic.POLICY, {'version': 3}):
+            self.assertEqual(semantic.build(self.index, self.out, 'unused')['embeddings_computed'], 1)
+        self.assertEqual(len(model.batches), 4)
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_legacy_manifest_remains_searchable_then_rebuilds_with_recipe(self, loader, identity):
+        model = FakeModel(); loader.return_value = (model, len)
+        semantic.build(self.index, self.out, 'unused')
+        manifest = read(self.out / 'semantic.json'); del manifest['embedding_recipe']
+        write(self.out / 'semantic.json', manifest)
+        self.assertEqual(len(semantic.search(self.out, 'unused', 'peace')['hits']), 1)
+        rebuilt = semantic.build(self.index, self.out, 'unused')
+        self.assertFalse(rebuilt['reused'])
+        self.assertEqual(rebuilt['embeddings_reused'], 1)
+        self.assertEqual(read(self.out / 'semantic.json')['embedding_recipe'], semantic.CACHE_RECIPE)
+
+
+class SemanticEmbeddingCache(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.cache = Path(self.temp.name)
+        self.identity = {'test': 'model'}
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def entries(self):
+        return list(self.cache.glob('*/*.json'))
+
+    def test_duplicate_text_is_embedded_once_and_returned_in_original_order(self):
+        import numpy as np
+        model = FakeModel()
+        docs = [{'text': 'same'}, {'text': 'other'}, {'text': 'same'}]
+        vectors, info = semantic.passage_embeddings(model, docs, self.cache, self.identity)
+        self.assertEqual(model.batches, [['same', 'other']])
+        self.assertEqual(info, {'embeddings_computed': 2, 'embeddings_reused': 0})
+        self.assertEqual(vectors.shape, (3, 384))
+        self.assertTrue(np.array_equal(vectors[0], vectors[2]))
+        second, info = semantic.passage_embeddings(model, docs, self.cache, self.identity)
+        self.assertEqual(len(model.batches), 1)
+        self.assertEqual(info, {'embeddings_computed': 0, 'embeddings_reused': 2})
+        self.assertTrue(np.array_equal(vectors, second))
+
+    def test_failed_later_batch_keeps_only_completed_batches_for_retry(self):
+        model = FakeModel()
+        docs = [{'text': f'passage-{i}'} for i in range(35)]
+        good_embed = model.passage_embed
+
+        def fail_second(texts, **kwargs):
+            if texts[0] == 'passage-32':
+                yield [1.] * 384
+                raise RuntimeError('Interrupted inference')
+            yield from good_embed(texts, **kwargs)
+
+        model.passage_embed = fail_second
+        with self.assertRaisesRegex(RuntimeError, 'Interrupted'):
+            semantic.passage_embeddings(model, docs, self.cache, self.identity)
+        self.assertEqual(len(self.entries()), 32)
+        self.assertFalse(list(self.cache.rglob('*.tmp')))
+        retry = FakeModel()
+        _, info = semantic.passage_embeddings(retry, docs, self.cache, self.identity)
+        self.assertEqual(info, {'embeddings_reused': 32, 'embeddings_computed': 3})
+        self.assertEqual(retry.batches, [[f'passage-{i}' for i in range(32, 35)]])
+
+    def test_invalid_batch_never_publishes_any_entry(self):
+        bad_outputs = [([[1.] * 384, [1.] * 383]),
+                       ([[1.] * 384, [float('nan')] * 384]),
+                       ([[1.] * 384, [float('inf')] * 384]),
+                       ([[1.] * 384, [0.] * 384]),
+                       ([[1.] * 384])]
+        docs = [{'text': 'first'}, {'text': 'second'}]
+        for output in bad_outputs:
+            with self.subTest(output_length=len(output)):
+                model = FakeModel(); model.passage_embed = lambda *a, **kw: output
+                with self.assertRaises(ValueError):
+                    semantic.passage_embeddings(model, docs, self.cache, self.identity)
+                self.assertEqual(self.entries(), [])
+
+    def test_corrupted_entries_are_recomputed(self):
+        import numpy as np
+        docs = [{'text': 'same'}]
+        model = FakeModel()
+        semantic.passage_embeddings(model, docs, self.cache, self.identity)
+        path = self.entries()[0]
+        good = read(path)
+        invalid = [dict(good, vector=[0.] * 384), dict(good, vector=[1.] * 383),
+                   dict(good, vector=[float('nan')] * 384), dict(good, scope='wrong'),
+                   dict(good, text_sha256='wrong'), dict(good, vector_sha256='wrong')]
+        # A checksum-matching vector must also have unit norm and valid dimensions.
+        unnormalized = [1.] * 384
+        invalid.append(dict(good, vector=unnormalized,
+                            vector_sha256=hashlib.sha256(np.asarray(unnormalized, dtype='<f4').tobytes()).hexdigest()))
+        for entry in invalid:
+            write(path, entry)
+            _, info = semantic.passage_embeddings(model, docs, self.cache, self.identity)
+            self.assertEqual(info['embeddings_computed'], 1)
+        path.write_text('unfinished json', encoding='utf-8')
+        _, info = semantic.passage_embeddings(model, docs, self.cache, self.identity)
+        self.assertEqual(info['embeddings_computed'], 1)
+
+    def test_failed_atomic_save_leaves_existing_entry_and_no_temp(self):
+        import numpy as np
+        scope = semantic.embedding_scope(self.identity)
+        key = hashlib.sha256(b'same').hexdigest()
+        path = self.cache / scope / (key + '.json')
+        vector = np.ones(384, dtype=np.float32); vector /= np.linalg.norm(vector)
+        semantic.save_cached_vector(path, scope, key, vector)
+        before = path.read_bytes()
+        with patch.object(Path, 'replace', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                semantic.save_cached_vector(path, scope, key, vector)
+        self.assertEqual(path.read_bytes(), before)
+        self.assertFalse(list(self.cache.rglob('*.tmp')))
+
+    def test_empty_passages_do_not_infer_or_create_cache(self):
+        model = FakeModel()
+        vectors, info = semantic.passage_embeddings(model, [], self.cache / 'empty', self.identity)
+        self.assertEqual(vectors.shape, (0, 384))
+        self.assertEqual(model.batches, [])
+        self.assertEqual(info, {'embeddings_computed': 0, 'embeddings_reused': 0})
+        self.assertFalse((self.cache / 'empty').exists())
 
 
 if __name__ == '__main__':
