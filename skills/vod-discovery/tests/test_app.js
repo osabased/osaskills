@@ -108,6 +108,14 @@ vm.runInContext(`queue = {cards:fixture.cards}; state = fixture.state; current =
   assert.equal(list.children[0].textContent, 'No moments in this group.');
   elements.get('filter').value = 'all'; context.renderList();
   assert.deepEqual(list.children, originalRows);
+  vm.runInContext("queue.related_groups={groups:[{id:'linked',event_ids:['e0','e2']}],ungrouped_ids:queue.cards.filter(c=>!['e0','e2'].includes(c.id)).map(c=>c.id)};",context);
+  elements.get('group-filter').value='linked';context.renderList();
+  assert.deepEqual(list.children,[originalRows[0],originalRows[2]],'Related filter preserves individual chronology');
+  elements.get('group-filter').value='ungrouped';context.renderList();
+  assert.equal(list.children.length,498,'Every independent moment remains accessible');
+  assert(!list.children.includes(originalRows[0]));
+  elements.get('group-filter').value='all';context.renderList();
+  assert.deepEqual(list.children,originalRows,'All connections restores every original row');
   const beforeNoop = requests;
   await vm.runInContext("save({event_id:'e250', decision:'keep'})", context);
   assert.equal(requests, beforeNoop, 'An unchanged choice must not save again');

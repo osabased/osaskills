@@ -1,13 +1,15 @@
 'use strict';
 // Source seconds and main-timeline seconds stay separate. Only local anchors map POVs.
 window.VODTimeline = class {
-  constructor(data, context, jump, clock) {
+  constructor(data, context, jump, clock, aids, cards = []) {
     this.data = data; this.context = context; this.jump = jump; this.clock = clock;
+    this.aids=aids;this.cards=new Map(cards.map(c=>[c.id,c]));this.assets=new Map();this.hoverRequests=new Map();
     this.start = 0; this.span = Math.min(300, data.total); this.browse = null;
     this.svg = document.getElementById('stacked'); this.overview = document.getElementById('overview');
     this.pan = document.getElementById('pan');
     this.svg.style.height = Math.max(155, 38 * data.lanes.length + 42) + 'px';
     this.svg.onclick = e => this.seek(this.pointer(this.svg, e, this.start, this.span));
+    this.svg.onpointerleave=()=>{this.lastHover=null;this.aids?.hide();};
     this.overview.onclick = e => { const time = this.pointer(this.overview, e, 0, data.total); this.fit(time); this.draw(); this.seek(time); };
     this.pan.oninput = () => { this.start = Number(this.pan.value); this.draw(); };
     document.getElementById('zoom-in').onclick = () => this.zoom(.5);
@@ -23,7 +25,8 @@ window.VODTimeline = class {
   }
   time() {
     if (this.browse !== null) return this.browse;
-    const {card, index, position} = this.context();
+    const {card, index, position, detached} = this.context();
+    if(detached){const part=this.data.parts.find(p=>p.id===detached.source_id);return part?part.start+detached.source_sec:null;}
     if (!card) return null;
     const view = card.views[index], source = view.preview_start_sec + position;
     const part = this.data.parts.find(p => p.id === view.source_id);
@@ -53,11 +56,27 @@ window.VODTimeline = class {
     segment = segment || candidates.find(s => s.eid === card?.id) || candidates[0];
     this.jump(time, segment);
   }
+  setAids(c,data){this.assets.set(c.event_id+':'+c.index,data);this.draw();}
+  hover(seg,event){
+    if(!this.aids)return;
+    const key=seg.eid+':'+seg.view,source=this.pointer(this.svg,event,this.start,this.span)-seg.origin+seg.offset;
+    const card=this.cards.get(seg.eid),view=card?.views[seg.view];if(!view)return;
+    this.lastHover={key,source,event,label:view.label};
+    this.aids.hover(source,event,this.assets.get(key),view.label);
+    if(!this.assets.has(key)&&!this.hoverRequests.has(key)){
+      const request=this.aids.get({event_id:seg.eid,index:seg.view,view}).then(data=>{
+        this.assets.set(key,data);
+        const hover=this.lastHover;if(hover?.key===key)this.aids.hover(hover.source,hover.event,data,hover.label);
+      }).catch(()=>{}).finally(()=>this.hoverRequests.delete(key));
+      this.hoverRequests.set(key,request);
+    }
+  }
   draw() {
     const {svg, overview, data} = this;
     this.width = svg.getBoundingClientRect().width;
     if (this.width < 80) return;
     const height = svg.getBoundingClientRect().height, smallHeight = overview.getBoundingClientRect().height;
+    this.lastHover=null;this.aids?.hide();
     svg.setAttribute('viewBox', `0 0 ${this.width} ${height}`);
     overview.setAttribute('viewBox', `0 0 ${this.width} ${smallHeight}`);
     svg.replaceChildren(); overview.replaceChildren();
@@ -93,9 +112,22 @@ window.VODTimeline = class {
       const group = this.element('g', {class:'segment '+(seg.lane === 'main' ? 'main-segment' : 'alt-segment')+(active?' current':'')+(chosen?' chosen':''),
         tabindex:0,role:'button','aria-label':label,'data-event':seg.eid,'data-view':seg.view});
       group.append(this.element('rect', {x,y:ys[seg.lane]+2,width:Math.max(.8,right-x),height:rowHeight-4,rx:3}),this.element('title',{},label));
+      const aid=this.assets.get(seg.eid+':'+seg.view);
+      if(aid){
+        const start=Math.max(seg.start,this.start),end=Math.min(seg.end,this.start+this.span);
+        const peaks=VODAids.peaksIn(aid,start-seg.origin+seg.offset,end-seg.origin+seg.offset,Math.max(1,Math.round((right-x)/2)));
+        if(peaks.length){
+          const center=ys[seg.lane]+rowHeight/2;
+          const top=peaks.map((p,i)=>`${x+i/(peaks.length-1||1)*(right-x)},${center-p*(rowHeight-8)/2}`).join(' ');
+          const bottom=peaks.map((p,i)=>`${x+i/(peaks.length-1||1)*(right-x)},${center+p*(rowHeight-8)/2}`).reverse().join(' ');
+          group.append(this.element('polygon',{points:top+' '+bottom,class:'timeline-wave'}));
+        }
+      }
       if (right-x > Math.max(45,seg.label.length*5.5+8)) group.append(this.element('text',{x:x+5,y:ys[seg.lane]+rowHeight/2+4,class:'segment-label'},seg.label));
       group.onclick = e => { e.stopPropagation(); this.seek(Math.max(seg.start,Math.min(seg.end-.001,this.pointer(svg,e,this.start,this.span))),seg); };
       group.onkeydown = e => { if (['Enter','Space'].includes(e.code)) { e.preventDefault(); e.stopPropagation(); this.seek(seg.start,seg); } };
+      group.onpointermove=e=>this.hover(seg,e);
+      group.onpointerleave=()=>{this.lastHover=null;this.aids?.hide();};
       svg.append(group);
     }
     svg.append(this.element('text',{x:60,y:height-2,class:'ruler-text'},'Alternates above · main below'));

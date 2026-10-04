@@ -38,6 +38,35 @@ class ReviewChangesTests(unittest.TestCase):
         return dict(event_id=eid, view=index, direction=direction,
                     preview_start_sec=view['preview_start_sec'], preview_end_sec=view['preview_end_sec'])
 
+    def test_migration_rebinds_transcript_on_unchanged_media_and_archives_exact_snapshot(self):
+        from review_transcript import SCHEMA as TRANSCRIPT_SCHEMA
+        rows = [dict(id=digest([sid, 110]), source_id=sid, audio_stream=1, start_sec=110, end_sec=114,
+                     text='Synthetic speech', refs=[]) for sid in ('a', 'b')]
+        attached = dict(schema=TRANSCRIPT_SCHEMA, queue_hash=self.store.queue_hash, rows=rows,
+            coverage=[dict(source_id=sid, core_ranges_sec=[[0, 600]]) for sid in ('a', 'b')],
+            unmapped_sources=[], excluded_invalid_segments=0, inputs={}, limitations='Software fixture')
+        atomic_json(self.root / 'transcript.json', attached)
+        raw = (self.root / 'transcript.json').read_bytes()
+        revised = self.migrate()
+        self.assertEqual(revised.transcript.summary()['status'], 'ready')
+        self.assertEqual(revised.transcript.rows, rows)
+        self.assertEqual(revised.transcript.snapshot['queue_hash'], revised.queue_hash)
+        self.assertEqual((self.out / 'migration' / 'previous' / 'transcript.json').read_bytes(), raw)
+
+    def test_migration_does_not_reuse_transcript_for_replaced_source_media(self):
+        from review_transcript import SCHEMA as TRANSCRIPT_SCHEMA
+        atomic_json(self.root / 'transcript.json', dict(schema=TRANSCRIPT_SCHEMA, queue_hash=self.store.queue_hash,
+            rows=[dict(id=digest(['a', 110]), source_id='a', audio_stream=1, start_sec=110, end_sec=114,
+                       text='Old media speech', refs=[])], coverage=[dict(source_id='a', core_ranges_sec=[[0, 600]])],
+            unmapped_sources=[], excluded_invalid_segments=0, inputs={}, limitations='Software fixture'))
+        changed = copy.deepcopy(self.data)
+        replacement_folder = self.root / 'replacement'; replacement_folder.mkdir()
+        replacement = replacement_folder / 'a.mp4'; replacement.write_bytes(b'changed original')
+        changed['sources'][0]['path'] = str(replacement)
+        revised = self.migrate(data=changed)
+        self.assertEqual(revised.transcript.rows, [])
+        self.assertEqual(revised.transcript.summary()['coverage'], [])
+
     def complete(self, request, renderer=None):
         with patch('review_queue.render_preview', side_effect=renderer or self.fake_preview):
             job = self.store.context.request(request)

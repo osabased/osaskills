@@ -3,7 +3,8 @@ const $ = id => document.getElementById(id);
 const {mapSwitch, nextView, rebasePosition, resumePosition} = VODPlayback;
 const labels = {unreviewed:'Not reviewed', keep:'Keep', later:'Later', skip:'Skip'};
 const video = $('video');
-let queue, state, token, current, timeline, keys, viewIndex = 0;
+let queue, state, token, current, timeline, keys, scrub, detached = null, viewIndex = 0;
+let transcriptSerial = 0, transcriptTimer, transcriptOffset = 0, transcriptRows = [];
 let cardsById, cardOrder, listedIds = null, listedCurrentId;
 const listRows = new Map();
 const contextRequests = new Map();
@@ -44,7 +45,7 @@ function enqueue(fn) {
 }
 function snapshot(extra = {}) {
   const patch = {event_id:current.id, note:$('note').value, view:viewIndex, ...extra};
-  if (video.readyState >= 1) patch.source_position_sec = current.views[viewIndex].preview_start_sec + video.currentTime;
+  if (video.readyState >= 1 && !detached && $('unavailable').hidden) patch.source_position_sec = current.views[viewIndex].preview_start_sec + video.currentTime;
   return patch;
 }
 function save(patch) {
@@ -67,7 +68,39 @@ function save(patch) {
 }
 function flush(extra = {}) { clearTimeout(timer); return save(snapshot(extra)); }
 function filtered() {
-  return queue.cards.filter(c => $('filter').value === 'all' || state.decisions[c.id].decision === $('filter').value);
+  const selection = $('group-filter').value || 'all';
+  const groups = queue.related_groups;
+  const ids = selection === 'ungrouped' ? groups?.ungrouped_ids : groups?.groups.find(g => g.id === selection)?.event_ids;
+  return queue.cards.filter(c => (!ids || ids.includes(c.id)) &&
+    ($('filter').value === 'all' || state.decisions[c.id].decision === $('filter').value));
+}
+function groupControls() {
+  const target=$('group-filter');
+  target.replaceChildren();
+  for(const [value,text] of [['all','All connections'],['ungrouped','Ungrouped moments'],
+    ...(queue.related_groups?.groups || []).map((g,i)=>[g.id,'Related '+(i+1)+' · '+g.title+' ('+g.event_ids.length+')'])]) {
+    const option=document.createElement('option');option.value=value;option.textContent=text;target.append(option);
+  }
+  target.value='all';target.onchange=renderList;
+}
+function showConnections() {
+  const group=queue.related_groups?.groups.find(g=>g.event_ids.includes(current.id)), panel=$('connections');
+  panel.hidden=!group;
+  if(!group)return;
+  $('connections-label').textContent='Related · '+group.event_ids.length+' moments';
+  $('connections-body').replaceChildren();
+  for(const id of group.event_ids){
+    const card=cardsById.get(id),button=document.createElement('button');
+    button.textContent=card.title+' · '+card.views[0].label+' '+clock(card.views[0].start_sec);
+    button.dataset.id=id;button.setAttribute('aria-current',String(id===current.id));
+    button.onclick=()=>navigate(id);$('connections-body').append(button);
+  }
+  for(const link of group.links){
+    const p=document.createElement('p'),source=queue.cards.flatMap(c=>c.views).find(v=>v.source_id===link.source_id);
+    p.textContent=cardsById.get(link.event_id).title+' → '+link.relationship+': '+cardsById.get(link.related_event_id).title+
+      ' · '+(source?.label||link.source_id);
+    $('connections-body').append(p);
+  }
 }
 function renderList() {
   const decided = queue.cards.filter(c => state.decisions[c.id].decision !== 'unreviewed').length;
@@ -120,10 +153,11 @@ function updateNav() {
 }
 function refreshTime() {
   if (!current || video.readyState < 1) return;
-  const view = current.views[viewIndex];
+  const view = detached || current.views[viewIndex];
   $('source-clock').textContent = view.label + ' ' + clock(view.preview_start_sec + video.currentTime, true);
   const uncertainties = [];
   for (const [index, button] of [...$('views').children].entries()) {
+    if (detached) { button.disabled=true; continue; }
     const active = index === viewIndex;
     const mapping = active ? null : mapSwitch(current, viewIndex, index, video.currentTime);
     if (mapping) uncertainties.push(mapping.uncertainty_sec);
@@ -131,10 +165,11 @@ function refreshTime() {
     button.title = active ? 'Current POV' : mapping ?
       'Same moment · sync ±' + mapping.uncertainty_sec + 's (' + (keys?.label('pov') || '') + ')' : 'No aligned coverage at this time';
   }
-  if (current.views.length > 1) $('sync-status').textContent = uncertainties.length ?
+  if (!detached && current.views.length > 1) $('sync-status').textContent = uncertainties.length ?
     'Local sync ±' + Math.max(...uncertainties) + 's' :
     (current.sync_links?.length ? 'No alternate here' : 'No verified sync');
   timeline?.tick();
+  scrub?.tick(); transcriptTick();
   contextControls();
 }
 async function autoplay() {
@@ -156,8 +191,14 @@ function activateSound() {
   if (!video.paused) video.play().catch(error => { if (error.name !== 'AbortError') notice('Press Play to enable sound.'); });
 }
 async function loadView(position, play = true) {
+  detached=null;
+  $('return-moment').hidden=true;
   $('unavailable').hidden = true;
+  $('toggle-notes').disabled=false;
+  $('check').hidden=!current.check;$('check').textContent=current.check?'Check: '+current.check:'';
+  migrationStatus();
   for (const choice of ['keep','later','skip']) $(choice).disabled = false;
+  $('decision').textContent=labels[state.decisions[current.id].decision];
   const view = current.views[viewIndex];
   $('title').textContent = view.title; $('summary').textContent = view.summary;
   $('clock').textContent = view.label + ' · ' + clock(view.start_sec) + '–' + clock(view.end_sec);
@@ -173,6 +214,14 @@ async function loadView(position, play = true) {
     button.disabled = index !== viewIndex;
     button.onclick = () => switchView(index); $('views').append(button);
   });
+  await loadMedia(view,position);
+  refreshTime();
+  timeline?.changed();
+  scrub?.load();
+  if(!$('transcript-panel').hidden) loadTranscript();
+  if (play) await autoplay();
+}
+async function loadMedia(view,position) {
   video.pause();
   await new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error('Preview took too long to load. Reload to retry.')), 20000);
@@ -188,9 +237,6 @@ async function loadView(position, play = true) {
     video.src = '/previews/' + view.file;
     video.load();
   });
-  refreshTime();
-  timeline?.changed();
-  if (play) await autoplay();
 }
 async function display(id) {
   current = cardsById.get(id);
@@ -200,6 +246,7 @@ async function display(id) {
   $('decision').textContent = labels[state.decisions[id].decision];
   $('check').hidden = !current.check; $('check').textContent = current.check ? 'Check: ' + current.check : '';
   migrationStatus();
+  showConnections();
   $('done').hidden = true; notice('');
   $('related').replaceChildren();
   for (const relation of current.related) {
@@ -219,7 +266,8 @@ async function action(fn) {
 }
 function navigate(id) {
   if (id === current.id) {
-    if (!$('unavailable').hidden) return action(async () => { await loadView(video.currentTime); notice(''); });
+    if (detached || !$('unavailable').hidden) return action(async () => {
+      await loadView(detached?resumePosition(state.decisions[id],viewIndex,current.views[viewIndex]):video.currentTime);notice(''); });
     return;
   }
   return action(async () => {
@@ -230,6 +278,7 @@ function navigate(id) {
   });
 }
 function switchView(index) {
+  if (detached) { notice('Choose a moment for aligned POV switching.'); return; }
   if (index === viewIndex) return;
   return action(async () => {
     const mapping = mapSwitch(current, viewIndex, index, video.currentTime);
@@ -244,6 +293,7 @@ function switchView(index) {
 }
 function cyclePOV(direction = 1) {
   if (!current || busy || broken) return;
+  if (detached) { notice('Transcript excerpts use their own source clock.'); return; }
   const result = nextView(current, viewIndex, video.currentTime, direction);
   if (result) switchView(result.index); else notice('No alternate coverage at this time.');
 }
@@ -261,8 +311,8 @@ function contextControls() {
   if (!current) return;
   const view = current.views[viewIndex], request = contextRequests.get(current.id+':'+viewIndex);
   const pending = request?.status === 'pending';
-  $('extend-before').disabled = broken || pending || !$('unavailable').hidden || view.preview_start_sec <= 0;
-  $('extend-after').disabled = broken || pending || !$('unavailable').hidden || view.preview_end_sec >= view.source_duration_sec;
+  $('extend-before').disabled = broken || !!detached || pending || !$('unavailable').hidden || view.preview_start_sec <= 0;
+  $('extend-after').disabled = broken || !!detached || pending || !$('unavailable').hidden || view.preview_end_sec >= view.source_duration_sec;
   $('context-status').textContent = pending ? 'Preparing context…' : request?.status === 'error' ? 'Context failed · retry the arrow' : '';
   $('context-status').title = request?.error || '';
 }
@@ -283,7 +333,7 @@ const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function applyContext(card, index, preview) {
   while (busy && !broken) await delay(100);
   if (broken) return;
-  if (current.id !== card.id || viewIndex !== index) { card.views[index] = preview; return; }
+  if (detached || current.id !== card.id || viewIndex !== index) { card.views[index] = preview; return; }
   busy = true;
   const old = card.views[index], position = video.currentTime, play = !video.paused;
   const browse = timeline?.browse, unavailable = !$('unavailable').hidden;
@@ -310,7 +360,7 @@ async function applyContext(card, index, preview) {
   }
 }
 async function extendContext(direction) {
-  if (busy || broken || !current || !$('unavailable').hidden) return;
+  if (busy || broken || detached || !current || !$('unavailable').hidden) return;
   const card = current, index = viewIndex, key = card.id+':'+index, view = card.views[index];
   const previous = contextRequests.get(key);
   if (previous?.status === 'pending') return;
@@ -337,6 +387,105 @@ $('extend-after').onclick = () => extendContext('after');
 function closeMobileTimeline() {
   $('queue-panel').classList.remove('mobile-open'); $('toggle-queue').setAttribute('aria-expanded','false');
 }
+function playbackContext() {
+  if(!current || !$('unavailable').hidden || video.readyState<1)return null;
+  return {event_id:detached?'transcript':current.id,index:detached?detached.excerpt_id:viewIndex,
+    view:detached||current.views[viewIndex],position:video.currentTime};
+}
+function sourceSeek(source) {
+  if(busy||broken)return;
+  const c=playbackContext();if(!c)return;
+  video.currentTime=Math.max(0,Math.min(video.duration-.05,source-c.view.preview_start_sec));
+  flush();
+}
+function transcriptTick() {
+  if(!current||$('transcript-panel').hidden||video.readyState<1)return;
+  const view=detached||current.views[viewIndex],time=view.preview_start_sec+video.currentTime;
+  for(const item of transcriptRows) item.button.setAttribute('aria-current',String(
+    $('unavailable').hidden&&item.row.source_id===view.source_id&&time>=item.row.start_sec&&time<item.row.end_sec));
+}
+function speechRanges(ranges) {
+  const spans=[];
+  for(const [start,end] of [...ranges].sort((a,b)=>a[0]-b[0])){
+    const last=spans.at(-1);
+    if(last&&start<=last[1]+.000001)last[1]=Math.max(last[1],end);
+    else spans.push([start,end]);
+  }
+  return spans.map(([a,b])=>clock(a)+'–'+clock(b)).join(', ');
+}
+async function loadTranscript(append=false) {
+  if(!current||$('transcript-panel').hidden)return;
+  const serial=++transcriptSerial,scope=$('transcript-scope').value,view=detached||current.views[viewIndex];
+  if(!append){transcriptOffset=0;transcriptRows=[];$('transcript-lines').replaceChildren();}
+  const params=new URLSearchParams({q:$('transcript-query').value,offset:String(transcriptOffset),current_id:current.id});
+  if(scope!=='all')params.set('source_id',view.source_id);
+  if(scope==='preview'){params.set('start',String(view.preview_start_sec));params.set('end',String(view.preview_end_sec));}
+  $('transcript-status').textContent='Loading transcript…';$('transcript-more').hidden=true;
+  try{
+    const response=await fetch('/api/transcript?'+params),result=await response.json();
+    if(serial!==transcriptSerial)return;
+    if(!response.ok)throw new Error(result.error||'Could not load transcript');
+    if(result.status!=='ready'){
+      $('transcript-status').textContent=result.status==='error'?'Transcript unavailable: '+result.error:'No transcript attached.';
+      $('transcript-coverage').textContent=result.limitations||'Saved choices and video previews remain available.';return;
+    }
+    $('transcript-status').textContent=result.total+' matching lines'+(result.more?' · showing '+(result.offset+result.hits.length):'');
+    const sources=new Map(queue.cards.flatMap(c=>c.views).map(v=>[v.source_id,v.label]));
+    $('transcript-coverage').textContent='Rough speech · '+result.coverage.map(c=>(sources.get(c.source_id)||c.source_id)+' '+
+      speechRanges(c.core_ranges_sec)).join(' · ')+
+      (result.excluded_invalid_segments?' · '+result.excluded_invalid_segments+' invalid segments excluded':'')+
+      (result.unmapped_sources.length?' · '+result.unmapped_sources.length+' unmapped sources':'');
+    for(const row of result.hits){
+      const button=document.createElement('button');button.className='transcript-line';button.dataset.line=row.id;
+      button.setAttribute('aria-current','false');
+      const meta=document.createElement('small');meta.textContent=row.label+' '+clock(row.start_sec,true)+' · stream '+row.audio_stream+
+        (row.target?'':' · 30s excerpt');
+      const text=document.createElement('span');text.textContent=row.text;
+      button.title='Rough transcript · '+row.source+' · '+row.refs.map(r=>r.transcript_file+' #'+r.segment_index).join('; ');
+      button.append(meta,text);button.onclick=()=>jumpTranscript(row);
+      $('transcript-lines').append(button);transcriptRows.push({row,button});
+    }
+    if(!result.total){const p=document.createElement('p');p.textContent='No matching speech in this scope. Missing speech is inconclusive.';$('transcript-lines').append(p);}
+    transcriptOffset=result.offset+result.hits.length;$('transcript-more').hidden=!result.more;transcriptTick();
+  }catch(error){if(serial===transcriptSerial)$('transcript-status').textContent=error.message;}
+}
+function jumpTranscript(row) {
+  return action(async()=>{
+    video.pause();await flush();if(broken)return;
+    if(row.target){
+      const target=row.target,card=cardsById.get(target.event_id);
+      await save({event_id:card.id,view:target.view,source_position_sec:row.start_sec});
+      if(!broken)await display(card.id);
+      notice('Transcript · '+row.label+' '+clock(row.start_sec,true));return;
+    }
+    $('unavailable').hidden=false;
+    for(const name of ['keep','later','skip'])$(name).disabled=true;
+    $('transcript-status').textContent='Preparing '+row.label+' '+clock(row.start_sec)+' excerpt…';
+    let preview;
+    try{preview=await VODAids.prepared('/api/transcript-preview',{line_id:row.id},token);}
+    catch(error){$('transcript-status').textContent=error.message;notice('Excerpt unavailable. Return to a moment to continue.');return;}
+    detached=preview;$('unavailable').hidden=true;$('notes').hidden=true;
+    $('toggle-notes').disabled=true;$('toggle-notes').setAttribute('aria-expanded','false');
+    $('decision').textContent='Transcript excerpt';$('position').textContent='30s excerpt';
+    $('title').textContent='Transcript · '+row.label;$('summary').textContent=row.text;
+    $('clock').textContent=row.label+' · '+clock(preview.preview_start_sec)+'–'+clock(preview.preview_end_sec);
+    $('preview-meta').textContent='Stream '+row.audio_stream+' · rough speech';$('sync-status').textContent='Independent source clock';
+    $('check').hidden=true;$('migration-status').hidden=true;$('views').replaceChildren();
+    const label=document.createElement('button');label.textContent=row.label;label.disabled=true;$('views').append(label);
+    await loadMedia(preview,row.start_sec-preview.preview_start_sec);
+    $('return-moment').hidden=false;refreshTime();timeline.changed();scrub.load();await autoplay();
+    $('transcript-status').textContent='Transcript excerpt · review choices apply to moments';
+    notice('Choose a moment to resume review.');
+    if($('transcript-scope').value==='preview')loadTranscript();
+  });
+}
+$('show-moments').onclick=()=>{$('transcript-panel').hidden=true;$('moment-panel').hidden=false;
+  $('show-moments').setAttribute('aria-pressed','true');$('show-transcript').setAttribute('aria-pressed','false');};
+$('show-transcript').onclick=()=>{$('transcript-panel').hidden=false;$('moment-panel').hidden=true;
+  $('show-moments').setAttribute('aria-pressed','false');$('show-transcript').setAttribute('aria-pressed','true');loadTranscript();};
+$('transcript-query').addEventListener('input',()=>{clearTimeout(transcriptTimer);transcriptTimer=setTimeout(()=>loadTranscript(),250);});
+$('transcript-scope').onchange=()=>loadTranscript();$('transcript-more').onclick=()=>loadTranscript(true);
+$('return-moment').onclick=()=>navigate(current.id);
 function timelineJump(time, segment) {
   return action(async () => {
     video.pause(); await flush();
@@ -356,7 +505,8 @@ function timelineJump(time, segment) {
     closeMobileTimeline();
   });
 }
-$('return-preview').onclick = () => action(async () => { await loadView(video.currentTime); notice(''); });
+$('return-preview').onclick = () => action(async () => {
+  await loadView(detached?resumePosition(state.decisions[current.id],viewIndex,current.views[viewIndex]):video.currentTime);notice(''); });
 function updateKeyHints() {
   if (!keys?.profile) return;
   for (const name of ['keep','later','skip']) $(name).querySelector('kbd').textContent = keys.label(name);
@@ -373,7 +523,7 @@ function step(delta) {
   if (cards[index + delta]) navigate(cards[index + delta].id);
 }
 function decide(decision) {
-  if (!$('unavailable').hidden) return;
+  if (detached || !$('unavailable').hidden) return;
   return action(async () => {
     video.pause(); await flush({decision});
     if (broken) return;
@@ -424,7 +574,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && cur
 window.addEventListener('beforeunload', () => { if (current && !busy && !broken) flush(); });
 document.addEventListener('keydown', event => {
   if (/INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.target.isContentEditable ||
-      $('keys-dialog').open || event.target.closest?.('.segment') || event.repeat || broken || !current) return;
+      $('keys-dialog').open || event.target.closest?.('.segment,.transcript-line,#waveform') || event.repeat || broken || !current) return;
   activateSound();
   if (event.key === 'Escape') {
     $('info').hidden = true; $('toggle-info').setAttribute('aria-expanded','false');
@@ -465,9 +615,12 @@ $('export').onclick = () => exportQueue('keep'); $('export-all').onclick = () =>
     queue = data.queue; state = data.state; token = data.token;
     cardsById = new Map(queue.cards.map(c => [c.id, c]));
     cardOrder = new Map(queue.cards.map((c,i) => [c.id, i]));
+    groupControls();
     keys = new VODKeys(token,updateKeyHints,() => video.pause());
     await keys.load();
-    timeline = new VODTimeline(queue.timeline,() => ({card:current,index:viewIndex,position:video.currentTime}),timelineJump,clock);
+    scrub = new VODAids.Scrub(playbackContext,sourceSeek,clock,token,(c,data)=>timeline?.setAids(c,data));
+    timeline = new VODTimeline(queue.timeline,() => ({card:detached?null:current,index:viewIndex,position:video.currentTime,
+      detached:detached?{source_id:detached.source_id,source_sec:detached.preview_start_sec+video.currentTime}:null}),timelineJump,clock,scrub,queue.cards);
     $('coverage').textContent = queue.coverage;
     await display(state.current_id); $('saved').textContent = 'Saved';
   } catch (error) { fail(error); } finally { busy = false; }

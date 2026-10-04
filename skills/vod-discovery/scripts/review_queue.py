@@ -15,13 +15,15 @@ import secrets
 import socket
 import subprocess
 import threading
-from urllib.parse import urlsplit
+from urllib.parse import parse_qs, urlsplit
 import uuid
 import webbrowser
 
 from vod import export_events, number, probe, read
 from review_timeline import build_review
 from premiere_xml import frame_rate
+from review_navigation import NavigationAssets, related_groups
+from review_transcript import TranscriptEvidence, import_transcripts
 
 SCHEMA = 'vod-review-queue/v1'
 BUILD_SCHEMA = 'vod-review-build/v1'
@@ -320,6 +322,17 @@ def initialize(events_path, plan_path, out, padding=3, jobs=2, resume=False, mig
         # queue.json is the completion record; publish it after the initial state.
         atomic_json(out / 'state.json', initial_state)
         atomic_json(out / 'queue.json', manifest)
+        if migration is not None and 'transcript.json' in migration['snapshots']:
+            # Speech belongs to original source clocks, independently of moment choices.
+            previous = migration['snapshots']['transcript.json']
+            unchanged = {sid for sid, value in identities.items()
+                         if migration['snapshots']['queue.json']['identities'].get(sid) == value}
+            if previous.get('schema') == 'vod-review-transcript/v1':
+                attached = deepcopy(previous)
+                attached['queue_hash'] = digest(manifest)
+                attached['rows'] = [r for r in attached['rows'] if r['source_id'] in unchanged]
+                attached['coverage'] = [c for c in attached['coverage'] if c['source_id'] in unchanged]
+                atomic_json(out / 'transcript.json', attached)
         return out
 
 
@@ -589,6 +602,13 @@ class Store:
         if not allow_stale:
             self.validate_inputs()
         self.context = ContextPreviews(self, repair=not allow_stale)
+        self.navigation = NavigationAssets(self)
+        try:
+            self.transcript = TranscriptEvidence(self)
+        except (ValueError, KeyError, TypeError, OSError) as exc:
+            # A damaged optional transcript must not strand confirmed choices.
+            self.transcript = TranscriptEvidence(self, load=False)
+            self.transcript.error = str(exc)
         self.timeline = self.timeline_data()
         self.state()
 
@@ -683,6 +703,8 @@ class Store:
                 view.update(self.context.view(card['id'], index))
             card['migration'] = queue.get('migration', {}).get('moments', {}).get(card['id'])
         queue['context_step_sec'] = CONTEXT_STEP
+        queue['related_groups'] = related_groups(queue['cards'])
+        queue['transcript'] = self.transcript.summary()
         return queue
 
     def mutate(self, patch, undo=False):
@@ -768,7 +790,7 @@ def update_queue(previous, events_path, plan_path, out, padding=3, jobs=2, resum
     # snapshots or an active server that could save decisions during migration.
     with build_lock(previous, '.server.lock', 'Stop the previous queue server before updating; its choices remain saved.'):
         store = Store(previous, allow_stale=True)
-        snapshot_names = ('queue.json', 'state.json', 'events.json', 'plan.json', 'probes.json', 'context.json', 'build.json', 'migration.json')
+        snapshot_names = ('queue.json', 'state.json', 'events.json', 'plan.json', 'probes.json', 'context.json', 'build.json', 'migration.json', 'transcript.json')
         raw = {name: (previous / name).read_bytes().decode('utf-8')
                for name in snapshot_names if (previous / name).is_file()}
         ancestors = {}
@@ -807,6 +829,7 @@ def update_queue(previous, events_path, plan_path, out, padding=3, jobs=2, resum
             return initialize(events_path, plan_path, out, padding, jobs, resume, migration)
         finally:
             store.context.close()
+            store.navigation.close()
 
 
 def make_server(store, port=0, preferences=None):
@@ -857,14 +880,31 @@ def make_server(store, port=0, preferences=None):
                     return self.json_response(dict(queue=store.playback_queue(), state=store.state(), token=token))
                 if path == '/api/keys':
                     return self.json_response(dict(profile=preferences.read(), defaults=DEFAULT_KEYS, codes=KEY_CODES))
+                if path == '/api/transcript':
+                    query = parse_qs(urlsplit(self.path).query, keep_blank_values=True)
+                    def arg(name, default=None):
+                        values = query.get(name, [default])
+                        if len(values) != 1:
+                            raise ValueError('Duplicate transcript parameter')
+                        return values[0]
+                    return self.json_response(store.transcript.search(query=arg('q', ''), source_id=arg('source_id'),
+                        start=float(arg('start')) if arg('start') is not None else None,
+                        end=float(arg('end')) if arg('end') is not None else None,
+                        offset=int(arg('offset', 0)), limit=int(arg('limit', 100)), current_id=arg('current_id')))
+                if re.fullmatch(r'/api/navigation/[0-9a-f]{32}', path):
+                    return self.json_response(store.navigation.status(path.rsplit('/', 1)[-1]))
                 if re.fullmatch(r'/api/context/[0-9a-f]{32}', path):
                     return self.json_response(store.context.status(path.rsplit('/', 1)[-1]))
                 assets = {'/': 'index.html', '/app.js': 'app.js', '/style.css': 'style.css',
-                          '/playback.js': 'playback.js', '/timeline.js': 'timeline.js', '/keys.js': 'keys.js'}
+                          '/playback.js': 'playback.js', '/timeline.js': 'timeline.js', '/keys.js': 'keys.js',
+                          '/aids.js': 'aids.js'}
                 if path in assets:
                     target = ASSETS / assets[path]
                 elif path.startswith('/previews/') and (path.removeprefix('/previews/') in preview_files or
-                        store.context.registered(path.removeprefix('/previews/'))):
+                        store.context.registered(path.removeprefix('/previews/')) or
+                        store.navigation.registered(path.removeprefix('/previews/'), excerpt=True)):
+                    target = store.folder / path.lstrip('/')
+                elif path.startswith('/navigation/') and store.navigation.registered(path.removeprefix('/navigation/')):
                     target = store.folder / path.lstrip('/')
                 elif re.fullmatch(r'/exports/review-r\d+-[0-9a-f]{8}/review\.xml', path):
                     target = store.folder / path.lstrip('/')
@@ -927,6 +967,10 @@ def make_server(store, port=0, preferences=None):
                     return self.json_response(preferences.save(patch))
                 if self.path == '/api/context':
                     return self.json_response(store.context.request(patch))
+                if self.path == '/api/aids':
+                    return self.json_response(store.navigation.aids(patch))
+                if self.path == '/api/transcript-preview':
+                    return self.json_response(store.navigation.excerpt(patch))
                 return self.json_response({'error': 'Not found'}, 404)
             except Conflict as exc:
                 self.json_response({'error': str(exc)}, 409)
@@ -941,6 +985,7 @@ def make_server(store, port=0, preferences=None):
         def server_close(self):
             super().server_close()
             store.context.close()
+            store.navigation.close()
 
         def server_bind(self):
             if os.name == 'nt':
@@ -969,6 +1014,10 @@ def main():
     update.add_argument('--jobs', type=int, default=2)
     update.add_argument('--resume', action='store_true')
     update.add_argument('--event-map', help='Explicit one-to-one stable-ID mapping for renamed moments')
+    transcript = sub.add_parser('transcripts', help='Attach an existing literal speech index without new transcription')
+    transcript.add_argument('--queue', required=True)
+    transcript.add_argument('--index', required=True)
+    transcript.add_argument('--source-map', help='Explicit source and clock mapping for verified excerpt media')
     serve = sub.add_parser('serve')
     serve.add_argument('--queue', required=True)
     serve.add_argument('--port', type=int, default=8765)
@@ -983,6 +1032,15 @@ def main():
                            args.jobs, args.resume, args.event_map))
         return
     folder = Path(args.queue).resolve(strict=True)
+    if args.command == 'transcripts':
+        with build_lock(folder, '.server.lock', 'Stop this queue server before attaching transcript evidence.'):
+            store = Store(folder)
+            try:
+                print(json.dumps(import_transcripts(store, args.index, args.source_map), indent=2))
+            finally:
+                store.context.close()
+                store.navigation.close()
+        return
     # Lock before Store can repair context, not just before serving choices.
     with (folder / '.server.lock').open('a+b') as lock:
         if lock.tell() == 0:
