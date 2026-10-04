@@ -12,7 +12,7 @@ When conventions conflict or a material gap remains, state the exact choice, evi
 
 ## New or intentionally redesigned projects
 
-The user has not selected global architecture/tooling defaults. Learn their needs and research choices; do not infer a preference from this skill's examples.
+Apply the selected [default tooling](../../SKILL.md#default-tooling) to its stated roles, subject to existing project choices and compatibility. Learn the user's needs and research unresolved architecture and tooling choices; do not infer additional preferences from this skill's examples.
 
 Possible decision dimensions include authoring ownership (Studio, Script Sync, filesystem mapping, or custom/mixed), language/compiler, entrypoint/lifecycle ownership, grouping, dependency posture, assets and place boundaries, test strategy, and development/release workflow. Resolve only dimensions relevant to the project. Framework and startup choices must identify a clear owner for each concern rather than layer competing owners.
 

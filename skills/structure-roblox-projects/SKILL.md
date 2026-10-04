@@ -24,6 +24,26 @@ Use [evidence and freshness](references/core/evidence-and-freshness.md) for open
 
 At activated use, check for the sibling `.skill-maintenance/structure-roblox-projects.json` guard; ordinary dependent use waits while it exists. For reusable guidance defects or package maintenance, use the shared [on-demand maintenance policy](../roblox-resource-acquisition/references/on-demand-maintenance.md) when available. It does not select project architecture or grant project writes. If the sibling package is missing, use this skill's evidence rules and report only the upkeep capability that is unavailable.
 
+## Default tooling
+
+Use these preferred defaults when the role applies and the project has no established equivalent. Preserve explicit project choices, restrictions, and compatible existing toolchains.
+
+| Tool | Default role |
+| --- | --- |
+| [Rokit](https://github.com/rojo-rbx/rokit) | Manage project-pinned CLI tool versions. |
+| [Pesde](https://docs.pesde.dev/) | Manage Luau/Roblox package dependencies when packages are needed. |
+| [Lune](https://github.com/lune-org/lune) | Run Luau automation, development scripts, and offline place/model processing. |
+| [Lute](https://github.com/luau-lang/lute) | Perform syntax-aware Luau transformations or package standalone Luau executables when needed. |
+| [StyLua](https://github.com/JohnnyMorganz/StyLua) | Format Luau source and check formatting in CI. |
+| [Selene](https://github.com/Kampfkarren/selene) | Lint Luau source with the appropriate environment definitions. |
+| [Luau-LSP](https://github.com/JohnnyMorganz/luau-lsp) | Provide editor language support and standalone type analysis. |
+| [Lest](https://github.com/lest-luau/lest) | Run automated Luau unit and regression tests. |
+| [Roblox Headless Renderer](https://github.com/TabooHarmony/roblox-headless-renderer) | Check UI layout, text overflow, and clipping across viewport sizes. |
+
+For authoring, prefer [Rojo](https://rojo.space/docs/v7/) when the filesystem owns the mapped project, or [Script Sync](https://create.roblox.com/docs/scripting/sync) for external code editing while Studio owns the project. Establish authoring ownership before choosing or enabling synchronization; reuse the selected workflow. Preserve an established [Wally](https://github.com/UpliftGames/wally) setup; prefer Pesde for new package selections unless a concrete compatibility need calls for Wally.
+
+Read [tooling setup and verification](references/workflows/default-tooling.md) when configuring these roles or their checks. Add only roles the task or selected setup needs. When acquisition, integration, or an upgrade is needed, use [resource acquisition](../roblox-resource-acquisition/SKILL.md), preserve established project pins, and record selected versions and verification in project guidance. A preferred default is not proof that an arbitrary version or project integration has passed.
+
 ## Load specialist guidance when needed
 
 Evaluate both current and proposed structures. Initial orientation may inspect mappings and entrypoints without applying an implementation procedure.

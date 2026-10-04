@@ -12,13 +12,13 @@ Inspect supplied context and ask unanswered questions in small rounds, normally 
 - authoring: Studio and external editor preferences, Luau/TypeScript or another language, ownership of code/assets, collaboration, Git/reproducible builds/CI, and existing Studio content;
 - architecture and dependencies: scale, runtime/lifetime constraints, networking/state/persistence/UI/testing needs, library/framework posture, existing choices, deployment environment, and budget/maintenance constraints when relevant.
 
-Skip answered or irrelevant subjects. Ask about use cases before naming libraries. If they have not selected defaults, keep architecture, languages, tools, and frameworks open. Reuse an explicitly provided needs brief instead of requiring another intake round.
+Skip answered or irrelevant subjects. Reuse explicit project choices and the applicable [default tooling](../../SKILL.md#default-tooling) rather than reopening those choices. Ask about use cases for unresolved roles; keep remaining architecture, languages, tools, and frameworks open. Reuse an explicitly provided needs brief instead of requiring another intake round.
 
 ## Research suitable approaches
 
 Use [evidence and freshness](../core/evidence-and-freshness.md). Research workflow candidates and tool/library roles under the actual needs, current supported behavior, compatibility, and maintenance constraints. Confirm current authoritative documentation and compatible stable targets before presenting a current recommendation. Separate beta/preview options from established support.
 
-Compare meaningful candidates rather than collecting a catalogue. Plain modules and built-in tooling are valid candidates, as are frameworks or compiler pipelines when their roles fit. No default Canonical SSA, ModuleLoader identity, Rojo, language, package manager, or fixed formatter/linter/test/orchestration stack is assumed.
+Compare meaningful candidates for unresolved roles rather than collecting a catalogue. Plain modules and built-in tooling are valid candidates, as are frameworks or compiler pipelines when their roles fit. Apply [default tooling](../../SKILL.md#default-tooling) to the roles the setup needs, including Pesde for new package selections and the authoring choice that matches source ownership. No default Canonical SSA, ModuleLoader identity, language, framework, or orchestrator is assumed.
 
 When credible approaches compete without a clear project-specific basis for selection, present their fit, costs, and uncertainties as options for the user to choose. Resolve those consequential choices before the final coherent setup. Do not ask the user to choose every trivial folder or configuration value; make routine choices consistent with the selected direction.
 
