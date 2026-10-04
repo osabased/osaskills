@@ -80,7 +80,8 @@ skill_validation:
   # formatted as sha256:<64 lowercase hex characters> (not bare hex).
 
 # Empty means validated artifact only. Each entry uses:
-# host, scope (repo | user | admin | plugin | other), location,
+# host, scope (repo by default; user only for an explicit user/global request;
+# admin | plugin | other when applicable), location,
 # status (installed | operational | blocked | disabled | removed | unavailable | failed),
 # checked_at, result, and an evidence mapping with:
 # installed (present | absent | not-applicable | unknown),

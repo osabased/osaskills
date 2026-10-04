@@ -17,7 +17,7 @@ Use **RESOURCE NAME** for CAPABILITY. Guidance targets **VERSION/COMMIT/STATE** 
 
 ## Prerequisites and installation
 
-Resolve the active project and its selected pin/configuration at use time. Keep task-specific absolute paths and execution history outside this reusable skill. For development tools, name the actual command/configuration, prerequisites and owned generated outputs.
+Resolve the active project and its selected pin/configuration at use time. This child's installation defaults to the resolved project/repository skill scope; an unknown project does not authorize a user/global fallback. Keep task-specific absolute paths and execution history outside this reusable skill. For development tools, name the actual command/configuration, prerequisites and owned generated outputs.
 
 1. ...
 
@@ -47,10 +47,10 @@ Provide the shortest source-grounded setup/use sequence. Derive executable code 
 - Policy: REQUIRED/CONDITIONAL/NOT-APPLICABLE — REASON
 - Installed-state check: RESOURCE-SPECIFIC CHECK OR IMMUTABLE-INSTALL EXPLANATION
 - Expected identity/state: RESOURCE SLUG + CANONICAL URL + PACKAGE ID WHEN APPLICABLE + REVIEWED VERSION/COMMIT/STATE
-- Current-block check: For `required` or `conditional`, before affected use run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair CHILD-SKILL-DIRECTORY MATCHING-RECORD.yaml`; proceed only on `HEALTHY` (exit 0), and enter full parent-state reconciliation on `BLOCKED` or `UNKNOWN`. For `not-applicable`, replace this with `not-applicable` plus the exact immutable or version-insensitive reason.
+- Current-block check: For `required` or `conditional`, resolve the installed `roblox-resource-acquisition` parent directory, then before affected use run `python RESOLVED-PARENT-SKILL-DIRECTORY/scripts/check_resource_status.py --pair CHILD-SKILL-DIRECTORY MATCHING-RECORD.yaml`; replace the directory placeholders with the concrete applicable paths while authoring. Proceed only on `HEALTHY` (exit 0), and enter full parent-state reconciliation on `BLOCKED` or `UNKNOWN`. For `not-applicable`, replace this with `not-applicable` plus the exact immutable or version-insensitive reason.
 - Integrity gate: CONDITIONAL ONLY — EXACT CANONICAL VERIFIER COMMAND, OBSERVABLE PASS CONDITION, AND BEFORE-COMPLETION TIMING
 - Escalation triggers: CONDITIONAL ONLY — MISSING/MISMATCHED PIN OR LOCK/HEADER; ADOPTION/UPGRADE/AUTHORIZED REPAIR; VERIFIER FAILURE/DRIFT; HARD DEFECT; ALREADY-KNOWN BLOCK
-- Parent-state check: Resolve the affected Roblox project root. Use any exact authoritative record/learnings locations already supplied by that project; otherwise read the matching schema-version 3 resource record at `.agents/roblox/resources/records/RESOURCE-SLUG.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to that root. When no project root applies, use `~/.roblox-resources/records/RESOURCE-SLUG.yaml` and `~/.roblox-resources/learnings/`. Match by resource slug plus canonical identity.
+- Parent-state check: Resolve the affected Roblox project root. Use any exact authoritative record/learnings locations already supplied by that project; otherwise read the matching schema-version 3 resource record at `.agents/roblox/resources/records/RESOURCE-SLUG.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to that root. If this project-scoped child's project cannot be resolved, report unknown state and enter reconciliation; do not silently switch to global records. Only for an explicitly user/global-scoped child, document the no-project fallback at `~/.roblox-resources/records/RESOURCE-SLUG.yaml` and `~/.roblox-resources/learnings/`. Match by resource slug plus canonical identity.
 - Mismatch/unknown action: For every state escalation trigger, stop the affected version-sensitive use, perform the Parent-state check, and invoke `roblox-resource-acquisition` in `repair/reconcile` mode before continuing.
 - Defect handoff: Follow the earlier Repair interrupt handoff; it is the source of truth for defect evidence and parent activation.
 

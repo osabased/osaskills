@@ -19,11 +19,11 @@ Use Rojo to build a place and verify expected script classes and sources. Guidan
 
 1. Resolve the project-owned target and installation before using the common path.
 
-Resolve the active project's selected tool and configuration. Use Python 3.10+ and the canonical `rojo-rbx/rojo` 7.7.0 executable. A broken PATH shim may have an already installed versioned executable in the configured tool-manager cache; confirm `rojo --version` and its integrity before use.
+Resolve the active project's selected tool and configuration. This example models a child installed at project/repository scope; an unresolved project does not authorize a user/global fallback. Use Python 3.10+ and the canonical `rojo-rbx/rojo` 7.7.0 executable. A broken PATH shim may have an already installed versioned executable in the configured tool-manager cache; confirm `rojo --version` and its integrity before use.
 
 Keep project-specific files outside this child. The project owns `tool-lock.json` containing `canonical_url: https://github.com/rojo-rbx/rojo`, `package_id: rojo-rbx/rojo`, `version: 7.7.0` and `sha256` as the raw SHA-256 hex of the inspected executable. This helper's lock format uses raw hex; schema-v3 evidence-input hashes separately require the `sha256:` prefix. The project also owns a Rojo JSON configuration, authored strict Luau source and `expected-scripts.json` with a `scripts` list of objects containing `path`, `class` and `sourceFile`. Build the expected paths from the intended project contract, independently from Rojo's mapping: a successful build can omit a whole directory.
 
-In the commands below, PowerShell variables `$Child`, `$Project` and `$Rojo` hold the resolved absolute child directory, project root and inspected executable. Another shell uses equivalent path arguments. Do not embed a task's machine-specific paths into this reusable child.
+In the commands below, PowerShell variables `$Parent`, `$Child`, `$Project` and `$Rojo` hold the resolved absolute installed parent directory, canonical child directory, project root and inspected executable. Another shell uses equivalent path arguments. Do not embed a task's machine-specific paths into this reusable child.
 
 ## On-demand maintenance
 
@@ -51,8 +51,8 @@ python "$Child/scripts/check_build.py" --rojo "$Rojo" --tool-lock "$Project/tool
 - Policy: required — a project's tool manager or executable can drift independently from the guidance.
 - Installed-state check: Compare the canonical URL, package identity, version and executable hash in the project's tool-lock against the selected executable; the helper checks the hash and version before building.
 - Expected identity/state: rojo-rbx-rojo + https://github.com/rojo-rbx/rojo + rojo-rbx/rojo + 7.7.0.
-- Current-block check: Before affected use, run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair ~/.agents/skills/roblox-rojo-build-contract .agents/roblox/resources/records/rojo-rbx-rojo.yaml` from the resolved project root; require HEALTHY, and enter full reconciliation on BLOCKED or UNKNOWN. Resolve another child/record location from authoritative project configuration when supplied.
-- Parent-state check: Resolve the affected project root, then read the matching schema-version 3 resource record and learnings at authoritative locations, otherwise `.agents/roblox/resources/records/rojo-rbx-rojo.yaml` and `.agents/roblox/resources/learnings/`; without a project root use `~/.roblox-resources/records/rojo-rbx-rojo.yaml` and `~/.roblox-resources/learnings/`. Match slug plus canonical identity.
+- Current-block check: Before affected use, run `python "$Parent/scripts/check_resource_status.py" --pair "$Child" .agents/roblox/resources/records/rojo-rbx-rojo.yaml` from the resolved project root; require HEALTHY, and enter full reconciliation on BLOCKED or UNKNOWN. Resolve `$Parent` and `$Child` from the applicable host/project configuration, and use another authoritative record location when supplied.
+- Parent-state check: Resolve the affected project root, then read the matching schema-version 3 resource record and learnings at authoritative locations, otherwise `.agents/roblox/resources/records/rojo-rbx-rojo.yaml` and `.agents/roblox/resources/learnings/` relative to that root. If this project-scoped child's project cannot be resolved, report `UNKNOWN` and enter parent `repair/reconcile`; do not switch to global records. Only when explicitly authoring a user/global-scoped variant, document the no-project fallback at `~/.roblox-resources/records/rojo-rbx-rojo.yaml` and `~/.roblox-resources/learnings/`. Match slug plus canonical identity.
 - Mismatch/unknown action: Stop affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode before continuing.
 - Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for defect evidence and parent activation.
 

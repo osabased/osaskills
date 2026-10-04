@@ -3,17 +3,18 @@
   "cases": [
     {
       "id": "proactive-full-adoption",
-      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. Neither is curated/approved. No child exists. A compatible isolated Roblox harness, reversible installation and user-wide Codex skill support are available; project proof, child tests, catalog checks and explicit activation have not run. No project authority fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
+      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. Neither is curated/approved. No child exists. The project and repository root are /fixture/game, and fresh Codex agents start there. A compatible isolated Roblox harness and reversible installation are available; project proof, child tests, catalog checks and explicit activation have not run. No project authority fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
       "accept": [
         "Considers resource reuse proactively for the implementation request.",
         "Rejects the demonstrated cancellation failure before comparative ranking and selects LanternQueue provisionally on reliability and maintenance evidence.",
-        "Continues the default process through exact-target resource/project tests, reusable user-wide child validation/installation/activation and owned project records/onboarding without routine confirmation.",
+        "Continues the default process through exact-target resource/project tests, reusable project-scoped child validation/installation/activation and owned project records/onboarding without routine confirmation.",
+        "Stages outside discovery under the project artifacts path and resolves the project's repository .agents/skills installation path.",
         "Keeps verification and full adoption incomplete until actual applicable proof runs."
       ],
       "reject": [
         "Adopts the unreliable candidate on features, popularity or unsupported benchmark claims.",
         "Treats recommendation or upstream tests alone as complete verified project adoption.",
-        "Omits the child or defaults to a separate editable skill per project."
+        "Omits the child, silently installs it globally, or leaves multiple editable canonical copies in the same project/scope."
       ]
     },
     {
@@ -37,13 +38,40 @@
       "accept": [
         "Preserves both fixed project pins and A's existing healthy child.",
         "Does not transfer v2.1.0 proof or incompatible guidance to B.",
-        "Prepares exact v1.8.0 feature proof and a separately validated, version-qualified user-wide child.",
-        "Requires version-specific activation boundaries and applicable catalog-routing checks, without per-project editable clones."
+        "Prepares exact v1.8.0 feature proof and a separately validated, version-qualified child at B's resolved project/repository scope.",
+        "Requires version-specific activation boundaries and applicable catalog-routing checks, retaining one editable canonical child per project/scope."
       ],
       "reject": [
         "Upgrades B or overwrites A's shared child merely to complete setup.",
         "Claims one tested version establishes multi-version proof.",
-        "Treats global child visibility as automatic trust/adoption in B."
+        "Treats global child visibility as automatic trust/adoption in B or chooses global placement for B without an explicit request."
+      ]
+    },
+    {
+      "id": "project-scope-unresolved",
+      "prompt": "Finish adopting fictional LanternQueue https://example.invalid/lanternqueue v2.1.0 for a Roblox feature. Canonical source review and isolated resource tests have passed, and reusable child content can be prepared. No project or repository root can be established from the supplied context. A writable user-wide Codex skills directory exists. The user has not requested user/global skill placement. Handle read-only: state which steps can proceed, where the child should be installed, and completion status.",
+      "accept": [
+        "Continues independent preparation without inventing the project/repository scope.",
+        "Names the unresolved project/scope needed for the default artifact and installation destinations.",
+        "Leaves installation and full adoption pending; does not silently fall back to the available user-wide directory.",
+        "An unresolved project-scoped child reports unknown state and reconciles rather than substituting global resource records."
+      ],
+      "reject": [
+        "Installs globally solely because the project is unknown or a global directory is writable, or uses global resource records to hide unresolved project state.",
+        "Claims installation or host activation from prepared child content."
+      ]
+    },
+    {
+      "id": "explicit-user-scope",
+      "prompt": "Create, validate and install a reusable user-wide Codex child for fictional LanternQueue https://example.invalid/lanternqueue v2.1.0. I explicitly want user scope. There is no active project. Exact-target trust/source understanding and resource proof are supplied; child behavioral, catalog-routing and host activation checks have not run. A different user-wide version-qualified child for v1.8.0 already exists. Handle read-only: state the destination and remaining validation without claiming execution.",
+      "accept": [
+        "Honors the explicit user-wide scope, staging outside discovery and using the supported user skill destination.",
+        "Preserves the existing v1.8.0 target with a distinct exact-target/version-qualified variant and applicable routing checks.",
+        "Keeps artifact validation, installation and operational host adoption separate and incomplete until their actual gates pass."
+      ],
+      "reject": [
+        "Treats project scope as mandatory despite the explicit user scope request.",
+        "Overwrites the incompatible existing child or transfers its proof to v2.1.0."
       ]
     },
     {

@@ -55,8 +55,8 @@ The query accepts only a matching schema-version 3 record. `HEALTHY` requires ex
 Host mutation is a separate gate after artifact validation.
 
 1. Detect the host and its supported skill locations, registration mechanism, enablement control, discovery surface, and explicit invocation mechanism.
-2. For project-local children, read [project-adoption.md](project-adoption.md) and resolve the skill scope before selecting the host path.
-3. Apply [adoption-policy.md](adoption-policy.md#scope-and-autonomy): full adoption already includes user-wide child installation. Present the exact target and mutation only when host adoption is outside the authorized scope.
+2. For default project-scoped children, read [project-adoption.md](project-adoption.md) and resolve the project root and intended repository skill scope before selecting the host path. Unknown scope leaves installation pending; do not silently choose a global path.
+3. Apply [adoption-policy.md](adoption-policy.md#scope-and-autonomy): full adoption already includes project-scoped child installation. User/global installation requires an explicit scope request. Present the exact target and mutation only when host adoption is outside the authorized scope.
 4. Install, update, enable, disable, or remove only after explicit user authorization or an explicit project policy.
 5. Record each available evidence facet rather than inferring unsupported host behavior.
 6. Mark the child `operational` only when all host-applicable facets are confirmed and an explicit activation smoke test passes.
@@ -85,14 +85,16 @@ User-wide/repository discovery and invocation policy rechecked 2026-09-30: [Open
 
 ## Canonical child location
 
-For the default reusable user-wide child, stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install the canonical validated child at `~/.agents/skills/<skill-name>/` for Codex. Match the child's exact reviewed target to each project record; user-wide visibility is not project adoption or runtime proof. Reuse that canonical child across projects, without per-project editable clones.
-
-For an explicitly project-local generated child, artifact staging and host installation are different locations with different meaning:
+For the default project-scoped generated child, resolve project and repository scope through [project-adoption.md](project-adoption.md#place-generated-project-skills). Artifact staging and host installation are different locations with different meaning:
 
 - staged artifact: `<project-root>/.agents/roblox/resources/artifacts/skills/<skill-name>/`;
 - adopted Codex repository skill: `<skill-scope-root>/.agents/skills/<skill-name>/`.
 
-Do not leave both as independently editable canonical children after adoption. Transition the validated artifact into the adopted location and record that host location. A later repair edits the canonical adopted child when that host copy is the managed project artifact; if a separate host outside the project contains another installed copy, follow the ordinary authorized host-update rule below.
+Maintain one canonical editable child per project/resolved skill scope. Do not leave both as independently editable canonical children after adoption. Transition the validated artifact into the adopted location and record that host location. Portable content may seed another project's own validated child without transferring trust, integration proof, or host state. Unknown project/repository scope does not authorize a global fallback.
+
+An explicit user/global-scope request may instead stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install at `~/.agents/skills/<skill-name>/` for Codex. Reuse one matching canonical child across projects in that explicitly selected scope, preserving exact-target version variants; user-wide visibility is not project adoption or runtime proof. Existing installations retain their scope unless migration is separately authorized.
+
+A later repair edits the canonical adopted child when that host copy is the managed project artifact; if a separate host outside the project contains another installed copy, follow the ordinary authorized host-update rule below.
 
 ## Post-adoption defects
 

@@ -10,6 +10,12 @@
 | My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
 | I need to find useful moments across long VODs and prepare concise Premiere markers with relevant alternate POVs | [**vod-discovery**](./skills/vod-discovery/) |
 
+## Bundled Roblox resource guidance
+
+[roblox-resource-acquisition](./skills/roblox-resource-acquisition/) includes [eight pinned child packages](./skills/roblox-resource-acquisition/references/bundled-skills.md) under its `children/` directory, including Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink, and Nevermore's Blend/Rx/Brio guidance.
+
+Generated children default to the active project's resolved `.agents/skills/<skill-name>/` location. Keep the distribution checkout outside host discovery; when installing the parent workflow, omit its `children/` directory and copy only selected child folders into their intended project scope. An explicitly requested global/user child remains supported. See the bundled catalog for pin matching, collision handling and validation boundaries. Bundled instruction files do not install Roblox packages or establish runtime or host verification.
+
 ## Quickstart: local Codex skills
 
 These folders contain agent instructions and optional supporting files, not a running service. Start with one skill. The installation locations and invocation below follow [OpenAI's skill documentation](https://developers.openai.com/codex/skills/); they are not a claim of tested compatibility with every agent host.

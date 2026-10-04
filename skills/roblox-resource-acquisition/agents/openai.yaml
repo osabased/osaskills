@@ -1,4 +1,4 @@
 interface:
   display_name: "Roblox Resource Acquisition"
   short_description: "Find reliable resources and adopt them with reusable skills"
-  default_prompt: "Use $roblox-resource-acquisition to proactively choose reliable, maintainable Roblox libraries/modules or development tools and complete acquire/adopt with verification and a reusable user-wide child skill; honor evaluate/compare-only requests, route refresh or repair/reconcile when needed, and keep adoption pending if a required check cannot run."
+  default_prompt: "Use $roblox-resource-acquisition to proactively choose reliable, maintainable Roblox libraries/modules or development tools and complete acquire/adopt with verification and a reusable child skill at the resolved project/repository scope; honor evaluate/compare-only and explicit user/global-scope requests, route refresh or repair/reconcile when needed, and keep adoption pending if scope or a required check cannot be established."

@@ -145,6 +145,10 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         if not isinstance(adoption, dict):
             result["reason"] = f"host_adoptions[{index}] is malformed"
             return result
+        location = adoption.get("location")
+        if not isinstance(location, str) or not location.strip():
+            result["reason"] = f"host_adoptions[{index}].location is missing or malformed"
+            return result
         host_status = adoption.get("status")
         if not isinstance(host_status, str) or host_status not in HOST_STATES:
             result["reason"] = f"host_adoptions[{index}].status is malformed"

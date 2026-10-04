@@ -129,7 +129,7 @@ Report only applicable fields:
 - trust basis for that exact identity/selector;
 - project-use role/authority and whether project onboarding changed, when applicable;
 - resource/runtime verification performed and result, or explicitly `unverified`/`unavailable`, naming the same exact identity/selector;
-- generated skill location/name at the default shared user scope, or `not applicable` only when an explicit narrower request excludes reusable child guidance;
+- generated skill location/name and resolved project/repository scope by default, or the explicitly requested user/global scope; use `not applicable` only when an explicit narrower request excludes reusable child guidance, and name unresolved project scope rather than implying a global fallback;
 - skill validation performed and result, or `not applicable` when no child was in scope;
 - reconciliation status and any blocked use/version;
 - artifact-only versus per-host adoption state, with the evidence supporting `operational` when claimed, or `not applicable` when no host adoption was requested;

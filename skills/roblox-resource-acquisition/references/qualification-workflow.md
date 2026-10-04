@@ -4,7 +4,7 @@ Use this reference for resource targeting, discovery, trust qualification, under
 
 ## 0. Decide whether acquisition is warranted
 
-For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. Default adoption includes a reusable user-wide child and host adoption; an explicit evaluation-only or narrower request still controls.
+For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. Default adoption includes a reusable project-scoped child and host adoption; explicit evaluation-only, narrower, or user/global-scope requests still control.
 
 Before selecting, derive a compact acquisition brief from the request, relevant project evidence, and prior answers:
 
