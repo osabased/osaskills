@@ -1,6 +1,7 @@
 """Build a Premiere discovery timeline from factual markers and local POV anchors.
 
-The ordered main sources stay complete. Alternate excerpts are disabled by
+The ordered main sources stay complete, cut and labeled at moment boundaries.
+Alternate excerpts are disabled by
 default, without retiming. The plan is authored from reviewed evidence, not
 inferred automatically from marker boundaries.
 """
@@ -12,6 +13,29 @@ import xml.etree.ElementTree as ET
 
 from premiere_xml import build_xml, element, frame_rate, organize_project, rate
 from vod import export_events, number, probe, read, text
+
+
+MOMENT_LABEL = 'Mango'
+FOOTAGE_LABEL = 'Iris'
+
+
+def main_segments(master):
+    """Partition a source once at every validated, frame-quantized marker edge.
+
+    Count active ranges so overlapping/nested moments retain every boundary
+    without duplicating footage. Unmarked intervals remain ordinary footage;
+    they are not asserted to be reviewed or uninteresting.
+    """
+    changes = {0: 0, int(master.findtext('duration')): 0}
+    for marker in master.findall('marker'):
+        start, end = int(marker.findtext('in')), int(marker.findtext('out'))
+        changes[start] = changes.get(start, 0) + 1
+        changes[end] = changes.get(end, 0) - 1
+    boundaries = sorted(changes)
+    active = 0
+    for start, end in zip(boundaries, boundaries[1:]):
+        active += changes[start]
+        yield start, end, MOMENT_LABEL if active else FOOTAGE_LABEL
 
 
 def build_review(markers, probes, plan):
@@ -48,10 +72,11 @@ def build_review(markers, probes, plan):
     element(ac, 'samplerate', 48000)
     entries = []
     for sid in mains:
-        entries.append(dict(source_id=sid, source_in=0,
-                            source_out=int(masters[sid].findtext('duration')),
-                            start=origins[sid], end=origins[sid]+int(masters[sid].findtext('duration')),
-                            layer=0, enabled=True, name=Path(sources[sid]['path']).name))
+        for start, end, label in main_segments(masters[sid]):
+            entries.append(dict(source_id=sid, source_in=start, source_out=end,
+                                start=origins[sid]+start, end=origins[sid]+end,
+                                layer=0, enabled=True, label=label,
+                                name=Path(sources[sid]['path']).name))
     alternative_sources = []
     occupied = {}
     for alt in plan.get('alternates', []):
@@ -87,6 +112,7 @@ def build_review(markers, probes, plan):
         entries.append(dict(source_id=sid, source_in=frame(start),
                             source_out=frame(end),
                             start=timeline_start, end=timeline_end, layer=layer, enabled=False,
+                            label=MOMENT_LABEL,
                             name=f"{text(alt['name'], 'alternate name')} | sync +/-{uncertainty:g}s"))
     vtracks, atracks, audio_indices = {}, {}, {}
     audio_track_count = 0
@@ -127,6 +153,8 @@ def build_review(markers, probes, plan):
                 item.find('rate/ntsc').text = str(ntsc).upper()
                 element(item, 'start', entry['start'])
                 element(item, 'end', entry['end'])
+                # Per-instance labels: never recolor the shared source master.
+                element(element(item, 'labels'), 'label2', entry['label'])
                 # The master owns the complete file declaration and source markers.
                 file = item.find('file')
                 fileid = file.get('id')

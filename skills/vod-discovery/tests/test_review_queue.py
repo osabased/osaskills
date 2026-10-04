@@ -74,7 +74,11 @@ class ReviewQueueTests(unittest.TestCase):
         seq=root.find('.//sequence')
         self.assertEqual(seq.findtext('duration'),'84000')
         main,alt=seq.findall('./media/video/track')
-        self.assertEqual(len(main.findall('clipitem')),2)
+        self.assertEqual(len(main.findall('clipitem')),4)
+        self.assertEqual([(p.findtext('start'),p.findtext('end'),p.findtext('labels/label2'))
+                          for p in main.findall('clipitem')],
+                         [('0','6480','Iris'),('6480','7140','Mango'),
+                          ('7140','36000','Iris'),('36000','84000','Iris')])
         self.assertEqual(alt.findtext('clipitem/enabled'),'FALSE')
         self.assertEqual(alt.findtext('clipitem/in'),'11400')
         audio=seq.findall('./media/audio/track')
@@ -98,6 +102,21 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(len(ET.fromstring(xml).findall('.//clip/marker')),4)
         self.assertEqual([c['id'] for c in self.cards],['fight','later','social'])
         self.assertEqual(self.cards[0]['views'][1]['preview_start_sec'],187)
+        main = ET.fromstring(xml).find('.//sequence/media/video/track')
+        self.assertEqual([(p.findtext('start'),p.findtext('end')) for p in main.findall('clipitem')
+                          if p.findtext('labels/label2')=='Mango'],[('6480','7140'),('15000','16200')])
+
+    def test_secondary_only_selection_retains_unmarked_main_without_invented_cuts(self):
+        self.state['decisions']['social']['decision']='keep'
+        before = copy.deepcopy((self.data,self.plan,self.state))
+        xml,ids=selected_xml(self.data,self.plan,self.probes,self.state['decisions'])
+        root=ET.fromstring(xml)
+        self.assertEqual(ids,['social'])
+        parts=root.findall('.//sequence/media/video/track/clipitem')
+        self.assertEqual([(p.findtext('start'),p.findtext('end'),p.findtext('labels/label2')) for p in parts],
+                         [('0','36000','Iris'),('36000','84000','Iris')])
+        self.assertEqual(root.findtext('.//clip/marker/name'),'Banter')
+        self.assertEqual((self.data,self.plan,self.state),before)
 
     def test_changed_media_or_snapshot_stops_export_without_touching_state(self):
         self.store.mutate(dict(revision=0,event_id='fight',decision='keep'))
@@ -173,7 +192,7 @@ class ReviewQueueTests(unittest.TestCase):
         updated=self.store.timeline_data()
         self.assertAlmostEqual(updated['parts'][1]['start'],600+1/60)
         xml,_=selected_xml(self.data,self.plan,self.probes,self.state['decisions'],'all')
-        second=ET.fromstring(xml).findall('.//sequence/media/video/track/clipitem')[1]
+        second=ET.fromstring(xml).find(".//sequence/media/video/track/clipitem[masterclipid='vod-master-2']")
         self.assertAlmostEqual(updated['parts'][1]['start'],int(second.findtext('start'))/60)
 
     def test_keyboard_profile_shares_across_instances_and_rejects_lost_updates(self):

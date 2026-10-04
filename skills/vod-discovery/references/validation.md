@@ -1,5 +1,11 @@
 # Local validation — 2026-10-03
 
+## Moment boundary cuts and clip labels (2026-10-04)
+
+The shared timeline exporter now splits complete main sources at every included moment boundary and writes per-instance Mango labels on moment sections and alternate excerpts, with Iris on surrounding footage. Video and linked audio use identical cuts and labels. Queue Keep/All exports use the same logic; source-marker-only delivery is unchanged. All 172 Python tests and three Node suites passed, as did the skill validator. Regression checks cover overlapping/nested/adjacent/duplicate intervals, edge and whole-source ranges, NTSC one-frame ranges, multiple main parts, stereo/mono/silent sources, link IDs/indices, filtered selections and secondary-only moments without invented main placement.
+
+An all-moments XML generated from the existing pilot queue contains 19 main sections (12 Mango), five disabled alternate excerpts and the original 679,866-frame full main chronology. Programmatic checks verified gap-free, duplicate-free main coverage and matching audio/video links, cuts, labels and enabled states. The real queue snapshots and decisions were byte-identical before and after export. This reuses the pilot's opening-five-minute discoveries and does not expand review coverage. Premiere import, actual displayed label swatches and any fatigue benefit still require editor verification. Restart an already running queue server to load the changed exporter.
+
 ## Vulkan transcription and semantic retrieval — pilot and integration checks
 
 The skill now has a selectable whisper.cpp backend for `prepare` and a separate `semantic.py` retrieval helper. Forty-two Python tests, the Node Premiere host mock, the skill validator and the isolated semantic dependency check pass. Added tests cover millisecond/source-clock conversion, stream identity, actual backend selection, per-stream context construction, long-text preservation, overlap grouping, stale evidence, failed rebuild preservation and changed embedding artifacts.

@@ -21,6 +21,7 @@ Help an editor discover what progresses a video without silently discarding unce
 ## Confirmed layout for the ValorantSMP project
 
 - Johan is the main POV. Keep his full VOD in source order on the base video track, with his audio on the lower audio tracks; preserve his chronology rather than assembling selected events consecutively.
+- Cut the main video and linked audio at each included moment's start and end. Label moment sections Mango and surrounding footage Iris so the editor can identify and select them directly in Premiere. Preserve every frame once, including unmarked footage; overlapping moments share footage while retaining all boundaries. These are clip labels, not marker colors or confidence ratings.
 - Place only relevant portions of other POVs on video tracks above Johan. Retain their corresponding audio on separate higher tracks for auditioning.
 - **Johan's picture and audio play by default.** Disable the alternate video and audio clips initially so the editor can enable them individually. This supersedes the briefly selected automatic-upper-picture option.
 - Align simultaneous coverage using locally verified anchors. Do not align merely by the starts of broad review ranges or apply one offset across the entire drifting recording. Clearly label timing uncertainty.
@@ -83,7 +84,7 @@ When potentially shared audio could narrow an uncertain correspondence, use the 
 
 ## Export and report
 
-When the editor wants saved Keep/Later/Skip decisions, use the optional [local review queue](references/review-queue.md). It reuses validated events and the authored timeline plan, makes short local previews, and resumes choices/notes/playback in a browser. Keep discovery and alignment status separate from the editor's decisions. Export chosen markers and alternate excerpts while preserving full main chronology; do not silently turn review choices into a final cut. Evaluate the added review step with a small trial rather than promising reduced fatigue. Ordinary marker delivery does not require the dashboard.
+When the editor wants saved Keep/Later/Skip decisions, use the optional [local review queue](references/review-queue.md). It reuses validated events and the authored timeline plan, makes short local previews, and resumes choices/notes/playback in a browser. Keep discovery and alignment status separate from the editor's decisions. Export chosen moments as boundary-cut, colored main sections plus source markers and alternate excerpts while preserving full main chronology; do not silently turn review choices into a final cut. Evaluate the added review step with a small trial rather than promising reduced fatigue. Ordinary marker delivery does not require the dashboard.
 
 The queue can add fifteen seconds of preview context on demand while retaining source-clock position. When discoveries change, use its fresh-folder `update` workflow: retain choices for stable, unchanged material, preserve prior notes/history, and require reconsideration for changed or ambiguous material. Added context never expands exported moments or verified POV anchors; see the queue reference for matching and compatibility rules.
 

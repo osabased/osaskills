@@ -2,6 +2,16 @@
 
 Use the same factual events/source markers plus a separate, evidence-authored placement plan. Full main sources remain chronological; alternates are trimmed suggestions on upper video tracks, with one corresponding audio track per actual stream. Both alternate video and audio clips start disabled.
 
+## Moment cuts and clip colors
+
+Every included main-source moment adds an edit at its start and end in both video and linked audio. Its timeline sections use the **Mango** clip label; surrounding footage uses **Iris**. Alternate excerpts also use Mango and remain disabled. For a moment at 1:48–1:59, the main becomes `[0:00–1:48 Iris] [1:48–1:59 Mango] [1:59–end Iris]`. Nothing is removed or moved. Preview padding and added browser context do not change these cuts.
+
+Cuts use the same validated, frame-quantized source marker boundaries. Overlapping and nested moments retain every distinct boundary, without overlapping or duplicating main footage. Adjacent moments keep their shared edit even though both are Mango. Whole-source moments need no empty edge clips; unmarked main parts remain complete Iris clips. Source markers retain individual names and explanations for overlapping moments. Independent secondary-only moments remain source markers unless a reviewed local anchor supports placement.
+
+Both the direct timeline command and queue exports use this behavior. **Export kept** includes only Keep moments' cuts/colors, markers and alternate excerpts; **Export all** includes every discovered moment. Skipped, deferred and unreviewed main footage still remains in place. The source-marker-only exporter does not create or cut a sequence.
+
+Labels are written on each timeline video/audio clip instance as `labels/label2`, not on the shared source master. Color is a visual locator, not confidence or proof that surrounding footage is uninteresting. Exact swatches depend on Premiere's label preferences; confirm the contrast after import. The format supports [clip labels](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/FinalCutPro_XML/Elements/Elements.html), and Premiere permits [custom label colors and names](https://helpx.adobe.com/premiere/desktop/get-started/preferences-and-settings/labels-preferences.html). Do not claim host color validation from XML parsing alone.
+
 The XML places source items in `01 Media/<POV>` and the timeline in `02 Sequences`. All main parts share their POV bin through the source `pov` field. Bins change project organization only: the sequence keeps references to the same source masters, including when input order interleaves multiple POVs. After import, show the Project panel with Shift+1, expand `02 Sequences`, and open the review timeline.
 
 ```powershell
@@ -45,7 +55,7 @@ Do not generate anchors from broad marker range starts. Use matching evidence, r
 
 ## Verify the saved result
 
-Check actual source paths, marker names/comments/times, full main-part order and duration, every alternate source In/Out and timeline position, and that only genuine audio streams have timeline clips. Verify both stereo channels in each group. Confirm alternate video and audio are disabled and main clips enabled. Check an overlapping moment in Program Monitor; audition an alternate and return it to disabled before saving. Saved-project XML may be inspected read-only to corroborate the host state; do not author or patch `.prproj` internals.
+Check actual source paths, marker names/comments/times, full main-part order and duration, every alternate source In/Out and timeline position, and that only genuine audio streams have timeline clips. Verify cuts and contrasting labels around included moments, with matching video/audio boundaries and no gaps, duplicate frames or extra audio tracks. Verify both stereo channels in each group. Confirm alternate video and audio are disabled and main clips enabled. Check an overlapping moment in Program Monitor; audition an alternate and return it to disabled before saving. Saved-project XML may be inspected read-only to corroborate the host state; do not author or patch `.prproj` internals.
 
 Source marker names use the same short-label rules as the marker-only XML; see [events.md](events.md). Judge their first 10–15 characters at timeline scale. Detailed descriptions, POV links, checks and stable references stay in marker comments. Alternate clip names describe excerpts and are separate from source marker names.
 
