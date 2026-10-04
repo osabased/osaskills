@@ -1,5 +1,7 @@
 from pathlib import Path
 import hashlib
+import io
+import json
 import sys
 import tempfile
 import unittest
@@ -163,6 +165,87 @@ class SemanticSnapshots(unittest.TestCase):
         self.assertFalse(rebuilt['reused'])
         self.assertEqual(rebuilt['embeddings_reused'], 1)
         self.assertEqual(read(self.out / 'semantic.json')['embedding_recipe'], semantic.CACHE_RECIPE)
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_warm_search_initializes_once_and_matches_fresh_queries(self, loader, identity):
+        loader.return_value = (FakeModel(), len)
+        semantic.build(self.index, self.out, 'unused')
+        loader.reset_mock()
+        session = semantic.SearchSession(self.out, 'unused')
+        session.start()
+        first = session.search('peace')
+        session.search('a different query')
+        self.assertEqual(session.search('peace'), first)
+        self.assertEqual(loader.call_count, 1)
+        self.assertEqual(semantic.search(self.out, 'unused', 'peace'), first)
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_warm_search_rejects_raw_and_vector_changes_after_success(self, loader, identity):
+        model = FakeModel(); loader.return_value = (model, len)
+        semantic.build(self.index, self.out, 'unused')
+        session = semantic.SearchSession(self.out, 'unused')
+        session.search('peace')
+        raw = self.prepared / 'packet-0000/attempt-a/transcript.json'
+        original = raw.read_bytes()
+        write(raw, {'segments': ['changed']})
+        with self.assertRaisesRegex(ValueError, 'stale'): session.search('peace')
+        raw.write_bytes(original)
+        manifest = read(self.out / 'semantic.json')
+        (self.out / manifest['build'] / 'vectors.npy').write_bytes(b'damaged')
+        with self.assertRaisesRegex(ValueError, 'artifacts changed'): session.search('peace')
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_warm_search_refreshes_published_evidence_references(self, loader, identity):
+        loader.return_value = (FakeModel(), len)
+        semantic.build(self.index, self.out, 'unused')
+        session = semantic.SearchSession(self.out, 'unused')
+        session.search('peace')
+        changed = row(70, 80, 'Let us make peace.')
+        changed['occurrences'][0]['transcript_file'] = 'new-source.json'
+        write(self.aggregate, {'segments': [changed]})
+        semantic.build(self.index, self.out, 'unused')
+        before = loader.call_count
+        result = session.search('peace')['hits'][0]
+        self.assertEqual(loader.call_count, before)
+        self.assertEqual((result['start_sec'], result['end_sec']), (70, 80))
+        self.assertEqual(result['segments'][0]['occurrences'][0]['transcript_file'], 'new-source.json')
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_warm_search_cannot_mix_a_new_index_model_with_resident_old_model(self, loader, identity):
+        loader.return_value = (FakeModel(), len)
+        semantic.build(self.index, self.out, 'unused')
+        session = semantic.SearchSession(self.out, 'unused'); session.search('peace')
+        identity.return_value = {'test': 'replacement-model'}
+        semantic.build(self.index, self.out, 'unused')
+        with self.assertRaisesRegex(ValueError, 'restart the worker'): session.search('peace')
+
+    @patch.object(semantic, 'model_identity', return_value={'test': 'model'})
+    @patch.object(semantic, 'load_model')
+    def test_worker_errors_do_not_replay_previous_results_or_stop_valid_requests(self, loader, identity):
+        loader.return_value = (FakeModel(), len)
+        semantic.build(self.index, self.out, 'unused')
+        requests = io.StringIO('\n'.join(['not json', json.dumps({'id':'bad', 'query':'peace','limit':False}),
+            json.dumps({'id':'empty','query':' '}),json.dumps({'id':'long','query':'a'*385}),
+            json.dumps({'id':'ok','query':'peace','limit':1})])+'\n')
+        target = io.StringIO()
+        semantic.worker(semantic.SearchSession(self.out,'unused'), requests, target)
+        replies = [json.loads(line) for line in target.getvalue().splitlines()]
+        self.assertTrue(replies[0]['ready'])
+        self.assertTrue(all('error' in r and 'result' not in r for r in replies[1:5]))
+        self.assertEqual(replies[5]['id'], 'ok')
+        self.assertEqual(len(replies[5]['result']['hits']), 1)
+
+    def test_worker_stops_on_oversized_input(self):
+        class Session:
+            def start(self): pass
+            def search(self, *a, **k): raise AssertionError('Oversized request must not infer')
+        target = io.StringIO()
+        semantic.worker(Session(), io.StringIO('x'*17000+'\n'), target)
+        self.assertIn('worker stopped', target.getvalue())
 
 
 class SemanticEmbeddingCache(unittest.TestCase):

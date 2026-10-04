@@ -12,6 +12,7 @@ import subprocess
 import sys
 import time
 import uuid
+from contextlib import ExitStack
 import wave
 
 
@@ -114,11 +115,11 @@ def prepare(args):
     from stage_cache import file_lock
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
-    with file_lock(out / '.prepare.lock'):
-        return prepare_locked(args)
+    with file_lock(out / '.prepare.lock'), ExitStack() as cleanup:
+        return prepare_locked(args, cleanup)
 
 
-def prepare_locked(args):
+def prepare_locked(args, cleanup):
     from evidence import packet_evidence
     from stage_cache import StageCache, file_hash, safe_artifact
     started = time.perf_counter()
@@ -128,12 +129,19 @@ def prepare_locked(args):
     metadata, duration = probe(source)
     settings = {k: getattr(args, k) for k in ("window", "overlap", "interval", "width", "model", "language", "no_transcribe")}
     cpp_config = None
+    cpp_worker = None
+    if getattr(args, 'whisper_server', None) and (getattr(args, 'asr_backend', 'faster-whisper') != 'whisper-cpp' or args.no_transcribe):
+        raise ValueError('--whisper-server requires whisper-cpp transcription')
     if getattr(args, 'asr_backend', 'faster-whisper') == 'whisper-cpp' and not args.no_transcribe:
         from whisper_cpp import runtime_identity
         if not args.whisper_cli or not args.whisper_model:
             raise ValueError('whisper-cpp requires --whisper-cli and --whisper-model')
         cpp_config = runtime_identity(args.whisper_cli, args.whisper_model, args.whisper_device,
                                       args.whisper_threads, args.whisper_gpu)
+        if getattr(args, 'whisper_server', None):
+            from whisper_worker import WhisperWorker, worker_identity
+            cpp_config = worker_identity(cpp_config, args.whisper_server)
+            cpp_worker = cleanup.enter_context(WhisperWorker(cpp_config, out / '.workers'))
         settings['asr'] = cpp_config
         settings['model'] = Path(args.whisper_model).name
     identity = media_identity(source)
@@ -250,7 +258,8 @@ def prepare_locked(args):
                         if cpp_config is not None:
                             from whisper_cpp import transcribe
                             prefix = data / f'whisper-stream-{audio_index}'
-                            stream_segments = transcribe(audio, prefix, start, audio_index, cpp_config, args.language)
+                            stream_segments = (cpp_worker.transcribe(audio, prefix, start, audio_index, args.language)
+                                               if cpp_worker else transcribe(audio, prefix, start, audio_index, cpp_config, args.language))
                             run_path = Path(str(prefix) + '-run.json')
                             if run_path.exists():
                                 run = read(run_path)
@@ -458,6 +467,7 @@ def main():
             p.add_argument("--no-transcribe", action="store_true"); p.add_argument("--limit-packets", type=int, default=0)
             p.add_argument('--asr-backend', choices=['faster-whisper', 'whisper-cpp'], default='faster-whisper')
             p.add_argument('--whisper-cli'); p.add_argument('--whisper-model')
+            p.add_argument('--whisper-server', help='Optional matching whisper-server executable; keep one model loaded for this preparation')
             p.add_argument('--whisper-device', choices=['vulkan', 'cpu'], default='vulkan')
             p.add_argument('--whisper-threads', type=int, default=4); p.add_argument('--whisper-gpu', type=int, default=0)
             p.add_argument('--cache-dir', help='Shared stage cache; defaults to <out>/.cache. Use a fresh --out with the same cache when changing models/settings.')

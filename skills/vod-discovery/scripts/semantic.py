@@ -4,6 +4,8 @@ import hashlib
 import importlib.metadata
 import json
 import math
+import sys
+from copy import deepcopy
 from pathlib import Path
 import urllib.request
 import uuid
@@ -265,9 +267,8 @@ def rank(docs, scores, limit):
                               'more_available': len(selected) > limit, 'indexed_passages': len(docs)}
 
 
-def search(out, model_folder, query, limit=10):
+def search_snapshot(out, model_folder):
     import numpy as np
-    query = text(query, 'search query').strip()
     out = Path(out).resolve(strict=True)
     manifest = read(out / 'semantic.json')
     if manifest.get('schema') != 'vod-semantic/v1': raise ValueError('Unsupported semantic index')
@@ -286,14 +287,69 @@ def search(out, model_folder, query, limit=10):
     docs = read(folder / 'passages.json')
     vectors = np.load(folder / 'vectors.npy', allow_pickle=False)
     if vectors.shape != (len(docs), 384) or not np.isfinite(vectors).all(): raise ValueError('Invalid embedding matrix')
-    model, count = load_model(model_folder)
-    if count(query) > 384: raise ValueError('Shorten the query to at most 384 model tokens')
-    vector = np.asarray(next(model.query_embed(query)), dtype=np.float32)
-    norm = np.linalg.norm(vector)
-    if vector.shape != (384,) or not np.isfinite(vector).all() or norm <= 0: raise ValueError('Invalid query embedding')
-    hits, summary = rank(docs, vectors @ (vector / norm), limit)
-    return {'query': query, 'hits': hits, 'limit': limit, **summary, 'coverage': manifest['coverage'],
-            'excluded_invalid_segments': manifest['excluded_invalid_segments'], 'limitations': LIMITS}
+    return manifest, docs, vectors
+
+
+class SearchSession:
+    """Keep only the model warm; validate evidence and artifacts on every query."""
+    def __init__(self, out, model_folder):
+        self.out, self.model_folder = out, model_folder
+        self.model = self.count = self.identity = None
+
+    def start(self):
+        manifest, _, _ = search_snapshot(self.out, self.model_folder)
+        self._load(manifest['model'])
+
+    def _load(self, identity):
+        if self.model is None:
+            self.model, self.count = load_model(self.model_folder)
+            self.identity = deepcopy(identity)
+        elif self.identity != identity:
+            raise ValueError('Model changed while worker was running; restart the worker')
+
+    def search(self, query, limit=10):
+        import numpy as np
+        query = text(query, 'search query').strip()
+        if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 200:
+            raise ValueError('Search limit must be between 1 and 200')
+        manifest, docs, vectors = search_snapshot(self.out, self.model_folder)
+        self._load(manifest['model'])
+        if self.count(query) > 384: raise ValueError('Shorten the query to at most 384 model tokens')
+        vector = np.asarray(next(self.model.query_embed(query)), dtype=np.float32)
+        norm = np.linalg.norm(vector)
+        if vector.shape != (384,) or not np.isfinite(vector).all() or norm <= 0: raise ValueError('Invalid query embedding')
+        hits, summary = rank(docs, vectors @ (vector / norm), limit)
+        return {'query': query, 'hits': hits, 'limit': limit, **summary, 'coverage': manifest['coverage'],
+                'excluded_invalid_segments': manifest['excluded_invalid_segments'], 'limitations': LIMITS}
+
+
+def search(out, model_folder, query, limit=10):
+    return SearchSession(out, model_folder).search(query, limit)
+
+
+def worker(session, source, target):
+    session.start()
+    def emit(value):
+        target.write(json.dumps(value, ensure_ascii=True, allow_nan=False) + '\n'); target.flush()
+    emit({'ready': True, 'protocol': 'vod-semantic-worker/v1'})
+    while True:
+        line = source.readline(16385)
+        if not line:
+            return
+        if len(line) > 16384:
+            emit({'error': 'Request exceeds 16384 characters; worker stopped'})
+            return
+        request_id = None
+        try:
+            request = json.loads(line)
+            if not isinstance(request, dict): raise ValueError('Expected a JSON object')
+            request_id = request.get('id')
+            if request_id is not None and not isinstance(request_id, (str, int)):
+                raise ValueError('Request id must be a string or integer')
+            result = session.search(request.get('query'), request.get('limit', 10))
+            emit({'id': request_id, 'result': result})
+        except (ValueError, KeyError, TypeError, OSError, RuntimeError) as exc:
+            emit({'id': request_id, 'error': str(exc)})
 
 
 def main():
@@ -304,7 +360,26 @@ def main():
     p.add_argument('--cache-dir', help='Reusable passage embeddings (default: OUT/embedding-cache)')
     p = commands.add_parser('search'); p.add_argument('--index', required=True); p.add_argument('--model-dir', required=True)
     p.add_argument('--query', required=True); p.add_argument('--limit', type=int, default=10); p.add_argument('--out')
+    p = commands.add_parser('worker', help='Persistent JSON-lines search over stdin/stdout; EOF stops it')
+    p.add_argument('--index', required=True); p.add_argument('--model-dir', required=True)
+    p = commands.add_parser('search-many', help='Search multiple queries with one model initialization')
+    p.add_argument('--index', required=True); p.add_argument('--model-dir', required=True)
+    p.add_argument('--queries', required=True, help='JSON array of query strings')
+    p.add_argument('--limit', type=int, default=10); p.add_argument('--out', required=True)
     args = parser.parse_args()
+    if args.command == 'worker':
+        worker(SearchSession(args.index, args.model_dir), sys.stdin, sys.stdout)
+        return
+    if args.command == 'search-many':
+        queries = read(args.queries)
+        if not isinstance(queries, list) or not queries or any(not isinstance(q, str) or not q.strip() for q in queries):
+            raise ValueError('Queries must be a nonempty JSON array of nonempty strings')
+        if Path(args.out).exists(): raise ValueError('Use a fresh output file')
+        session = SearchSession(args.index, args.model_dir)
+        result = {'results': [session.search(query, args.limit) for query in queries]}
+        write(args.out, result)
+        print(json.dumps({'queries': len(queries), 'out': str(Path(args.out).resolve())}))
+        return
     if args.command == 'download-model': result = download_model(args.out)
     elif args.command == 'index': result = build(args.literal_index, args.out, args.model_dir, args.cache_dir)
     else:
