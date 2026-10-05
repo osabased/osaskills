@@ -21,6 +21,12 @@ crosses library boundaries. Default adoption of this bundled child is project-lo
 | Observable pipelines, state/event flow, or signal/promise adapters | [Rx](references/rx.md) |
 | Value lifetimes, lifetime-owned work, or stale-value handling | [Brio](references/brio.md) |
 
+## On-demand maintenance
+
+- Promotion guard: Check the sibling `.skill-maintenance/roblox-nevermore-ui.json` before ordinary use; presence stops dependent use until recovery/completion.
+- First-use freshness: Before each needed Blend, Rx, Brio or loader package's first use in a task, read and apply the installed `roblox-resource-acquisition` parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical stable releases/maintained source and relevant documentation with the actual installed/project-pinned target, check this guidance's compatibility, reuse unchanged checks within the task, and disclose unavailable lookups. Preserve the selected pin and valid exact-target proof; the comparison alone does not authorize upgrades or full lifecycle reconciliation.
+- Further research: Current-source claims, source drift or reusable defects follow the parent's on-demand maintenance policy. Preserve project ownership and return dependency/architecture changes to their authority. No scheduled upkeep.
+
 ## Adopted target
 
 | npm package | Version | Role |

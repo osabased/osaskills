@@ -1,6 +1,6 @@
 # Default tooling: setup and verification
 
-Use the [selected defaults](../../SKILL.md#default-tooling) for their stated roles. Compatible established equivalents take precedence. This list selects preferences; a project setup still follows the [reviewed setup workflow](onboarding.md). Adding this list does not install tools or authorize a project migration. Choose compatible stable targets when adopting tools and identify any preview target explicitly.
+Use the [selected defaults](../../SKILL.md#default-tooling) for their stated roles. Compatible established equivalents take precedence. Before a needed tool's first use in a task, follow [evidence and freshness](../core/evidence-and-freshness.md) for the canonical release/documentation comparison with its installed or project-pinned target. This list selects preferences; a project setup still follows the [reviewed setup workflow](onboarding.md). Adding this list does not install tools or authorize a project migration. Choose compatible stable targets when adopting tools and identify any preview target explicitly.
 
 ## Tool versions and execution environments
 

@@ -24,8 +24,9 @@ Resolve the active project first. This example models a child installed at proje
 ## On-demand maintenance
 
 - Promotion guard: Check the sibling `.skill-maintenance/<skill-directory-name>.json`; ordinary use waits while it exists.
+- First-use freshness: Before this resource's first use in a task, apply the installed parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical releases/maintained source and relevant documentation with the project's selected commit, reuse unchanged checks within the task, and disclose unavailable lookups.
 - Freshness triggers: For a relevant current claim, adoption/upgrade, source drift, recurring workaround or reusable defect, invoke `roblox-resource-acquisition` for the affected target and read its `references/on-demand-maintenance.md`.
-- Target and economy: Preserve the project's selected commit and owner authority. Healthy immutable-target use needs no unrelated latest-release survey. Changed pins or practices return to the owner.
+- Target and economy: Preserve the project's selected commit and owner authority after the freshness comparison. A newer source state alone does not require full requalification or invalidate exact-target proof. Changed pins or practices return to the owner.
 
 ## Repair interrupt
 

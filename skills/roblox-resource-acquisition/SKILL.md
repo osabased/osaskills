@@ -15,7 +15,7 @@ Choose a community resource only when task fit and qualification justify it. A p
 
 ## On-demand upkeep
 
-At activated use, check for the sibling `.skill-maintenance/roblox-resource-acquisition.json` promotion guard; ordinary dependent use waits while it exists. For a task-relevant current fact, acquisition/upgrade or generation/refresh, source drift, reusable defect, or consequential practice decision, read [on-demand maintenance](references/on-demand-maintenance.md). It holds the user's narrow standing factual-repair grant, source-observation and guarded-promotion rules. Keep a healthy immutable child's conditional fast path; use-time upkeep adds no schedule or unrelated source survey.
+At activated use, check for the sibling `.skill-maintenance/roblox-resource-acquisition.json` promotion guard; ordinary dependent use waits while it exists. Before each needed library or development tool's first use in a task, including already adopted targets, apply the [first-use freshness check](references/on-demand-maintenance.md#first-use-freshness-check). The shared policy also governs task-relevant current facts, acquisition/upgrade or generation/refresh, source drift, reusable defects, and consequential practice decisions; it holds the user's narrow standing factual-repair grant, source-observation and guarded-promotion rules. Preserve project pins and a healthy immutable child's conditional lifecycle path. Reuse unchanged checks within the task; use-time upkeep adds no schedule or unrelated source survey.
 
 ## Repair interrupt
 

@@ -35,8 +35,9 @@ Story ModuleScripts end in `.story` and must be present in the development DataM
 ## On-demand maintenance
 
 - Promotion guard: At activated use, check `<skill-directory-parent>/.skill-maintenance/<skill-directory-name>.json`; ordinary dependent use waits while it exists. Controlled candidate validation is separate.
+- First-use freshness: Before this resource's first use in a task, read and apply the installed `roblox-resource-acquisition` parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical stable releases/maintained source and relevant documentation with the actual installed/project-pinned target, check this guidance's compatibility, reuse unchanged checks within the task, and disclose unavailable lookups. Preserve the selected pin and valid exact-target proof; the comparison alone does not authorize upgrades or full lifecycle reconciliation.
 - Freshness triggers: Relevant current claims, acquisition/upgrade, source drift, consequential practices or reusable defects invoke `roblox-resource-acquisition` once for the affected scope and its `references/on-demand-maintenance.md`. Carry the selected identity, claim and reproduction; do not recursively reopen an active handoff.
-- Target and economy: Resolve the project's exact target and local compatibility guidance first. Healthy immutable-target use does not need unrelated latest-release research. The parent may apply tested factual repairs within its approved authority; dependency versions, architecture and changed practices return to their owner. No scheduled upkeep.
+- Target and economy: Resolve the project's exact target and local compatibility guidance first. Healthy immutable-target lifecycle checks remain narrow after the first-use comparison. The parent may apply tested factual repairs within its approved authority; dependency versions, architecture and changed practices return to their owner. No scheduled upkeep.
 
 ## Repair interrupt
 

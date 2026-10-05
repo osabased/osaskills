@@ -28,8 +28,9 @@ In the commands below, PowerShell variables `$Parent`, `$Child`, `$Project` and 
 ## On-demand maintenance
 
 - Promotion guard: Check the sibling `.skill-maintenance/<skill-directory-name>.json`; ordinary use waits while it exists.
+- First-use freshness: Before this tool's first use in a task, apply the installed parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical stable releases and relevant documentation with the installed/project-pinned version, reuse unchanged checks within the task, and disclose unavailable lookups.
 - Freshness triggers: For relevant current tool claims, adoption/upgrade, source drift, recurring workaround or reusable defects, invoke `roblox-resource-acquisition` for the affected target and read its `references/on-demand-maintenance.md`.
-- Target and economy: Preserve the project owner's chosen version. Healthy immutable-target use needs no unrelated latest-release survey; changed versions/practices return to the owner.
+- Target and economy: Preserve the project owner's chosen version after the freshness comparison. A newer release alone does not require full requalification or invalidate exact-target proof; changed versions/practices return to the owner.
 
 ## Repair interrupt
 
