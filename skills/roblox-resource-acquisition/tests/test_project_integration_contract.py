@@ -70,39 +70,23 @@ def test_agent_facing_resource_docs_have_no_stale_v2_record_contract():
         assert "<project-root>/.roblox-resources/records/<slug>.yaml" not in text, path
 
 
-def test_generated_child_contract_uses_current_record_schema():
-    contract = (RESOURCE_ROOT / "references" / "resource-skill-contract.md").read_text(
-        encoding="utf-8"
-    )
-    template = (RESOURCE_ROOT / "templates" / "resource-skill-template.md").read_text(
-        encoding="utf-8"
-    )
-    operational = (RESOURCE_ROOT / "references" / "operational-lifecycle.md").read_text(
-        encoding="utf-8"
-    )
-    for path, text in (
-        ("resource-skill-contract.md", contract),
-        ("resource-skill-template.md", template),
-        ("operational-lifecycle.md", operational),
-    ):
-        assert "schema-version 3" in text, path
+def test_generated_child_contract_keeps_live_state_in_record():
+    contract = (RESOURCE_ROOT / 'references/resource-skill-contract.md').read_text(encoding='utf-8')
+    assert 'resource.yaml' in contract
+    assert 'schema-v3' in contract
+    assert 'current verification' in contract
+
 
 
 def test_generated_child_contract_requires_parent_state_discovery_route():
-    contract = (RESOURCE_ROOT / "references" / "resource-skill-contract.md").read_text(
-        encoding="utf-8"
-    )
-    template = (RESOURCE_ROOT / "templates" / "resource-skill-template.md").read_text(
-        encoding="utf-8"
-    )
-    generation = (RESOURCE_ROOT / "references" / "generation-validation.md").read_text(
-        encoding="utf-8"
-    )
-    assert "deterministic discovery route" in contract
-    assert "identity-only instruction" in contract
-    assert ".agents/roblox/resources/records/RESOURCE-SLUG.yaml" in template
-    assert "~/.roblox-resources/records/RESOURCE-SLUG.yaml" in template
-    assert "Resolve the child's `Parent-state check`" in generation
+    import yaml
+    spec = yaml.safe_load((RESOURCE_ROOT / 'templates/resource-skill-template.yaml').read_text(encoding='utf-8'))
+    assert spec['scope'] == 'project'
+    assert spec['reconciliation']['record'] == '.agents/roblox/resources/records/RESOURCE-SLUG.yaml'
+    assert spec['reconciliation']['learnings'] == '.agents/roblox/resources/learnings/'
+    assert 'no_project_record' not in spec['reconciliation']
+    assert spec['guidance']['shared_usage'] == 'references/child-usage.md'
+
 
 
 def test_project_onboarding_resolves_codex_instruction_precedence():

@@ -47,6 +47,7 @@ def test_skill_directory_must_match_frontmatter_name(skill_mod, tmp_path):
     child = tmp_path / "wrong-directory"
     child.mkdir()
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter name must match the generated skill directory name" in errors
 
@@ -59,6 +60,7 @@ def test_skill_description_has_agent_skills_length_limit(skill_mod, tmp_path):
     (child / "SKILL.md").write_text(
         fixtures.valid_skill_text(description=description), encoding="utf-8"
     )
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter description must be at most 1024 characters" in errors
 
@@ -71,6 +73,7 @@ def test_skill_name_has_agent_skills_length_limit(skill_mod, tmp_path):
     child = tmp_path / name
     child.mkdir()
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(name=name), encoding="utf-8")
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter name must be at most 64 characters" in errors
 
@@ -86,6 +89,7 @@ def test_optional_frontmatter_types_and_compatibility_limit(skill_mod, tmp_path)
         "allowed-tools: 456\n",
     )
     (child / "SKILL.md").write_text(text, encoding="utf-8")
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter compatibility must be 1 to 500 characters" in errors
     assert "frontmatter license must be a string" in errors
@@ -103,6 +107,7 @@ def test_valid_metadata_mapping_is_supported(skill_mod, tmp_path):
         "  lifecycle: generated\n",
     )
     (child / "SKILL.md").write_text(text, encoding="utf-8")
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert errors == []
 
@@ -117,6 +122,7 @@ def test_metadata_requires_string_keys_and_values(skill_mod, tmp_path):
         "  resource-slug: 123\n",
     )
     (child / "SKILL.md").write_text(text, encoding="utf-8")
+    fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter metadata keys and values must be strings" in errors
 
@@ -125,6 +131,7 @@ def _write_widget_child(tmp_path):
     child = tmp_path / "roblox-widget-resource"
     child.mkdir()
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    fixtures.write_contract(child)
     return child
 
 
@@ -146,11 +153,10 @@ def test_bundle_rejects_cross_artifact_identity_and_state_mismatch(bundle_mod, t
     record["verification"]["validated_at"] = "2026-08-16"
     record["resource_proof"]["unavailable_claims"] = ["Studio unavailable"]
     errors, _notes = bundle_mod.validate_bundle(Path("record.yaml"), record, child)
-    assert any("Resource slug" in error for error in errors)
+    assert any("resource.yaml slug" in error for error in errors)
     assert any("canonical_url" in error for error in errors)
-    assert any("Package identity" in error for error in errors)
+    assert any("resource.yaml package identity" in error for error in errors)
     assert any("reviewed source state" in error for error in errors)
-    assert any("verification status" in error for error in errors)
 
 
 def test_bundle_requires_recorded_structural_pass(bundle_mod, tmp_path):
@@ -271,6 +277,7 @@ def test_non_generated_host_skill_can_participate_as_routing_competitor(catalog_
         ),
         encoding="utf-8",
     )
+    fixtures.write_contract(generated)
     competitor = tmp_path / "manual-widget-helper"
     competitor.mkdir()
     (competitor / "SKILL.md").write_text(

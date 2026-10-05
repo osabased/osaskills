@@ -9,6 +9,8 @@ During Roblox implementation, proactively consider libraries/modules and develop
 
 For packaged Roblox guidance available with this parent, read the [bundled skill catalog](references/bundled-skills.md). Install selected skills by copying and validating them at the intended scope; packaged availability does not establish discovery, resource trust, library adoption, or runtime proof.
 
+Generated children use [resource-child contract 1](references/resource-skill-contract.md): a compact entrypoint, static resource.yaml and explicitly routed references. Shared ordinary-use behavior lives in [child usage](references/child-usage.md); project records own current state and proof. Unsupported older child formats require regeneration.
+
 ## Core rule
 
 Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification. For open-ended selection, establish the actual use before choosing; use the [qualification workflow](references/qualification-workflow.md#0-decide-whether-acquisition-is-warranted) for decision-sensitive intake and supported recommendations, including native/custom acquisition choices when restoration or updating matters. Narrow download-only scope does not remove that decision work. When another durable project contract supplies the resource identity, pin, role, or replacement policy, preserve that target and authority rather than reopening selection.

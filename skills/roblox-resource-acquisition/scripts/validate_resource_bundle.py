@@ -16,41 +16,23 @@ if str(Path(__file__).resolve().parent) not in sys.path:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from validate_resource_record import load_record, nonempty_string, validate_record
-from validate_skill import (
-    NO_PACKAGE_IDENTITY_RE,
-    extract_labeled_value,
-    parse_frontmatter,
-    parse_http_url,
-    parse_sections,
-    url_identity,
-    validate_skill,
-)
+from validate_skill import parse_frontmatter, validate_skill
+from _resource_contract import child_identity, load_contract, url_identity
 
 
-def _child_provenance(root: Path) -> tuple[dict[str, Any], dict[str, str | None]]:
-    text = (root / "SKILL.md").read_text(encoding="utf-8-sig")
-    metadata, body = parse_frontmatter(text)
-    sections, _counts = parse_sections(body)
-    provenance = sections.get("Provenance", "")
-    version = extract_labeled_value(provenance, "Source version/release/commit")
-    if version is None:
-        version = extract_labeled_value(provenance, "Validated version/release/commit")
-    values = {
-        "slug": extract_labeled_value(provenance, "Resource slug"),
-        "package_id": extract_labeled_value(provenance, "Package identity"),
-        "devforum_url": extract_labeled_value(provenance, "DevForum"),
-        "canonical_url": extract_labeled_value(provenance, "Canonical source/docs"),
-        "version": version,
-        "verification": extract_labeled_value(provenance, "Resource verification"),
-    }
-    return metadata, values
+def _child_provenance(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    metadata, _body = parse_frontmatter((root / "SKILL.md").read_text(encoding="utf-8-sig"))
+    return metadata, child_identity(root)
 
 
 def _concrete_url(value: str | None) -> str | None:
     if not value:
         return None
-    parsed = parse_http_url(value.strip())
-    return parsed[0] if parsed else None
+    try:
+        url_identity(value)
+    except ValueError:
+        return None
+    return value
 
 
 def _same_url(left: str, right: str) -> bool:
@@ -100,7 +82,7 @@ def validate_bundle(
     record_slug = record.get("slug")
     child_slug = child.get("slug")
     if not nonempty_string(record_slug) or not child_slug or record_slug.strip() != child_slug.strip():
-        errors.append("resource record slug must exactly match child Provenance Resource slug")
+        errors.append("resource record slug must exactly match child resource.yaml slug")
 
     child_canonical = _concrete_url(child.get("canonical_url"))
     child_devforum = _concrete_url(child.get("devforum_url"))
@@ -108,7 +90,7 @@ def validate_bundle(
     record_canonical = record.get("canonical_url")
     if effective_child_canonical:
         if not nonempty_string(record_canonical):
-            errors.append("resource record canonical_url must carry the canonical URL used by the child provenance")
+            errors.append("resource record canonical_url must carry the canonical URL used by the child resource contract")
         elif not _same_url(record_canonical.strip(), effective_child_canonical):
             errors.append("resource record canonical_url must match the child canonical provenance URL")
 
@@ -119,16 +101,16 @@ def validate_bundle(
         elif not _same_url(record_devforum.strip(), child_devforum):
             errors.append("resource record devforum_url must match the child DevForum provenance URL")
     elif nonempty_string(record_devforum):
-        errors.append("resource record devforum_url is populated but the child provenance explicitly has no DevForum URL")
+        errors.append("resource record devforum_url is populated but the child resource contract explicitly has no DevForum URL")
 
     record_package = record.get("package_id")
     child_package = child.get("package_id")
-    if child_package and NO_PACKAGE_IDENTITY_RE.fullmatch(child_package.strip()):
+    if child_package is None:
         if nonempty_string(record_package):
-            errors.append("resource record package_id must be empty when child provenance states no package identity exists")
+            errors.append("resource record package_id must be empty when child resource contract states no package identity exists")
     elif child_package:
         if not nonempty_string(record_package) or record_package.strip() != child_package.strip():
-            errors.append("resource record package_id must exactly match child Provenance Package identity")
+            errors.append("resource record package_id must exactly match child resource.yaml package identity")
 
     verification = record.get("verification")
     record_version = verification.get("version_or_commit") if isinstance(verification, dict) else None
@@ -136,15 +118,11 @@ def validate_bundle(
     if not nonempty_string(record_version) or not child_version or record_version.strip() != child_version.strip():
         errors.append("resource record verification.version_or_commit must exactly match the child reviewed source state")
 
-    record_verification = verification.get("status") if isinstance(verification, dict) else None
-    child_verification = child.get("verification")
-    if (
-        not isinstance(record_verification, str)
-        or not child_verification
-        or record_verification.strip().lower() != child_verification.strip().lower()
-    ):
-        errors.append("resource verification status must match between the record and child Provenance")
 
+    contract = load_contract(skill_root)
+    recorded_scope = skill_validation.get("claim_scope", "") if isinstance(skill_validation, dict) else ""
+    if recorded_scope and recorded_scope != contract["guidance"]["claim_scope"]:
+        errors.append("recorded guidance claim_scope differs from resource.yaml")
     return errors, notes
 
 

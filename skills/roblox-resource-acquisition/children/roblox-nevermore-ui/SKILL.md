@@ -5,82 +5,38 @@ description: Use the active project's exact pinned Blend, Rx, Brio, and Nevermor
 
 # Nevermore UI
 
-Use this project-local skill in an active Roblox project that declares the exact
-pins below. Resolve the supplied project root, then check its manifests, Rojo
-mappings and shared import adapter against the reviewed topology described
-here before using it. Preserve the project's owned target and startup roles.
-Run project commands from that root; resolve scripts and authored source
-paths against it rather than this shared skill package. A different adapter
-or topology needs affected integration checks before inheriting this guidance.
-Read only the references needed for the task; combine them when a feature
-crosses library boundaries. Default adoption of this bundled child is project-local.
+Reviewed npm targets: Blend **12.50.1**, Rx **13.34.1**, Brio **14.37.1**, and loader **10.11.2**, from NevermoreEngine commit `7ab0297833aa73c193d8c20dc23332280439af7c`. Source reviewed 2026-10-05. The [resource contract](resource.yaml) owns identity and check profiles. This is advice-only guidance; the affected project's record owns current execution evidence.
 
-| Task | Reference |
-| --- | --- |
-| UI composition, reactive properties, mounts, or UI Labs stories | [Blend](references/blend.md) |
-| Observable pipelines, state/event flow, or signal/promise adapters | [Rx](references/rx.md) |
-| Value lifetimes, lifetime-owned work, or stale-value handling | [Brio](references/brio.md) |
+## Before use
 
-## On-demand maintenance
+Resolve `PROJECT`, this installed `CHILD`, and the installed `roblox-resource-acquisition` `PARENT`. Read its `references/child-usage.md` once per task. Apply its guards, first-use freshness and repair rules; unresolved project identity is unknown state. Preserve the project's exact pins, import adapter and startup roles.
 
-- Promotion guard: Check the sibling `.skill-maintenance/roblox-nevermore-ui.json` before ordinary use; presence stops dependent use until recovery/completion.
-- First-use freshness: Before each needed Blend, Rx, Brio or loader package's first use in a task, read and apply the installed `roblox-resource-acquisition` parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical stable releases/maintained source and relevant documentation with the actual installed/project-pinned target, check this guidance's compatibility, reuse unchanged checks within the task, and disclose unavailable lookups. Preserve the selected pin and valid exact-target proof; the comparison alone does not authorize upgrades or full lifecycle reconciliation.
-- Further research: Current-source claims, source drift or reusable defects follow the parent's on-demand maintenance policy. Preserve project ownership and return dependency/architecture changes to their authority. No scheduled upkeep.
+Reconciliation is conditional. Before ordinary use, require declaration `PASS` and the narrow record query `HEALTHY`:
 
-## Adopted target
-
-| npm package | Version | Role |
-| --- | --- | --- |
-| @quenty/blend | 12.50.1 | Declarative UI |
-| @quenty/rx | 13.34.1 | Observable composition |
-| @quenty/brio | 14.37.1 | Value lifetimes |
-| @quenty/loader | 10.11.2 | Package resolution/replication |
-
-All four are MIT licensed and source-qualified against NevermoreEngine commit
-7ab0297833aa73c193d8c20dc23332280439af7c on 2026-10-03. Preserve package.json's
-exact direct pins and package-lock.json. Restore through scripts/prepare.ps1;
-npm uses ci with --ignore-scripts. Never edit generated packages. pesde retains
-the common stack; Bootstrapper retains Controller/Service init/start ownership.
-ServiceBag is outside this project setup.
-
-## Shared imports and placement
-
-src/shared/Nevermore.luau exports a frozen table containing Blend, Rx, and Brio.
-Use that adapter, then select the library needed:
-
-```luau
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Nevermore = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Nevermore"))
-local Blend = Nevermore.Blend
+```text
+python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
+python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/nevermore-ui.yaml"
 ```
 
-The adapter owns one loader for its package root's lifetime and destroys it with
-that root. Studio edit previews use bootstrapPlugin. Game server startup requires
-the adapter before Bootstrapper phases; clients wait for the replicated packages.
-ServerScriptService.Nevermore is the server package root. skipStudioFastPath=true
-keeps filtered replication in Studio as well as production; clients use the
-replicated root and its loader. Privileged modules belong on the server.
+`BLOCKED`/`UNKNOWN`, mismatched pins, verifier drift or hard defects enter parent reconciliation. A recurring safe workaround still activates parent repair diagnosis. A missing matching record requires adoption/reconciliation; bundle availability supplies no project trust or runtime proof.
 
-Read the adapter before changing imports or adding dependencies. Raw Blend.lua
-requires a runtime-populated sibling loader link. Do not start a loader per
-component or require LoaderUtils as the loader.
+## Common use and ownership
 
-## Shared ownership
+Require the project's shared Nevermore adapter, then select `Blend`, `Rx`, or `Brio`. Read [setup and imports](references/setup.md) when the mapping/adapter is unfamiliar. Package loading and replication belong to one root owner per runtime; Bootstrapper retains application Controller/Service init/start ownership. Component mounts borrow that loader.
 
-- Own Rx/Blend subscriptions explicitly, for example owner:Add(subscription, "Destroy") with Janitor. Establish cleanup ownership before activation and roll back acquired resources when construction fails.
-- Janitor does not guarantee cleanup order. Stop producers before destroying their UI consumers when that order matters.
-- Keep owned state, subscriptions, and instances reachable for rollback; dispose partial acquisitions and rethrow failures. Dispose mounted views before their owner state.
-- Keep feature and view lifetimes separate. Do not destroy the shared package loader or another feature's resources. LemonSignal remains the project's discrete event primitive.
+`Blend.New(className)(props)` returns an observable; `:Subscribe(...)` activates an instance and returns a subscription owned with explicit `Destroy`. `Blend.mount(existingInstance, props)` returns a Maid for bindings and children; the caller still owns the existing root. `Blend.State(initial)` returns an owned ValueObject whose `.Value` is updated and whose `Destroy` releases it. For pipelines, use `observable:Pipe({ Rx.map(...), ... })`; explicitly own the resulting subscription.
 
-## Verification boundary
+Establish cleanup before activation. Keep producers, mounted views and owned state in separate phases when order matters: stop producers, dispose views, then release state. Janitor has no guaranteed entry order or best-effort continuation. Keep partial acquisitions reachable for rollback, set disposal guards before teardown, and re-check them after yields. A package subscription/mount call can throw before returning a cleanup handle; caller rollback does not prove cleanup of hidden package acquisitions.
 
-These are source-grounded instructions, not maintained executable examples.
-Run locked restoration and scripts/check.ps1 after implementation changes.
-Static/source/artifact checks establish package identity and mapped source;
-engine claims require the affected mount/update/unmount path to run in Studio,
-including checking that late emissions cannot reach disposed UI.
+Borrowed signals, promises, target frames and shared loader roots retain their provider's owner. `Rx.switchMap` disposes the previous inner subscription; it does not cancel unrelated work or a server request. A dead Brio cannot be reused: check `IsDead` before `GetValue`/`ToMaid`, and again after yielding. Register lifetime work on `brio:ToMaid()`.
 
-## Sources
+## Security and completion
 
-- [Nevermore source at the adopted commit](https://github.com/Quenty/NevermoreEngine/tree/7ab0297833aa73c193d8c20dc23332280439af7c/src)
-- [Loader API](https://quenty.github.io/NevermoreEngine/api/loader/)
+Keep privileged packages on the server. Preserve the root adapter's filtered replication (`skipStudioFastPath = true` when production-equivalent filtering is required in Studio); do not treat UI state or client events as server authority. Never bootstrap or destroy the shared loader per component.
+
+Before completion, run the shared checker without `--declared`; require exit 0, JSON `status: PASS`, selector `12.50.1` and `lane: installed-integrity`. It checks the four exact reviewed direct npm packages; the project harness owns transitive resolution, adapter/mapping, analysis and builds. Mount/update/unmount, late callbacks, rendering and diagnostics require their own Studio evidence.
+
+- For composition and preview mounts, read [Blend](references/blend.md).
+- For pipelines, promises or signal adapters, read [Rx](references/rx.md).
+- For value-owned work, read [Brio](references/brio.md).
+- For loader failures, partial activation or stale callbacks, read [troubleshooting](references/troubleshooting.md).

@@ -1,6 +1,6 @@
 # Checked child examples
 
-Read the matching example when generating a module child or a development-tool child. These are worked authoring examples, not adopted dependencies or discoverable installed skills. `SKILL.example.md` becomes `SKILL.md` only in a separate candidate directory. Do not install the example unchanged or copy its source pin, project authority, verification state or evidence into an unrelated adoption.
+Read the matching example when generating a module child or a development-tool child. These are worked authoring examples, not adopted dependencies or discoverable installed skills. `SKILL.example.md` and `resource.example.yaml` become `SKILL.md` and `resource.yaml` (update the descriptor link) only in a separate candidate directory. Do not install the example unchanged or copy its source pin, project authority, verification state or evidence into an unrelated adoption.
 
 - [GoodSignal module child](goodsignal/SKILL.example.md) shows an exact commit, owned connections, a maintained Luau fixture and an explicit scheduler/engine proof boundary.
 - [Rojo tool child](rojo-build/SKILL.example.md) shows an actual CLI, independent output contract and a portable smoke generator. Generated project files stay outside the child; the generator is the maintained fixture source, while `check_build.py` is the command helper.
@@ -11,4 +11,4 @@ Use the [resource record template](../templates/resource-record.yaml) for real e
 
 Maintained fixture paths resolve relative to the generated child root unless absolute. A portable generator or fixture shipped with the child can create/load project-owned inputs at use time. A project-owned fixture outside the child is also accepted when its existing path is resolved for the candidate check. A URI or an unresolved variable is not a maintained file path. The Common path should point to this source rather than maintain a second divergent example implementation.
 
-Accepted concrete proof conditions include `The command exits 0.` and `The report status is passed.` Quoting an enum remains useful, such as ``The report status equals `passed`.`` A condition still needs an observable result; `the command works` is insufficient. For provenance with no topic, use `DevForum: No DevForum topic is used/applicable`.
+Proof conditions name observable results, such as exit status, expected script classes, payload count and preserved output. The static descriptor uses null for an absent DevForum topic; current verification remains in the record.

@@ -28,7 +28,7 @@ try:
 except ImportError:  # pragma: no cover - exercised via subprocess in tests
     print(
         "ERROR: PyYAML is required to run this validator. "
-        "Install it with: pip install -r requirements.txt (or: pip install pyyaml)",
+        "Install it with: uv pip install -r requirements.txt in the selected environment",
         file=sys.stderr,
     )
     sys.exit(2)

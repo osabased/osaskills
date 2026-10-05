@@ -1,0 +1,54 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: stravant-goodsignal
+  name: GoodSignal connections
+  canonical_url: https://github.com/stravant/goodsignal
+  package_id: stravant/goodsignal
+  selector:
+    kind: commit
+    value: 99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f
+  source_review_date: '2026-09-30'
+  devforum_url: null
+routing:
+  use_when:
+  - An authorized project needs multiple local subscribers with explicit connection
+    ownership.
+  avoid_when:
+  - A direct call suffices, or communication must cross the client/server network
+    boundary.
+guidance:
+  claim_scope: executable-integration
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - api
+    - common-use
+    - lifecycle
+    - maintenance
+    - ownership
+    - routing
+    - security
+    - verification
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing or changing project bindings
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing matching symptoms
+  executable_fixture: scripts/smoke_signal.luau
+reconciliation:
+  policy: required
+  reason: Project source/tool installation can change independently.
+  record: .agents/roblox/resources/records/stravant-goodsignal.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: custom
+  custom_checker: scripts/smoke_signal.luau

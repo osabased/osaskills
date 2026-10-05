@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Read-only current block query for generated Roblox resource skills.
 
-The command intentionally reads child provenance labels and only the matching
+The command intentionally reads the static child resource contract and only the matching
 record's schema, identity, version, block, reconciliation, verification, and
 matching-host status fields. It never executes evidence commands or performs
 full lifecycle reconciliation.
@@ -23,7 +23,6 @@ from validate_resource_bundle import (
     _same_url,
 )
 from validate_resource_record import load_record, nonempty_string
-from validate_skill import NO_PACKAGE_IDENTITY_RE
 from guard_skill_update import marker_path
 
 RECONCILIATION_STATES = {"matched", "mismatched", "blocked", "unknown", "not-applicable"}
@@ -61,8 +60,8 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         "reason": "",
     }
     try:
-        guard = marker_path(skill_root.resolve())
-        if guard.exists() or guard.is_symlink():
+        guards = [marker_path(skill_root.resolve()), marker_path(Path(__file__).resolve().parent.parent)]
+        if any(guard.exists() or guard.is_symlink() for guard in guards):
             result["status"] = "blocked"
             result["reason"] = "skill promotion is pending or interrupted; reconcile its maintenance transaction"
             return result
@@ -72,7 +71,7 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
             raise ValueError("resource record is missing or is not YAML")
         metadata, child = _child_provenance(skill_root)
         record = load_record(record_path)
-    except (OSError, UnicodeError, ValueError) as exc:
+    except (OSError, UnicodeError, ValueError, TypeError, KeyError) as exc:
         result["reason"] = str(exc)
         return result
 
@@ -90,7 +89,7 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
 
     child_slug = child.get("slug")
     if not child_slug or not isinstance(record.get("slug"), str) or record.get("slug") != child_slug.strip():
-        result["reason"] = "record slug does not match child provenance"
+        result["reason"] = "record slug does not match child resource contract"
         return result
 
     child_canonical = _concrete_url(child.get("canonical_url")) or _concrete_url(child.get("devforum_url"))
@@ -99,17 +98,17 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         result["reason"] = "canonical identity is missing"
         return result
     if not _same_url(record_canonical.strip(), child_canonical):
-        result["reason"] = "record canonical identity does not match child provenance"
+        result["reason"] = "record canonical identity does not match child resource contract"
         return result
 
     child_package = child.get("package_id")
     record_package = record.get("package_id")
-    if child_package and NO_PACKAGE_IDENTITY_RE.fullmatch(child_package.strip()):
+    if child_package is None:
         if nonempty_string(record_package):
-            result["reason"] = "record package identity conflicts with child provenance"
+            result["reason"] = "record package identity conflicts with child resource contract"
             return result
     elif not child_package or not nonempty_string(record_package) or record_package.strip() != child_package.strip():
-        result["reason"] = "record package identity does not match child provenance"
+        result["reason"] = "record package identity does not match child resource contract"
         return result
 
     verification = record.get("verification")
@@ -120,7 +119,7 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
     record_version = verification.get("version_or_commit") if isinstance(verification, dict) else None
     child_version = child.get("version")
     if not child_version or not nonempty_string(record_version) or record_version.strip() != child_version.strip():
-        result["reason"] = "record version/state does not match child provenance"
+        result["reason"] = "record version/state does not match child resource contract"
         return result
 
     reconciliation = record.get("reconciliation")

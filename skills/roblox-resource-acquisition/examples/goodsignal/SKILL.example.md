@@ -5,37 +5,23 @@ description: Use pinned GoodSignal for feature-owned in-process event callbacks 
 
 # GoodSignal connections
 
-Use GoodSignal for feature-owned in-process callbacks. Guidance targets commit **99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f** in `stravant/goodsignal` (source reviewed **2026-09-30**). Resource verification: **unverified**. This worked example has no independent child behavioral or Studio claim.
+Reviewed target: `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f`, source reviewed 2026-09-30. The [resource contract](resource.example.yaml) owns static identity; project records own current execution evidence. This authoring example carries no executed upstream or host proof.
 
-## Use when
+## Choose the task
 
 - An authorized project needs multiple local subscribers with explicit connection ownership.
 
-## Do not use when
-
 - A direct call suffices, or communication must cross the client/server network boundary.
 
-## Prerequisites and installation
+## Before use
 
-1. Resolve the project-owned target and installation before using the common path.
+Resolve the affected project, this child and the available installed parent. Read the parent's references/child-usage.md once per task for freshness, guards, reconciliation and repair. Project resolution failure is unknown state with no global fallback. This required custom profile needs its documented exact-target check before version-sensitive use. The shared checker reports custom checks unavailable and never executes metadata-supplied commands.
 
-Resolve the active project first. This example models a child installed at project/repository scope; an unresolved project does not authorize a user/global fallback. Its owner must select the canonical commit; this example supplies no adoption authority. Preserve the upstream MIT license. For this fixture, place the inspected `src/init.lua` as `ReplicatedStorage.Packages.GoodSignal`, with a project manifest/header naming the exact commit. A package version with the same name is not automatically the same source state. Adapt the fixture's require path to the project's selected installation and rerun checks after that adaptation.
+Compare the project source manifest/header and inspected bytes to this exact canonical commit; a same-named package is insufficient. Read [setup](references/setup.md) for the installation and fixture binding.
 
-## On-demand maintenance
+Run `python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/stravant-goodsignal.yaml"`; require HEALTHY. BLOCKED/UNKNOWN or mismatched identity enters parent repair/reconcile before affected use.
 
-- Promotion guard: Check the sibling `.skill-maintenance/<skill-directory-name>.json`; ordinary use waits while it exists.
-- First-use freshness: Before this resource's first use in a task, apply the installed parent's `references/on-demand-maintenance.md#first-use-freshness-check`. Compare canonical releases/maintained source and relevant documentation with the project's selected commit, reuse unchanged checks within the task, and disclose unavailable lookups.
-- Freshness triggers: For a relevant current claim, adoption/upgrade, source drift, recurring workaround or reusable defect, invoke `roblox-resource-acquisition` for the affected target and read its `references/on-demand-maintenance.md`.
-- Target and economy: Preserve the project's selected commit and owner authority after the freshness comparison. A newer source state alone does not require full requalification or invalidate exact-target proof. Changed pins or practices return to the owner.
-
-## Repair interrupt
-
-- Trigger: Invoke `roblox-resource-acquisition` in `repair/reconcile` mode for guessing, bypassed instructions, repeated rediscovery or an undocumented workaround likely to recur; a harmless task-local adjustment is not an interrupt.
-- Hard defect: Stop dependent work when correctness, security, canonical identity, selected version or verification is unreliable, and enter parent reconciliation and repair.
-- Soft defect: If a workaround is safe and reversible, immediate work may continue, but invoke parent repair diagnosis and surface the reproduction, workaround and durable correction before completion.
-- Handoff: Record the task, installed state, expected and observed behavior, smallest reproduction, workaround and proposed durable correction. Parent activation authorizes diagnosis and reporting, not edits without current authorization.
-
-## Common path
+## Common use and ownership
 
 Use the maintained `scripts/smoke_signal.luau` fixture as the source for the connection example. It creates one signal, activates a listener with `signal:Connect`, fires a payload and disconnects through an idempotent feature cleanup function. For the active project, preserve the same ownership pattern and use its actual require path. No companion cleanup library is assumed.
 
@@ -44,54 +30,18 @@ Use the maintained `scripts/smoke_signal.luau` fixture as the source for the con
 local signal = Signal.new()
 ```
 
-## Operational reconciliation
-
-- Policy: required — project source headers/manifests can select a different commit independently from this guidance.
-- Installed-state check: Read the active project's manifest/header and compare its GoodSignal canonical URL and commit to this target before require; inspect source differences when the recorded commit does not match the installed bytes.
-- Expected identity/state: stravant-goodsignal + https://github.com/stravant/goodsignal + stravant/goodsignal + 99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f.
-- Current-block check: Resolve PowerShell variables `$Parent` and `$Child` to the installed `roblox-resource-acquisition` parent and this canonical project-scoped child directory. Before affected use, run `python "$Parent/scripts/check_resource_status.py" --pair "$Child" .agents/roblox/resources/records/stravant-goodsignal.yaml` from the resolved project root; require HEALTHY, and enter full reconciliation on BLOCKED or UNKNOWN. Use another authoritative record location when supplied; another shell uses the same resolved path arguments.
-- Parent-state check: Resolve the affected project root, then read the matching schema-version 3 resource record and learnings at authoritative locations, otherwise `.agents/roblox/resources/records/stravant-goodsignal.yaml` and `.agents/roblox/resources/learnings/` relative to that root. If this project-scoped child's project cannot be resolved, report `UNKNOWN` and enter parent `repair/reconcile`; do not switch to global records. Only when explicitly authoring a user/global-scoped variant, document the no-project fallback at `~/.roblox-resources/records/stravant-goodsignal.yaml` and `~/.roblox-resources/learnings/`. Match slug plus canonical identity.
-- Mismatch/unknown action: Stop affected use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode before continuing.
-- Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for defect evidence and parent activation.
-
-## Client/server placement
-
-GoodSignal is local to the current Luau environment; it does not replicate callbacks. A server may use it internally while retaining authority over game state. A client may use it for local presentation; validate network input on the server rather than treating a local signal as authorization.
-
-## Mental model
-
 A signal owns a linked list of subscriptions. Connect registers a callback; Fire uses the task scheduler to dispatch eligible listeners. Disconnect prevents future dispatch, but it cannot undo an already running or yielded callback.
-
-## Lifecycle and cleanup
 
 - Initialization: `Signal.new()` allocates an inert signal. Establish the feature owner's cleanup function before `Connect` activates the listener; immediately retain the returned connection under that owner.
 - Reuse: Reuse the signal during the feature lifetime; callbacks check the owner's active flag before changing feature state.
 - Cleanup/destruction: Mark the owner inactive, call `connection:Disconnect()` once, then `signal:DisconnectAll()` when the owner owns the whole signal. The fixture's guard makes repeated cleanup idempotent and rolls back on a failed assertion. It creates no pending waits or spawned feature tasks. For already dispatched/yielding callbacks, use feature invalidation and explicit cancellation for any separately owned task; disconnection alone cannot cancel them.
 - Ownership boundary: Connections and feature callbacks belong to the feature; the module's shared coroutine cache belongs to the package. Do not claim package-global finalization from local teardown. `Wait()` cancellation and yielding callbacks are outside this fixture's proof.
 
-## API used by this skill
-
 Source-reviewed APIs: `Signal.new()`, `signal:Connect(callback)`, `signal:Fire(payload)`, `connection:Disconnect()` and `signal:DisconnectAll()`. Do not invent a `Destroy()` method or infer cancellation from another signal library.
 
-## Failure modes
+GoodSignal is local to the current Luau environment; it does not replicate callbacks. A server may use it internally while retaining authority over game state. A client may use it for local presentation; validate network input on the server rather than treating a local signal as authorization.
 
-### No callback arrives
-
-A missing package or wrong require path prevents setup. Check the installed source coordinate and ModuleScript placement before reconnecting; inspect whether the connection was already disconnected.
-
-### State changes after cleanup
-
-An already dispatched callback can outlive disconnection. Check ownership/invalidation and cancel separately owned work; do not repair this by assuming DisconnectAll cancels tasks.
-
-## Limitations
-
-- The fixture covers one non-yielding listener, payload delivery and repeated cleanup. It does not establish network behavior, callback error continuation, Wait cancellation, engine startup or diagnostics cleanliness.
-
-## Security notes
-
-No special resource-specific security boundary is introduced by local callback dispatch. Preserve server authority, validate client inputs and pin inspected source; never load a same-named unreviewed replacement dynamically.
-
-## Verify after installation
+## Complete and read further
 
 Executable fixture: scripts/smoke_signal.luau
 
@@ -101,20 +51,5 @@ Pass condition: Output contains `goodsignal-ready`; the callback count equals `1
 
 Evidence boundary: Source review and structural validation are separate from this proposed Studio recipe. Record execution against the actual installed commit before claiming runtime proof; a Lune task adapter covers only the observed non-engine scheduler behavior.
 
-## Alternatives
-
-- Prefer a direct function call for one recipient. A Roblox BindableEvent can supply local events with engine instance ownership. Keep alternatives informational when a project contract already owns the GoodSignal target.
-
-## Provenance
-
-- Resource slug: stravant-goodsignal
-- Package identity: stravant/goodsignal
-- DevForum: No DevForum topic is used/applicable
-- Canonical source/docs: https://github.com/stravant/goodsignal
-- Source version/release/commit: 99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f
-- Source review date: 2026-09-30
-- Resource verification: unverified
-
-## Version drift
-
-Before changing the commit, inspect canonical source for subscription, dispatch and cleanup changes and rerun affected proof. Do not advance the project's pin without its owner's authorization.
+- For installation/configuration, read [setup](references/setup.md).
+- For the named failure symptoms and security constraints, read [troubleshooting](references/troubleshooting.md).

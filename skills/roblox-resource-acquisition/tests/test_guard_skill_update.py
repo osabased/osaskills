@@ -18,6 +18,7 @@ def repair(tmp_path):
     live = tmp_path / "host" / "roblox-widget-resource"
     live.mkdir(parents=True)
     (live / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    fixtures.write_contract(live)
     (live / "unchanged.txt").write_text("unchanged", encoding="utf-8")
     (live / "removed.txt").write_text("original", encoding="utf-8")
     candidate = tmp_path / "candidate"
@@ -45,6 +46,56 @@ def receipt_for(transaction, path, **changes):
     values.update(changes)
     path.write_text(json.dumps(values), encoding="utf-8")
     return path
+
+
+def installed_receipt(transaction, path):
+    return receipt_for(transaction, path, completion_scope='installed',
+        authorization='User requested local checks while the host is unavailable.',
+        checks=[{'gate': gate, 'status': 'passed', 'evidence': 'synthetic local verification'}
+                for gate in ('artifact', 'installed-files')] +
+               [{'gate': gate, 'status': 'unavailable', 'evidence': 'host unavailable in this test'}
+                for gate in ('host', 'explicit-activation')])
+
+
+def test_authorized_installation_can_complete_without_host_claims(repair, tmp_path):
+    live, _, transaction, record_path, candidate_record = repair
+    record = yaml.safe_load(candidate_record.read_text())
+    record['host_adoptions'][0]['evidence'].update(discoverable='unknown', explicit_activation='unavailable')
+    candidate_record.write_text(yaml.safe_dump(record), encoding='utf-8')
+    guard.begin(*repair)
+    guard.apply(transaction)
+    guard.complete(transaction, installed_receipt(transaction, tmp_path / 'receipt.json'))
+    assert not guard.marker_path(live).exists()
+    installed = yaml.safe_load(record_path.read_text())
+    assert installed['host_adoptions'][0]['status'] == 'installed'
+    assert installed['host_adoptions'][0]['evidence']['explicit_activation'] == 'unavailable'
+
+
+@pytest.mark.parametrize('problem', ['missing-authorization', 'failed-check', 'missing-local-gate', 'operational-state', 'activation-pass'])
+def test_installed_scope_cannot_bypass_failures_or_publish_false_host_state(repair, tmp_path, problem):
+    live, _, transaction, _, candidate_record = repair
+    record = yaml.safe_load(candidate_record.read_text())
+    adoption = record['host_adoptions'][0]
+    adoption['evidence']['explicit_activation'] = 'unavailable'
+    if problem == 'operational-state':
+        adoption['status'] = 'operational'
+    if problem == 'activation-pass':
+        adoption['evidence']['explicit_activation'] = 'passed'
+    candidate_record.write_text(yaml.safe_dump(record), encoding='utf-8')
+    guard.begin(*repair)
+    guard.apply(transaction)
+    proof = installed_receipt(transaction, tmp_path / 'receipt.json')
+    values = json.loads(proof.read_text())
+    if problem == 'missing-authorization':
+        values.pop('authorization')
+    elif problem == 'failed-check':
+        values['checks'][0]['status'] = 'failed'
+    elif problem == 'missing-local-gate':
+        values['checks'] = [check for check in values['checks'] if check['gate'] != 'installed-files']
+    proof.write_text(json.dumps(values), encoding='utf-8')
+    with pytest.raises(ValueError):
+        guard.complete(transaction, proof)
+    assert guard.marker_path(live).exists()
 
 
 def test_guard_blocks_installed_host_through_apply_until_bound_completion(repair, status_mod, tmp_path):

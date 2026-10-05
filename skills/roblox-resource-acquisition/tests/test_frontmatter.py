@@ -72,6 +72,7 @@ def test_filled_skill_with_folded_description_passes_cli(scripts_dir, tmp_path):
     child = tmp_path / "roblox-widget-resource"
     child.mkdir()
     (child / "SKILL.md").write_text(folded, encoding="utf-8")
+    fixtures.write_contract(child)
     proc = subprocess.run(
         [sys.executable, str(scripts_dir / "validate_skill.py"), str(child)],
         capture_output=True,

@@ -1,0 +1,130 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: nevermore-ui
+  name: 'Nevermore UI: Blend, Rx, Brio and loader'
+  canonical_url: https://github.com/Quenty/NevermoreEngine
+  package_id: '@quenty/blend'
+  selector:
+    kind: version
+    value: 12.50.1
+    release_commit: 7ab0297833aa73c193d8c20dc23332280439af7c
+  source_review_date: '2026-10-05'
+  devforum_url: null
+routing:
+  use_when:
+  - Implementing or diagnosing exact pinned Nevermore Blend UI, Rx flow, Brio value lifetime and shared
+    loader imports.
+  avoid_when:
+  - Framework selection, dependency upgrades, replacing Bootstrapper startup, or a project without these
+    exact targets.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  executable_fixture: null
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    - lifecycle
+    when: restoring packages or changing imports, mapping and loader ownership
+  - path: references/blend.md
+    roles:
+    - api
+    - recipes
+    - lifecycle
+    when: composing UI, properties or preview mounts
+  - path: references/rx.md
+    roles:
+    - api
+    - lifecycle
+    when: changing observable flow, promise or signal adapters
+  - path: references/brio.md
+    roles:
+    - api
+    - lifecycle
+    when: changing value-owned work or stale-value handling
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: a matching integration failure or ownership/security defect
+reconciliation:
+  policy: conditional
+  reason: exact direct npm declarations and archive-bound locks gate ordinary use; reviewed installed-source
+    integrity gates completion
+  record: .agents/roblox/resources/records/nevermore-ui.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: npm
+  registry: https://registry.npmjs.org
+  dependency_section: dependencies
+  archive_url: https://registry.npmjs.org/@quenty/blend/-/blend-12.50.1.tgz
+  archive_integrity: sha512-aDcbghw0sMqlECNmEJmhrPnjKfwvsu4toTgNypEAjjydIsJmXLzfRs1INdhOImv5yKVpzk0cBG1ftBUER+twiQ==
+  integrity:
+    aggregate:
+      directory: src
+      suffix: .lua
+      recursive: true
+      sha256: 6022ff743ec72c6052ced6c3270add865f89188d020209802e9aaccf412ec97a
+    manifest:
+      path: package.json
+      name: '@quenty/blend'
+      version: 12.50.1
+  companions:
+  - package_id: '@quenty/rx'
+    version: 13.34.1
+    dependency_section: dependencies
+    archive_url: https://registry.npmjs.org/@quenty/rx/-/rx-13.34.1.tgz
+    archive_integrity: sha512-YpYjqp7bhzKd92H5on9vVG6x37NRYtqIg+tjavPHBW6qKg3MLeWFLVbs/TSwPKFzhEzGkrI0yEzs/jjk0yKHUg==
+    integrity:
+      aggregate:
+        directory: src
+        suffix: .lua
+        recursive: true
+        sha256: d311484a58ea0de4c6d77a6d3a2ae42bdfced1377ee86430a355362c542d83fd
+      manifest:
+        path: package.json
+        name: '@quenty/rx'
+        version: 13.34.1
+  - package_id: '@quenty/brio'
+    version: 14.37.1
+    dependency_section: dependencies
+    archive_url: https://registry.npmjs.org/@quenty/brio/-/brio-14.37.1.tgz
+    archive_integrity: sha512-it7NN5igWtfVFDVSU8HUs5gObKrs4irRpBvmnPPILLVH9QI/4L/q/2xFuD3z9PmEo8D7teAg3jUCz8nVvx9B+Q==
+    integrity:
+      aggregate:
+        directory: src
+        suffix: .lua
+        recursive: true
+        sha256: 1eedfc1fc5cd12c2a105c7d3127027c44ccbf909a6a624f9de8d51e2d18a636a
+      manifest:
+        path: package.json
+        name: '@quenty/brio'
+        version: 14.37.1
+  - package_id: '@quenty/loader'
+    version: 10.11.2
+    dependency_section: dependencies
+    archive_url: https://registry.npmjs.org/@quenty/loader/-/loader-10.11.2.tgz
+    archive_integrity: sha512-e5OkHAA2sjzcM1zKtvCNILrtY0IgbPu409+2UNublqcEDHl8uabWyeJlKdoo8I+u/V3msEgGbmxmeaKzvAffLg==
+    integrity:
+      aggregate:
+        directory: src
+        suffix: .lua
+        recursive: true
+        sha256: 47123902ce68774a2c8b54fe2aae638c80027e5250a8c95291ae5bada38e0467
+      manifest:
+        path: package.json
+        name: '@quenty/loader'
+        version: 10.11.2

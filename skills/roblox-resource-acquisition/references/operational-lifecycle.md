@@ -32,7 +32,7 @@ Every generated child declares its reconciliation policy:
 When reconciliation is required:
 
 1. Run the child's resource-specific installed-state check.
-2. Compare the observed canonical identity and version/commit/source state with the child's provenance.
+2. Compare the observed canonical identity and version/commit/source state with the child's structured identity.
 3. Load matching schema-version 3 resource records and resource-bound learnings.
 4. Re-check adverse learnings against current evidence; a learning directs the check but never decides it alone.
 5. Stop the affected use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode when the installed identity differs, installed state is unknown or mismatched, a current block applies, a material adverse observation remains unresolved, or an instruction defect is hard because correctness, security, identity, version, or verification is unreliable.
@@ -41,8 +41,8 @@ Record `matched` only after applicable installed-state and parent-state checks c
 
 When reconciliation is conditional:
 
-1. Follow the child's **Common path** and confirm only its declared project pin plus the named lockfile or generated-version header.
-2. If they match, run `scripts/check_resource_status.py --pair <child-skill-directory> <matching-record.yaml>`. This read-only hot path reads the child's provenance labels and only the record fields needed for schema, exact slug/canonical/package identity, reviewed version/state, block, reconciliation, verification, and matching-host status. It does not inspect skill-validation/resource-proof evidence, load learnings, or execute recorded commands. Proceed only on `HEALTHY`, then run the child's named integrity gate before task completion and require its documented pass condition.
+1. Follow the child's ordinary-use workflow and confirm only its declared project pin plus the named lockfile or generated-version header.
+2. If they match, run `scripts/check_resource_status.py --pair <child-skill-directory> <matching-record.yaml>`. This read-only hot path reads the child's static resource contract and only the record fields needed for schema, exact slug/canonical/package identity, reviewed version/state, block, reconciliation, verification, and matching-host status. It does not inspect skill-validation/resource-proof evidence, load learnings, or execute recorded commands. Proceed only on `HEALTHY`, then run the child's named integrity gate before task completion and require its documented pass condition.
 3. Escalate to the full required-policy sequence above when the query returns `BLOCKED` or `UNKNOWN`; the declaration or lock/header is missing or mismatched; the task is adoption, upgrade, or an authorized repair that invalidates evidence; the verifier fails or reports drift; or repair diagnosis classifies a defect as hard.
 4. On escalation, stop version-sensitive work until the full sequence resolves or truthfully records the mismatch/block.
 
@@ -104,7 +104,7 @@ Capture the task, host, project, installed identity/version, expected behavior, 
 - **Soft, diagnosis only:** Safe reversible immediate work may continue. Surface the defect before completion; do not invalidate unrelated lifecycle evidence or force provenance reconciliation when no artifact changes are authorized.
 - **Soft, authorized child repair:** Keep the host truthfully `installed` while the canonical child is being repaired, invalidate structural, behavioral, catalog-routing, and explicit-activation evidence affected by the edit, and restore `operational` only after fresh validation and explicit activation.
 
-A repaired artifact does not update a separate installed host copy automatically. Obtain authorization for that host mutation, update it, rerun all invalidated regression checks, rerun catalog validation, and repeat explicit host activation before restoring `operational`. For a managed project-local child whose canonical copy is already the adopted `.agents/skills/<skill-name>/` directory, retain that canonical location. Prepare an isolated candidate outside discovery and promote it to the canonical copy through the [guarded correction and recovery](on-demand-maintenance.md#guarded-correction-and-recovery) transaction; the candidate is not a second editable canonical child. The persistent guard blocks ordinary use through promotion and fresh host activation. The status query honors it even while host status is truthfully `installed`. An interrupted or failed update remains guarded until safely recovered or completed.
+A repaired artifact does not update a separate installed host copy automatically. Obtain authorization for that host mutation, update it, rerun all invalidated regression checks, rerun catalog validation, and repeat explicit host activation before restoring `operational`. For a managed project-local child whose canonical copy is already the adopted `.agents/skills/<skill-name>/` directory, retain that canonical location. Prepare an isolated candidate outside discovery and promote it to the canonical copy through the [guarded correction and recovery](on-demand-maintenance.md#guarded-correction-and-recovery) transaction; the candidate is not a second editable canonical child. The persistent guard blocks ordinary use through promotion and its authorized completion gates. Full operational completion requires fresh host activation. A user-authorized local-only update may finish at installed status with unavailable host discovery/activation recorded; it cannot claim operational. The status query honors it even while host status is truthfully `installed`. An interrupted or failed update remains guarded until safely recovered or completed.
 
 ## Catalog coherence
 
