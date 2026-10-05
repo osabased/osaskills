@@ -1,10 +1,10 @@
 # Vulkan transcription and semantic retrieval
 
-These are optional local additions. Reuse the tested installations listed in validation.md when present. Run a bounded pilot when changing models, drivers, language or inference settings. Source timing and evidence review still govern markers and POV placement.
+These are optional local additions. Discover compatible installations on the current host and take runtime/model paths from current project notes or explicit arguments. Examples below are Windows PowerShell commands, not bundled installations. Run a bounded pilot when changing models, drivers, language or inference settings. Source timing and evidence review still govern markers and POV placement.
 
 ## whisper.cpp with Vulkan
 
-The adapter was tested with [whisper.cpp v1.9.4](https://github.com/ggml-org/whisper.cpp/tree/v1.9.4), commit `927cfce34f31707e17f2bff35c349632fb9e2c3a`, and the RX 5700 XT. This is a selectable backend for `vod.py prepare`. The existing faster-whisper CPU backend remains available and is the CLI default; for this machine's English VODs, the verified Vulkan runtime can be selected explicitly.
+The adapter's verified baseline is [whisper.cpp v1.9.4](https://github.com/ggml-org/whisper.cpp/tree/v1.9.4), commit `927cfce34f31707e17f2bff35c349632fb9e2c3a`. This is a selectable backend for `vod.py prepare`; no particular GPU is required by the skill. The existing faster-whisper CPU backend remains the CLI default. Select whisper.cpp explicitly when a compatible runtime/model and the requested CPU or Vulkan backend have been verified on the current host.
 
 On a new installation, discover existing tools first. A source build needs CMake, a compatible C++ compiler, and Vulkan development files including glslc and SPIRV-Headers. Use official upstream source and the [LunarG SDK](https://vulkan.lunarg.com/sdk/home/). An installed Vulkan driver alone does not supply the build tools. The official Windows release archives inspected during the pilot lacked a Vulkan variant; do not assume a CPU archive can accelerate on AMD.
 
@@ -14,9 +14,9 @@ cmake -S work/whisper-cpp -B <short-build-dir> -DGGML_VULKAN=ON -DWHISPER_BUILD_
 cmake --build <short-build-dir> --config Release --target whisper-cli -j 4
 ```
 
-Use a short absolute build path on Windows: nested shader projects exceeded MSBuild's path limit in the original long workspace path. A duplicate `PATH`/`Path` environment entry also broke MSBuild; a child process launched with `env=dict(os.environ)` resolved that locally. No upstream source edits were needed. Keep the executable with its generated DLLs. The SDK files used for this installation were unpacked locally; no system SDK installer or driver change was required.
+Use a short absolute build path on Windows to avoid MSBuild path-length problems in nested shader projects. If a build fails on duplicate `PATH`/`Path` entries, inspect and normalize the child process environment. Keep the executable with its generated runtime libraries. Check whether existing development tools suffice before installing system software or changing drivers.
 
-The English pilot uses `ggml-small.en-q5_1.bin`, downloaded from the [official converted-model repository](https://huggingface.co/ggerganov/whisper.cpp/tree/5359861c739e955e79d9a303bcbc70fb988958b1). Its SHA256 is `bfdff4894dcb76bbf647d56263ea2a96645423f1669176f4844a1bf8e478ad30` (190,098,681 bytes). This is an English-only, quantized model; use and pilot an appropriate multilingual model for other languages. The adapter supports a local GGML model path, not an API endpoint.
+For English footage, one verified option is `ggml-small.en-q5_1.bin` from the [official converted-model repository](https://huggingface.co/ggerganov/whisper.cpp/tree/5359861c739e955e79d9a303bcbc70fb988958b1). Its SHA256 is `bfdff4894dcb76bbf647d56263ea2a96645423f1669176f4844a1bf8e478ad30` (190,098,681 bytes). This is an English-only, quantized model, not a universal default; use and pilot an appropriate multilingual model for other languages. The adapter supports a local GGML model path, not an API endpoint. The following example is specifically for English; replace model/language arguments for other footage.
 
 ```powershell
 work/vod-env/Scripts/python.exe <skill>/scripts/vod.py prepare --source 'D:/VODs/alice.mp4' --out work/vods/alice-vulkan --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli.exe --whisper-model work/downloads/ggml-small.en-q5_1.bin --language en --limit-packets 1
@@ -39,12 +39,12 @@ The optional semantic helper uses [FastEmbed](https://github.com/qdrant/fastembe
 Create or reuse a **separate Python 3.12 environment**, then download the pinned model once:
 
 ```powershell
-py -3.12 -m venv work/semantic-env
-work/semantic-env/Scripts/python.exe -m pip install -r <skill>/requirements-semantic.txt
+uv venv --python 3.12 work/semantic-env
+uv pip install --python work/semantic-env/Scripts/python.exe -r <skill>/requirements-semantic.txt
 work/semantic-env/Scripts/python.exe <skill>/scripts/semantic.py download-model --out work/semantic-model
 ```
 
-The model is `BAAI/bge-small-en-v1.5`, using Qdrant's quantized ONNX conversion at revision `aa8f8b060edb00e03bfdd08813a2949946c8ba55`. Its main file is approximately 67 MB. The download command uses immutable URLs and checks the model checksum; subsequent runs validate every saved model file. After installation, indexing and querying use local files only. The selected model and code have permissive free licenses (MIT and Apache-2.0). There are no media uploads, cloud accounts or usage fees for these helpers.
+The model is `BAAI/bge-small-en-v1.5`, using Qdrant's quantized ONNX conversion at revision `aa8f8b060edb00e03bfdd08813a2949946c8ba55`. Its main file is approximately 67 MB. The download command uses immutable URLs and checks the model checksum; subsequent runs validate every saved model file. After installation, indexing and querying use local files only. The selected model and code have permissive free licenses (MIT and Apache-2.0). There are no media uploads, cloud accounts or usage fees for these helpers. This adapter is tied to that English retrieval model; use literal transcript search for other languages unless a suitable semantic adapter has been implemented and verified. A different folder path alone does not add multilingual support. If `uv` is unavailable, use the environment creation/install fallback in [setup.md](setup.md).
 
 First build/reuse the literal index in the preparation environment, then the semantic index in its own environment:
 
@@ -78,7 +78,7 @@ Every query still verifies raw preparation signatures, model hashes and index ar
 
 For multi-packet whisper.cpp preparation, the optional `--whisper-server <path>` flag owns one local server for the duration of `prepare`. It starts lazily on the first uncached transcript and closes on normal completion, exceptions or handled interruption. Fully cached runs do not load a model. The server binds only to 127.0.0.1 on a temporary port, uses a random route and an empty public directory, and accepts the already decoded WAV files. The adapter never requests model changes or runtime format conversion. A request failure closes the worker and leaves the failed stage available for diagnosis/resume; it never silently falls back to another ASR mode.
 
-Use a `whisper-server` built from the same verified whisper.cpp source/build as `whisper-cli`, with identical adjacent runtime DLLs. The tested runtime is v1.9.4 with Vulkan on the RX 5700 XT. An existing CMake build can add the server by configuring `WHISPER_BUILD_SERVER=ON` and building target `whisper-server`; no model download or upstream source modification is needed. Keep the helper hidden on Windows. Server/model/runtime hashes and explicit decoding settings are included in transcript cache identity. Preserve the CLI route for single requests and unverified server builds.
+Use a `whisper-server` built from the same verified whisper.cpp source/build as `whisper-cli`, with matching adjacent runtime libraries. The tested runtime baseline is v1.9.4; verify the selected backend on the current hardware. An existing CMake build can add the server by configuring `WHISPER_BUILD_SERVER=ON` and building target `whisper-server`; no model download or upstream source modification is needed. Keep the helper hidden on Windows. Server/model/runtime hashes and explicit decoding settings are included in transcript cache identity. Preserve the CLI route for single requests and unverified server builds.
 
 ```powershell
 python <skill>/scripts/vod.py prepare --source "D:/VODs/alice.mp4" --out work/vods/alice-worker --cache-dir work/vods/stage-cache --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli.exe --whisper-server work/whisper-runtime/whisper-server.exe --whisper-model work/downloads/ggml-small.en-q5_1.bin --whisper-device vulkan --language en

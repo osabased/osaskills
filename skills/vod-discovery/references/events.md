@@ -44,11 +44,11 @@ Keep partial/unresolved links in analysis notes without inventing a perspective.
 
 Keep `title`, `why`, `evidence`, source IDs, and timing fields as the full analysis record. Author these display fields when preparing the editor-facing export:
 
-- Source `label`: a short unambiguous POV label, such as `Josh` (or `Josh part 2` when needed).
-- Source `pov`: shared human-readable bin name for all recordings/parts from that POV. For example, `label: "Johan part 2"` and `pov: "Johan"` keeps the part-specific marker links while grouping both parts under `01 Media/Johan`. XML falls back to `label` when `pov` is omitted. Set `pov` explicitly for multipart recordings; do not infer identity by stripping words from filenames. This field affects project organization, not marker names, IDs or timestamps.
-- Event `marker_title` (required): a 1–4-word visual label answering “What moment is this?” Front-load the distinguishing event/action for the first 10–15 visible characters. No IDs, POV/source metadata, confidence, review flags, explanations or provenance. Omit the current POV's redundant name; retain another participant's name when it distinguishes the moment. `Gear Up`, `Spawn Attack`, `Truce Talk`, `Josh's Offer` are examples. Do not truncate a sentence or add an ellipsis.
+- Source `label`: a short unambiguous POV label, such as `Bob` (or `Bob part 2` when needed).
+- Source `pov`: shared human-readable bin name for all recordings/parts from that POV. For example, `label: "Alice part 2"` and `pov: "Alice"` keeps the part-specific marker links while grouping both parts under `01 Media/Alice`. XML falls back to `label` when `pov` is omitted. Set `pov` explicitly for multipart recordings; do not infer identity by stripping words from filenames. This field affects project organization, not marker names, IDs or timestamps.
+- Event `marker_title` (required): a 1–4-word visual label answering “What moment is this?” Front-load the distinguishing event/action for the first 10–15 visible characters. No IDs, POV/source metadata, confidence, review flags, explanations or provenance. Omit the current POV's redundant name; retain another participant's name when it distinguishes the moment. `Gear Up`, `Spawn Attack`, `Truce Talk`, `Bob's Offer` are examples. Do not truncate a sentence or add an ellipsis.
 - Event `marker_summary` (required): one short factual sentence saying who did what and the observed outcome. Keep the editorial rationale in `why`; do not substitute "setup", "payoff", or "progression" for the actual action/dialogue.
-- Perspective `marker_title`: overrides the label when this POV depicts a different aspect (`Fatal Fall` on Johan, `Death Notice` on Josh). It follows the same visual-label rules.
+- Perspective `marker_title`: overrides the label when this POV depicts a different aspect (`Fatal Fall` on the falling player's POV, `Death Notice` on another POV). It follows the same visual-label rules.
 - Perspective `marker_summary`: overrides the event summary when this POV contributes something different, such as only a death notice during unrelated conversation.
 - Perspective `marker_type` and `marker_role`: a useful link label and a short contribution, for example `ALT` and `watches the fight`. Use `REACTION` only for an evidenced reaction.
 - Event `review_note`: a specific unresolved issue, for example `Exact resource/goal is unclear.` It produces a `CHECK` comment, never a name suffix. Uncertain events without a specific note still receive a review reminder in comments.
@@ -56,9 +56,9 @@ Keep `title`, `why`, `evidence`, source IDs, and timing fields as the full analy
 Example marker display:
 
 ```text
-Mesaakk Kill
-Johan attacks Mesaakk at spawn and kills him.
-ALT Josh 03:10–03:22 — watches the fight (±1s)
+Winning Hit
+Alice defeats the opponent at spawn.
+ALT Bob 03:10–03:22 — watches the fight (±1s)
 Ref [VOD:event-008]
 ```
 

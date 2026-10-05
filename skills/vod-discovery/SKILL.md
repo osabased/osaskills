@@ -5,28 +5,35 @@ description: Discover moments in long local VODs and relate events across drifti
 
 # VOD discovery
 
-Help an editor discover what progresses a video without silently discarding uncertain moments. Typical input is 1–6 local VODs, each 2+ hours. Genre and a predetermined premise are not prerequisites. Suggest; the editor decides what to use.
+Help an editor discover what progresses a video without silently discarding uncertain moments. Work with the local sources and review scope supplied for the current project. Genre, a particular cast, multiple POVs and a predetermined premise are not prerequisites. Suggest; the editor decides what to use. The bundled editing integrations target Premiere; other editors require an appropriate, verified adapter.
 
-## Established preferences
+## Resolve the current project
 
-- Favor recall: preserve plausible, uncertain, quiet, contextual, and setup moments alongside clear payoffs. No top-N highlight limit, excitement threshold, or required genre/premise questionnaire.
-- Retain **source clip markers** and link other POVs in their comments. The user also wants a discovery timeline with relevant alternate clips layered above the main POV, as specified below.
-- Descriptions briefly say **what happened** in this POV. For example: "Johan joins spawn, gets attacked, retreats, and complains about the attackers." Editorial-purpose language such as "Sets up Johan's retaliation" is not a substitute for describing the footage. Keep raw evidence in analysis files.
-- Use free local processing and the user's existing chat access for visual/text reasoning. No paid APIs, subscriptions, or cloud inference endpoints. Existing chat usage still consumes its normal allowance.
+- Reuse the current request and project-owned notes, `events.json`, timeline plan and queue snapshots for source paths, POV identities, review scope and editing preferences. Do not carry names, source order, reviewed ranges, hardware or runtime paths from another project or an example.
+- If useful for resuming, record those decisions in a project-owned `project-context.md` beside the analysis/exports. It is an optional agent-readable note, not a CLI configuration file; pass actual settings through the documented arguments and schemas. Keep machine-specific runtime locations in that project's local notes. Do not embed either in this reusable skill.
+- Resolve the main POV and ordered source parts only when the requested delivery needs them. Use an existing project plan or the user's choice; ask if ambiguous. Discovery and source-marker delivery can proceed without a designated main POV. Do not invent one from a familiar name or assume filename order proves chronology.
+- Inspect accessible media, languages, tools and hardware. Reuse a verified compatible environment, otherwise use [setup.md](references/setup.md). Match speech models to the footage's languages; the bundled semantic model is English-only. Optional Windows OCR and Vulkan acceleration are capabilities with prerequisites, not requirements for every project.
+- Ask only for consequential missing information. Take ownership of routine work within the supplied scope and available time; do not assume overnight processing is acceptable.
+
+## Discovery defaults
+
+- Favor recall unless the current brief asks for a different selection policy: preserve plausible, uncertain, quiet, contextual, and setup moments alongside clear payoffs. No default top-N highlight limit, excitement threshold, or required genre/premise questionnaire.
+- For Premiere source delivery, retain **source clip markers** and link relevant other POVs in their comments. Use a layered review timeline or the review queue when requested; neither is mandatory for discovery.
+- Descriptions briefly say **what happened** in this POV. For example: "The player enters the clearing, gets attacked, retreats, and asks for help." Describing an editorial purpose alone is not a substitute for describing footage. Keep raw evidence in analysis files.
+- The bundled processing is free and local; it does not require paid APIs, subscriptions or cloud inference endpoints. Images/transcripts inspected through the existing chat still use that service and its normal allowance. Respect the current project's processing and privacy constraints.
 - Import one timeline audio clip per actual audio stream. A stereo stream remains one stereo track with both left and right channels; do not duplicate or split it because A1/A2 are targeted. Probe stream counts first. Preserve genuine additional streams; never silently drop them to fit an exporter limitation.
-- Target Windows and an RX 5700 XT. Use the locally verified whisper.cpp Vulkan backend for this machine's English VODs when its runtime/model are present; retain faster-whisper CPU as the portable default/fallback. CUDA is not this card's backend. Overnight preparation is acceptable; do not promise unattended chat reasoning or a completion time without measured evidence.
 - POVs drift and share audio only sometimes. A whole-file offset or multicam success is not a prerequisite.
-- Take ownership of routine preparation, review, export, and verification decisions within the supplied scope. Carry the work to a reviewable result; ask only about blockers or consequential choices that need the editor's judgment.
 
-## Confirmed layout for the ValorantSMP project
+## Optional layered review timeline
 
-- Johan is the main POV. Keep his full VOD in source order on the base video track, with his audio on the lower audio tracks; preserve his chronology rather than assembling selected events consecutively.
-- Cut the main video and linked audio at each included moment's start and end. Label moment sections Mango and surrounding footage Iris so the editor can identify and select them directly in Premiere. Preserve every frame once, including unmarked footage; overlapping moments share footage while retaining all boundaries. These are clip labels, not marker colors or confidence ratings.
-- Place only relevant portions of other POVs on video tracks above Johan. Retain their corresponding audio on separate higher tracks for auditioning.
-- **Johan's picture and audio play by default.** Disable the alternate video and audio clips initially so the editor can enable them individually. This supersedes the briefly selected automatic-upper-picture option.
+The current exporter provides a complete chronological review timeline, not an automatic selects assembly. For this delivery, author the project's `main_sources` and local-anchor plan; no POV is hardcoded.
+
+- Keep the selected main sources complete and in the plan's order on the base video track, with corresponding audio below.
+- Cut main video and linked audio at each included moment's start and end. The exporter uses Mango for moment sections and Iris for surrounding footage. Preserve every frame once, including unmarked footage; overlapping moments share footage while retaining all boundaries. These are clip labels, not confidence ratings.
+- Place only relevant alternate excerpts on upper video tracks with their audio on separate higher tracks for auditioning. **Main picture/audio play by default; alternate video/audio start disabled.** These are exporter defaults, not evidence of any new project's editorial preference. Resolve requests for a different assembly explicitly rather than silently treating this review layout as the requested edit.
 - Align simultaneous coverage using locally verified anchors. Do not align merely by the starts of broad review ranges or apply one offset across the entire drifting recording. Clearly label timing uncertainty.
 - Earlier setup and later reactions retain their true temporal relationship; do not stack them as if simultaneous merely because they are editorially related.
-- The full-length layout preference does not itself establish review coverage. The completed pilot reviewed only the first five minutes of two sources. Report any unreviewed remainder explicitly and keep a requested fast test bounded.
+- Report actual review coverage separately from timeline length. A complete source on the timeline does not mean all of it was reviewed. Keep a requested fast test bounded to its agreed scope.
 
 Use `scripts/review_timeline.py` with an authored local-anchor plan for this layout; read [references/timeline.md](references/timeline.md). Keep source markers alongside the sequence. Live-verify source ranges, grouping, playback and disabled alternates before claiming delivery.
 
@@ -36,7 +43,7 @@ Read [references/setup.md](references/setup.md) for the pinned reuse choices, en
 
 Ask only for missing input paths and any practical ambiguity that blocks processing. Inspect accessible versions/dependencies instead of asking the user to repeat machine details. Preserve originals. Store analysis in a project-owned work folder; exports in its output folder.
 
-`prepare` splits a VOD into overlapping review packets, reuses claude-real-video extraction/contact sheets, and uses faster-whisper on CPU unless whisper.cpp is explicitly selected. Read [references/speech-search.md](references/speech-search.md) for the tested Vulkan runtime, fresh-folder/resume rules, and semantic retrieval. It deliberately bypasses frame deduplication and frame caps. Preparation is resumable; prepared does **not** mean reviewed. A `--no-transcribe` run is a visual-only pilot, not a full discovery pass.
+`prepare` splits a VOD into overlapping review packets, reuses claude-real-video extraction/contact sheets, and uses faster-whisper on CPU unless whisper.cpp is explicitly selected. Read [references/speech-search.md](references/speech-search.md) for optional Vulkan setup, fresh-folder/resume rules, and semantic retrieval. It deliberately bypasses frame deduplication and frame caps. Preparation is resumable; prepared does **not** mean reviewed. A `--no-transcribe` run is a visual-only pilot, not a full discovery pass.
 
 Preparation also writes `evidence.md`/`evidence.json`, joining frames and speech separately for each audio stream. Enrich older completed packets without reprocessing media, then build a project-local transcript index across the supplied POVs. Use [references/discovery-tools.md](references/discovery-tools.md) for commands, coverage, and search limits. Keep these steps within the requested pilot or full-session scope.
 
@@ -92,7 +99,7 @@ The queue groups only authored `related_events`, retains independent choices and
 
 Read [references/events.md](references/events.md) for the event format. Write `events.json` with source paths and durations from prepared metadata, evidence references, roles, rationale, source-local intervals, editorial status, and alignment uncertainty. Run `export` to validate it and create `markers.json`.
 
-Author display copy separately from analysis. **Name answers “What moment is this?”** Use a 1–4-word `marker_title` such as `Gear Up`, `Spawn Attack`, or `Truce Talk`. Front-load the distinguishing action/event: assume only the first 10–15 characters are visible. Do not repeat the POV/person already established by the source, track or sequence; another participant's name can distinguish a moment (`Josh's Offer`). No IDs, POV metadata, confidence, review flags, explanations or provenance in Name. Never truncate prose mechanically. Read each source's labels together and compare their first 10–15 characters before export.
+Author display copy separately from analysis. **Name answers “What moment is this?”** Use a 1–4-word `marker_title` such as `Gear Up`, `Spawn Attack`, or `Truce Talk`. Front-load the distinguishing action/event: assume only the first 10–15 characters are visible. Do not repeat the POV/person already established by the source, track or sequence; another participant's name can distinguish a moment (`Alex's Offer`). No IDs, POV metadata, confidence, review flags, explanations or provenance in Name. Never truncate prose mechanically. Read each source's labels together and compare their first 10–15 characters before export.
 
 Put the factual explanation in `marker_summary` (Comment): who did what and the observed outcome. Both display fields are required; use perspective overrides when a POV shows different content (for example `Fatal Fall` versus `Death Notice`). Short actionable `review_note` checks and alignment uncertainty belong in comments. The exporter appends the stable reference there, with full provenance retained in events JSON. Omit the current clip's repeated range, source hashes, frame lists, generic confidence prose and category lists from comments. Do not remove material uncertainty to shorten a claim. See [events.md](references/events.md) for the interchange and duplicate-detection contract.
 

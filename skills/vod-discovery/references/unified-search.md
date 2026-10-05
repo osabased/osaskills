@@ -40,13 +40,13 @@ An optional semantic index must reference this exact current literal index. Mode
 ## Investigate one question or a batch
 
 ```powershell
-work/vod-env/Scripts/python.exe <skill>/scripts/unified_search.py search --index work/unified-index --query 'Josh offers a truce' --limit 20 --out work/truce-search.json
+work/vod-env/Scripts/python.exe <skill>/scripts/unified_search.py search --index work/unified-index --query 'someone offers a truce' --limit 20 --out work/truce-search.json
 ```
 
 For an index that includes semantic retrieval, use its existing local environment and model:
 
 ```powershell
-work/semantic-env/Scripts/python.exe <skill>/scripts/unified_search.py search --index work/unified-index --model-dir work/models/bge-small-en-v1.5 --query 'Josh offers a truce' --out work/truce-search.json
+work/semantic-env/Scripts/python.exe <skill>/scripts/unified_search.py search --index work/unified-index --model-dir work/models/bge-small-en-v1.5 --query 'someone offers a truce' --out work/truce-search.json
 work/semantic-env/Scripts/python.exe <skill>/scripts/unified_search.py search-many --index work/unified-index --model-dir work/models/bge-small-en-v1.5 --queries work/questions.json --out work/search-results.json
 ```
 

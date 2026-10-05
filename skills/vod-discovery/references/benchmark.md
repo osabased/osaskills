@@ -21,7 +21,7 @@ Edit the resulting reference after review:
 
 The reference schema is `vod-discovery-benchmark/v1`. Its `sources` use the same `id`, media `path`, and `duration_sec` as events.json. Each moment has an `id`, `reviewed`, optional `title`/`tags`, and `perspectives` with `source_id`, `start_sec`, `end_sec` and `evidence`. Source IDs, paths and durations must agree between reference and run. Keep the same original media and source clocks; this metadata check does not hash entire media files.
 
-The existing five-minute Johan/Josh pilot can support an explicitly labelled regression reference for preserving its already observed moments. Its sampled review is not independent or exhaustive ground truth. Comparing that event file to itself does not measure a new run's discovery quality. No real reference or discovery recall claim is bundled with this harness; tests use synthetic software fixtures.
+Previously reviewed project footage can support an explicitly labelled regression reference for preserving its already observed moments. A sampled review is not independent or exhaustive ground truth. Comparing an event file to itself does not measure a new run's discovery quality. No real project reference or discovery recall claim is bundled with this harness; tests use synthetic software fixtures. Choose and review reference footage for the current project.
 
 ## Judge a discovery run
 

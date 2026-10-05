@@ -2,6 +2,8 @@
 
 Use the same factual events/source markers plus a separate, evidence-authored placement plan. Full main sources remain chronological; alternates are trimmed suggestions on upper video tracks, with one corresponding audio track per actual stream. Both alternate video and audio clips start disabled.
 
+Take `main_sources`, part order, identities and coverage from the current project. If no main POV is designated and that choice matters, resolve it before building this layout; source-marker discovery does not require one. The format example below is illustrative, not a default source mapping or a claim about reviewed footage. Alternate references must use the current event/source IDs and reviewed anchors.
+
 ## Moment cuts and clip colors
 
 Every included main-source moment adds an edit at its start and end in both video and linked audio. Its timeline sections use the **Mango** clip label; surrounding footage uses **Iris**. Alternate excerpts also use Mango and remain disabled. For a moment at 1:48–1:59, the main becomes `[0:00–1:48 Iris] [1:48–1:59 Mango] [1:59–end Iris]`. Nothing is removed or moved. Preview padding and added browser context do not change these cuts.
@@ -31,7 +33,7 @@ Plan format:
     "source_id": "alternate",
     "main_source_id": "main-part1",
     "event_id": "event-08",
-    "name": "Josh watches Johan kill Mesaakk",
+    "name": "Alternate view of the winning hit",
     "source_start_sec": 190,
     "source_end_sec": 200,
     "source_anchor_sec": 194.5,

@@ -4,18 +4,18 @@ Use these when an investigation needs them, after transcript/image evidence narr
 
 ## Audalign: find a possible local correspondence
 
-[Audalign 1.3.1](https://github.com/benfmiller/audalign) is MIT licensed and runs locally with FFmpeg. Its pinned dependencies need a separate, tested Python 3.12 environment; do not install it into the main Python 3.13 preparation environment. Reuse a compatible environment when present. Example if Python 3.12 is installed:
+[Audalign 1.3.1](https://github.com/benfmiller/audalign) is MIT licensed and runs locally with FFmpeg. Its pinned dependencies have been tested in a separate Python 3.12 environment; isolate them from core preparation dependencies rather than assuming the project's main Python version is compatible. Reuse a compatible environment when present. Windows PowerShell example:
 
 ```powershell
-py -3.12 -m venv work/audalign-env
-work/audalign-env/Scripts/python.exe -m pip install -r <skill>/requirements-audio.txt
+uv venv --python 3.12 work/audalign-env
+uv pip install --python work/audalign-env/Scripts/python.exe -r <skill>/requirements-audio.txt
 $env:MPLCONFIGDIR = Join-Path $PWD 'work/audalign-cache'
 work/audalign-env/Scripts/python.exe <skill>/scripts/audio_match.py --source-a 'D:/VODs/alice.mp4' --start-a 65 --end-a 95 --source-b 'D:/VODs/bob.mp4' --start-b 140 --end-b 185 --out work/audio-truce
 ```
 
-Make ffmpeg and ffprobe available on PATH. No account, API key, paid model or media upload is needed. If Python 3.12 is missing, install a separate runtime using an available package manager or the official Python installer; preserve the main environment. Installation requires network access, matching does not.
+Make ffmpeg and ffprobe available on PATH. No account, API key, paid model or media upload is needed. If Python 3.12 is missing, provision a separate runtime with the available environment manager; preserve the main environment. If `uv` is unavailable, use the fallback in [setup.md](setup.md). Installation requires network access, matching does not.
 
-Choose short windows (the pilot used 30–45 seconds) likely to contain the same distinctive sound or shared voice chat. Allow extra room in the comparison window for timing uncertainty. Do not compare entire hours-long VODs as a shortcut. On multi-audio sources, explicitly select `--stream-a` and `--stream-b` using the absolute ffprobe stream indices; these are not Premiere track numbers. The helper infers the index only when the source has exactly one audio stream. Its mono analysis WAV copies do not alter source media or Premiere audio grouping.
+Choose short windows, such as 30–45 seconds, likely to contain the same distinctive sound or shared voice chat. Allow extra room in the comparison window for timing uncertainty. Do not compare entire hours-long VODs as a shortcut. On multi-audio sources, explicitly select `--stream-a` and `--stream-b` using the absolute ffprobe stream indices; these are not Premiere track numbers. The helper infers the index only when the source has exactly one audio stream. Its mono analysis WAV copies do not alter source media or Premiere audio grouping.
 
 The helper runs fingerprinting at accuracy 3 and waveform correlation, with multiprocessing disabled. Each fresh output folder contains the two analysis WAVs, raw results/logs, and `candidate.json`. Preserve that folder as evidence. Source windows and stream indices are recorded. Existing evidence is not overwritten.
 
@@ -29,9 +29,9 @@ The source offset is `B window start - A window start + Audalign local offset`. 
 
 Inspect the shared sound and nearby image evidence before authoring a local anchor. Both methods can match a common song or sound effect that is not the same event. Voice-chat latency can differ from visible action timing. Keep visual timing uncertainty separate from the numerical audio offset. Record correspondence only for the supported local event, investigate other windows independently, and never stretch media, infer a global drift curve, or write placements from this JSON alone. With no usable shared audio, continue with visual and transcript evidence.
 
-### What the pilot established
+### Validation limits
 
-On the opening five-minute Johan/Josh copies, fingerprinting and waveform correlation agreed on source offsets of about +81.65 seconds around the truce and +82.04 seconds around the first fight. The later window, unrelated footage and independent noise did not pass the candidate checks. These thresholds were chosen using this pilot, so this is not an independent accuracy benchmark or evidence about hours of drift.
+The thresholds were chosen using bounded development footage and synthetic controls, not an independent accuracy benchmark. Revalidate candidates on the current footage; no offset, event correspondence or hours-long drift behavior transfers between projects.
 
 Spectrogram correlation was tried but is not used by the helper: it assigned independent synthetic noise its top rank and normalized score. An upstream field called `confidence`, a top rank, or a normalized maximum of 1.0 is not a probability of a correct correspondence.
 
@@ -62,6 +62,6 @@ $ocrScript = [IO.File]::ReadAllText('<skill>/scripts/ocr_frames.ps1')
 
 Use a fresh output path. The result records the engine language, image and manifest hashes, source timestamps, raw text, lines, and word rectangles in the input image's pixels. It does not silently correct names or give recognition confidence. Oversized images fail explicitly; prepare a smaller frame or a documented crop while retaining its source timestamp. Missing language support is a reason to skip this optional aid and inspect the images directly.
 
-In four pilot before/after frames, OCR found the kill notice at Johan 113 seconds and Josh 195 seconds, absent in the respective preceding samples at 112 and 194 seconds. It misspelled names and some words. Use approximate phrases and spelling variants to find leads, then read the actual image before writing a factual event or cross-POV link. Absence of OCR text never proves absence of an event.
+OCR can miss text and misspell names or other words. Use approximate phrases and spelling variants to find leads, then read the actual image before writing a factual event or cross-POV link. Absence of OCR text never proves absence of an event.
 
 Supply this report to `unified_search.py index` to retrieve visible text alongside speech and optional semantic leads; read [unified-search.md](unified-search.md). The unified index verifies image hashes and exact frame-map clocks and requires an explicit source mapping when OCR aliases differ from preparation IDs. It retains the raw OCR and report references. `vod.py search` remains speech-only, and OCR is never collected automatically from arbitrary folders. OCR does not replace contact-sheet review, denser sampling of fast events, or human-readable factual marker comments.
