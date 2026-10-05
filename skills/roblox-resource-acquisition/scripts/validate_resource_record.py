@@ -188,6 +188,7 @@ CHECK_KINDS = {
 EXECUTION_MODES = {"independent-agent", "same-agent-audit", "command", "studio-playtest"}
 CHECK_STATUSES = {"passed", "failed", "unavailable", "historical"}
 CHECK_INPUT_ROLES = {
+    "parent-contract",
     "fixture",
     "api",
     "contract",
@@ -400,7 +401,15 @@ def _validate_skill_checks(
             if status != "passed" or current_skill_root is None or not nonempty_string(input_path):
                 continue
             resolved = Path(input_path)
-            if not resolved.is_absolute():
+            if role == "parent-contract":
+                parent_root = Path(__file__).resolve().parent.parent
+                from _resource_contract import within
+                try:
+                    resolved = within(parent_root, input_path)
+                except ValueError as exc:
+                    errors.append(f"{input_prefix} invalid parent-contract path: {exc}")
+                    continue
+            elif not resolved.is_absolute():
                 resolved = current_skill_root / resolved
             resolved = resolved.resolve()
             if not resolved.is_file():
@@ -414,7 +423,7 @@ def _validate_skill_checks(
                     )
                     continue
                 try:
-                    routing_skill = load_catalog_skill(resolved.parent)
+                    routing_skill = load_catalog_skill(resolved.parent, kind="generated" if (resolved.parent / "resource.yaml").is_file() else "competitor")
                     current_activation = compute_catalog_fingerprint([routing_skill])
                 except (OSError, UnicodeError, ValueError) as exc:
                     errors.append(f"{input_prefix} activation metadata could not be read: {exc}")

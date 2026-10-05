@@ -33,6 +33,7 @@ def write_skill(root, *, name="roblox-widget-resource", description=None, use_wh
             or "- Synchronizing replicated widget state across server-owned sessions.",
         ),
     )
+    fixtures.write_contract(skill_root, use_when=use_when)
     return skill_root
 
 
@@ -129,7 +130,7 @@ def test_generated_skill_unfilled_template_fails(scripts_dir, tmp_path):
     write_utf8(tmp_path / "SKILL.md", template)
     proc = run_cli(scripts_dir, "validate_skill.py", tmp_path)
     assert proc.returncode == 1
-    assert "unresolved template content" in proc.stdout
+    assert "resource.yaml is required" in proc.stdout
 
 
 def test_resource_bundle_valid_cli(scripts_dir, tmp_path):
@@ -154,7 +155,7 @@ def test_resource_bundle_mismatch_cli_fails(scripts_dir, tmp_path):
     )
     proc = run_cli(scripts_dir, "validate_resource_bundle.py", record, child)
     assert proc.returncode == 1
-    assert "Resource slug" in proc.stdout
+    assert "resource.yaml slug" in proc.stdout
 
 
 def test_catalog_valid_cli_reports_fingerprint_and_count(scripts_dir, tmp_path):

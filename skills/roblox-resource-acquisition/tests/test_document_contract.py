@@ -198,24 +198,16 @@ def test_generated_child_description_carries_preload_routing_boundary():
 
 
 def test_conditional_reconciliation_contract_preserves_existing_policies():
-    contract = REFERENCES["resource-skill-contract.md"]
-    lifecycle = REFERENCES["operational-lifecycle.md"]
-    testing = REFERENCES["testing-protocol.md"]
-    learnings = REFERENCES["learnings-store.md"]
-    template = (ROOT / "templates" / "resource-skill-template.md").read_text(
-        encoding="utf-8"
-    )
+    spec = yaml.safe_load((ROOT / 'templates/resource-skill-template.yaml').read_text(encoding='utf-8'))
+    assert spec['reconciliation']['policy'] == 'conditional'
+    usage = REFERENCES['child-usage.md']
+    policies = set(re.findall(r'\*\*([a-z-]+):\*\*', usage))
+    assert policies == {'required', 'conditional', 'not-applicable'}
+    assert 'check_resource_install.py' in usage
+    assert 'check_resource_status.py' in usage
+    assert 'For `conditional`, run both branches' in REFERENCES['testing-protocol.md']
+    assert 'do not load records or learnings' in REFERENCES['learnings-store.md']
 
-    assert "exactly `required`, `conditional`, or `not-applicable`" in contract
-    assert "`Integrity gate`" in contract
-    assert "`Escalation triggers`" in contract
-    assert "every version-sensitive use" in lifecycle
-    assert "declared pin plus its lock/header counterpart" in lifecycle
-    assert "For `conditional`, run both branches" in testing
-    assert "do not load records or learnings" in learnings
-    assert template.index("## Repair interrupt") < template.index("## Common path")
-    assert template.index("## Common path") < template.index("## Operational reconciliation")
-    assert "REQUIRED/CONDITIONAL/NOT-APPLICABLE" in template
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():

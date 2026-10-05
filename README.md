@@ -14,6 +14,8 @@
 
 [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) includes [eight pinned child packages](./skills/roblox-resource-acquisition/references/bundled-skills.md) under its `children/` directory, including Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink, and Nevermore's Blend/Rx/Brio guidance.
 
+All eight children use [resource-child contract 1](./skills/roblox-resource-acquisition/references/resource-skill-contract.md): a compact `SKILL.md`, static `resource.yaml`, and conditional setup, API/lifecycle, and troubleshooting references. Nevermore keeps separate Blend, Rx and Brio API references and uses a shared npm verification profile. The parent owns shared usage rules and installation checks; the affected project's records own current verification and adoption state.
+
 Generated children default to the active project's resolved `.agents/skills/<skill-name>/` location. Keep the distribution checkout outside host discovery; when installing the parent workflow, omit its `children/` directory and copy only selected child folders into their intended project scope. An explicitly requested global/user child remains supported. See the bundled catalog for pin matching, collision handling and validation boundaries. Bundled instruction files do not install Roblox packages or establish runtime or host verification.
 
 ## Quickstart: local Codex skills
@@ -22,7 +24,7 @@ These folders contain agent instructions and optional supporting files, not a ru
 
 ### Install one skill
 
-With Git and Python 3.10+ available, clone this repository into a new directory:
+With Git and Python 3.11+ available, clone this repository into a new directory:
 
 ```sh
 git clone https://github.com/osabased/osaskills.git
@@ -56,18 +58,19 @@ A sensible response alone does not prove that the host loaded the skill; check t
 
 ## Scripts and repository checks
 
-The resource validators require Python 3.10+ and PyYAML. From the checkout root, install their [runtime dependencies](./skills/roblox-resource-acquisition/requirements.txt) in your chosen Python environment:
+The resource validators require Python 3.11+ and PyYAML; the shared installation checker reads TOML with Python's standard library. From the checkout root, create an environment with uv and install the [runtime dependencies](./skills/roblox-resource-acquisition/requirements.txt):
 
 ```sh
-python -m pip install -r skills/roblox-resource-acquisition/requirements.txt
+uv venv --python 3.11
+uv pip install -r skills/roblox-resource-acquisition/requirements.txt
 ```
 
 For contribution checks, install the [test dependencies](./skills/roblox-resource-acquisition/requirements-dev.txt), then run the two suites separately:
 
 ```sh
-python -m pip install -r skills/roblox-resource-acquisition/requirements-dev.txt
-python -m pytest -q -ra skills/roblox-resource-acquisition/tests
-python -m pytest -q -ra skills/structure-roblox-projects/tests
+uv pip install -r skills/roblox-resource-acquisition/requirements-dev.txt
+uv run python -m pytest -q -ra skills/roblox-resource-acquisition/tests
+uv run python -m pytest -q -ra skills/structure-roblox-projects/tests
 ```
 
 The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive Codex skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison](./skills/roblox-resource-acquisition/evals/README.md), [direction-selection](./skills/direction-selection/evals/README.md), or [preference-discovery](./skills/preference-discovery/evals/README.md) evaluation guide.

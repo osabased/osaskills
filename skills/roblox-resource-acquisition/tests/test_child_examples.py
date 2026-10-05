@@ -28,6 +28,9 @@ def test_worked_child_bundle(tmp_path, bundle_mod, folder):
     candidate = tmp_path / record["generated_skill"]
     shutil.copytree(source, candidate)
     (candidate / "SKILL.md").write_bytes((source / "SKILL.example.md").read_bytes())
+    (candidate / "resource.yaml").write_bytes((source / "resource.example.yaml").read_bytes())
+    skill = candidate / "SKILL.md"
+    skill.write_text(skill.read_text(encoding="utf-8").replace("resource.example.yaml", "resource.yaml"), encoding="utf-8")
     errors, _ = bundle_mod.validate_bundle(record_path, record, candidate)
     assert errors == []
     # These examples do not import behavioral claims from structural evidence.

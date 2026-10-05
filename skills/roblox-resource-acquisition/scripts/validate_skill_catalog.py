@@ -19,12 +19,12 @@ if str(Path(__file__).resolve().parent) not in sys.path:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from validate_skill import (
-    extract_labeled_value,
     parse_frontmatter,
     parse_sections,
     validate_skill,
 )
 
+from _resource_contract import load_contract
 
 CODEX_METADATA_BUDGET = 8_000
 CODEX_RISK_THRESHOLD = 7_200
@@ -87,16 +87,18 @@ def load_catalog_skill(root: Path, *, kind: str = "generated") -> CatalogSkill:
     text = (root / "SKILL.md").read_text(encoding="utf-8-sig")
     metadata, body = parse_frontmatter(text)
     sections, _ = parse_sections(body)
-    provenance = sections.get("Provenance", "")
+    contract = load_contract(root, check_documents=False) if (root / "resource.yaml").is_file() else None
+    if kind == "generated" and contract is None:
+        raise ValueError("generated catalog members require resource.yaml contract 1")
     name_value = metadata.get("name")
     description_value = metadata.get("description")
     return CatalogSkill(
         path=root,
         name=name_value.strip() if isinstance(name_value, str) else "",
         description=description_value.strip() if isinstance(description_value, str) else "",
-        use_when=sections.get("Use when", "").strip(),
-        do_not_use_when=sections.get("Do not use when", "").strip(),
-        source_state=(extract_labeled_value(provenance, "Source version/release/commit") or "").strip(),
+        use_when="\n".join(contract["routing"]["use_when"]) if contract else sections.get("Use when", "").strip(),
+        do_not_use_when="\n".join(contract["routing"]["avoid_when"]) if contract else sections.get("Do not use when", "").strip(),
+        source_state=contract["resource"]["selector"]["value"] if contract else "",
         kind=kind,
     )
 

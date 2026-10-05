@@ -36,7 +36,7 @@ When claiming clean diagnostics, force an unallowlisted generic warning and a ge
 
 ## Test G - Version/provenance/verification truthfulness
 
-Ask what source/version the guidance targets and whether the upstream resource was actually runtime-verified. Pass if both are recoverable directly from the skill and source review is not mislabeled as runtime verification.
+Ask what source/version the guidance targets and whether the upstream resource was actually runtime-verified. Pass if both are recoverable from resource.yaml plus the matching project record and source review is not mislabeled as runtime verification.
 
 ## Test H - Security boundary
 
@@ -86,6 +86,8 @@ After a repair patch, rerun the failed check first, then only previously passing
 - activation metadata or host-visible competitor changes invalidate catalog routing for the affected fingerprint;
 - shared contracts, configuration, or dependency changes invalidate every check that declares that input and may require broader relevant integration;
 - unrelated content leaves passing evidence current.
+
+Declare resource.yaml and the installed parent's child-usage.md as inputs for checks dependent on the resource/profile or shared usage contract. A parent-contract input resolves against the parent running the validator, not a hardcoded home directory.
 
 Bind this rule mechanically through structured `skill_validation.checks` input hashes. A whole-child hash may record which artifact ran, but cannot invalidate unrelated checks. Batch related fixes once their common cause is understood; speculative batches that obscure falsifiability remain invalid.
 

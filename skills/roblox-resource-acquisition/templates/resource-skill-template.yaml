@@ -1,0 +1,41 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: RESOURCE-SLUG
+  name: RESOURCE NAME
+  canonical_url: https://CANONICAL-SOURCE
+  package_id: PACKAGE-ID
+  selector:
+    kind: version
+    value: IMMUTABLE-VERSION
+  source_review_date: YYYY-MM-DD
+  devforum_url: null
+routing:
+  use_when:
+    - SOURCE-GROUNDED-POSITIVE-TRIGGER
+  avoid_when:
+    - MATERIAL-ROUTING-EXCLUSION
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+    - path: SKILL.md
+      roles: [routing, common-use, ownership, security, verification, maintenance, setup, troubleshooting]
+      when: every activated use
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: CONCRETE-POLICY-REASON
+  record: .agents/roblox/resources/records/RESOURCE-SLUG.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: pesde-wally
+  dependency_section: dependencies
+  registry: https://CANONICAL-REGISTRY
+  target: roblox
+  integrity:
+    files:
+      RELATIVE-SOURCE-FILE: REVIEWED-SHA256

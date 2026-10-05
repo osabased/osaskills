@@ -1,4 +1,3 @@
-# Illustrative artifact-only record; not live adoption state.
 schema_version: 3
 resource: Rojo
 slug: rojo-rbx-rojo
@@ -50,7 +49,7 @@ skill_validation:
   catalog_fingerprint: ''
   catalog_environment: ''
   catalog_result: ''
-  claim_scope: unclaimed
+  claim_scope: executable-integration
   checks: []
 host_adoptions: []
 limitations:

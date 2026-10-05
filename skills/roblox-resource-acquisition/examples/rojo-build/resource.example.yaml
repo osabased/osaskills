@@ -1,0 +1,53 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: rojo-rbx-rojo
+  name: Rojo build contract
+  canonical_url: https://github.com/rojo-rbx/rojo
+  package_id: rojo-rbx/rojo
+  selector:
+    kind: version
+    value: 7.7.0
+  source_review_date: '2026-09-30'
+  devforum_url: null
+routing:
+  use_when:
+  - An authorized project needs a reproducible CLI build with an independent script-presence
+    contract.
+  avoid_when:
+  - The requested proof needs live Studio synchronization, physics or gameplay execution.
+guidance:
+  claim_scope: executable-integration
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - api
+    - common-use
+    - lifecycle
+    - maintenance
+    - ownership
+    - routing
+    - security
+    - verification
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing or changing project bindings
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing matching symptoms
+  executable_fixture: scripts/smoke_build.py
+reconciliation:
+  policy: required
+  reason: Project source/tool installation can change independently.
+  record: .agents/roblox/resources/records/rojo-rbx-rojo.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: custom
+  custom_checker: scripts/check_build.py

@@ -19,6 +19,7 @@ def _write_child(root: Path) -> Path:
     child = root / "roblox-widget-resource"
     child.mkdir()
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    fixtures.write_contract(child)
     return child
 
 
@@ -462,20 +463,3 @@ def test_status_cli_real_process_reports_unknown_and_exit_two(tmp_path, scripts_
     output = json.loads(completed.stdout)
     assert output[0]["status"] == "unknown"
     assert "must be a string" in output[0]["reason"]
-
-
-def test_child_contract_rejects_missing_block_query_and_unowned_pending_work(skill_mod, tmp_path):
-    child = _write_child(tmp_path)
-    skill = child / "SKILL.md"
-    text = skill.read_text(encoding="utf-8")
-    text = text.replace(
-        "- Current-block check: Before affected use, run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair .agents/skills/roblox-widget-resource .agents/roblox/resources/records/widget-resource.yaml`; proceed only on HEALTHY, and enter full parent-state reconciliation on BLOCKED or UNKNOWN.\n",
-        "",
-    ).replace(
-        "- Cleanup/destruction: Invalidate or cancel pending waits and spawned tasks, then call the documented destroy method when the owning system stops.",
-        "- Cleanup/destruction: Call the documented destroy method eventually.",
-    )
-    skill.write_text(text, encoding="utf-8")
-    errors, _ = skill_mod.validate_skill(child)
-    assert any("Current-block check" in error for error in errors)
-    assert any("pending wait/task" in error for error in errors)

@@ -234,9 +234,38 @@ def complete(directory: Path, receipt: Path, final_record: Path | None = None) -
     checks = proof.get("checks")
     if not isinstance(checks, list):
         raise ValueError("receipt requires artifact, host and explicit-activation checks")
-    if any(not isinstance(check, dict) or check.get("status") != "passed" for check in checks):
-        raise ValueError("a receipt check is incomplete or failed; guard retained")
-    for gate in ("artifact", "host", "explicit-activation"):
+    scope = proof.get("completion_scope", "operational")
+    if scope not in {"operational", "installed"}:
+        raise ValueError("unknown receipt completion_scope")
+    if scope == "installed":
+        authorization = proof.get("authorization")
+        if not isinstance(authorization, str) or not authorization.strip():
+            raise ValueError("installed-only completion requires the user's scoped authorization")
+        if any(not isinstance(check, dict) or check.get("status") not in {"passed", "unavailable"}
+               or (check.get("status") == "unavailable" and check.get("gate") not in {"host", "explicit-activation"})
+               or not isinstance(check.get("evidence"), str) or not check["evidence"].strip() for check in checks):
+            raise ValueError("installed-only completion cannot bypass failed checks or artifact validation")
+        for gate in ("host", "explicit-activation"):
+            if not any(check.get("gate") == gate for check in checks):
+                raise ValueError(f"installed-only receipt must explicitly report the {gate} lane")
+        if state["record"]:
+            from _common import load_yaml
+            record_data = final_data if final_data is not None else (directory / "record-after").read_bytes()
+            record = load_yaml(record_data.decode("utf-8-sig"))
+            if not isinstance(record, dict) or not isinstance(record.get("host_adoptions"), list):
+                raise ValueError("installed-only completion requires truthful host_adoptions state")
+            for adoption in record["host_adoptions"]:
+                if not isinstance(adoption, dict) or adoption.get("status") == "operational":
+                    raise ValueError("installed-only completion cannot publish operational host state")
+                evidence = adoption.get("evidence", {})
+                if not isinstance(evidence, dict) or evidence.get("explicit_activation") == "passed":
+                    raise ValueError("installed-only completion cannot carry an unobserved activation pass")
+        gates = ("artifact", "installed-files")
+    else:
+        if any(not isinstance(check, dict) or check.get("status") != "passed" for check in checks):
+            raise ValueError("a receipt check is incomplete or failed; guard retained")
+        gates = ("artifact", "host", "explicit-activation")
+    for gate in gates:
         if not any(isinstance(check, dict) and check.get("gate") == gate and check.get("status") == "passed"
                    and isinstance(check.get("evidence"), str) and check["evidence"].strip() for check in checks):
             raise ValueError(f"required {gate} check has not passed; candidate remains guarded")

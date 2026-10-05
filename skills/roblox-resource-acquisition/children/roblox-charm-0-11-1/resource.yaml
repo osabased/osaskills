@@ -1,0 +1,67 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: charm
+  name: Charm 0.11.1
+  canonical_url: https://github.com/littensy/charm
+  package_id: littensy/charm
+  selector:
+    kind: version
+    value: 0.11.1
+    release_commit: af4eb5262d640cf89c56217ab7feb403e939cbd2
+  source_review_date: '2026-10-03'
+  devforum_url: null
+routing:
+  use_when:
+  - Implementing or diagnosing Charm 0.11.1 application/domain state, reactive getters, derived values,
+    synchronous effects and scoped subscriptions in a project that adopted this pin.
+  avoid_when:
+  - A single local variable or native property suffices; implementing UI rendering or Vide-only component
+    state; discrete events that belong to LemonSignal; networking/synchronization; selecting/upgrading
+    dependencies. Preserve a different project pin and resolve matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring, or changing package mapping
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: changing API usage, activation ownership, partial acquisition or teardown
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing a matching failure or resource-specific security boundary
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: .agents/roblox/resources/records/charm.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: pesde-wally
+  dependency_section: dependencies
+  registry: https://github.com/UpliftGames/wally-index
+  target: roblox
+  integrity:
+    files:
+      src/init.luau: ad8d276b54ee32787f9e3a6e165c80ee44aea808294a45a5070bcabddf0bef39
+      src/system.luau: f15e7d4b41729135d5fd12ccd93fe581ebd136598f36dcc908e8ffbe2c174d94

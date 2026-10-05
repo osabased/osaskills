@@ -1,0 +1,64 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: blink
+  name: Blink 0.18.9
+  canonical_url: https://github.com/1Axen/blink
+  package_id: 1axen/blink
+  selector:
+    kind: version
+    value: 0.18.9
+  source_review_date: '2026-10-03'
+  devforum_url: null
+routing:
+  use_when:
+  - Authoring or diagnosing Blink 0.18.9 CLI configuration, generated code placement or regeneration.
+  avoid_when:
+  - Selecting/upgrading a transport; ordinary UI events or preview tooling; production server receive
+    activation before a validated predecode size/rate budget exists.
+  - 'The project''s adopted target differs: preserve its pin and resolve exact-target guidance.'
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring, or changing package mapping
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: changing API usage, activation ownership, partial acquisition or teardown
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing a matching failure or resource-specific security boundary
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: .agents/roblox/resources/records/blink.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: pesde-registry
+  dependency_section: dev_dependencies
+  registry: https://github.com/pesde-pkg/index
+  target: lune
+  integrity:
+    files:
+      release/blink_pesde.luau: aea36deb0fbaf177fba4b48e5c88c9cb820abf5d077e4e237b98dcf96631343f

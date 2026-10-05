@@ -196,7 +196,7 @@ def valid_skill_text(
     description: str = "Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.",
     use_when: str = "- Synchronizing replicated widget state across server-owned sessions.",
 ) -> str:
-    """Return a generated skill satisfying the current structural contract."""
+    """Synthetic advice-only child; runtime behavior is deliberately unverified."""
     return f"""---
 name: {name}
 description: {description}
@@ -204,104 +204,69 @@ description: {description}
 
 # Widget Resource
 
-Use **Widget Resource** for synchronized widget state. Guidance targets **1.2.3** (source reviewed **2026-08-16**). Resource verification: **unverified**.
+Reviewed target: 1.2.3. Read [resource contract](resource.yaml) for identity.
 
-## Use when
+## Choose the task
 
 {use_when}
 
-## Do not use when
+Use a local table when replication is unnecessary.
 
-- A local table cleanly satisfies the small one-script task.
+## Start and stop
 
-## Prerequisites and installation
+Resolve the affected project and installed parent. Read its references/child-usage.md
+once per task for freshness, status, guards and repair. Unknown project state enters
+parent reconciliation; it never falls back to global project evidence.
 
-1. Install package `com.example.widget` at version `1.2.3` under `ReplicatedStorage.Packages`.
-
-## Repair interrupt
-
-- Trigger: Invoke `roblox-resource-acquisition` in `repair/reconcile` mode when this reusable guidance requires guessing, bypassing an instruction, repeated rediscovery, or an undocumented workaround likely to recur; a harmless task-local adjustment is not an interrupt.
-- Hard defect: If correctness, security, canonical identity, selected version, or verification is unreliable, stop dependent work and enter parent reconciliation and repair before continuing.
-- Soft defect: If the workaround is safe and reversible, immediate work may continue, but invoke parent repair diagnosis and surface the reproduction, workaround, and durable correction before completion.
-- Handoff: Capture the task, installed state, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction. Parent activation authorizes diagnosis and reporting, not edits without current authorization.
-
-## Common path
-
-```luau
-local Widget = require(game.ReplicatedStorage.Packages.Widget)
-local session = Widget.new()
-session:Start()
-```
-
-## Operational reconciliation
-
-- Policy: required — project package manifests can select a different materially version-sensitive release.
-- Installed-state check: Inspect the project package manifest and read the `com.example.widget` version before requiring the module.
-- Expected identity/state: widget-resource + https://example.com/widget + com.example.widget + 1.2.3.
-- Current-block check: Before affected use, run `python ~/.agents/skills/roblox-resource-acquisition/scripts/check_resource_status.py --pair .agents/skills/roblox-widget-resource .agents/roblox/resources/records/widget-resource.yaml`; proceed only on HEALTHY, and enter full parent-state reconciliation on BLOCKED or UNKNOWN.
-- Parent-state check: Resolve the affected Roblox project root, then read the matching schema-version 3 resource record at `.agents/roblox/resources/records/widget-resource.yaml` and resource-bound learnings from `.agents/roblox/resources/learnings/` relative to it. If this project-scoped child's project cannot be resolved, report `UNKNOWN` and enter parent `repair/reconcile`; do not switch to global records. Only an explicitly user/global-scoped variant documents the no-project fallback at `~/.roblox-resources/records/widget-resource.yaml` and `~/.roblox-resources/learnings/`. Match by slug plus canonical identity.
-- Mismatch/unknown action: Stop the affected version-sensitive use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode.
-- Defect handoff: Follow the earlier Repair interrupt handoff as the source of truth for evidence and parent activation.
-
-## Client/server placement
-
-Create authoritative sessions on the server and validate every client request. Clients may observe replicated widget state but never choose authoritative values or invoke server-only lifecycle methods.
-
-## Mental model
-
-Each server-owned session publishes a replicated widget snapshot and owns cleanup for all connections created during its lifetime.
-
-## Lifecycle and cleanup
-
-- Initialization: Create and start one server-owned session after package loading completes; the server lifecycle root owns the activated session.
-- Reuse: Reuse the session for related widget updates during its lifetime.
-- Cleanup/destruction: Invalidate or cancel pending waits and spawned tasks, then call the documented destroy method when the owning system stops.
+Install com.example.widget at 1.2.3. The server lifecycle root creates, starts and
+destroys the session. Invalidate pending waits and tasks before teardown. Validate
+client payloads before changing authoritative server state.
 
 ## API used by this skill
 
 Use `Widget.new()`, `session:Start()`, and `session:Destroy()` for the documented lifecycle.
 
-## Failure modes
+## Diagnose and complete
 
-### Widget never appears
-
-A missing package or wrong server placement causes initialization failure; inspect the manifest and move initialization to the server before retrying.
-
-## Limitations
-
-- Does not replace server-side validation of client-controlled widget requests.
-
-## Security notes
-
-Keep the server authoritative, validate client payloads before changing widget state, and pin the inspected package version.
-
-## Verify after installation
-
-Executable fixture: not-applicable — resource behavior remains unverified and this recipe records source-reviewed instruction guidance only.
-
-Run: Execute `lune run tests/widget.luau` after installing the package.
-
-Pass condition: The command prints `widget-ready` and exits with code `0`.
-
-## Alternatives
-
-- Use a local server-owned table when replication and managed cleanup are unnecessary.
-
-## Provenance
-
-- Resource slug: widget-resource
-- Package identity: com.example.widget
-- DevForum: No DevForum topic is used/applicable
-- Canonical source/docs: https://example.com/widget
-- Source version/release/commit: 1.2.3
-- Source review date: 2026-08-16
-- Resource verification: unverified
-
-## Version drift
-
-Before using another version, compare its release source and API changes, then rerun the installation and lifecycle checks.
+If initialization fails, inspect the manifest and server placement. This synthetic
+resource has no runtime proof. The custom checker is reviewed independently; the
+shared checker reports it as unavailable and never executes it. Record only checks
+actually performed. Recurring workarounds activate parent repair diagnosis.
 """
 
+
+def write_contract(child, *, use_when=None):
+    """Explicitly author contract-1 fixture data, never adapt production legacy prose."""
+    import yaml
+    from _resource_contract import CORE_ROLES
+    if use_when is None:
+        text = (child / 'SKILL.md').read_text(encoding='utf-8')
+        start = text.index('## Choose the task') + len('## Choose the task')
+        end = text.index('## Start and stop')
+        use_when = [line[2:] for line in text[start:end].splitlines() if line.startswith('- ')]
+    else:
+        use_when = [use_when.removeprefix('- ')]
+    data = {
+        'schema_version': 1,
+        'parent_contract': {'name': 'roblox-resource-acquisition', 'version': 1},
+        'scope': 'project',
+        'resource': {'slug': 'widget-resource', 'name': 'Widget Resource',
+            'canonical_url': 'https://example.com/widget', 'package_id': 'com.example.widget',
+            'selector': {'kind': 'version', 'value': '1.2.3'},
+            'source_review_date': '2026-08-16', 'devforum_url': None},
+        'routing': {'use_when': use_when, 'avoid_when': ['A local table suffices.']},
+        'guidance': {'claim_scope': 'advice-only', 'shared_usage': 'references/child-usage.md',
+            'documents': [{'path': 'SKILL.md', 'roles': sorted(CORE_ROLES | {'setup', 'troubleshooting', 'api'}),
+                'when': 'every activated use'}], 'executable_fixture': None},
+        'reconciliation': {'policy': 'required', 'reason': 'Material installed state can differ.',
+            'record': '.agents/roblox/resources/records/widget-resource.yaml',
+            'learnings': '.agents/roblox/resources/learnings/'},
+        'installation': {'profile': 'custom', 'custom_checker': 'scripts/check_widget.py'},
+    }
+    (child / 'scripts').mkdir(exist_ok=True)
+    (child / 'scripts/check_widget.py').write_text('# Synthetic test checker, never run as upstream proof.\n', encoding='utf-8')
+    (child / 'resource.yaml').write_text(yaml.safe_dump(data, sort_keys=False), encoding='utf-8')
+    return data
 
 
 def verified_acquisition_record(*, generated_skill: str = "") -> dict:
