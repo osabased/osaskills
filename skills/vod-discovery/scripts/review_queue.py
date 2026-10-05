@@ -99,7 +99,7 @@ def selected_xml(data, plan, probes, decisions, mode='keep'):
     filtered['alternates'] = [a for a in plan.get('alternates', []) if a['event_id'] in selected]
     filtered['coverage_note'] = (plan.get('coverage_note', '') +
         '\nFull main chronology retained. Selected main moments have boundary cuts and Mango labels; '
-        'surrounding footage has Iris labels. Review choices select these moments, source markers '
+        'surrounding footage uses the default label. Review choices select these moments, source markers '
         'and alternate excerpts; no main footage is removed.')
     return build_review(markers, probes, filtered), sorted(selected)
 

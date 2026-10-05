@@ -15,22 +15,31 @@ Help an editor discover what progresses a video without silently discarding unce
 - Inspect accessible media, languages, tools and hardware. Reuse a verified compatible environment, otherwise use [setup.md](references/setup.md). Match speech models to the footage's languages; the bundled semantic model is English-only. Optional Windows OCR and Vulkan acceleration are capabilities with prerequisites, not requirements for every project.
 - Ask only for consequential missing information. Take ownership of routine work within the supplied scope and available time; do not assume overnight processing is acceptable.
 
+## Default editing preferences
+
+Apply these preferences across projects unless the current request explicitly overrides them. Keep project-specific exceptions in project notes; source identities, main POV, chronology and hardware still come from the current project.
+
+- Support an editor who discovers and assembles together. Make useful footage easy to select and edit immediately; reduce repeated viewing, context reconstruction and decision switching. Keep the review queue optional rather than requiring a separate selection pass before assembly.
+- No fixed final runtime: the video should be as long as its material earns. Do not impose an arbitrary duration, compression ratio or cut quota unless requested. The complete review timeline is source material, not a recommendation for the final edit's length.
+- For a layered review timeline, keep the full main chronology and cut included moment sections at both boundaries in video and linked audio. Use **Mango clip labels** for those sections; leave the rest of the footage at Premiere's normal/default label, with no explicit color override. Preserve source markers and organized media/POV bins.
+- Descriptions briefly state **what happened**. Marker names are short visual labels, generally 1–4 words, with detail and provenance in comments. Editorial-purpose language alone does not describe the footage.
+- Import one timeline audio clip per actual audio stream. Preserve genuine stereo grouping with both channels; do not duplicate or split it because A1/A2 are enabled or targeted. Probe actual stream counts and never discard additional streams to fit an exporter limitation.
+
 ## Discovery defaults
 
 - Favor recall unless the current brief asks for a different selection policy: preserve plausible, uncertain, quiet, contextual, and setup moments alongside clear payoffs. No default top-N highlight limit, excitement threshold, or required genre/premise questionnaire.
-- For Premiere source delivery, retain **source clip markers** and link relevant other POVs in their comments. Use a layered review timeline or the review queue when requested; neither is mandatory for discovery.
-- Descriptions briefly say **what happened** in this POV. For example: "The player enters the clearing, gets attacked, retreats, and asks for help." Describing an editorial purpose alone is not a substitute for describing footage. Keep raw evidence in analysis files.
+- For Premiere delivery with an established main POV, default to the complete review timeline plus **source clip markers** and relevant POV links in comments. Source-marker-only delivery remains available when requested or while the main POV is unresolved. The review queue is optional.
+- Keep raw evidence in analysis files. An example factual description is: "The player enters the clearing, gets attacked, retreats, and asks for help."
 - The bundled processing is free and local; it does not require paid APIs, subscriptions or cloud inference endpoints. Images/transcripts inspected through the existing chat still use that service and its normal allowance. Respect the current project's processing and privacy constraints.
-- Import one timeline audio clip per actual audio stream. A stereo stream remains one stereo track with both left and right channels; do not duplicate or split it because A1/A2 are targeted. Probe stream counts first. Preserve genuine additional streams; never silently drop them to fit an exporter limitation.
 - POVs drift and share audio only sometimes. A whole-file offset or multicam success is not a prerequisite.
 
-## Optional layered review timeline
+## Default Premiere review timeline
 
 The current exporter provides a complete chronological review timeline, not an automatic selects assembly. For this delivery, author the project's `main_sources` and local-anchor plan; no POV is hardcoded.
 
 - Keep the selected main sources complete and in the plan's order on the base video track, with corresponding audio below.
-- Cut main video and linked audio at each included moment's start and end. The exporter uses Mango for moment sections and Iris for surrounding footage. Preserve every frame once, including unmarked footage; overlapping moments share footage while retaining all boundaries. These are clip labels, not confidence ratings.
-- Place only relevant alternate excerpts on upper video tracks with their audio on separate higher tracks for auditioning. **Main picture/audio play by default; alternate video/audio start disabled.** These are exporter defaults, not evidence of any new project's editorial preference. Resolve requests for a different assembly explicitly rather than silently treating this review layout as the requested edit.
+- Cut main video and linked audio at each included moment's start and end. The exporter uses Mango for moment sections and leaves surrounding footage's label unspecified. Preserve every frame once, including unmarked footage; overlapping moments share footage while retaining all boundaries. These are clip labels, not confidence ratings.
+- Place only relevant alternate excerpts on upper video tracks with their audio on separate higher tracks for auditioning. **Main picture/audio play by default; alternate video/audio start disabled.** This is the default review layout. Resolve requests for a different assembly explicitly rather than silently treating this review layout as the requested edit.
 - Align simultaneous coverage using locally verified anchors. Do not align merely by the starts of broad review ranges or apply one offset across the entire drifting recording. Clearly label timing uncertainty.
 - Earlier setup and later reactions retain their true temporal relationship; do not stack them as if simultaneous merely because they are editorially related.
 - Report actual review coverage separately from timeline length. A complete source on the timeline does not mean all of it was reviewed. Keep a requested fast test bounded to its agreed scope.

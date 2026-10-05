@@ -77,8 +77,8 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(len(main.findall('clipitem')),4)
         self.assertEqual([(p.findtext('start'),p.findtext('end'),p.findtext('labels/label2'))
                           for p in main.findall('clipitem')],
-                         [('0','6480','Iris'),('6480','7140','Mango'),
-                          ('7140','36000','Iris'),('36000','84000','Iris')])
+                         [('0','6480',None),('6480','7140','Mango'),
+                          ('7140','36000',None),('36000','84000',None)])
         self.assertEqual(alt.findtext('clipitem/enabled'),'FALSE')
         self.assertEqual(alt.findtext('clipitem/in'),'11400')
         audio=seq.findall('./media/audio/track')
@@ -114,7 +114,7 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(ids,['social'])
         parts=root.findall('.//sequence/media/video/track/clipitem')
         self.assertEqual([(p.findtext('start'),p.findtext('end'),p.findtext('labels/label2')) for p in parts],
-                         [('0','36000','Iris'),('36000','84000','Iris')])
+                         [('0','36000',None),('36000','84000',None)])
         self.assertEqual(root.findtext('.//clip/marker/name'),'Banter')
         self.assertEqual((self.data,self.plan,self.state),before)
 

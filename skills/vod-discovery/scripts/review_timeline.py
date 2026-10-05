@@ -16,7 +16,6 @@ from vod import export_events, number, probe, read, text
 
 
 MOMENT_LABEL = 'Mango'
-FOOTAGE_LABEL = 'Iris'
 
 
 def main_segments(master):
@@ -35,7 +34,7 @@ def main_segments(master):
     active = 0
     for start, end in zip(boundaries, boundaries[1:]):
         active += changes[start]
-        yield start, end, MOMENT_LABEL if active else FOOTAGE_LABEL
+        yield start, end, MOMENT_LABEL if active else None
 
 
 def build_review(markers, probes, plan):
@@ -153,8 +152,10 @@ def build_review(markers, probes, plan):
                 item.find('rate/ntsc').text = str(ntsc).upper()
                 element(item, 'start', entry['start'])
                 element(item, 'end', entry['end'])
-                # Per-instance labels: never recolor the shared source master.
-                element(element(item, 'labels'), 'label2', entry['label'])
+                # Label moment instances only. Omit an override for surrounding
+                # footage so Premiere supplies its normal source/default label.
+                if entry['label'] is not None:
+                    element(element(item, 'labels'), 'label2', entry['label'])
                 # The master owns the complete file declaration and source markers.
                 file = item.find('file')
                 fileid = file.get('id')

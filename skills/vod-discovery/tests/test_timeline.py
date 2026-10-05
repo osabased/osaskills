@@ -40,7 +40,7 @@ class TimelineDelivery(unittest.TestCase):
         self.assertEqual([p.findtext('masterclipid') for p in parts], ['vod-master-0']*3 + ['vod-master-2'])
         self.assertEqual([(p.findtext('start'),p.findtext('end')) for p in parts],
                          [('0','6480'),('6480','7140'),('7140','36000'),('36000','84000')])
-        self.assertEqual([p.findtext('labels/label2') for p in parts], ['Iris','Mango','Iris','Iris'])
+        self.assertEqual([p.findtext('labels/label2') for p in parts], [None,'Mango',None,None])
         clip = alt.find('clipitem')
         self.assertEqual(clip.findtext('masterclipid'), 'vod-master-1')
         self.assertEqual((clip.findtext('start'),clip.findtext('end')), ('6480','7080'))
@@ -57,6 +57,8 @@ class TimelineDelivery(unittest.TestCase):
         for medium in ('video','audio'):
             for track in seq.findall(f'./media/{medium}/track'):
                 for item in track.findall('clipitem'):
+                    if item.findtext('labels/label2') is None:
+                        self.assertIsNone(item.find('labels'))  # No empty override on ordinary footage.
                     for link in item.findall('link'):
                         kind = link.findtext('mediatype')
                         target_track = seq.findall(f'./media/{kind}/track')[int(link.findtext('trackindex'))-1]
@@ -82,7 +84,7 @@ class TimelineDelivery(unittest.TestCase):
         self.assertEqual([(int(p.findtext('in')),int(p.findtext('out'))) for p in parts[:-1]],
                          [(a*60,b*60) for a,b in zip(boundaries,boundaries[1:])])
         self.assertEqual([p.findtext('labels/label2') for p in parts],
-                         ['Mango']*8 + ['Iris','Mango','Iris'])
+                         ['Mango']*8 + [None,'Mango',None])
         self.assertEqual(sum(int(p.findtext('end'))-int(p.findtext('start')) for p in parts),84000)
         for left,right in zip(parts,parts[1:]):
             self.assertEqual(left.findtext('end'),right.findtext('start'))
@@ -95,7 +97,7 @@ class TimelineDelivery(unittest.TestCase):
         self.assertEqual([(p.findtext('in'),p.findtext('out')) for p in parts],[('0','120'),('120','48000')])
         self.assertEqual([(p.findtext('start'),p.findtext('end')) for p in parts],
                          [('36000','36120'),('36120','84000')])
-        self.assertEqual([p.findtext('labels/label2') for p in parts],['Mango','Iris'])
+        self.assertEqual([p.findtext('labels/label2') for p in parts],['Mango',None])
 
     def test_ntsc_rounding_matches_source_markers_with_mono_or_no_audio(self):
         self.plan.update(main_sources=['a'],alternates=[])
@@ -125,7 +127,7 @@ class TimelineDelivery(unittest.TestCase):
         seq = ET.fromstring(build_review(self.markers,self.probes,self.plan)).find('.//sequence')
         parts = seq.find('./media/video/track').findall('clipitem')
         self.assertEqual(len(parts),2)
-        self.assertEqual([p.findtext('labels/label2') for p in parts],['Mango','Iris'])
+        self.assertEqual([p.findtext('labels/label2') for p in parts],['Mango',None])
 
     def test_invalid_alignment_and_overlaps_are_rejected(self):
         for change in [lambda p:p['alternates'][0].update(source_anchor_sec=220),
