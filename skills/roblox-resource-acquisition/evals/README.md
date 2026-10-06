@@ -23,3 +23,7 @@ Keep exact commits, model/settings, responses/traces, judgments, and available t
 [community-cases.json](community-cases.json) exercises topic-level recommendations, repeated endorsements, version/context disagreement, fixed curated targets, inaccessible community channels and healthy-use boundaries. Follow the same isolated-session and hidden-grading rules; use only the supplied fictional evidence, and distinguish supplied proof from checks the agent actually ran.
 
 For a non-Git local skill, capture the exact baseline/candidate file fingerprints instead of inventing commits. A candidate-only run can expose defects but does not measure improvement against a matched baseline. Keep unavailable paired conditions explicit.
+
+## Maintenance and ordinary-use cases
+
+[maintenance-cases.json](maintenance-cases.json) preserves the behavioral requirements behind the parent router's former exact-prose tests: target-bound refresh, hard/soft/harmless repair, healthy conditional use, required plugin integrity and unresolved project scope. Use the same isolated-session and hidden-grading protocol. Static tests check reference reachability and fixture structure; they do not establish that an agent followed a repair route or performed a check. Existing comparison/adoption/community expectations remain unchanged.

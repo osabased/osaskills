@@ -1,4 +1,4 @@
 interface:
   display_name: "Structure Roblox Projects"
-  short_description: "Orient Roblox agents and guide needs-led project setup"
-  default_prompt: "Use $structure-roblox-projects to understand this Roblox project or learn my needs for a new one, then present an overview or researched setup for review."
+  short_description: "Resolve Roblox source, startup, and authoring ownership"
+  default_prompt: "Use $structure-roblox-projects to identify the Roblox source and integration boundaries needed for my task, preserve established conventions, and complete the requested work. For requested onboarding or a new setup, prepare the relevant overview or proposal for review."

@@ -9,34 +9,30 @@ Reviewed target: `1.6.1`, source reviewed 2026-10-02. The [resource contract](re
 
 ## Before use
 
-Resolve `PROJECT` to the affected project root, `CHILD` to this installed directory, and `PARENT` from the available `roblox-resource-acquisition` skill location. Read its `references/child-usage.md` once per task and apply first-use freshness, guard and repair rules. Project resolution failure is unknown state and enters parent reconciliation.
-
-Policy is required: the exact installed asset and full matching lifecycle inputs are checked before version-sensitive use. Run:
+Resolve the affected project and installed `roblox-resource-acquisition` parent; read its `references/child-usage.md` once per task for guards, first-use checks and repair. Policy is **required**: before version-sensitive use, verify the installed asset, run the shared record query and reconcile the full matching record/learnings. Require exit 0, `status: PASS`, selector `1.6.1`, `lane: asset-integrity`, and record query `HEALTHY`. An unknown target or block stops affected use.
 
 ```text
 python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --asset "INSTALLED-ASSET"
-python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/ui-labs.yaml"
 ```
-
-Only `HEALTHY` permits ordinary use. `BLOCKED`/`UNKNOWN`, mismatched pins, verifier drift, hard defects or invalidated repair evidence enter the parent's reconciliation path. A recurring safe workaround still activates parent repair diagnosis.
 
 ## Common use
 
-- Open UI Labs from Studio's toolbar in edit mode. Locally installed release files use the source's `UI Labs (DEV)` toolbar and `UILabs(DEV)` widget names; the standard installation uses `UI Labs`/`UILabs`.
-- Locate the mapped `.story` ModuleScript in Story Explorer. For Vide return a table with `vide = Vide`, scalar `controls` values and `story = function(props)` returning a GUI component inside the scope UI Labs already owns.
-- Read controls as Sources, e.g. `props.controls.Title()`. Pass typed getter adapters to the component. Do not create an independent gameplay mount inside the story; it would hide cleanup ownership from the preview host.
-- Select the story, vary controls, stop/remount it and check Output. Repeat for reload when that behavior is claimed. Keep discovery/construction, preview execution, real input/layout and diagnostics as separate results.
+Open UI Labs from Studio's toolbar in edit mode. Local release files use `UI Labs (DEV)`/`UILabs(DEV)` toolbar/widget names; standard installations use `UI Labs`/`UILabs`. Inspect the loaded widget identity when installations overlap.
+
+Locate the mapped `.story` ModuleScript in Story Explorer. A Vide story returns `{ vide = Vide, controls = ..., story = function(props) ... end }` with scalar control values. Read controls as Sources, e.g. `props.controls.Title()`, and pass typed getter adapters to the component.
+
+Select the story, vary controls, stop/remount it and inspect Output. Exercise reload when claiming that behavior. Distinguish observed discovery, construction, execution, input/layout and diagnostics.
 
 ## Ownership and critical constraints
 
-Keep stories in development-only mappings. UI Labs owns the Vide preview scope; return the story component inside that scope and avoid an independent gameplay mount. Stories must not yield. Register Instance cleanup immediately and invalidate story-owned pending work before teardown. Inspect the loaded widget identity to distinguish duplicate installations.
+UI Labs owns the Vide preview scope. Return the component in that scope; an independent gameplay mount hides cleanup ownership. Stories must not yield. Register Instance cleanup immediately and invalidate story-owned pending work before teardown.
 
-UI Labs runs as an editor plugin, not as a gameplay client/server startup dependency. Keep story modules and fixtures in development-only mappings; release builds must exclude them. The chosen UI framework remains a client runtime dependency. Server gameplay and client-action validation retain server authority; editor previews must use local/mock state and must not run live persistence or privileged actions.
+Stories/fixtures stay in development-only mappings excluded from release builds. The plugin runs in the editor; the chosen UI framework remains a client runtime dependency. Preview with local/mock state, without live persistence or privileged actions. Server gameplay and validation retain authority.
 
 ## Complete and read further
 
-Run `python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --asset "INSTALLED-ASSET"`; require exit 0 and JSON `status: PASS` with this exact resource selector and the asset-integrity lane. Use the project's source/build checks for authored consumers and generated placement. These checks establish identity/static integration; runtime, rendering, input and clean-diagnostics claims require their own project evidence.
+Retain the pre-use `asset-integrity` result while its inputs remain unchanged. Run project source/build checks and report only the Studio lanes actually exercised. Source hashes/static integration do not prove preview execution, rendering, input or clean diagnostics.
 
 - For installation, locked restoration or mapping compatibility, read [setup](references/setup.md).
-- When changing API usage, activation, partial acquisition or teardown, read [API and lifecycle](references/api-and-lifecycle.md).
+- For additional APIs, cross-library integration or partial-acquisition/teardown recipes, read [API and lifecycle](references/api-and-lifecycle.md).
 - For a matching failure symptom or a resource-specific security question, read [troubleshooting](references/troubleshooting.md).

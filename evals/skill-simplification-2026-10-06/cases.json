@@ -1,0 +1,92 @@
+[
+  {
+    "id": "D1",
+    "skill": "direction-selection",
+    "prompt": "Choose our next engineering action before committing to a data adapter. Hard requirements are durable acknowledgement and p99 latency at most 80 ms on the supplied workload; after those, minimize maintenance effort. A passes both with a representative 62 ms test but adds an adapter we must maintain. B advertises 45 ms, measured only on a warmed read subset; its acknowledgement behavior is unverified. C is our existing adapter, passes durability, and currently measures 85 ms. A concrete batching change to C could remove that latency weakness; a representative test costs two hours and has not run. We have half a day before committing. These are the available observations, not forecasts. Recommend the next action, what can be committed now, and what would change the choice."
+  },
+  {
+    "id": "D2",
+    "skill": "direction-selection",
+    "prompt": "Use our already adopted Rojo and Wally setup. Do not evaluate replacement tools. The task is a reversible one-line display-text fix under the existing mapping; the needed source and build path are known. What should the agent do next? Keep the response brief."
+  },
+  {
+    "id": "C1",
+    "skill": "consolidate",
+    "prompt": "Turn these findings into a concise proposal for the developer, in plain text. Goal: fix inventory search lag while preserving behavior. A trace shows every keystroke repeats a full item scan. A tested existing lookup index returns identical results and reduces the sample from 140 ms to 12 ms; wiring it into this caller takes about an hour. Another reviewer proposes Redis because the module has no cache; no measurements support a cache or network service. A third reviewer wants the whole UI framework replaced because its name sounds outdated. The load test omitted mobile, so mobile behavior is unknown. The user authorized the local correction and relevant checks. Recommend what to do, explain what the mobile gap warrants, and state the next step."
+  },
+  {
+    "id": "S1",
+    "skill": "system-review",
+    "prompt": "Review this purchase flow for the requirement that retrying one request charges once and grants one item. The payment service commits a debit when called. Application code checks a receipt table for request_id, then calls debit, then grants the item, then writes the receipt. A crash between debit and receipt loses application acknowledgement. Logs show request R debited 10 coins, a crash, then R retried and debited another 10. The developer says the receipt table has a unique request_id key, so duplicate charging is impossible. The payment service has no demonstrated idempotency contract. Give a scoped verdict, the root issue, the supported next step, and what evidence would close it. No code edits."
+  },
+  {
+    "id": "S2",
+    "skill": "system-review",
+    "prompt": "Review a separate purchase flow. Within one documented atomic durable transaction, request_id is inserted into a unique ledger, the balance is debited, the inventory is updated, and the exact response is stored. All effects roll back together if the transaction fails. A retry with an existing request_id reads the committed stored response instead of applying any effects. Two executable fault-injection observations show: a crash before commit leaves zero effects, and a lost response after commit followed by retry leaves exactly one debit and one item. An earlier reviewer flagged all 'commit before acknowledgement' states as double-charge defects. Scope your conclusion to this supplied transaction/retry model. Is that finding retained, and what remains unverified?"
+  },
+  {
+    "id": "M1",
+    "skill": "motion-studies",
+    "prompt": "The user requested a rough inventory-unfolding study in Roblox before choosing the motion for production. A worker prepared a proxy script but has not run it in Studio. The available still image looks good; a browser animation imitates the intended motion. Studio playback is unavailable to this agent. The user has not accepted the movement or a substitute format. They also authorized unrelated icon cleanup. Explain what can be claimed, what to do next about the motion, and whether the other work can proceed."
+  },
+  {
+    "id": "M2",
+    "skill": "motion-studies",
+    "prompt": "The user already accepted the inventory's 200 ms motion after watching it in the intended runtime. The current authorized change only replaces a placeholder texture, preserving movement and timing. No new motion choice has appeared. Should the agent create another study or ask for another motion approval? State the useful next step."
+  },
+  {
+    "id": "P1",
+    "skill": "structure-roblox-projects",
+    "prompt": "An existing Roblox project uses an intentional mixed layout: authored client controllers are mapped by Rojo, designers own world assets in Studio, Wally's Packages directory is generated, and Bootstrapper already owns application init/start. The user asks for a small inventory label fix and its relevant check; they did not request onboarding, a guide, setup changes, or a migration. The affected authored source and mapping are supplied and coherent. Relevant same-task first-use checks already completed with no drift or pending maintenance. A lint suggestion says all folders should be rearranged into a familiar template. Describe the next work and its verification boundary. Do not perform any actual edits."
+  },
+  {
+    "id": "R1",
+    "skill": "roblox-resource-acquisition",
+    "prompt": "For a full Roblox resource adoption, the user chose exact target Vendor/Tool 2.3 and authorized ordinary reversible integration and project-scoped child installation. The exact package import and required happy-path test passed. The cleanup/failure check required for this use is unavailable. A generated child passes structural validation and is copied into the requested project scope; host discovery and explicit activation have not been observed. Its canonical source is trusted by the project's policy. State whether adoption is complete, which statuses can be reported, and the next useful action. Do not change the target or ask again for already-authorized steps."
+  },
+  {
+    "id": "R2",
+    "skill": "roblox-resource-acquisition",
+    "prompt": "An ordinary feature task uses an already adopted immutable resource through its matching child. This task's canonical freshness check is recorded, declared identity returned PASS, the narrow status query returned HEALTHY, and no maintenance guard, drift, or defect is present. Full source integrity is due at completion. Does using the resource require restarting acquisition, broad candidate research, full lifecycle reconciliation, or host adoption? Explain the required next checks in a few sentences."
+  },
+  {
+    "id": "B1",
+    "skill": "roblox-bootstrapper-1-2-2",
+    "prompt": "At the project's pinned Bootstrapper 1.2.2 target, loadDescendants returns three module tables. Controller A has only start, Controller B has init and start, and Controller C's init reports an error. The proposed startup code passes Bootstrapper.run(modules, '.init', owner)'s returned module list directly into run(..., '.start', owner), without checking the errors result. Assess the behavior and describe the correct phase handling, including start-only modules. Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "J1",
+    "skill": "roblox-janitor-1-18-3",
+    "prompt": "At pinned Janitor 1.18.3, a feature adds producer disconnects and view destruction to one Janitor and relies on insertion order so producers stop first. One cleanup callback can throw. Both close-button and respawn paths call that same raw Janitor's Destroy. Recommend an ownership/teardown arrangement and state which current assumptions are justified. Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "L1",
+    "skill": "roblox-lemonsignal-2-0-0",
+    "prompt": "At pinned LemonSignal 2.0.0, a feature waits on a borrowed long-lived signal using Wait. On disposal it calls Destroy on that signal, assumes the waiter and an already-running callback are cancelled, and later reconnects from another consumer. Explain the ownership and cancellation problems and the smallest suitable pattern. Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "V1",
+    "skill": "roblox-vide-0-4-1",
+    "prompt": "At the pinned Vide 0.4.1 commit, a gameplay component creates a root Frame, retains the mount disposer, and tears down by calling step(0) followed by the same raw disposer on every close event. Some callbacks can throw. The root was never registered with cleanup. What should own cleanup, how should repeated disposal be handled, and can step(0) be used as this component's teardown? Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "H1",
+    "skill": "roblox-charm-0-11-1",
+    "prompt": "At pinned Charm 0.11.1 with Vide UI, a developer passes a raw Charm getter directly as a Vide property and expects Vide dependency tracking to subscribe to it. A returned listener disposer is discarded. Another change mutates a table in place and sets the same reference, expecting deep comparison to notify. Assess these assumptions and describe a minimal owned integration. Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "U1",
+    "skill": "roblox-ui-labs-1-6-1",
+    "prompt": "At the exact UI Labs Studio plugin 1.6.1 asset, a Vide story creates its own gameplay mount inside story(props), waits for live persistence data, and sits in a release mapping. The story file exists and its source checks pass, so a report says rendering, input, reload, and cleanup are verified. Describe the appropriate story ownership and evidence needed. The exact asset check, freshness, and HEALTHY status have passed; give guidance only."
+  },
+  {
+    "id": "K1",
+    "skill": "roblox-blink-0-18-9",
+    "prompt": "The user adopted Blink 0.18.9 only for schema compilation and generated placement. A worker proposes pesde exec for the compiler, hand-edits one generated file, and requires the generated empty server module to prove generation. It plans application-handler throttling later and has no predecode byte/rate budget. What is the authorized completion path and which proposals need correction? Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  },
+  {
+    "id": "N1",
+    "skill": "roblox-nevermore-ui",
+    "prompt": "The project uses the exact reviewed Nevermore Blend/Rx/Brio/loader pins through a shared root adapter, with Bootstrapper owning application startup. A component starts and destroys the shared loader on each mount/unmount, assumes Rx.switchMap cancels an unrelated pending server request, and calls Brio:GetValue after yielding without checking whether the Brio died. Recommend the ownership and cancellation/lifetime handling. Supplied identity, freshness, and HEALTHY preconditions have passed; give guidance only."
+  }
+]

@@ -9,28 +9,15 @@ Reviewed target: `ff6700d32875dde5ef9e3625a159436ebd4dc3e9`, source reviewed 202
 
 ## Before use
 
-Resolve `PROJECT` to the affected project root, `CHILD` to this installed directory, and `PARENT` from the available `roblox-resource-acquisition` skill location. Read its `references/child-usage.md` once per task and apply first-use freshness, guard and repair rules. Project resolution failure is unknown state and enters parent reconciliation.
-
-Policy is conditional: declared identity and the narrow block query precede ordinary use; installed source integrity is checked before completion. Run:
-
-```text
-python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
-python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/bootstrapper.yaml"
-```
-
-Only `HEALTHY` permits ordinary use. `BLOCKED`/`UNKNOWN`, mismatched pins, verifier drift, hard defects or invalidated repair evidence enter the parent's reconciliation path. A recurring safe workaround still activates parent repair diagnosis.
+Resolve the affected project and installed `roblox-resource-acquisition` parent; read its `references/child-usage.md` once per task for commands, guards, first-use checks and repair. This child uses **conditional** reconciliation: require declaration `PASS` and record query `HEALTHY` before ordinary use; check installed integrity before completion. An unknown project/target or `BLOCKED`/`UNKNOWN` stops affected use.
 
 ## Common use
 
-- Resolve the package require and the startup root. Use a suffix predicate such as `Bootstrapper.byName("Controller$")`; keep helpers outside that discovery set.
-- `loadDescendants(root, predicate)` returns a name-sorted module-table array and optional errors. Require each discovered ModuleScript to return a table. Check returned load errors before running phases.
-- Use synchronous `run(modules, ".init", context)` then `run(modules, ".start", context)`, checking each returned error map. Prefix `.` means no self; `:` or an unprefixed name injects the module table. Context/other arguments follow it.
-- Retain the original loaded array between phases. `run` returns only modules with that method that succeeded: chaining its init result can incorrectly drop a start-only module. Missing methods are skipped.
+Resolve the package require and startup root. Discover only intended startup modules, e.g. `Bootstrapper.byName("Controller$")`, excluding helpers/packages/stories. `loadDescendants(root, predicate)` returns a name-sorted array of module tables plus optional errors. Each discovered ModuleScript must return a table; check load errors before dispatch.
 
-Strict Luau array types are invariant here: copy the returned LoadedModules into an array
-typed `{ Instance | Bootstrapper.LoadedModule | Bootstrapper.ModulePath }` for dispatch.
-Use the same widened list for both phases; preserve its module order and do not replace it
-with run's filtered return. The project-owned adapter may re-export the needed upstream types.
+Use synchronous `.init` then `.start`, checking each error map to enforce phase barriers. Prefix `.` omits self; `:` or an unprefixed name injects the module table before other arguments. Missing methods are skipped. `run` returns only successful modules with that method: retain the original loaded array so a start-only module survives init.
+
+Luau arrays are invariant here. Widen LoadedModules into the dispatch union without changing order; the project adapter may re-export upstream types:
 
 ```luau
 local modules, loadErrors = Bootstrapper.loadDescendants(root, Bootstrapper.byName("Controller$"))
@@ -47,17 +34,14 @@ end
 
 ## Ownership and critical constraints
 
-Retain the original loaded array across phases: `run` returns a filtered success list. Inspect each returned error map and enforce the caller's phase barrier. Async/concurrent dispatch supplies no completion or cancellation handle. Discovery requires modules and can activate their top-level code; own partial acquisition and binding teardown explicitly.
+Discovery requires modules and can activate top-level code: own partial acquisition and binding teardown. Async/concurrent dispatch supplies no completion or cancellation handle.
 
-The shared package can be replicated, but each runtime has its own require cache and module state.
-Discover client controllers on clients and server services in ServerScriptService on servers.
-Do not include packages, helpers, stories or every replicated module in a blanket startup scan.
-Render-step/PreRender bindings are client-only. Keep privileged rules, persistence and client validation server-owned.
+Client/server require caches and module state are independent. Discover client controllers on clients and server services in ServerScriptService. Render-step/PreRender bindings are client-only. Keep privileged rules, persistence and client validation server-owned.
 
 ## Complete and read further
 
-Run `python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT"`; require exit 0 and JSON `status: PASS` with this exact resource selector and the installed-integrity lane. Use the project's source/build checks for authored consumers and generated placement. These checks establish identity/static integration; runtime, rendering, input and clean-diagnostics claims require their own project evidence.
+Run the shared installed-integrity check; require exit 0, `status: PASS`, this exact selector and `lane: installed-integrity`. Project source/build checks cover authored consumers and mapping. Runtime, rendering, input and diagnostics claims need separate project evidence.
 
 - For installation, locked restoration or mapping compatibility, read [setup](references/setup.md).
-- When changing API usage, activation, partial acquisition or teardown, read [API and lifecycle](references/api-and-lifecycle.md).
+- For additional APIs, cross-library integration or partial-acquisition/teardown recipes, read [API and lifecycle](references/api-and-lifecycle.md).
 - For a matching failure symptom or a resource-specific security question, read [troubleshooting](references/troubleshooting.md).

@@ -1,4 +1,4 @@
-"""Regression checks for the parent router and internal document navigation."""
+"""Packaging/navigation checks. Behavioral outcomes live in evals, not prose assertions."""
 from __future__ import annotations
 
 import re
@@ -16,12 +16,16 @@ REFERENCES = {
 
 def _mode(name: str) -> str:
     match = re.search(
-        rf"^### `{re.escape(name)}`\n(.*?)(?=^### `|^## Shared invariants)",
+        rf"^### `{re.escape(name)}`\n(.*?)(?=^## |^### |\Z)",
         PARENT,
         re.MULTILINE | re.DOTALL,
     )
     assert match, f"missing parent mode {name!r}"
     return match.group(1)
+
+
+def _links(text: str) -> set[str]:
+    return set(re.findall(r"\[[^\]]+\]\(([^)]+)\)", text))
 
 
 def _anchor(text: str) -> str:
@@ -62,27 +66,25 @@ def test_relative_markdown_links_and_anchors_resolve():
                 assert anchor in _anchors(target_path), f"{source}: missing anchor {target}"
 
 
-def test_evaluate_compare_stops_before_integration_and_generation():
-    section = _mode("evaluate/compare")
-    assert "qualification-workflow.md" in section
-    assert "evaluation-rubric.md" in section
-    assert section.index("hard gates") < section.index("comparing survivors")
-    assert "state-policy.md" in section
-    assert "Integration/project mutation" in section
-    assert "child generation or validation" in section
-    assert "operational host adoption" in section
+def test_evaluate_compare_routes_only_decision_and_state_references():
+    # Scope behavior is covered by explicit-evaluation-only/fixed-target cases.
+    assert _links(_mode("evaluate/compare")) == {
+        "references/qualification-workflow.md",
+        "references/evaluation-rubric.md",
+        "references/state-policy.md",
+    }
 
 
-def test_acquire_adopt_routes_project_state_and_preserves_explicit_scope_limits():
-    section = _mode("acquire/adopt")
-    assert "project-adoption.md" in section
-    assert "When reusable child guidance is in scope" in section
-    assert "generation-validation.md" in section
-    assert "When operational host adoption of generated guidance is requested" in section
-    assert "operational-lifecycle.md" in section
-    assert "state-policy.md" in section
-    assert "Report five statuses separately" in section
-    assert "not applicable" in section
+def test_acquire_adopt_reaches_each_in_scope_lifecycle_contract():
+    # Adoption scenarios test scope, status separation and completion behavior.
+    assert {
+        "references/adoption-policy.md",
+        "references/qualification-workflow.md",
+        "references/project-adoption.md",
+        "references/generation-validation.md",
+        "references/operational-lifecycle.md",
+        "references/state-policy.md",
+    } <= _links(_mode("acquire/adopt"))
 
 
 def test_portable_record_location_has_one_canonical_owner():
@@ -103,57 +105,43 @@ def test_portable_record_location_has_one_canonical_owner():
     assert user not in operational
 
 
-def test_refresh_preserves_authority_and_target_bound_proof():
-    section = _mode("refresh")
-    assert "externally owned target" in section
-    assert "Prior runtime proof remains bound to its recorded target" in section
-    assert "actual installed state" in section
-    assert "recorded state" in section
-    assert "List the inputs that changed" in section
-    assert "Rerun only proof invalidated" in section
-    assert "project-adoption.md" in section
-    assert "repair-loop.md" in section
+def test_refresh_routes_changed_input_validation_surfaces():
+    assert {
+        "references/qualification-workflow.md",
+        "references/project-adoption.md",
+        "references/generation-validation.md",
+        "references/operational-lifecycle.md",
+        "references/repair-loop.md",
+        "references/state-policy.md",
+    } <= _links(_mode("refresh"))
 
 
-def test_repair_reconcile_keeps_upstream_and_child_revalidation_conditional():
-    section = _mode("repair/reconcile")
-    assert "project-adoption.md" in section
-    assert "qualification-workflow.md" in section
-    assert "when upstream identity, source facts, qualification, trust, or a hard security boundary is in question" in section
-    assert "generation-validation.md" in section
-    assert "only for child validation surfaces invalidated by the repair" in section
+def test_repair_reconcile_reaches_each_affected_surface_contract():
+    assert {
+        "references/qualification-workflow.md",
+        "references/project-adoption.md",
+        "references/generation-validation.md",
+        "references/operational-lifecycle.md",
+        "references/repair-loop.md",
+        "references/state-policy.md",
+    } <= _links(_mode("repair/reconcile"))
 
 
-def test_hard_identity_or_security_repair_loads_complete_repair_stack():
-    section = _mode("repair/reconcile")
-    hard = section.split("For a hard identity", 1)[1].split("For other hard defects", 1)[0]
-    for reference in (
-        "operational-lifecycle.md",
-        "repair-loop.md",
-        "qualification-workflow.md",
-        "state-policy.md",
-    ):
-        assert reference in hard
-    for field in (
-        "exact canonical identity and selector",
-        "smallest reproduction",
-        "proposed durable correction",
-        "invalidated evidence",
-        "owner/authority",
-    ):
-        assert field in section
+def test_repair_scenarios_cover_hard_soft_and_harmless_boundaries():
+    import json
+
+    cases = json.loads((ROOT / "evals" / "maintenance-cases.json").read_text(encoding="utf-8"))
+    assert {"hard-identity-mismatch", "soft-recurring-guidance", "harmless-local-adjustment"} <= {
+        case["id"] for case in cases
+    }
 
 
-def test_verification_reporting_is_bound_to_exact_identity_and_selector():
-    invariants = PARENT.split("## Shared invariants", 1)[1].split("## Completion", 1)[0]
-    assert "every verification claim" in invariants
-    assert "canonical identity and material selector/version" in invariants
-    qualification = REFERENCES["qualification-workflow.md"]
-    state = REFERENCES["state-policy.md"]
-    assert "Every verification sentence" in qualification
-    assert "canonical resource identity plus material selector/version" in state
-    assert "generated skill location/name" in state
-    assert "explicit narrower request excludes reusable child guidance" in state
+def test_lifecycle_reporting_has_one_reachable_contract():
+    assert "references/state-policy.md" in _links(PARENT)
+    # Runtime record/bundle validators test actual target/state binding; this
+    # assertion checks navigation, not whether a model reports the right facts.
+    assert "scripts/validate_resource_record.py" in REFERENCES["state-policy.md"]
+    assert "scripts/validate_resource_bundle.py" in REFERENCES["state-policy.md"]
 
 
 def test_post_adoption_defect_classifies_before_host_state_change():
@@ -165,15 +153,9 @@ def test_post_adoption_defect_classifies_before_host_state_change():
     assert "operational-lifecycle.md#post-adoption-defects" in repair
 
 
-def test_parent_self_invokes_for_recurring_workarounds_and_separates_soft_state_work():
-    assert "## Repair interrupt" in PARENT
-    interrupt = PARENT.split("## Repair interrupt", 1)[1].split("## Route the operating mode", 1)[0]
-    assert "bypassing an instruction" in interrupt
-    assert "Do not silently absorb the defect" in interrupt
-    assert "does not by itself require unrelated pin, provenance, record, or learning reconciliation" in interrupt
-    repair = _mode("repair/reconcile")
-    assert "The user need not name this skill" in repair
-    assert "soft instruction defect" in repair
+def test_repair_interrupt_anchor_remains_reachable_from_compatibility_router():
+    assert "repair-interrupt" in _anchors(ROOT / "SKILL.md")
+    assert "../SKILL.md#repair-interrupt" in _links(REFERENCES["repair-reconcile-workflow.md"])
 
 
 def test_self_package_repair_honors_existing_authorization_and_blocks_ungranted_edits():
@@ -225,3 +207,25 @@ def test_openai_skill_metadata_is_parseable_and_matches_parent_modes():
     assert "$roblox-resource-acquisition" in prompt
     for mode in ("evaluate/compare", "acquire/adopt", "refresh", "repair/reconcile"):
         assert mode in prompt
+
+
+def test_first_use_route_does_not_require_loading_the_repair_transaction():
+    assert "first-use-check.md" in _links(REFERENCES["child-usage.md"])
+    assert "on-demand-maintenance.md#first-use-freshness-check" not in _links(REFERENCES["child-usage.md"])
+    assert "first-use-freshness-check" in _anchors(ROOT / "references/on-demand-maintenance.md")
+    assert "first-use-check.md" in _links(REFERENCES["on-demand-maintenance.md"])
+    assert "first-use-check.md#source-observations" in _links(REFERENCES["on-demand-maintenance.md"])
+
+
+def test_maintenance_case_definitions_are_well_formed():
+    import json
+
+    cases = json.loads((ROOT / "evals/maintenance-cases.json").read_text(encoding="utf-8"))
+    ids = set()
+    for case in cases:
+        assert case["id"] not in ids
+        ids.add(case["id"])
+        assert isinstance(case["prompt"], str) and case["prompt"].strip()
+        for field in ("accept", "reject"):
+            assert case[field] and all(isinstance(item, str) and item.strip() for item in case[field])
+    assert {"refresh-unchanged-runtime", "healthy-conditional", "required-plugin-drift", "unknown-project"} <= ids

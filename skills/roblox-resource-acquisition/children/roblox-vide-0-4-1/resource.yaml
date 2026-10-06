@@ -46,7 +46,7 @@ guidance:
     - api
     - lifecycle
     - recipes
-    when: changing API usage, activation ownership, partial acquisition or teardown
+    when: using additional APIs, cross-library integration or partial-acquisition/teardown recipes
   - path: references/troubleshooting.md
     roles:
     - troubleshooting

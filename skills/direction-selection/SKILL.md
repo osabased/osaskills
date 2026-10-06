@@ -1,211 +1,87 @@
 ---
 name: direction-selection
-description: Choose or reassess consequential directions when the preferred choice lacks sufficient evidence, alternatives compete, the framing or candidate space is uncertain, or evidence challenges the current choice.
+description: Choose or reassess consequential directions when alternatives compete, comparative support is weak, the framing or candidate space is unclear, or new evidence challenges the current choice. Skip routine implementation choices.
 ---
 
 # Direction Selection
 
-Use this skill as a conditional direction-comparison subprotocol. It decides whether a live direction problem exists, compares directions when one does, and returns a local decision plus commitment-scoped support status. It does not control generic project uncertainty, planning, implementation, persistence, verification, or correction propagation.
+Choose the best-supported next commitment under the user's goal and constraints. Leave later choices open until they matter. A direction decision reports support; the caller retains execution authority.
 
-Optimal means best supported by the current goal, hard constraints, applicable evidence, ordered criteria, and uncertainty. Claim only the degree of optimality the evidence warrants.
+Honor user mandates unless infeasible, unsafe, contradictory, or explicitly under review.
 
 ## Applicability router
 
-Route every invocation before comparison. Classify uncertainty only far enough to determine whether plausible outcomes could materially alter the direction, framing, candidate ranking, or justified candidate space. Produce exactly one observable **Applicability Result** or enter one comparison mode:
+Route before comparing:
 
-- `exit` — no live direction problem exists and no handoff is needed;
-- `handoff` — comparison does not own a directly routable fact, behavior, project-state unknown, constraint, or user preference that must be resolved first;
-- `lightweight` — a meaningful but bounded choice is live, and the framing, criteria, and candidate space are already adequate; or
-- `full` — an authoritative full-mode trigger is live.
+- **exit:** a routine or cheaply reversible implementation detail needs no substantive comparison, an applicable convention settles it, or an applicable user mandate already settles it.
+- **handoff:** only a fact, behavior, project-state check, or user-owned input needs resolution before comparison can own a decision. Return the fitting owner and next evidence route.
+- **lightweight:** a meaningful bounded choice is live, with adequate framing, criteria, and candidate coverage. Follow the decision loop below.
+- **full:** consequential or hard-to-reverse alternatives remain competitive; framing is ambiguous; a credible omitted direction or shared-premise problem exists; a consequential choice has weak comparative support; a best/ideal request lacks justified candidate coverage; or material evidence challenges the current direction. Read [FULL.md](references/FULL.md) and apply its extensions within the same loop.
 
-Do not activate or continue this skill merely because a task contains uncertainty. Routine naming, small local refactors, obvious DataModel placement under established conventions, implementation details with one clearly supported option, and cheaply reversible choices should normally `exit`. Factual, behavioral, repository/project-state, or user-owned uncertainty is not a direction problem when its plausible outcomes do not affect direction, framing, ranking, or candidate-space adequacy.
+Generic uncertainty does not require comparison. When one clear direction exists and only an inspectable fact remains, hand that check back to the caller rather than inventing alternatives. In standalone use, if evidence is needed to determine applicability, use a scoped [discovery probe](references/DISCOVERY.md), then route again. An inconclusive probe returns `handoff`, without a direction outcome or gate.
 
-When one clear direction exists and the only unresolved issue is a directly inspectable factual or behavioral unknown, resolve that unknown through its fitting evidence route before generating candidates. With a surrounding controller, return `handoff`, explain why comparison does not own control, and give at most a fitting evidence-route hint. Do not start generic research, benchmarking, persistence, planning, or verification loops merely because an unknown is consequential.
+## Decision loop
 
-In standalone use, when applicability depends on unresolved facts or insufficient domain understanding, use an applicability evidence probe scoped to establishing whether comparison is needed, as described in [DISCOVERY.md](references/DISCOVERY.md). Return to this router afterward. If the probe cannot establish applicability within its justified scope, return `handoff` to the fitting owner or user; do not emit a comparison outcome before a comparison mode exists.
+### 1. Frame the commitment
 
-### Authority and preference semantics
+Identify the outcome, commitment needed now, hard constraints, and ordered criteria. For any deciding criterion, distinguish a threshold from an objective to optimize, and strict priority from an allowed tradeoff. Preserve explicit priorities; use numerical weights, probabilities, or tradeoff rates only when supplied or supported.
 
-- An explicit user mandate such as “Use Rojo; do not evaluate alternatives” is a hard boundary unless it is impossible, unsafe, contradictory, or the user explicitly requests evaluation.
-- A suggestion such as “I think A is best; choose what is actually best” is a candidate or input, not privileged evidence.
-- Ask a focused question when a consequential preference or acceptable tradeoff is user-owned and cheaply resolvable; do not infer or empirically test the preference.
-- Delegated authority permits choosing, but it is not evidence that the selected tradeoff reflects the user's preference.
+Treat a suggested favorite as a candidate, not evidence. Ask a focused question when an unresolved user-owned preference could change the recommendation. Delegated authority permits choosing; it does not establish the user's risk tolerance or preferences.
 
-After `lightweight` or `full`, comparison owns the local direction decision. After a direction outcome, blocker, or adaptive commitment, return the record and gate status to the caller/controller. The caller/controller retains broader execution and lifecycle authority.
+### 2. Compare credible options
 
-## Continuation invariant
+Compare serious candidates under the same criteria and evidence standard, at comparable depth. Use the current approach, doing less, or avoiding the decision when credible. There is no required candidate count.
 
-Across discovery calls, mode escalation, caller handoffs, leader changes, and reopened directions, preserve all still-applicable boundaries, constraints, authorities, evidence and provenance, assumptions, candidates, and completed results. Transfer control to the receiving owner at the earliest affected stage and repeat only work invalidated by the trigger, new evidence, or changed premise.
+Before rejecting a candidate on a remediable weakness, consider one realistic, bounded refinement when it could change the result. Give competitors the same opportunity, count the refinement's costs, and distinguish verified capability from a hypothetical fix. Stop refining when it cannot affect the choice.
 
-Preserve verified, applicable caller-provided evidence and its provenance. Distinguish observations from supplied assertions, interpretations, and rankings. Before a supplied claim carries a decision, establish its provenance, applicability, and reliability under the evidence rules below. Reuse passing evidence unless its basis is missing or a conflict, changed condition, or coverage gap makes it inadequate; attribution to a caller alone does not establish a claim.
+Eliminate demonstrated constraint failures, then compare survivors under the ordered objectives and tradeoffs. Count future integration, maintenance, migration, compatibility, and operating costs; exclude sunk effort as a reason to retain an incumbent. Assess reversal at the likely correction point, after probable dependent work has accumulated.
 
-## Comparison semantics
+For close comparisons, distinguish a supported advantage, supported practical equivalence, and an unresolved difference. Use applicable tolerances or evidence-backed ranges; an uncertain difference is not automatically a tie. Move to the next ordered criterion when equivalence is supported. When an assumption could switch the result, identify the switch point and investigate it only when plausible and worthwhile. For supported ties, consider validation effort, reversal, exit, or extension where consistent with the user's priorities; otherwise report equivalence without inventing a superior option.
 
-**Deciding criteria:** When a criterion could decide the choice, identify the observable outcome it represents, whether it is a threshold to satisfy or an objective to optimize, and whether its priority is strict or permits tradeoffs. Preserve explicit user priorities; do not substitute "good enough" for requested optimization or invent scores, weights, or tradeoff rates. Resolve only ambiguity that could change the recommendation, using the authority and preference semantics above.
+### 3. Check deciding evidence
 
-**Fair candidate refinement:** Before rejecting a serious candidate on a decisive weakness, consider one realistic, bounded refinement when a concrete adjustment could remove that weakness and change the result. Give competing candidates comparable opportunities and count added implementation, integration, maintenance, and future reversal costs. Apply the same evidence standard to refined candidates; a hypothetical fix is not established capability. This is a check within the existing comparison, not a requirement to optimize every candidate or authorization to implement changes. Revisit refinement only after materially new evidence warrants it. Changes to framing or candidate class follow the existing full-mode triggers.
+Link each deciding claim to its underlying source or observation. Confirm reliability and applicability to the relevant version, environment, workload, required outcome, and material integration or recovery conditions. Separate what the evidence establishes from inference. Missing evidence leaves a requirement unverified; it establishes neither compliance nor failure.
 
-## Support threshold
+Reuse applicable caller evidence with its provenance. A confident summary or agreement among agents is not verification. Repeated reports of one result remain one evidence basis. Resolve material conflicts by examining methods and scope, not counting sources.
 
-A direction is **sufficiently supported for the governed commitment** when:
+For consequential or hard-to-reverse recommendations, examine evidence that could overturn the deciding claims, even when confidence is high. Existing reliable evidence may suffice; an imagined objection alone does not complete this check.
 
-- it satisfies every known hard constraint and invariant;
-- its decisive comparative claims meet the evidence applicability, reliability, and research-adequacy rules below;
-- remaining uncertainty does not undermine the justification for this commitment under the established objectives, explicit priorities, and acceptable downside;
-- if a credible surviving alternative exists, it has no better-supported case under the ordered criteria; and
-- any material tie is resolved by an applicable ordered tie-breaker; otherwise no nominal winner is claimed.
+When evidence or domain understanding could affect framing, candidates, ranking, or support, use [DISCOVERY.md](references/DISCOVERY.md). For source research, read [RESEARCH.md](references/RESEARCH.md). Continue justified investigations while material gaps or credible leads remain; their number or cost cannot convert missing deciding evidence into support.
 
-Scale support to the commitment. Higher-impact or harder-to-reverse commitments require stronger evidence. Seek enough support to decide, not certainty, and spend no more on direction selection than the decision warrants. Do not manufacture an alternative to satisfy the threshold.
+If findings activate a full-mode trigger, apply its extensions at the affected step while preserving valid work.
 
-### Residual uncertainty
+### 4. Decide and stop
 
-A direction need not win in every plausible outcome. A possible ranking change calls for sensitivity assessment, not an automatic blocker: assess whether the commitment remains justified under the established objectives, explicit priorities, and acceptable downside. Retain material uncertainty and concrete reopen conditions. Use probabilities or tradeoff rates only when supplied or supported by applicable evidence; delegated authority or unavailable research does not establish the user's risk tolerance.
+Set `Direction Gate: PASS` only when the proposed commitment:
 
-Unverified hard-constraint compliance, a decision-sensitive unresolved user preference, or a plausible consequence outside the established acceptable downside before safe correction still prevents `PASS` for that commitment. Use the existing discovery, blocker, or adaptive routes rather than weakening these boundaries. An acceptable outcome risk does not excuse missing deciding evidence or an unsupported premise that the recommendation depends on.
+- satisfies every known hard constraint with applicable evidence;
+- rests on reliable deciding claims and adequate candidate coverage, including any required full-mode work;
+- has no credible alternative with a better-supported case under the ordered criteria;
+- resolves any material tie through an applicable selection rule; and
+- remains justified under material uncertainty and the established acceptable downside until safe correction.
 
-### Close comparisons
+A choice need not win in every plausible future. Accept uncertainty consistent with the objective and downside the user has established; retain the conditions that would change the recommendation. Stronger or harder-to-reverse commitments need stronger support.
 
-When a small or uncertain difference could decide the choice, distinguish a meaningful supported advantage, supported practical equivalence for this commitment, and an unresolved difference. Use requirement-backed tolerances or evidence-backed ranges when available; preserve explicit optimization priorities. Move to the next ordered criterion when practical equivalence is supported. An unresolved difference that could matter remains uncertainty under the Support threshold. For a supported tie under the ordered criteria, favor ease of validation, reversal at the likely correction horizon, exit, or extension as applicable tie-breakers.
+If support is missing, pursue the next worthwhile evidence step or focused preference question. When further justified work cannot resolve it, return a `Direction Blocker` with the exact gap, owner, next step, and resume condition, including when no justified next step remains. Unavailable research does not justify changing the objective or claiming compliance.
 
-If the choice hinges on an uncertain estimate or assumption, identify the smallest credible change that would switch it. Investigate that switch point only when plausible and worth resolving under the existing evidence or discovery rules.
+When uncertainty is structurally unstable after worthwhile investigation, a useful bounded commitment may still be supported. Read the adaptive conditions in [OUTPUTS.md](references/OUTPUTS.md) before returning an `Adaptive Direction`; difficulty or missing evidence alone does not qualify.
 
-## Deciding-evidence applicability
+Stop when support is sufficient and further investigation has no justified decision value, or return the explicit unresolved outcome. Avoid extra candidates, searches, or review rounds once they cannot change the decision.
 
-Evidence may carry a decisive comparative claim only when it represents the property actually at risk and applies to the relevant version or interface, environment, workload or population, operating conditions, and material integration effects. Evidence that misses a material part of the claim may remain informative, but it is non-deciding.
-
-For each deciding claim, identify its source or observation and separate what it establishes from what is inferred. Treat repetitions of the same underlying result as one evidentiary basis. Distinguish demonstrated constraint failure, unverified satisfaction, and inapplicable evidence. Missing evidence leaves satisfaction unverified; the selected direction must still establish compliance with every known hard constraint.
-
-### Evidence reliability and research adequacy
-
-Assess the reliability of each deciding claim's evidence: inspect the underlying source or observation, its method, material limitations, currency, and relevant incentives. Prefer primary evidence and authoritative sources for claims within their competence. Seek independent corroboration or representative validation when a consequential claim rests on an interested-party assertion, opaque method, or otherwise weak basis. A directly inspectable, strong source can suffice; count independent evidentiary bases rather than publications or agreements.
-
-Investigate material conflicts by comparing methods, scope, versions, and observations. Record what resolves the conflict or what remains uncertain and apply the Support threshold; source count alone does not resolve disagreement.
-
-When domain understanding or coverage is incomplete, orientation may establish the relevant concepts, constraints, candidate families, and evidence sources before precise hypotheses can be stated. Name the inadequately understood area and its connection to the decision; predicting particular discoveries is unnecessary. Keep this work within the owning stage or standalone applicability probe, using [DISCOVERY.md](references/DISCOVERY.md) for a defined investigation.
-
-Research is adequate when the relevant candidate space has a supported coverage rationale, deciding claims have reliable and applicable evidence, and material conflicting evidence, assumptions, and unresolved leads have been examined enough to justify the commitment. State remaining gaps and their effect on support. Stop when these conditions hold and further work has no justified decision value. If access, time, or cost prevents adequate coverage, report that limitation and return the appropriate blocker or supported bounded commitment. Completed search counts and initial confidence do not establish adequacy.
-
-For source research within an admitted discovery investigation, read [RESEARCH.md](references/RESEARCH.md) completely. It provides the dedicated workflow for domain orientation, candidate coverage, source retrieval, conflicting or sparse evidence, and returning traceable findings to the owning stage. Use it in either comparison mode or the standalone applicability probe when those research needs arise.
-
-## Authoritative full-mode triggers
-
-The following is the single authoritative trigger set for `full` entry and required candidate-space work:
-
-1. materially different directions remain genuinely competitive for a consequential or hard-to-reverse commitment;
-2. framing ambiguity can materially change the solution space;
-3. a credible omitted-direction or shared-premise signal exists;
-4. a consequential direction has weak comparative justification;
-5. the user asks for the best or ideal direction and the inherited candidate space is not adequately justified; or
-6. material new evidence challenges the current direction.
-
-Generic consequential uncertainty alone is not a trigger. Record the exact trigger or triggers that caused `full` entry and carry them forward only while they affect candidate-space obligations, comparison, or stopping conditions.
-
-Multiple known competitive directions alone do not require searching for another class. Triggers 3–5 require candidate-space examination to the research-adequacy standard before `PASS`. For trigger 6, first determine whether the evidence changes ranking only, changes framing, or creates a credible candidate-space signal.
-
-## Choose the proportional mode
-
-Use this routing order:
-
-1. No live direction problem: `exit`, or `handoff` to the fitting owner/evidence route.
-2. Any authoritative full-mode trigger: `full`.
-3. Otherwise, a meaningful bounded choice with adequate framing, criteria, and candidate space: `lightweight`.
-
-For `lightweight`, read [LIGHTWEIGHT.md](references/LIGHTWEIGHT.md) completely, follow it, and return its local record and gate status.
-
-For `full`, record the invocation trigger(s), read [FULL.md](references/FULL.md) completely, and follow it. At any comparison stage, when an unresolved fact, coverage gap, reliability concern, or orientation need could affect the decision or its support, read [DISCOVERY.md](references/DISCOVERY.md) completely and apply its Discovery Entry Test. Discovery returns to the exact owning stage rather than restarting applicability or the protocol.
-
-When changing this skill, another decision protocol, or a protocol that invokes it, read [SELF-APPLICATION.md](references/SELF-APPLICATION.md) completely before applying the full protocol.
-
-### Direction Gate scope
-
-Production commitment that materially depends on the direction currently being selected requires `Direction Gate: PASS` for that commitment. The gate is a local support result returned to the caller/controller, not project-wide execution authority.
-
-When otherwise authorized and when they do not materially prejudice the unresolved choice, unrelated work, already-supported work, safely reversible increments, repository inspection, evidence-gathering tests or benchmarks, prototypes, and disposable experiments may proceed. Pre-gate work must not silently become production across the governed consequential commitment boundary or create de facto lock-in that biases or predetermines the unresolved direction.
-
-**Future-horizon reversibility:** assess reversibility at the likely future correction point, after the next probable dependent work has accumulated—not only at the present moment. Consider dependent implementation, schema/data migration, compatibility, ecosystem or vendor lock-in, deployment, user/external commitments, and accumulated downstream assumptions when material. Apply this rule to mode choice, evidence work, tie-breaking, gate scope, and adaptive commitments.
-
-## Output contracts
-
-Use the matching schema for agent/controller handoffs. For answers to the user, render that outcome using [User-facing presentation](#user-facing-presentation).
-
-Use this result when comparison never becomes the owner:
-
-### Applicability Result
-
-- **Result:** exit | handoff
-- **Reason:** why no comparison currently owns the decision
-- **Owner / next route:** fitting owner or action, or `none`
-
-For a conventional passing direction, use:
-
-### Direction Decision
-
-- **Mode:** lightweight | full
-- **Governed commitment:** exact direction-dependent commitment supported by this gate
-- **Chosen direction:** one sentence
-- **Why it wins:** decisive reasons tied to the ordered criteria, with evidence references and material inferences identified
-- **Alternatives / candidate-space result:** serious candidates and decisive losing tradeoffs; `none — no search required`; or `none — required bounded search found no credible alternative`
-- **Assumptions / uncertainty:** material items only
-- **Reopen if:** concrete evidence or conditions that invalidate the choice
-- **Direction Gate:** PASS
-
-Use this result only after a comparison mode exists and the gate cannot pass:
-
-### Direction Blocker
-
-- **Mode:** lightweight | full
-- **Governed commitment:** what cannot yet proceed
-- **Unresolved decision:** the choice still open
-- **Blocking condition:** exact evidence, preference, constraint, tie, or support failure
-- **Owner / next step:** fitting owner, action adequate to resolve the blocking condition, or `none` when no justified action remains
-- **Decision effect:** how plausible resolution outcomes could change the result
-- **Resume when:** observable condition sufficient to resume comparison, or `none` when no justified condition is known
-- **Direction Gate:** NOT PASSED
-
-### Adaptive Direction
-
-Use this outcome only when the commitment is consequential, worthwhile evidence has been gathered, important uncertainty remains structurally unstable rather than under-researched, a nominal winner would create false certainty, indefinite delay is not justified, and a bounded robust or adaptive commitment can itself be justified.
-
-- **Mode:** adaptive
-- **Current bounded commitment:** what this direction decision and gate support now
-- **Why this bounded commitment is supportable now:** decisive support across the plausible conditions it must survive
-- **Why a nominal winner is not justified:** concise statement
-- **Structurally unstable uncertainty:** material unknowns or futures
-- **Optionality preserved:** what remains open or migration-capable
-- **Exposure limit:** cap on cost, scope, migration, users, data, or time
-- **Adaptation trigger:** observable condition
-- **Reopen / branch:** exact decision or direction to revisit
-- **Direction Gate:** PASS | NOT PASSED
-
-Adaptive `PASS` is permitted only when the current bounded commitment satisfies the Support threshold until its exposure limit or adaptation trigger. Residual uncertainty may affect later branches. If a plausible outcome could invalidate the bounded commitment before safe redirection, use `NOT PASSED`. Adaptive handling never establishes a nominal winner or grants project-wide authorization.
-
-Keep records concise and proportional. They are local skill outputs. The caller/controller decides whether a load-bearing record should persist in project state because stale reconstruction or correction propagation would matter; this skill does not require global persistence for every record.
-
-Return the record and gate status to the caller/controller. Continue only into work separately authorized by the user's request.
+## Return the outcome
 
 ### User-facing presentation
 
-Present the outcome once. A normal decision should usually fit in 100–200 words; use less for simple results and expand for material risks or tradeoffs. Use short headings and sentences, selective bolding, and evidence references beside deciding claims. Summarize results rather than narrating stages. Keep the evaluation and support requirements intact; provide the full schema when the user requests it.
+Lead with the recommendation and supported scope, then the deciding evidence, strongest alternative's relevant tradeoff, material caveat, and condition that would change the choice. End with the next authorized action or exact missing input. Omit empty sections and process narration; a normal decision should usually fit in 100–200 words.
 
-For a passing `Direction Decision`, use this layout:
+For blockers, lead with what is needed and what cannot yet proceed. For adaptive outcomes, lead with the bounded next step and retain its exposure limit and adaptation trigger. An exit or handoff usually needs only one or two sentences.
 
-- **Recommendation:** bold the chosen direction and give its main reason in one sentence, scoped to the governed commitment.
-- **Why this wins:** one or two deciding reasons. Briefly explain the strongest alternative's losing tradeoff when useful; a small comparison table may replace this section when several tradeoffs matter.
-- **Main tradeoff:** the main cost or limitation. Retain material uncertainty and the concrete condition that would change the recommendation.
-- **Next step:** the action within the supported scope and user's authorization, or the approval needed before proceeding.
+For an agent/controller handoff or a requested full record, read [OUTPUTS.md](references/OUTPUTS.md) and return the matching contract with gate status. Keep records local unless the caller requires persistence. Continue only into work already authorized by the user.
 
-Omit empty optional sections. For other outcomes, use the matching presentation:
+### Commitment and continuity
 
-| Outcome | Lead with | Retain |
-|---|---|---|
-| `Direction Blocker` or adaptive `NOT PASSED` | **Decision needed**, **Evidence needed**, or **Blocked by [constraint]**, matching the blocker | What cannot proceed, the exact missing input or constraint, owner, next action, and resume condition; say when no justified next action remains. |
-| Adaptive `PASS` | **Bounded next step** | Supported commitment and reason, why no overall winner is justified, material uncertainty, preserved options, exposure limit, and adaptation/reopen trigger. |
-| `exit` or `handoff` | One or two sentences | Result, reason, and owner or next route. |
+A gate covers only the stated direction-dependent commitment. Authorized inspection, evidence gathering, unrelated supported work, and safely reversible increments may proceed while it is unresolved. Exploratory work must remain within its limits and avoid de facto lock-in; it cannot silently become the unsupported production commitment.
 
-**Complete when:** the reader can identify the outcome, scope, applicable deciding evidence and material caveats, and next action or its absence without reconstructing the protocol; agent/controller handoffs retain the full matching contract and gate status.
+When new evidence invalidates a deciding premise, mark that direction reopened. Preserve valid constraints, authority, evidence, assumptions, candidate coverage, and completed work; repeat only affected comparison. Return the invalidated premise, triggering evidence, and already-known affected downstream commitments to the caller. The caller owns broader impact discovery and correction; leave independent decisions intact.
 
-## Reopening a direction
-
-Reopen when implementation, tests, benchmarks, changed requirements, verified facts, or an identified material gap in evidence coverage or reliability weakens a load-bearing assumption or satisfies a concrete `Reopen if` condition. Identify the exact invalidated premise, mark the direction reopened rather than silently overwriting it, and apply the Continuation invariant.
-
-When a broader controller exists, hand back the reopened direction, invalidated premise, triggering evidence, and any already-known materially affected downstream commitments or artifacts in the current context. Do not perform a new project-wide impact search, build a dependency graph, or duplicate correction-propagation machinery; implicit or transitive impact discovery belongs to the controller. In standalone use, state that known affected downstream commitments require reconsideration without prescribing a project-wide methodology. Unaffected branches remain untouched.
+When changing this skill or a protocol that invokes it, read [SELF-APPLICATION.md](references/SELF-APPLICATION.md).

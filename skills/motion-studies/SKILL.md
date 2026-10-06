@@ -1,49 +1,36 @@
 ---
 name: motion-studies
-description: "Preview unresolved motion choices in the target application when user feedback or avoided production rework justifies a study. Skip routine, specified, or accepted motion."
+description: Preview unresolved motion choices in the target application when user feedback or avoided production rework justifies a study. Skip routine, specified, or accepted motion.
 ---
 
 # Motion Studies
 
-Resolve meaningful motion choices through rough playback while changes are cheap, then carry the accepted movement into production.
+Resolve a meaningful motion choice through rough playback, then carry the accepted movement into production.
 
-## Decide whether a study earns its cost
+## Choose the useful next step
 
-Create a study when the user requests one. Otherwise, use one only when both conditions hold:
+Create a study when requested. Otherwise, use one only when playback can resolve a meaningful uncertainty and the avoided rework justifies building and reviewing it. Name that choice before adding a checkpoint.
 
-- Playback can resolve a meaningful uncertainty about motion feel, direction, or interaction.
-- The expected benefit of early feedback outweighs the work of building the preview and obtaining review. Consider how costly the wrong choice would be to revise after production.
+Implement specified or accepted motion, established patterns, and cheap local adjustments directly. Honor instructions to skip studies or proceed to production. Existing acceptance survives visual refinement and reuse; reopen it only for a new meaningful motion choice.
 
-Before adding a checkpoint, identify the motion decision and why reviewing it early is worthwhile. Minor unspecified details alone are insufficient. Implement established patterns, fully specified or already accepted motion, and repairs that preserve intended movement directly. For a small animation that is cheap to adjust in place, direct implementation and normal playback verification may be the smallest useful approach.
+When a study is warranted, start it within the task's authorization. Infer context and choose reversible timing defaults; ask only for missing information that materially affects the preview.
 
-Honor explicit instructions to skip studies or proceed straight to production. Existing acceptance carries through visual refinement and reuse. These criteria apply across animation domains, including motion proposed within a larger task.
+## Build and observe
 
-When warranted, start the study without asking permission to create it. Infer the target application, movement, and trigger from the conversation and project; choose reasonable, reversible timing defaults. Ask only for missing information that materially affects the preview.
+Build the smallest useful preview in the intended application and runtime. Reuse an existing scene, story, or timeline where practical. Use placeholders while preserving the scale, pivots, contacts, camera, timing, and relationships needed to judge the movement. Keep preview controls separable from reusable motion code or parameters.
 
-## Build the smallest useful preview
+Start with one faithful interpretation. Add variants only when different motion choices need comparison, holding their context constant.
 
-Use primitive shapes, spatial landmarks, or a proxy rig with just enough context to judge the decision. Preserve relevant scale, layout, pivots, contacts, camera framing, and relationships between moving parts. Keep the timing, spacing, path, easing, sequencing, and requested anticipation or settling visible.
+Show a readable starting state, action, and ending state. Support repeat playback and relevant return interactions; add scrubbing or speed controls when judgment needs them. Observe a full cycle at normal speed and repeat it. For direct manipulation, inspect both response during input and settling after release.
 
-Build in the intended application and runtime. Reuse an existing preview scene, story, timeline, or feature when practical; otherwise add a small, reversible entry point. Keep setup proportionate to the decision and stop once the movement is reviewable. Add artwork, effects, or production architecture only if needed to judge it.
+Claim playback verification only after observing the intended runtime. If that access is unavailable, preserve the runnable study, identify the unverified behavior and specific access or user action needed, and continue independent work. Obtain the user's acceptance before substituting an exported video or different preview format.
 
-Prefer motion code, clips, or parameters that can carry into production when this reduces total work. Keep placeholders and preview controls separable from the movement being reviewed.
+## Review and carry forward
 
-Default to one faithful interpretation. Compare variants only when materially different choices need judgment; keep their context consistent and vary the main motion choice.
+Show the preview, explain how to repeat it, and ask focused feedback about the unresolved choice. Revisions such as "slower" update the study and need another showing unless the user also accepts the adjustment or requests implementation.
 
-## Observe playback
+Wait for acceptance before developing the studied motion in production; silence and a surrounding feature request do not supply it. Unrelated authorized work can continue.
 
-Use the intended interaction and make the starting state, action, and ending state readable. Support repeat playback and any return interaction that belongs to the behavior. Add pause, scrubbing, or speed controls only when needed for judgment or requested.
+Once accepted and authorized, reuse the approved movement, replace placeholders, and check playback in the target runtime. Preserve timing and relationships, then remove disposable preview scaffolding.
 
-Run the study at normal speed, observe a complete cycle, and repeat it. For direct manipulation, observe response during input and settling on release. Claim playback verification only from an observed runtime session; source code and screenshots provide supporting evidence.
-
-If native playback or viewing tools are unavailable, preserve the runnable study, report what remains unverified, and request the specific missing access or user action. Continue independent authorized work. A substitute animation or exported video requires explicit user acceptance of that preview format.
-
-## Review and carry the movement forward
-
-Show or open the preview. Briefly state the interpretation and significant assumptions, explain how to repeat it, and request focused feedback on the decision: for example, weight, responsiveness, pace, path, or sequencing.
-
-For motion selected for a study, wait for acceptance before developing that motion in production. A surrounding feature request, silence, or elapsed time does not approve it; unrelated authorized work may continue. During review, requests such as "slower" or "less bounce" revise the same study and require another showing unless the user also accepts the adjusted direction or asks to implement it.
-
-Once the direction is accepted and production work is authorized, reuse the approved motion code, clips, or parameter values where practical. Preserve timing and movement relationships as placeholders become finished visuals, and check the resulting motion in the target runtime. Remove disposable preview scaffolding when no longer needed.
-
-Reopen review only when a new meaningful motion choice meets the study criteria above. Acceptance covers the reviewed movement, not unrelated implementation work.
+**Complete when:** the accepted movement is carried into the requested deliverable, or the next review/access requirement is concrete and the runnable study is preserved.

@@ -1,121 +1,73 @@
 ---
 name: roblox-resource-acquisition
-description: Proactively evaluate and adopt Roblox libraries/modules and development tools when reuse could reduce development or maintenance effort; compare candidates, create reusable child skills, and refresh or repair resources and guidance when defects, recurring workarounds, verification failures, or state mismatches arise.
+description: Select and adopt Roblox libraries/modules or development tools when reuse could reduce work; compare candidates, create reusable resource guidance, and repair recurring instruction defects, failed verification or installed-state mismatches.
 ---
 
 # Roblox Resource Acquisition
 
-During Roblox implementation, proactively consider libraries/modules and development tools when reuse could reduce total implementation and maintenance effort. First decide whether an external resource is needed. When adoption is warranted, read [adoption policy](references/adoption-policy.md) for the agreed scope, autonomy, selection priorities, and completion gate. Default adoption includes integration, verification, and a validated reusable child installed at project scope; explicit evaluation-only, narrower, or user/global-scope requests retain their boundary. Resolve the project/repository skill scope before installation; an unknown project does not authorize a global fallback. Keep project-use authority, resource trust, runtime verification, generated-skill validation, installation, and operational host adoption distinct.
+Choose the smallest reliable solution for the actual task. Preserve the project's selected resource, pin, role and project-use authority. Ordinary healthy use of an adopted resource follows its child skill; it does not restart acquisition.
 
-For packaged Roblox guidance available with this parent, read the [bundled skill catalog](references/bundled-skills.md). Install selected skills by copying and validating them at the intended scope; packaged availability does not establish discovery, resource trust, library adoption, or runtime proof.
+At activation, a sibling `.skill-maintenance/roblox-resource-acquisition.json` guard stops dependent use until its promotion is recovered or completed.
 
-Generated children use [resource-child contract 1](references/resource-skill-contract.md): a compact entrypoint, static resource.yaml and explicitly routed references. Shared ordinary-use behavior lives in [child usage](references/child-usage.md); project records own current state and proof. Unsupported older child formats require regeneration.
+## Start with the needed work
 
-## Core rule
+- **No acquisition needed:** for an untargeted capability, prefer an adequate authorized project capability, Roblox built-in or small local implementation. Use supplied constraints and known blocks; complete and validate the local work without opening a registry, comparison or resource lifecycle.
+- **A resource is needed:** select the mode below. For open-ended selection, establish its intended use before choosing; even a download-only request needs that decision. A fixed project target stays fixed unless its owner authorizes a change.
+- **Using a resource:** perform the [first-use check](references/first-use-check.md) for each needed resource once per task, respecting its child's guard/reconciliation rules. Reuse unchanged checks; investigate only relevant drift. Read [maintenance](references/on-demand-maintenance.md) when a correction, changed practice or guarded update is needed.
 
-Choose a community resource only when task fit and qualification justify it. A plausible search result or mere dependency availability is not qualification. For open-ended selection, establish the actual use before choosing; use the [qualification workflow](references/qualification-workflow.md#0-decide-whether-acquisition-is-warranted) for decision-sensitive intake and supported recommendations, including native/custom acquisition choices when restoration or updating matters. Narrow download-only scope does not remove that decision work. When another durable project contract supplies the resource identity, pin, role, or replacement policy, preserve that target and authority rather than reopening selection.
-
-## On-demand upkeep
-
-At activated use, check for the sibling `.skill-maintenance/roblox-resource-acquisition.json` promotion guard; ordinary dependent use waits while it exists. Before each needed library or development tool's first use in a task, including already adopted targets, apply the [first-use freshness check](references/on-demand-maintenance.md#first-use-freshness-check). The shared policy also governs task-relevant current facts, acquisition/upgrade or generation/refresh, source drift, reusable defects, and consequential practice decisions; it holds the user's narrow standing factual-repair grant, source-observation and guarded-promotion rules. Preserve project pins and a healthy immutable child's conditional lifecycle path. Reuse unchanged checks within the task; use-time upkeep adds no schedule or unrelated source survey.
-
-## Repair interrupt
-
-Activate this skill in `repair/reconcile` mode when using a resource or generated child exposes reusable friction, even if a local workaround succeeds and the immediate task can continue.
-
-A workaround is defect evidence when following the reusable guidance requires guessing, bypassing an instruction, rediscovering the same adjustment, or making an undocumented correction likely to recur. A harmless task-local adjustment that does not reveal a reusable instruction, resource, identity, version, or verification problem is not a repair interrupt.
-
-Classify the original defect by its demonstrated correctness, ownership, identity, security, or verification impact. A safe workaround alone does not establish that the defect is soft. When the effect of the defective guidance is unknown, state that uncertainty and the smallest check needed to determine it before continuing the affected use.
-
-- **Hard defect:** Correctness, security, canonical identity, selected version, or verification is unreliable. Stop the dependent work, preserve the smallest reproduction, and enter state reconciliation plus the repair loop before continuing.
-- **Soft defect:** The workaround is safe, reversible, and does not weaken correctness or a trust boundary. The immediate task may continue, but invoke this repair diagnosis and surface the reproduction, workaround, and durable guidance correction before completion. Do not silently absorb the defect as task-local friction.
-- **Authority:** Invocation authorizes diagnosis and reporting. Edit this package, a generated child, lifecycle state, or another artifact only when the current request or the approved on-demand maintenance policy authorizes that mutation. Otherwise propose the precise durable correction and leave the affected artifact unchanged.
-
-A soft instruction defect does not by itself require unrelated pin, provenance, record, or learning reconciliation. Escalate into full state reconciliation only when the classification is hard, state is missing or mismatched, a current block exists, verification fails or drifts, or an authorized repair invalidates lifecycle evidence.
+To use packaged guidance, consult the [bundled catalog](references/bundled-skills.md) for the matching target. Availability alone establishes neither installation nor trust, adoption or execution proof. Generated children use [resource-child contract 1](references/resource-skill-contract.md) and the shared [child usage](references/child-usage.md) route; older unsupported formats require regeneration.
 
 ## Route the operating mode
 
-Choose the narrowest mode that satisfies the request, then read only the references required by that mode.
-
-### No acquisition needed
-
-For a capability-directed task without a positive resource target, check whether Roblox built-ins, an adequate authorized project capability, or small local code already solve it cleanly. Use task-relevant supplied constraints, owner decisions, learnings and known blocks; do not open a registry, comparison rubric, or lifecycle ledger just to reject unnecessary acquisition. If local work is sufficient, complete it and briefly report the choice and its validation. No resource record, new child, or host-status ledger is needed for that outcome. A named adoption target or material uncertainty proceeds to the appropriate mode below.
+Read only the references needed for the selected work.
 
 ### `evaluate/compare`
 
-Use when the task is to inspect, evaluate, compare, or select a resource without using/integrating it or creating/operationally adopting reusable child guidance.
+1. Follow [qualification](references/qualification-workflow.md). For candidate selection/comparison, apply the [evaluation rubric](references/evaluation-rubric.md): hard gates first, then compare survivors against the same intended-use criteria and evidence standard.
+2. Stop at the requested decision. Evaluation does not authorize integration/project mutation, child generation or validation, or host adoption. Read [state policy](references/state-policy.md) only when interpreting existing state, a block or owner conflict, or recording state.
 
-1. Read [references/qualification-workflow.md](references/qualification-workflow.md). For any comparison or selection among candidates, also read [references/evaluation-rubric.md](references/evaluation-rubric.md) directly.
-2. Apply the rubric's hard gates before comparing survivors under the established criteria and priorities. Use the same intended-use criteria and evidence standard for every candidate; popularity is discovery evidence, not a qualification shortcut.
-3. Keep source findings and executed proof distinct. Read [references/state-policy.md](references/state-policy.md) when recording resource state, reporting an existing trust/verification claim, or encountering an owner conflict or current block.
-4. Stop after the requested evidence and decision. Integration/project mutation, child generation or validation, and operational host adoption are all out of scope unless separately requested.
-
-Give a concise answer containing the task criteria, hard-gate findings, decision and material evidence or uncertainty. State that the result is evaluation-only; omit unused integration, child-validation and host-adoption status fields. Preserve a relevant supplied owner decision, learning or current block rather than hiding it to shorten the answer.
+Report criteria, decisive findings, the recommendation and material uncertainty. Mark the result evaluation-only; omit unused lifecycle fields while preserving relevant supplied state and blocks.
 
 ### `acquire/adopt`
 
-Use when a Roblox implementation task benefits from acquiring a library/module or development tool, or the user asks to use, install, integrate, or adopt one. Follow the full adoption scope in [adoption policy](references/adoption-policy.md) unless the current request explicitly narrows it. Ordinary healthy use of an already adopted resource stays on its child's common path.
+1. Read [adoption policy](references/adoption-policy.md) for the existing scope and completion requirements. Full adoption includes integration, reusable child validation and project-scoped host installation; explicit narrower or user/global-scope requests control their boundary.
+2. Follow [qualification](references/qualification-workflow.md) for the exact target. Before changing a durable project dependency or an externally owned target, read [project adoption](references/project-adoption.md). Preserve its identity, pin and role; return a blocking contradiction to its owner.
+3. Stage reversible integration and execute the resource and project checks needed to demonstrate the intended use. A required unavailable/failed check leaves adoption pending; continue independent preparation and name the missing proof.
+4. For every directly adopted resource whose child guidance is in scope, follow [generation and validation](references/generation-validation.md); reuse an exact-target child when suitable. Transitive presence alone creates no child task.
+5. When host adoption is in scope, follow [operational lifecycle](references/operational-lifecycle.md). Resolve project/repository scope before installing. Full adoption already authorizes its project-scoped reversible steps; an unknown project does not authorize global installation.
+6. Apply [state policy](references/state-policy.md) to finalize records and report **trust basis, authorized project role, resource/runtime verification, child validation, and per-host adoption** separately. Use `not applicable` only for stages excluded by the explicit scope. State technical fit separately from these statuses.
 
-1. Read [references/qualification-workflow.md](references/qualification-workflow.md).
-2. When the resource is or becomes a durable project-standard dependency, or another project contract supplies a fixed resource target, read [references/project-adoption.md](references/project-adoption.md) before mutation.
-3. Qualify the exact target, stage reversible integration, and execute the applicable resource and project-integration checks. A missing required check leaves adoption pending; continue independent preparation and name the blocker. Preserve externally owned identity/pin/role decisions exactly; a verification block returns to that authority rather than authorizing substitution.
-4. When reusable child guidance is in scope, read [references/generation-validation.md](references/generation-validation.md). It is in scope for every directly adopted library/module or development tool by default; generate or reuse an exact-target child with portable guidance.
-5. When operational host adoption of generated guidance is requested, read [references/operational-lifecycle.md](references/operational-lifecycle.md) for the adoption gate. The full adoption default requests this at the resolved project/repository scope; install the validated child and prove the applicable host checks without adding a routine confirmation stop. User/global installation requires an explicit scope request.
-6. Read [references/state-policy.md](references/state-policy.md) before recording state or reporting completion.
-7. Report five statuses separately for the exact adopted target: trust basis; authorized project-use role; resource/runtime verification; generated-child validation; and per-host adoption. Use `not applicable` for child guidance or host adoption only when an explicit narrower request excludes it, rather than silently omitting a required default stage.
-
-Also state technical fit separately from those five lifecycle statuses. The response must contain this status ledger; listing “report statuses” as a future action does not complete adoption reporting.
-
-Use `unverified` when no applicable execution proof has run and no material required check is known to be blocked. Use `unavailable` only when a material required check has been identified and cannot run in the available environment; name that check.
+Completion requires every in-scope proof, child and host gate plus matching records/onboarding. Installed files alone do not complete adoption.
 
 ### `refresh`
 
-Use for an existing resource skill whose canonical identity is known and whose source/version facts or generated guidance may have drifted.
+1. Confirm canonical identity/selector, project-use authority, actual installed state and recorded state. Reconcile mismatches first. An externally owned target returns to its owner; it is not an invitation to upgrade or rediscover alternatives.
+2. Identify changed inputs and retain the unchanged ones. Prior runtime proof remains bound to its recorded target. Rerun only proof invalidated by source/API, intended-use, integration, child or host changes.
+3. Read the affected [qualification](references/qualification-workflow.md) sections for source changes, [project adoption](references/project-adoption.md) for authority/onboarding/placement, and [generation validation](references/generation-validation.md) for changed child surfaces. Use [operational lifecycle](references/operational-lifecycle.md) for installed/host state or an authorized child repair, and the [repair loop](references/repair-loop.md) for iterative proof/test defects.
+4. Apply [state policy](references/state-policy.md) when updating records/status. Report changed and unchanged inputs, evidence invalidated by each change, and the exact checks rerun or still required.
 
-1. Before any refresh work, confirm canonical identity and material selector, project-use authority, actual installed state, and recorded state. State mismatches are reconciliation work, not permission for broad rediscovery. Restart broad discovery only when current evidence makes a resource-acquisition-owned target materially unsuitable or alternatives were requested. An externally owned target returns evidence to its authority instead of being independently replaced or upgraded.
-2. List the inputs that changed since the recorded evidence—such as selector/source, API surface, intended use, integration path, generated child, or host state—and read only the affected parts of [references/qualification-workflow.md](references/qualification-workflow.md). Rerun only proof invalidated by those changed inputs. Prior runtime proof remains bound to its recorded target and unchanged evidence is reused.
-3. Read [references/project-adoption.md](references/project-adoption.md) when project-use state, authority, onboarding, or project-local child placement is affected.
-4. Read [references/generation-validation.md](references/generation-validation.md) to patch and rerun the structural and behavioral checks invalidated by the refresh.
-5. If installed/source/host-adoption state, a hard post-adoption defect, or an authorized child repair is implicated, read [references/operational-lifecycle.md](references/operational-lifecycle.md).
-6. If the refresh exposes a proof, test, or generated-child defect that needs iterative repair, read [references/repair-loop.md](references/repair-loop.md).
-7. Read [references/state-policy.md](references/state-policy.md) before updating records or status.
+## Repair interrupt
 
-The refresh answer must include a changed-input ledger: changed inputs, unchanged inputs, evidence invalidated by each change, and the exact checks to rerun. A generic request to revalidate the child is incomplete.
+A recurring workaround activates `repair/reconcile` even when immediate work can continue: guessing, bypassing guidance or repeating an undocumented correction is reusable defect evidence. A harmless task-local adjustment needs no repair workflow. Classify the original defect by its impact; a safe workaround does not make it soft.
+
+- **Hard:** correctness, security, identity, selected version or verification is unreliable. Stop affected work and preserve the smallest reproduction.
+- **Soft:** the workaround is safe and reversible without weakening correctness or a trust boundary. Continue useful immediate work, but surface the reproduction, workaround and durable correction before completion. Diagnosis alone needs no unrelated lifecycle reconciliation.
+- **Unknown impact:** identify the smallest check needed to classify it before continuing affected use.
 
 ### `repair/reconcile`
 
-Use for a stale or defective generated child, recurring undocumented workaround, failed verification, installed/source-state mismatch, adverse current observation, resource-record contract mismatch, or a newer parent-side block. The user need not name this skill: the Repair interrupt above is an implicit activation rule.
-
-1. Classify the interrupt as hard, soft, or harmless task-local adjustment and produce a complete defect handoff: exact canonical identity and selector; affected task/use; installed and recorded state; expected and observed behavior; smallest reproduction; current impact/block; safe workaround if any; proposed durable correction; invalidated evidence; owner/authority; and the verification required to close it.
-2. For a soft instruction defect, diagnose the reusable guidance gap and state the durable correction. Continue safe reversible immediate work when useful, but do not force unrelated provenance or lifecycle reads merely because repair diagnosis activated. Read [references/state-policy.md](references/state-policy.md) directly for final status and authority reporting even when no persistent record will change.
-3. For a hard identity, selector, or security defect, or when installed and recorded identity cannot be reconciled, directly read [references/operational-lifecycle.md](references/operational-lifecycle.md), [references/repair-loop.md](references/repair-loop.md), [references/qualification-workflow.md](references/qualification-workflow.md), and [references/state-policy.md](references/state-policy.md) before dependent work continues. For other hard defects, installed/source/host-adoption mismatch, failed verifier, current block, or authorized child repair, read [references/operational-lifecycle.md](references/operational-lifecycle.md) to reconcile affected state and host lifecycle.
-4. For project-use authority, onboarding, resource replacement/removal, or project-local child-placement repair, read [references/project-adoption.md](references/project-adoption.md).
-5. For a proof, test, or generated-child defect that needs iterative repair, read [references/repair-loop.md](references/repair-loop.md).
-6. Read [references/qualification-workflow.md](references/qualification-workflow.md) when upstream identity, source facts, qualification, trust, or a hard security boundary is in question.
-7. Read [references/generation-validation.md](references/generation-validation.md) only for child validation surfaces invalidated by the repair, and only after the child edit is authorized.
-8. Read [references/state-policy.md](references/state-policy.md) before recording the outcome or proposing an unauthorized package change.
-
-Fill the defect handoff from supplied facts in the current answer. When a field is genuinely unknown, label that field unknown and state the minimum evidence needed; do not replace the handoff with an action to capture it later.
-
-Make the handoff auditable with explicit fields or equally clear sentences for expected behavior, observed behavior, and smallest reproduction. Do not rely on the reader to infer them from the workaround or correction.
+1. Give the defect handoff from known facts: exact identity/selector, affected task, installed/recorded state, expected and observed behavior, smallest reproduction, impact/block, safe workaround, durable correction, invalidated evidence, owner/authority and close-out check. Label missing facts unknown and name the evidence needed; do not defer the handoff itself.
+2. For hard identity, selector or security defects, read [operational lifecycle](references/operational-lifecycle.md), [repair loop](references/repair-loop.md), [qualification](references/qualification-workflow.md), and [state policy](references/state-policy.md) before dependent use resumes. Other state mismatches, failed verification, current blocks, hard defects or authorized child edits use operational lifecycle for the affected state.
+3. Use [project adoption](references/project-adoption.md) for authority/replacement/onboarding/placement; qualification when upstream facts or trust are in question; repair loop for iterative defects; and [generation validation](references/generation-validation.md) only for child surfaces an authorized repair invalidates.
+4. Use state policy for final status and mutation authority. Invocation authorizes diagnosis/reporting; edits require current task authorization or the applicable standing factual-repair grant. Soft diagnosis does not invalidate unrelated evidence.
 
 ## Shared invariants
 
-Hold these across every mode:
-
-- Preserve positive resource targets, their roles, selectors, requested scope, and project-use authority; do not silently substitute an alternative or advance an externally owned pin.
-- Treat project-use authority, technical fit, trust, verification, generated-skill validation, installation, and operational host adoption as separate states.
-- Bind trust and evidence to canonical identity plus any material selector/version; same-named forks, mirrors, modified vendored copies, and re-uploads do not inherit it automatically.
-- Name that exact canonical identity and material selector/version in every verification claim, including `verified`, `unverified`, `unavailable`, and `failed`. If either coordinate is unknown, say that verification for the exact target cannot yet be determined.
-- Prefer primary/canonical sources for resource behavior and current Roblox Creator Hub documentation for platform behavior when material.
-- When a relevant source lookup or intended verification cannot run, use the [bounded evidence-route fallbacks](references/search-playbook.md#when-an-evidence-route-fails) before declaring it unavailable. This conditional route also applies to verification of a no-acquisition result.
-- Never invent an API from naming conventions or analogous libraries.
-- Never label an unexecuted runtime check as passing. Use `unverified`, `unavailable`, or `failed` truthfully.
-- Keep resource proof proportional to the intended use and use isolated/reversible verification where practical.
-- Preserve Roblox server authority, validate client-controlled inputs, and never expose credentials or secrets merely to validate a resource.
-- Do not publish, spend money, or perform irreversible project mutations merely to prove a resource works.
-- Generate or reuse a reusable child for every directly adopted resource under the full adoption default. Explicit evaluation-only or narrower requests exclude the stages they limit; mere transitive presence does not create a child-generation task.
+- Bind every verification claim to canonical identity and material selector/version. Forks, mirrors and modified copies inherit no proof. Unknown coordinates prevent an exact-target claim.
+- Keep technical fit, policy trust, project-use authority, runtime verification, child validation and host adoption distinct. `unverified` means proof is not established; `unavailable` names a required check that cannot run; `failed` records contradictory execution/evidence.
+- Use canonical resource sources and material current Creator Hub guidance. If an evidence route fails, try the [bounded fallbacks](references/search-playbook.md#when-an-evidence-route-fails). Infer neither APIs nor passing execution from plausible names or source inspection.
+- Keep checks proportional and reversible, preserve server authority and validate client inputs. Validation never justifies publishing, spending money, exposing secrets or irreversible project mutations.
 
 ## Completion
 
-Full adoption is pending until all required resource/integration, child-validation, and host checks pass; installed files or a recommendation alone do not finish it. A mode is complete only when its requested decision or lifecycle action is finished, every applicable project-use/verification/validation status is truthful and bound to the named canonical identity plus selector, the project onboarding index matches any durable adopted state in scope, and any blocked use, unavailable proof, owner action, authority conflict, or reconciliation mismatch is explicit. Use [references/state-policy.md](references/state-policy.md) for the final reporting contract.
+Finish the requested decision or lifecycle action. Report the exact target, result and material limitation; make blocked use, missing proof, authority conflicts and unresolved state explicit. Use [state policy](references/state-policy.md) for applicable lifecycle reporting, without adding lifecycle work to a no-acquisition or evaluation-only result.

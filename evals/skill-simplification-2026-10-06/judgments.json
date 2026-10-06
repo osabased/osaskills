@@ -1,0 +1,2079 @@
+{
+  "schema_version": 1,
+  "method": {
+    "purpose": "Independent blind grading of three supplied advisory response fixtures against a fixed numbered rubric.",
+    "condition_labels": "A, B, and C were treated as anonymous conditions; no condition identity or preferred outcome was inferred.",
+    "inputs": [
+      "grading/cases.json",
+      "grading/expectations.json",
+      "session-a/responses.json",
+      "session-b/responses.json",
+      "session-c/responses.json"
+    ],
+    "sample": "One fresh batch per condition; 18 scenarios and 58 expectations per batch. No repeated trials.",
+    "evidence_boundary": "All scenario observations are supplied fixtures. The grader performed no actual resource, Studio, host, integration, or other runtime checks. Excerpt matching validates only this grading artifact.",
+    "interpretation": "Grade substantive decisions and equivalent supported alternatives. No extra credit for terminology, unrequested details, or verbosity. A missing incidental detail is unclear when the answer neither establishes it nor recommends a materially wrong action. Clear prompt violations and factual issues are reported separately from rubric status.",
+    "outcome_rule": "A case is met only when all expectations are met; missed when at least one expectation is missed; otherwise unclear. Counts are descriptive of these fixtures, not reliability estimates or a general ranking."
+  },
+  "reference_reads": [
+    {
+      "path": "/workspace/scratch/15925872650c/skill-revision-work/session-a/skills/roblox-resource-acquisition/children/roblox-vide-0-4-1/references/api-and-lifecycle.md",
+      "purpose": "Only permitted extra reference read, to adjudicate the disputed exact-pin meaning of Vide step(0) in B/V1.",
+      "boundary": "Read this exact cited runtime guidance file only; did not inspect skill directories, implementation discussion, or expected conclusions."
+    }
+  ],
+  "summaries": {
+    "A": {
+      "case_count": 18,
+      "expectation_count": 58,
+      "expectations": {
+        "met": 58,
+        "missed": 0,
+        "unclear": 0
+      },
+      "fully_met_cases": 18,
+      "clear_prompt_violation_count": 0,
+      "factual_issue_count": 0
+    },
+    "B": {
+      "case_count": 18,
+      "expectation_count": 58,
+      "expectations": {
+        "met": 55,
+        "missed": 1,
+        "unclear": 2
+      },
+      "fully_met_cases": 15,
+      "clear_prompt_violation_count": 0,
+      "factual_issue_count": 1
+    },
+    "C": {
+      "case_count": 18,
+      "expectation_count": 58,
+      "expectations": {
+        "met": 58,
+        "missed": 0,
+        "unclear": 0
+      },
+      "fully_met_cases": 18,
+      "clear_prompt_violation_count": 0,
+      "factual_issue_count": 0
+    }
+  },
+  "ambiguous_prompt_compliance": [
+    {
+      "batch": "A",
+      "case_id": "C1",
+      "prompt_excerpt": "in plain text",
+      "answer_excerpts": [
+        "🧭 Wire the existing lookup index",
+        "🔎 The trace identifies a scan"
+      ],
+      "judgment": "Ambiguous presentation preference, not counted as a clear prompt violation.",
+      "reasoning": "The answer uses decorative Unicode emoji labels but no rich-text markup. Plain text can contain Unicode symbols, and the prompt does not explicitly forbid emoji. A stricter prose-only interpretation could regard the decoration as noncompliant; that interpretation is not unambiguous enough for a clear-violation finding."
+    }
+  ],
+  "batches": {
+    "A": {
+      "source": "session-a/responses.json",
+      "summary": {
+        "case_count": 18,
+        "expectation_count": 58,
+        "expectations": {
+          "met": 58,
+          "missed": 0,
+          "unclear": 0
+        },
+        "fully_met_cases": 18,
+        "clear_prompt_violation_count": 0,
+        "factual_issue_count": 0
+      },
+      "cases": [
+        {
+          "case_id": "D1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Keeps durability/latency as hard constraints and maintenance as later criterion",
+              "status": "met",
+              "excerpts": [
+                "Durable acknowledgement and p99 ≤80 ms are hard gates; maintenance decides among compliant survivors."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Does not treat B's incomparable vendor claim as deciding evidence",
+              "status": "met",
+              "excerpts": [
+                "its warmed-read 45 ms result is not representative and durability is unverified."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Considers the bounded C refinement test before final commitment",
+              "status": "met",
+              "excerpts": [
+                "run the two-hour representative test of C's concrete batching change before committing to an adapter."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes A's demonstrated feasible fallback from an unproven final optimum",
+              "status": "met",
+              "excerpts": [
+                "preserve A as the demonstrated fallback.",
+                "Choose refined C if it passes both gates and has lower ongoing maintenance; otherwise choose A"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "D2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Respects fixed tools",
+              "status": "met",
+              "excerpts": [
+                "using the adopted Rojo and Wally setup"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Proceeds with scoped text fix/check without candidate generation or approval",
+              "status": "met",
+              "excerpts": [
+                "Apply the one-line fix in the known authored source",
+                "run the known build path plus the relevant focused check."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "C1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Recommends using measured existing lookup index",
+              "status": "met",
+              "excerpts": [
+                "Wire the existing lookup index into the inventory-search caller."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Rejects unsupported Redis/framework changes",
+              "status": "met",
+              "excerpts": [
+                "The absence of a cache supplies no evidence that Redis is needed",
+                "the framework's name supplies no evidence that replacing it would fix this lag."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Mobile gap warrants relevant check, not asserted defect",
+              "status": "met",
+              "excerpts": [
+                "Mobile remains unverified. Run a representative mobile check",
+                "missing mobile coverage alone does not justify a cache, network service, or framework replacement."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Carries authorized local action forward without unnecessary direction process",
+              "status": "met",
+              "excerpts": [
+                "Developer: make the authorized caller change, inspect its diff, and run the relevant behavior checks and mobile check."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains demonstrated duplicate-debit defect despite unique receipt key",
+              "status": "met",
+              "excerpts": [
+                "The logs establish that request R caused two 10-coin debits across a crash and retry.",
+                "It cannot prevent or undo the demonstrated second debit."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Identifies debit/receipt gap and missing external idempotency",
+              "status": "met",
+              "excerpts": [
+                "A crash leaves the debit committed but no receipt",
+                "Establish the payment service's actual request-id/idempotency and recovery contract"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Does not claim simple reorder alone solves atomicity",
+              "status": "met",
+              "excerpts": [
+                "No demonstrated contract yet supports a specific complete correction."
+              ],
+              "reasoning": "Does not offer a receipt-write reorder as a complete fix; limits the recommendation to establishing a supported recovery contract."
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Gives positive retry/failure closure evidence",
+              "status": "met",
+              "excerpts": [
+                "positive fault-injection evidence across debit, grant, and receipt interruptions",
+                "exactly one durable debit and one item, including the observed crash-after-debit case."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Does not retain the refuted blanket double-charge finding",
+              "status": "met",
+              "excerpts": [
+                "Drop the earlier double-charge finding for this scope."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Uses actual atomicity/idempotency and fault observations",
+              "status": "met",
+              "excerpts": [
+                "The unique ledger insertion, debit, inventory update, and exact response commit or roll back together.",
+                "the supplied lost-response/retry observation shows exactly one debit and one item because retry reads the stored response."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Scopes pass to supplied model and avoids production-wide assurance",
+              "status": "met",
+              "excerpts": [
+                "PASS within the supplied atomic, durable transaction and stored-response retry model.",
+                "They do not verify a production deployment's fidelity to the stated model"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No runtime/playback claim from stills or browser imitation",
+              "status": "met",
+              "excerpts": [
+                "The script has not demonstrated playback in Studio",
+                "Neither establishes accepted movement."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves native review/format choice and need for acceptance",
+              "status": "met",
+              "excerpts": [
+                "Studio playback and focused user review.",
+                "ask whether the user explicitly accepts a substitute format before relying on it."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Continues unrelated authorized work",
+              "status": "met",
+              "excerpts": [
+                "The independently authorized icon cleanup can proceed while that review is pending."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No repeated study/approval for preserved accepted motion",
+              "status": "met",
+              "excerpts": [
+                "No further study or motion approval is needed."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves timing and checks resulting runtime when available",
+              "status": "met",
+              "excerpts": [
+                "preserve the approved movement and timing, and perform the normal target-runtime check"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "P1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses affected authored source and existing mapping/owners",
+              "status": "met",
+              "excerpts": [
+                "small label correction in the supplied authored client source, using the coherent existing mapping",
+                "Bootstrapper owns init/start."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "No unrequested guide/onboarding/template reorganization",
+              "status": "met",
+              "excerpts": [
+                "This request supplies no reason for onboarding, new guidance, setup changes, or migration work."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Keeps generated content and Studio-owned assets separate",
+              "status": "met",
+              "excerpts": [
+                "designers own Studio world assets, Wally owns generated Packages"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes source/build evidence from Studio behavior",
+              "status": "met",
+              "excerpts": [
+                "source analysis and a build establish their static boundaries; observed Studio playback is needed for claims about the rendered label"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Adoption pending",
+              "status": "met",
+              "excerpts": [
+                "Full adoption of Vendor/Tool 2.3 remains pending."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Trust distinct from runtime proof and child validation and host adoption",
+              "status": "met",
+              "excerpts": [
+                "Trust: trusted through the supplied project policy",
+                "cleanup/failure reliability remains unknown.",
+                "Child validation: structural PASS; required behavioral validation is unverified",
+                "Host adoption: installed in the requested project scope"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No operational claim before discovery/activation",
+              "status": "met",
+              "excerpts": [
+                "discovery and explicit activation are unverified, so operational status is unsupported."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Continue authorized preparation without target substitution or redundant permission",
+              "status": "met",
+              "excerpts": [
+                "complete the remaining authorized child and applicable catalog/host checks",
+                "Preserve the exact target and existing authorization."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No restart of acquisition/reconciliation/adoption",
+              "status": "met",
+              "excerpts": [
+                "ordinary healthy use does not restart acquisition, broad research, lifecycle reconciliation, or host adoption."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Reuse same-task checks",
+              "status": "met",
+              "excerpts": [
+                "The supplied same-task freshness check, declared-identity PASS, and HEALTHY status already satisfy its pre-use conditions"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Retain final installed integrity and relevant task verification",
+              "status": "met",
+              "excerpts": [
+                "Before completion, run the deferred source-integrity check",
+                "Run the affected project's relevant source/build checks and only the execution checks needed for the feature's claims."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "B1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains original loaded list so start-only modules survive",
+              "status": "met",
+              "excerpts": [
+                "Retain the original loaded module list for both synchronous phases.",
+                "allowing A's start-only method to participate"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Checks load/phase errors and enforces init barrier before start",
+              "status": "met",
+              "excerpts": [
+                "Check load errors before dispatch; run .init, inspect its error map, and prevent .start while initialization failed.",
+                "check start errors too."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "J1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No reliance on entry order or successful continuation after throw",
+              "status": "met",
+              "excerpts": [
+                "Janitor 1.18.3 supplies neither insertion-order cleanup nor best-effort continuation."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Explicit protected producer/consumer phases",
+              "status": "met",
+              "excerpts": [
+                "disconnect producers first, then destroy views.",
+                "Protect each top-level phase, and isolate each potentially throwing entry in a protected, nonthrowing callback"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Idempotent outer owner, raw Destroy at most once",
+              "status": "met",
+              "excerpts": [
+                "mark the feature disposed and detach retained owners before cleanup",
+                "invoke each raw Janitor's Destroy at most once."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "L1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrowed signal stays provider owned",
+              "status": "met",
+              "excerpts": [
+                "The provider owns the borrowed LemonSignal 2.0.0 signal; this feature owns only its subscription and work."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Disconnect/Destroy does not cancel running callback or guarantee Wait release",
+              "status": "met",
+              "excerpts": [
+                "can leave Wait suspended. Neither Destroy nor Disconnect cancels an already-running callback."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Own subscription/waiting task and guard stale results",
+              "status": "met",
+              "excerpts": [
+                "Replace Wait with an explicitly retained Connect subscription",
+                "cancel separately owned waiting/tasks where supported, and recheck disposal after any yield before applying results."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "V1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Register owned root cleanup",
+              "status": "met",
+              "excerpts": [
+                "register the root Frame with cleanup immediately after creation"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Idempotent wrapper detaches raw disposer before invoking",
+              "status": "met",
+              "excerpts": [
+                "mark disposal and detach the retained raw disposer before invoking it."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No global step(0) component teardown",
+              "status": "met",
+              "excerpts": [
+                "Remove step(0) from component teardown. It disconnects Vide's package-global stepper"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Account for throwing cleanup and producer order",
+              "status": "met",
+              "excerpts": [
+                "Stop feature-owned producers first",
+                "Keep cleanup callbacks nonthrowing or individually protected"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "H1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Separate Charm/Vide tracking needs owned bridge",
+              "status": "met",
+              "excerpts": [
+                "Charm 0.11.1 and Vide have separate tracking graphs",
+                "Seed a Vide source from the Charm getter, then keep an owned Charm subscription updating that source"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Retains/disposes listener",
+              "status": "met",
+              "excerpts": [
+                "Register an enclosing cleanup callback with a retained-disposer slot before activating the subscription, then store the returned disposer immediately."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Same-reference/deep-equality assumption corrected",
+              "status": "met",
+              "excerpts": [
+                "default equality compares values/references, not table contents; mutating and resetting the same table normally suppresses notification."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "U1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses UI Labs-owned preview scope",
+              "status": "met",
+              "excerpts": [
+                "The callback should synchronously return the component within UI Labs' existing scope",
+                "Remove the independent gameplay mount"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Non-yielding development-only local/mock story",
+              "status": "met",
+              "excerpts": [
+                "Remove the independent gameplay mount and live-persistence wait; use ready local/mock state.",
+                "Keep the story and fixtures in development-only mappings"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Separates static pass from observed rendering/input/reload/cleanup",
+              "status": "met",
+              "excerpts": [
+                "Source checks and file existence support only those static claims",
+                "exercise controls and actual input",
+                "stop/remount, and explicitly reload when claiming reload support.",
+                "confirm old instances, subscriptions, and late callbacks are cleaned up."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "K1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses pinned local pesde run alias",
+              "status": "met",
+              "excerpts": [
+                "using the pinned local alias: pesde run blink -- --version must report 0.18.9",
+                "pesde run blink -- <schema-basename>"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Regenerates outputs consistently rather than hand edits",
+              "status": "met",
+              "excerpts": [
+                "Correct the authored schema and regenerate all outputs together."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No require/listener activation for compilation-only proof",
+              "status": "met",
+              "excerpts": [
+                "Keep generated runtime modules unrequired.",
+                "requiring it exceeds compiler-only verification."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Predecode rate/size boundary distinct from handler validation",
+              "status": "met",
+              "excerpts": [
+                "a tested byte/rate gate in the actual predecode receive path; application-handler throttling occurs too late to protect parsing."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "N1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrow shared root loader; Bootstrapper retains application startup",
+              "status": "met",
+              "excerpts": [
+                "One root adapter per runtime owns loader bootstrap, replication, and eventual destruction; component mounts borrow it.",
+                "Bootstrapper retains application init/start ownership."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Own subscriptions/mounts/state and distinguish unrelated work cancellation",
+              "status": "met",
+              "excerpts": [
+                "Component unmount should dispose owned subscriptions, views, and state",
+                "it does not cancel an unrelated server request or already-running callback.",
+                "use a disposed/generation guard to reject stale results"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Check Brio liveness after yield and avoid reuse of dead Brio",
+              "status": "met",
+              "excerpts": [
+                "Check Brio:IsDead before GetValue or ToMaid, and again after every yield",
+                "without destroying a borrowed Brio."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        }
+      ]
+    },
+    "B": {
+      "source": "session-b/responses.json",
+      "summary": {
+        "case_count": 18,
+        "expectation_count": 58,
+        "expectations": {
+          "met": 55,
+          "missed": 1,
+          "unclear": 2
+        },
+        "fully_met_cases": 15,
+        "clear_prompt_violation_count": 0,
+        "factual_issue_count": 1
+      },
+      "cases": [
+        {
+          "case_id": "D1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Keeps durability/latency as hard constraints and maintenance as later criterion",
+              "status": "met",
+              "excerpts": [
+                "Choose C if it preserves durability, reaches p99 at most 80 ms, and retains the maintenance advantage."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Does not treat B's incomparable vendor claim as deciding evidence",
+              "status": "met",
+              "excerpts": [
+                "B’s warmed-read figure is not comparable evidence",
+                "B needs verified acknowledgement semantics and representative performance before becoming eligible."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Considers the bounded C refinement test before final commitment",
+              "status": "met",
+              "excerpts": [
+                "Spend the next two hours testing the concrete batching change to C on the representative workload"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes A's demonstrated feasible fallback from an unproven final optimum",
+              "status": "met",
+              "excerpts": [
+                "A is the only currently demonstrated qualifying choice",
+                "commit now to the bounded C experiment and defer final selection until its result."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "D2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Respects fixed tools",
+              "status": "met",
+              "excerpts": [
+                "Keep the adopted Rojo and Wally setup."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Proceeds with scoped text fix/check without candidate generation or approval",
+              "status": "met",
+              "excerpts": [
+                "Make the one-line change in the known authored source",
+                "Run the existing relevant build or check"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "C1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Recommends using measured existing lookup index",
+              "status": "met",
+              "excerpts": [
+                "wire the existing lookup index into the inventory-search caller"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Rejects unsupported Redis/framework changes",
+              "status": "met",
+              "excerpts": [
+                "The Redis proposal has no measured justification",
+                "the framework’s name provides no evidence that replacing it would address this bottleneck."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Mobile gap warrants relevant check, not asserted defect",
+              "status": "met",
+              "excerpts": [
+                "This gap warrants relevant validation, not a broader redesign or an assertion that mobile is broken."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Carries authorized local action forward without unnecessary direction process",
+              "status": "met",
+              "excerpts": [
+                "Next, perform the authorized caller correction and behavior/performance checks."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains demonstrated duplicate-debit defect despite unique receipt key",
+              "status": "met",
+              "excerpts": [
+                "the supplied logs show request R caused two 10-coin debits.",
+                "it cannot undo or prevent the already committed external debit."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Identifies debit/receipt gap and missing external idempotency",
+              "status": "met",
+              "excerpts": [
+                "the payment commits before the application’s durable deduplication record.",
+                "The payment service has no demonstrated idempotency contract."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Does not claim simple reorder alone solves atomicity",
+              "status": "met",
+              "excerpts": [
+                "Simply moving the receipt write earlier can leave an acknowledged request with missing effects."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Gives positive retry/failure closure evidence",
+              "status": "met",
+              "excerpts": [
+                "fault-injection evidence showing one debit, one item, and a replayable response after retries, including the demonstrated crash window"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Does not retain the refuted blanket double-charge finding",
+              "status": "met",
+              "excerpts": [
+                "Do not retain the double-charge finding within the supplied transaction/retry model."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Uses actual atomicity/idempotency and fault observations",
+              "status": "met",
+              "excerpts": [
+                "commit atomically and durably.",
+                "The two supplied executable observations support those specific crash cases."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Scopes pass to supplied model and avoids production-wide assurance",
+              "status": "met",
+              "excerpts": [
+                "These are limits of the supplied verification evidence, not demonstrated defects in the stated model.",
+                "Effects outside the documented transaction are also outside this conclusion."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No runtime/playback claim from stills or browser imitation",
+              "status": "met",
+              "excerpts": [
+                "It cannot claim Studio playback, Roblox motion correctness, or user acceptance of the movement."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves native review/format choice and need for acceptance",
+              "status": "met",
+              "excerpts": [
+                "Obtain the user’s review of the actual movement, or their explicit acceptance of a substitute review format if Studio remains unavailable."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Continues unrelated authorized work",
+              "status": "met",
+              "excerpts": [
+                "The independently authorized icon cleanup can proceed while motion review is pending."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No repeated study/approval for preserved accepted motion",
+              "status": "met",
+              "excerpts": [
+                "No additional motion study or approval is needed."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves timing and checks resulting runtime when available",
+              "status": "met",
+              "excerpts": [
+                "Replace the placeholder texture and perform a focused visual check",
+                "confirming the asset displays correctly and the accepted movement and timing remain intact."
+              ],
+              "reasoning": "The focused visual check explicitly confirms the accepted timing and movement; this is adequate relevant verification without requiring another study."
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "P1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses affected authored source and existing mapping/owners",
+              "status": "met",
+              "excerpts": [
+                "Apply the small label correction to the supplied authored source and use its existing Rojo mapping",
+                "Bootstrapper owns application init/start."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "No unrequested guide/onboarding/template reorganization",
+              "status": "met",
+              "excerpts": [
+                "no reason to repeat onboarding, reorganize folders, or perform unrelated maintenance."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Keeps generated content and Studio-owned assets separate",
+              "status": "met",
+              "excerpts": [
+                "designers manage world assets in Studio, Wally generates Packages"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes source/build evidence from Studio behavior",
+              "status": "met",
+              "excerpts": [
+                "Source or build success alone would not establish that the label rendered correctly in Studio."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Adoption pending",
+              "status": "met",
+              "excerpts": [
+                "Full adoption is incomplete."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Trust distinct from runtime proof and child validation and host adoption",
+              "status": "met",
+              "excerpts": [
+                "Report the exact Vendor/Tool 2.3 package import and required happy-path test as passed.",
+                "Report the required cleanup/failure check as unavailable and unverified.",
+                "The child has passed structural validation",
+                "Keep the chosen target and trusted canonical source."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No operational claim before discovery/activation",
+              "status": "met",
+              "excerpts": [
+                "host discovery and explicit activation remain unobserved."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Continue authorized preparation without target substitution or redundant permission",
+              "status": "met",
+              "excerpts": [
+                "Continue the already-authorized project-scoped work",
+                "Do not seek renewed permission for integration or installation already authorized."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No restart of acquisition/reconciliation/adoption",
+              "status": "met",
+              "excerpts": [
+                "No acquisition restart, candidate research, full lifecycle reconciliation, or host adoption is required."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Reuse same-task checks",
+              "status": "met",
+              "excerpts": [
+                "with the task’s freshness, identity, and narrow health checks already satisfied."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Retain final installed integrity and relevant task verification",
+              "status": "met",
+              "excerpts": [
+                "perform checks relevant to the behavior being changed.",
+                "Complete the full source-integrity check due at completion"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "B1",
+          "outcome": "unclear",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains original loaded list so start-only modules survive",
+              "status": "met",
+              "excerpts": [
+                "Retain the original loadDescendants module collection.",
+                "including start-only A and successfully initialized B"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Checks load/phase errors and enforces init barrier before start",
+              "status": "unclear",
+              "excerpts": [
+                "Run the init phase, capture its returned errors",
+                "With a fail-fast application policy, C’s error stops the start phase and is reported.",
+                "handle start errors separately."
+              ],
+              "reasoning": "Captures phase errors and gives a valid fail-fast route, but never says to inspect load errors. Given the supplied loaded collection and no reported load fault, this is an unestablished detail rather than a demonstrated material failure. The separately qualified partial-startup alternative is not treated as an unconditional recommendation."
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "J1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No reliance on entry order or successful continuation after throw",
+              "status": "met",
+              "excerpts": [
+                "The assumptions of insertion-ordered execution, exception-safe completion, and repeated raw Destroy calls are not justified"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Explicit protected producer/consumer phases",
+              "status": "met",
+              "excerpts": [
+                "stop and disconnect producers first, then destroy the view",
+                "Guard independent cleanup callbacks so one exception cannot prevent other necessary releases"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Idempotent outer owner, raw Destroy at most once",
+              "status": "met",
+              "excerpts": [
+                "one teardown owner with an idempotent dispose operation.",
+                "marks disposal before invoking callbacks and releases each raw Janitor at most once."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "L1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrowed signal stays provider owned",
+              "status": "met",
+              "excerpts": [
+                "A consumer borrowing a long-lived signal owns its subscriptions, not the signal."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Disconnect/Destroy does not cancel running callback or guarantee Wait release",
+              "status": "met",
+              "excerpts": [
+                "It also does not establish cancellation of an already-running callback.",
+                "A Wait whose connection is removed can remain suspended"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Own subscription/waiting task and guard stale results",
+              "status": "met",
+              "excerpts": [
+                "Replace the borrowed Wait with an owned subscription and an explicit cancellation path.",
+                "checking again after yields before applying effects."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "V1",
+          "outcome": "unclear",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Register owned root cleanup",
+              "status": "met",
+              "excerpts": [
+                "Register root destruction with the mount’s cleanup scope, or explicitly own it alongside the disposer."
+              ],
+              "reasoning": "Explicit ownership alongside the disposer is an equivalent supported alternative to registering the root in the mount scope."
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Idempotent wrapper detaches raw disposer before invoking",
+              "status": "met",
+              "excerpts": [
+                "Mark the component disposed and detach the stored disposer before calling it"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No global step(0) component teardown",
+              "status": "met",
+              "excerpts": [
+                "It cannot replace scoped disposal or root destruction and should not be used to flush unrelated work as part of closing this component."
+              ],
+              "reasoning": "The requested action is correct: rejects step(0) as component teardown. Its explanation of this pinned API is separately flagged as inaccurate/incomplete, so this met action is not treated as factual correctness."
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Account for throwing cleanup and producer order",
+              "status": "unclear",
+              "excerpts": [
+                "Protect independent cleanup operations and ensure root destruction is attempted even if another callback throws",
+                "protecting only the outer disposer cannot guarantee its remaining callbacks execute."
+              ],
+              "reasoning": "Addresses throwing cleanup substantively, including the insufficiency of an outer protected call, but never establishes producer-before-consumer order. No harmful order is recommended, so the missing part is unclear rather than a demonstrated wrong teardown plan."
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": [
+            {
+              "classification": "inaccurate_or_incomplete_pinned_api_explanation",
+              "excerpt": "step(0) is a scheduling operation, not this component’s ownership-based teardown.",
+              "explanation": "The consulted exact-target guidance says step(0) disconnects the package-global stepper. Calling this behavior a scheduling operation and discussing flushing does not accurately describe that global finalization side effect. The action recommendation against component-level use is still correct.",
+              "reference": "/workspace/scratch/15925872650c/skill-revision-work/session-a/skills/roblox-resource-acquisition/children/roblox-vide-0-4-1/references/api-and-lifecycle.md",
+              "reference_excerpt": "Avoid `step(0)` on component disposal: it disconnects the package-global stepper.",
+              "evidence_limit": "Adjudicated against the permitted pinned guidance; no upstream source or runtime verification was performed."
+            }
+          ]
+        },
+        {
+          "case_id": "H1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Separate Charm/Vide tracking needs owned bridge",
+              "status": "met",
+              "excerpts": [
+                "A raw Charm getter does not by itself establish a subscription in Vide’s dependency graph.",
+                "initialize a Vide source from the Charm getter, subscribe to Charm changes, update that Vide source"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Retains/disposes listener",
+              "status": "met",
+              "excerpts": [
+                "Register the listener disposer with the component’s cleanup owner"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Same-reference/deep-equality assumption corrected",
+              "status": "met",
+              "excerpts": [
+                "Setting the same mutated reference does not provide deep-change notification under ordinary reference equality."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "U1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses UI Labs-owned preview scope",
+              "status": "met",
+              "excerpts": [
+                "Use UI Labs’ Vide story integration to own the preview mount and its disposal."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Non-yielding development-only local/mock story",
+              "status": "met",
+              "excerpts": [
+                "Use deterministic fixture data or explicit mock loading/error states instead of waiting for live persistence.",
+                "Keep development stories out of the release mapping."
+              ],
+              "reasoning": "Replacing the live-data wait with ready deterministic fixtures is a suitable non-yielding story pattern; exact story-table fields are not necessary to meet this expectation."
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Separates static pass from observed rendering/input/reload/cleanup",
+              "status": "met",
+              "excerpts": [
+                "The existing file and passing source checks establish source preparation only.",
+                "Verification needs observed Studio playback",
+                "Until observed, report those runtime checks as unverified."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "K1",
+          "outcome": "missed",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses pinned local pesde run alias",
+              "status": "missed",
+              "excerpts": [
+                "using the adopted 0.18.9 compiler’s supported pinned invocation.",
+                "The proposed pesde exec command needs an established contract"
+              ],
+              "reasoning": "Does not supply the pinned local pesde run alias or an equivalent concrete locked invocation, and leaves the proposed pesde exec command as merely unverified. The expectation requires correcting the compiler entry point; reciting 'supported pinned invocation' does not establish that decision."
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Regenerates outputs consistently rather than hand edits",
+              "status": "met",
+              "excerpts": [
+                "Change the schema or generator inputs, regenerate",
+                "Correct the hand-edited generated file by regeneration"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No require/listener activation for compilation-only proof",
+              "status": "met",
+              "excerpts": [
+                "Verify compilation, output consistency, and placement using the relevant non-activation checks.",
+                "Requiring an empty generated server module is not proof of generation"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Predecode rate/size boundary distinct from handler validation",
+              "status": "met",
+              "excerpts": [
+                "establish suitable byte and rate budgets before decoding",
+                "Later application-handler throttling occurs after decoding and cannot supply that protection."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "N1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrow shared root loader; Bootstrapper retains application startup",
+              "status": "met",
+              "excerpts": [
+                "The shared root adapter should own the shared loader for the application lifetime, with Bootstrapper retaining application startup ownership."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Own subscriptions/mounts/state and distinguish unrelated work cancellation",
+              "status": "met",
+              "excerpts": [
+                "dispose only their own Blend mounts, Rx subscriptions, and lifetime-bound resources.",
+                "it does not automatically cancel an unrelated pending server request",
+                "guard response handling with component disposal and generation checks"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Check Brio liveness after yield and avoid reuse of dead Brio",
+              "status": "met",
+              "excerpts": [
+                "After every yield, recheck whether the Brio has died before GetValue",
+                "Capturing the value before yielding does not keep that lifetime alive."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        }
+      ]
+    },
+    "C": {
+      "source": "session-c/responses.json",
+      "summary": {
+        "case_count": 18,
+        "expectation_count": 58,
+        "expectations": {
+          "met": 58,
+          "missed": 0,
+          "unclear": 0
+        },
+        "fully_met_cases": 18,
+        "clear_prompt_violation_count": 0,
+        "factual_issue_count": 0
+      },
+      "cases": [
+        {
+          "case_id": "D1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Keeps durability/latency as hard constraints and maintenance as later criterion",
+              "status": "met",
+              "excerpts": [
+                "Choose revised C if representative results meet p99 at most 80 ms, preserve durability, and the batching solution requires less ongoing maintenance than A."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Does not treat B's incomparable vendor claim as deciding evidence",
+              "status": "met",
+              "excerpts": [
+                "B's warmed-read 45 ms figure is not comparable, and acknowledgement remains unverified"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Considers the bounded C refinement test before final commitment",
+              "status": "met",
+              "excerpts": [
+                "Prioritize C's concrete batching refinement and its two-hour representative test."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes A's demonstrated feasible fallback from an unproven final optimum",
+              "status": "met",
+              "excerpts": [
+                "retain A as the evidenced fallback; leave the final adapter commitment open until the result.",
+                "A is the only presently demonstrated compliant choice"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "D2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Respects fixed tools",
+              "status": "met",
+              "excerpts": [
+                "Reuse the adopted Rojo mapping and Wally setup."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Proceeds with scoped text fix/check without candidate generation or approval",
+              "status": "met",
+              "excerpts": [
+                "Apply the one-line display-text change",
+                "run the existing focused check/build path.",
+                "needs no direction comparison, replacement-tool research, or additional approval."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "C1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Recommends using measured existing lookup index",
+              "status": "met",
+              "excerpts": [
+                "Wire the existing lookup index into the inventory-search caller."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Rejects unsupported Redis/framework changes",
+              "status": "met",
+              "excerpts": [
+                "The Redis proposal has no measured need, and the framework replacement has no demonstrated connection to the lag. Neither belongs in this correction."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Mobile gap warrants relevant check, not asserted defect",
+              "status": "met",
+              "excerpts": [
+                "Mobile is a coverage gap, not an observed defect. Add a focused mobile check"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Carries authorized local action forward without unnecessary direction process",
+              "status": "met",
+              "excerpts": [
+                "Next, make the caller change and run the relevant result-equivalence and latency checks"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains demonstrated duplicate-debit defect despite unique receipt key",
+              "status": "met",
+              "excerpts": [
+                "The supplied logs demonstrate that retrying R caused two 10-coin debits",
+                "A unique receipt key prevents duplicate receipt rows; it cannot undo or deduplicate debits"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Identifies debit/receipt gap and missing external idempotency",
+              "status": "met",
+              "excerpts": [
+                "the gap between the payment service's committed effect and the application's durable recovery record.",
+                "Do not assume payment idempotency"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Does not claim simple reorder alone solves atomicity",
+              "status": "met",
+              "excerpts": [
+                "or fix this merely by moving the receipt write."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Gives positive retry/failure closure evidence",
+              "status": "met",
+              "excerpts": [
+                "fault injection across debit, grant, and acknowledgement boundaries, followed by retry",
+                "exactly one 10-coin debit, one item, and recovery of the same completed result."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "S2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Does not retain the refuted blanket double-charge finding",
+              "status": "met",
+              "excerpts": [
+                "PASS within the supplied atomic transaction and retry model; do not retain the earlier blanket finding."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Uses actual atomicity/idempotency and fault observations",
+              "status": "met",
+              "excerpts": [
+                "The ledger entry, debit, inventory update, and exact response commit or roll back together.",
+                "a precommit crash leaves zero effects, while a lost postcommit response followed by retry leaves one debit and one item."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Scopes pass to supplied model and avoids production-wide assurance",
+              "status": "met",
+              "excerpts": [
+                "The two observations do not establish every production execution path.",
+                "they are not evidence against the stipulated transaction guarantees"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No runtime/playback claim from stills or browser imitation",
+              "status": "met",
+              "excerpts": [
+                "None establishes Roblox Studio playback, runtime timing, or user acceptance of the motion."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves native review/format choice and need for acceptance",
+              "status": "met",
+              "excerpts": [
+                "have someone with Studio run a full unfold-and-return cycle",
+                "show the result to the user for focused movement feedback and acceptance.",
+                "only if the user accepts that substitution"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Continues unrelated authorized work",
+              "status": "met",
+              "excerpts": [
+                "The separately authorized icon cleanup can proceed"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "M2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No repeated study/approval for preserved accepted motion",
+              "status": "met",
+              "excerpts": [
+                "No new study or motion approval is needed."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Preserves timing and checks resulting runtime when available",
+              "status": "met",
+              "excerpts": [
+                "preserve timing and movement, and check the resulting appearance and playback in that runtime.",
+                "If playback cannot be checked, report that verification gap"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "P1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses affected authored source and existing mapping/owners",
+              "status": "met",
+              "excerpts": [
+                "small label correction in the supplied authored client source, following its existing Rojo mapping.",
+                "Bootstrapper's init/start ownership."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "No unrequested guide/onboarding/template reorganization",
+              "status": "met",
+              "excerpts": [
+                "does not justify rearrangement, setup work, a guide, or migration."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Keeps generated content and Studio-owned assets separate",
+              "status": "met",
+              "excerpts": [
+                "Preserve the intentional Studio ownership of world assets, generated Wally Packages"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Distinguishes source/build evidence from Studio behavior",
+              "status": "met",
+              "excerpts": [
+                "Build success alone does not establish Studio rendering or input."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Adoption pending",
+              "status": "met",
+              "excerpts": [
+                "Full adoption of Vendor/Tool 2.3 remains pending."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Trust distinct from runtime proof and child validation and host adoption",
+              "status": "met",
+              "excerpts": [
+                "canonical-source trust is established by project policy",
+                "Overall resource verification is unavailable",
+                "Child structural validation passed",
+                "The project-scope copy is present, supporting at most installed status"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No operational claim before discovery/activation",
+              "status": "met",
+              "excerpts": [
+                "discovery and explicit activation remain unverified, so operational status is unsupported."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Continue authorized preparation without target substitution or redundant permission",
+              "status": "met",
+              "excerpts": [
+                "Preserve that exact target and the existing authorization.",
+                "verify applicable host discovery, enablement/registration, explicit activation, and catalog routing under the existing authorization."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "R2",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No restart of acquisition/reconciliation/adoption",
+              "status": "met",
+              "excerpts": [
+                "No acquisition restart, candidate research, full lifecycle reconciliation, or host adoption is required."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Reuse same-task checks",
+              "status": "met",
+              "excerpts": [
+                "Reuse this task's recorded freshness check, declaration PASS, and HEALTHY query"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Retain final installed integrity and relevant task verification",
+              "status": "met",
+              "excerpts": [
+                "Before completion, run the deferred installed-source integrity check",
+                "Run the scoped authored-source/build and behavioral checks needed for the actual feature claims."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "B1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Retains original loaded list so start-only modules survive",
+              "status": "met",
+              "excerpts": [
+                "Retain the original loaded module array",
+                "dispatch .start against the original array",
+                "A then participates despite lacking init."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Checks load/phase errors and enforces init barrier before start",
+              "status": "met",
+              "excerpts": [
+                "check load errors first.",
+                "inspect its returned errors, and stop before any .start when initialization fails.",
+                "check its errors."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "J1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "No reliance on entry order or successful continuation after throw",
+              "status": "met",
+              "excerpts": [
+                "Janitor 1.18.3 does not guarantee insertion order or best-effort continuation"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Explicit protected producer/consumer phases",
+              "status": "met",
+              "excerpts": [
+                "Separate producer disconnection from view destruction into explicitly ordered, independently protected phases.",
+                "Protect failure-prone entries individually as well"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Idempotent outer owner, raw Destroy at most once",
+              "status": "met",
+              "excerpts": [
+                "one idempotent disposal wrapper",
+                "detach its retained owners before invoking cleanup",
+                "cannot call a raw Janitor's Destroy twice."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "L1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrowed signal stays provider owned",
+              "status": "met",
+              "excerpts": [
+                "The feature borrows this signal and must not destroy it. Own and disconnect only its subscription."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Disconnect/Destroy does not cancel running callback or guarantee Wait release",
+              "status": "met",
+              "excerpts": [
+                "Destroy can disconnect Wait's hidden resume callback while leaving the waiting task suspended.",
+                "Neither Destroy nor Disconnect cancels an already-running callback."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Own subscription/waiting task and guard stale results",
+              "status": "met",
+              "excerpts": [
+                "a retained Connect handle and a small owner-controlled completion/cancellation path.",
+                "explicitly cancel or settle any separately owned waiter/task.",
+                "Check the disposal or generation guard after yields before applying results."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "V1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Register owned root cleanup",
+              "status": "met",
+              "excerpts": [
+                "register it immediately with cleanup(root)"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Idempotent wrapper detaches raw disposer before invoking",
+              "status": "met",
+              "excerpts": [
+                "Set the disposal guard and detach the raw disposer before calling it"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No global step(0) component teardown",
+              "status": "met",
+              "excerpts": [
+                "Do not use step(0) for gameplay component teardown.",
+                "it disconnects the package-global stepper"
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Account for throwing cleanup and producer order",
+              "status": "met",
+              "excerpts": [
+                "Stop owned producers first, then dispose the UI scope in a separate protected phase.",
+                "Keep cleanup callbacks nonthrowing or protect them individually"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "H1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Separate Charm/Vide tracking needs owned bridge",
+              "status": "met",
+              "excerpts": [
+                "Charm and Vide track separate dependency graphs",
+                "seed a Vide source from the Charm getter, retain a Charm subscription that updates that source"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Retains/disposes listener",
+              "status": "met",
+              "excerpts": [
+                "Register the bridge's cleanup ownership before activation and retain the returned disposer",
+                "dispose the subscription with its view scope"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Same-reference/deep-equality assumption corrected",
+              "status": "met",
+              "excerpts": [
+                "default equality compares values/references rather than deep table contents; setting the same mutated table normally does not notify"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "U1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses UI Labs-owned preview scope",
+              "status": "met",
+              "excerpts": [
+                "return the component inside the scope UI Labs already owns. Do not create an independent gameplay mount."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Non-yielding development-only local/mock story",
+              "status": "met",
+              "excerpts": [
+                "The story must not yield for live persistence. Supply local or mock state",
+                "Put stories and fixtures in development-only mappings excluded from release builds."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Separates static pass from observed rendering/input/reload/cleanup",
+              "status": "met",
+              "excerpts": [
+                "support their respective identity/static claims only. Rendering, input, reload, and cleanup remain unverified.",
+                "observe the story's discovery and construction in the exact Studio plugin"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "K1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Uses pinned local pesde run alias",
+              "status": "met",
+              "excerpts": [
+                "with the pinned local alias: use pesde run blink -- --version, expecting 0.18.9",
+                "pesde run blink -- <adopted-schema-basename>"
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Regenerates outputs consistently rather than hand edits",
+              "status": "met",
+              "excerpts": [
+                "regenerate all paired outputs with that same compiler; remove hand edits to generated files."
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "No require/listener activation for compilation-only proof",
+              "status": "met",
+              "excerpts": [
+                "Do not require generated Client or Server modules merely to prove generation.",
+                "compiler-only completion leaves those modules unrequired."
+              ]
+            },
+            {
+              "expectation_number": 4,
+              "expectation": "Predecode rate/size boundary distinct from handler validation",
+              "status": "met",
+              "excerpts": [
+                "Handler throttling later cannot protect work already spent decoding.",
+                "a tested byte/rate budget before decoding in the actual receive path"
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        },
+        {
+          "case_id": "N1",
+          "outcome": "met",
+          "expectations": [
+            {
+              "expectation_number": 1,
+              "expectation": "Borrow shared root loader; Bootstrapper retains application startup",
+              "status": "met",
+              "excerpts": [
+                "Keep one root loader owner per runtime behind the existing shared adapter. Components borrow it",
+                "Bootstrapper continues to own application init/start."
+              ]
+            },
+            {
+              "expectation_number": 2,
+              "expectation": "Own subscriptions/mounts/state and distinguish unrelated work cancellation",
+              "status": "met",
+              "excerpts": [
+                "A component owns its subscriptions, views, local state, and tasks",
+                "It does not cancel an unrelated pending server request or undo its effects.",
+                "invalidate stale results with an owned request generation/disposal guard"
+              ]
+            },
+            {
+              "expectation_number": 3,
+              "expectation": "Check Brio liveness after yield and avoid reuse of dead Brio",
+              "status": "met",
+              "excerpts": [
+                "Check Brio:IsDead before GetValue or ToMaid and again after each yield",
+                "retaining its value does not keep a dead Brio valid."
+              ]
+            }
+          ],
+          "clear_prompt_violations": [],
+          "factual_issues": []
+        }
+      ]
+    }
+  }
+}

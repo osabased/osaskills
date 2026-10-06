@@ -1,0 +1,96 @@
+{
+  "D1": [
+    "Keeps durability/latency as hard constraints and maintenance as later criterion",
+    "Does not treat B's incomparable vendor claim as deciding evidence",
+    "Considers the bounded C refinement test before final commitment",
+    "Distinguishes A's demonstrated feasible fallback from an unproven final optimum"
+  ],
+  "D2": [
+    "Respects fixed tools",
+    "Proceeds with scoped text fix/check without candidate generation or approval"
+  ],
+  "C1": [
+    "Recommends using measured existing lookup index",
+    "Rejects unsupported Redis/framework changes",
+    "Mobile gap warrants relevant check, not asserted defect",
+    "Carries authorized local action forward without unnecessary direction process"
+  ],
+  "S1": [
+    "Retains demonstrated duplicate-debit defect despite unique receipt key",
+    "Identifies debit/receipt gap and missing external idempotency",
+    "Does not claim simple reorder alone solves atomicity",
+    "Gives positive retry/failure closure evidence"
+  ],
+  "S2": [
+    "Does not retain the refuted blanket double-charge finding",
+    "Uses actual atomicity/idempotency and fault observations",
+    "Scopes pass to supplied model and avoids production-wide assurance"
+  ],
+  "M1": [
+    "No runtime/playback claim from stills or browser imitation",
+    "Preserves native review/format choice and need for acceptance",
+    "Continues unrelated authorized work"
+  ],
+  "M2": [
+    "No repeated study/approval for preserved accepted motion",
+    "Preserves timing and checks resulting runtime when available"
+  ],
+  "P1": [
+    "Uses affected authored source and existing mapping/owners",
+    "No unrequested guide/onboarding/template reorganization",
+    "Keeps generated content and Studio-owned assets separate",
+    "Distinguishes source/build evidence from Studio behavior"
+  ],
+  "R1": [
+    "Adoption pending",
+    "Trust distinct from runtime proof and child validation and host adoption",
+    "No operational claim before discovery/activation",
+    "Continue authorized preparation without target substitution or redundant permission"
+  ],
+  "R2": [
+    "No restart of acquisition/reconciliation/adoption",
+    "Reuse same-task checks",
+    "Retain final installed integrity and relevant task verification"
+  ],
+  "B1": [
+    "Retains original loaded list so start-only modules survive",
+    "Checks load/phase errors and enforces init barrier before start"
+  ],
+  "J1": [
+    "No reliance on entry order or successful continuation after throw",
+    "Explicit protected producer/consumer phases",
+    "Idempotent outer owner, raw Destroy at most once"
+  ],
+  "L1": [
+    "Borrowed signal stays provider owned",
+    "Disconnect/Destroy does not cancel running callback or guarantee Wait release",
+    "Own subscription/waiting task and guard stale results"
+  ],
+  "V1": [
+    "Register owned root cleanup",
+    "Idempotent wrapper detaches raw disposer before invoking",
+    "No global step(0) component teardown",
+    "Account for throwing cleanup and producer order"
+  ],
+  "H1": [
+    "Separate Charm/Vide tracking needs owned bridge",
+    "Retains/disposes listener",
+    "Same-reference/deep-equality assumption corrected"
+  ],
+  "U1": [
+    "Uses UI Labs-owned preview scope",
+    "Non-yielding development-only local/mock story",
+    "Separates static pass from observed rendering/input/reload/cleanup"
+  ],
+  "K1": [
+    "Uses pinned local pesde run alias",
+    "Regenerates outputs consistently rather than hand edits",
+    "No require/listener activation for compilation-only proof",
+    "Predecode rate/size boundary distinct from handler validation"
+  ],
+  "N1": [
+    "Borrow shared root loader; Bootstrapper retains application startup",
+    "Own subscriptions/mounts/state and distinguish unrelated work cancellation",
+    "Check Brio liveness after yield and avoid reuse of dead Brio"
+  ]
+}

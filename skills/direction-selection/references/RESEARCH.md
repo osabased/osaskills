@@ -1,67 +1,35 @@
-# Research for a direction decision
+# Source research for a direction decision
 
-Use this workflow inside an admitted [DISCOVERY.md](DISCOVERY.md) investigation when source research is needed for domain orientation, candidate coverage, or decision-relevant claims. Read it completely on entry. It serves the recorded owner and return point; it does not select a direction, grant a gate, or take over general topic research. A source lookup with an already-defined claim may enter at Step 3. Reuse completed, applicable work throughout.
+Use within a [discovery investigation](DISCOVERY.md) for orientation, candidate coverage, or a deciding factual claim. Retain its owner, evidence need, commitment limits, and stopping condition. Enter at retrieval when the question and source are already clear.
 
-## 1. Frame the research need
+## Orient when needed
 
-Carry forward the discovery record: owner, decision, governed commitment, evidence need, coverage goal, constraints, and stop condition. Translate the need into research questions tied to the frame, candidate space, or deciding claims. Separate factual uncertainty from user-owned priorities. When the domain is unfamiliar, begin with an orientation question; do not require a precise hypothesis before learning the field.
+For an unfamiliar or inadequately covered area, identify relevant terminology and alternate names, candidate families, mechanisms, dependencies, boundary conditions, and useful source collections. Use authoritative overviews, documentation, standards, or specialist sources to establish the map.
 
-Identify what kind of evidence could answer each question. Documentation may establish a supported interface; it does not necessarily establish performance in the target workload. Published findings may inform a mechanism without establishing its applicability to the user's setting. If the needed result requires observation or an experiment, identify that need for discovery rather than treating more reading as a substitute.
+Search by the required outcome and mechanism as well as familiar product names. Follow relevant terminology and references into overlooked families or adjacent fields; state assumptions when transferring evidence between settings. Examine interactions when separate components must work together.
 
-## 2. Map the domain and search space
+Keep a coverage rationale for relevant families, exclusions, and unresolved leads. Adequate existing coverage needs no new survey.
 
-For an unfamiliar or inadequately covered area, build a working map of:
+## Retrieve and trace
 
-- the field's terminology, synonyms, older names, and relevant neighboring disciplines;
-- candidate families and materially different ways to achieve the requested outcome;
-- underlying mechanisms, dependencies, and boundary conditions that could change the comparison;
-- useful source collections and unresolved leads.
+Use current primary or authoritative sources for specialized or changeable claims. Inspect relevant source content, methods, versions, and limitations. Search snippets, generated summaries, and abstracts are leads unless they establish the specific claim within their scope.
 
-Use authoritative overviews, reviews, standards, documentation, and specialist sources to orient the map. Secondary sources can reveal vocabulary, disagreements, and primary work; evaluate deciding claims under the parent's evidence rules. Do not substitute familiar product names or the user's initial wording for domain coverage.
+Trace deciding claims to documentation, studies, datasets, specifications, code, or observations. Follow references, corrections, and later work when needed to establish applicability. Retain the claim, source locator, established result, material limitations, and decision effect; distinguish inference from observation.
 
-Search by the problem and mechanism as well as candidate names. Follow promising terminology and references into overlooked families when they bear on the decision. For complex topics, separate evidence questions by material dependency, then examine interactions; individually supported components do not establish end-to-end suitability. Keep inferred transfers from adjacent fields explicit.
+Assess source competence, transparency, and relevant incentives. A strong directly inspectable source can suffice. When a consequential claim rests on an interested-party assertion or opaque method, seek independent corroboration or representative validation. Several reports copying one result remain one basis.
 
-Update the map as evidence changes it. Record the rationale for coverage and exclusions, not an assertion that all possible options have been found. Already-adequate framing and candidate coverage need no new survey.
+Search for material contrary evidence or conditions that could favor a serious alternative. Apply comparable standards to competitors rather than equating publication volume with merit.
 
-## 3. Retrieve and trace the evidence
+## Resolve conflicts and gaps
 
-Use available search and retrieval tools for external claims requiring current or specialized evidence; do not answer those claims from recollection alone. Inspect relevant source content, methods, and limitations rather than using search snippets, abstracts alone, or generated summaries as support for claims they cannot establish. Search results are leads, not proof that a source was examined.
+Compare claims, methods, workloads, versions, conditions, and source dependencies before treating results as contradictory. Explain when evidence concerns different settings or when a correction supersedes an earlier result. Preserve an unresolved material conflict; neither majority vote nor averaging incompatible findings resolves it.
 
-Trace load-bearing claims to the underlying documentation, study, dataset, specification, source code, or observation where feasible. Follow backward references and later work when needed to understand a result, correction, replication, or scope limitation. Check the applicable date or version. Distinguish independent evidence from multiple pages repeating one result.
+For sparse or inaccessible evidence, try relevant alternate terminology, source collections, citation paths, and accessible primary material. Record promising routes that remain inaccessible or unexamined. No reported failures, failed searches, and unavailable specifications establish neither compliance nor failure.
 
-Search for evidence that could defeat the leading explanation or favor a serious alternative: failures, contrary findings, exclusions, integration costs, or conditions under which the result reverses. Apply comparable evidence standards to competitors; do not demand exhaustive proof from alternatives while accepting a favorite's marketing claim. Unequal source volume does not establish unequal merit.
+When reading cannot establish the deciding property, identify the representative test, access, or expertise needed. Do not substitute analogy or continued searching for the missing observation.
 
-Maintain traceable notes for material claims using the format that fits the task:
+## Stop and return
 
-| Claim or question | Source and locator | What was actually established | Applicability and limitations | Decision effect / unresolved need |
-|---|---|---|---|---|
+Research is adequate when relevant candidate coverage is justified, deciding claims have reliable applicable evidence, and material contrary evidence, assumptions, and credible leads have been addressed enough for the commitment. Further work must have justified decision value; confidence, search counts, and repeated agreement do not establish completion.
 
-A locator may be a URL and section, DOI and passage, repository path and revision, or observation artifact. Separate observation, source interpretation, and the agent's inference. Retain enough provenance for the owner to inspect deciding evidence; a bibliography without claim links is insufficient. Notes may remain in context unless the caller requires a saved artifact.
-
-## 4. Resolve conflicts and sparse evidence
-
-For material disagreement, compare the actual claims, definitions, methods, samples or workloads, versions, conditions, and source dependencies. Determine whether results conflict in the relevant setting or describe different settings. Seek evidence that discriminates between the explanations when its decision value justifies the work. Preserve unresolved disagreement instead of averaging incompatible results or deciding by publication count.
-
-When evidence is sparse or inaccessible, try relevant alternate terminology, source collections, citation paths, or accessible primary material before concluding the gap cannot be filled. Record which promising routes remain inaccessible or unexamined. An unavailable full text, unsuccessful query, or absence of reported failures does not establish the underlying claim or its negation. Indirect evidence and analogies retain their transfer assumptions.
-
-If available sources cannot establish a deciding property, identify the representative test, access, or expertise needed and return that gap through discovery. Difficult retrieval and a thin literature do not by themselves make uncertainty structurally unstable or justify a winner.
-
-## 5. Check coverage and return findings
-
-Reassess the investigation against the parent's research-adequacy standard:
-
-- Does the domain and candidate map address the families, conditions, and dependencies material to this decision?
-- Is each deciding claim supported by inspected, reliable, applicable evidence, with inference distinguished?
-- Have material contrary evidence, conflicts, assumptions, and credible leads been addressed enough for the governed commitment?
-- Which remaining gaps could still change the frame, candidate space, ranking, or support, and what justified investigation could resolve them?
-
-Follow unresolved material leads while further investigation has justified value. Revise the research questions when findings expose a missing mechanism or mistaken premise. Expansion within the admitted evidence need follows discovery's entry and commitment rules; a new investigation requires its Entry Test. Neither a fixed search count, repeated agreement, nor confidence in the first plausible answer establishes completion. Do not prolong research solely because more sources exist.
-
-Return through discovery to its recorded owner with:
-
-- findings and their claim-linked sources, including material inferences;
-- changes to the domain model or candidate space, and the coverage rationale;
-- resolved and unresolved conflicts, remaining gaps, and any access or effort limits;
-- effects on the decision's support and any justified next evidence action.
-
-State whether the evidence need was addressed, remains unresolved, or could not be completed. An effort limit is an incomplete-research result when the evidence remains inadequate. The owner resumes the earliest affected stage and applies the existing output and gate contracts. Research ends at this return; it never silently converts a provisional finding into production commitment.
+Return through discovery with claim-linked findings, changes to framing or candidate coverage, resolved and unresolved conflicts, limitations, and the next justified evidence need if any. State whether the evidence need was met or remains incomplete. The owning comparison applies the support standard and chooses the outcome.

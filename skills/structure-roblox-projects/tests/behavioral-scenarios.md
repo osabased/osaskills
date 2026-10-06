@@ -2,13 +2,13 @@
 
 Use after changing orientation, freshness, review gates, setup choices, or structural integration. Run affected cases with independent agents in isolated fixtures. Give each agent the request, skill and raw project evidence; withhold expected outcomes, suspected defects and prior conclusions. Inspect actual responses, reads, commands and writes. Document integrity and checker tests do not prove agent behavior.
 
-## Automatic orientation during an ordinary task
+## Task-scoped orientation during an ordinary task
 
 Fixture: a workspace containing a nested roblox-ts project with multiple Rojo place targets, shared source and compiled output, no broad guide, stale README startup/editing advice, and an unrelated tooling package. Provide source, generated output, manifests/mappings, CI and project instructions. Preserve a fixture baseline outside the agent's permitted directory.
 
 Request: "Change the inventory capacity from 20 to 30 in the Harbor project. Use structure-roblox-projects as needed."
 
-Assess: identifies the actual project and authored source, accounts for both targets and startup paths, distinguishes generated code from source and unrelated tooling, produces an evidence-backed broad overview and separate assessment, makes only the authorized source edit, and waits for documentation review without blocking the requested edit. Labels unrun compiler/Studio checks and consequential gaps. Does not impose SSA, upgrade tools, or save guidance unapproved.
+Assess: identifies the actual project and authored source, traces both targets where they consume the changed capacity, distinguishes generated code from source and unrelated tooling, and completes the authorized source edit with focused checks. Reuses reliable documentation and investigates the stale startup advice only where it affects this task. Does not produce an unrequested broad overview or assessment, create a guide, impose SSA, or upgrade tools. Labels unrun compiler/Studio checks and consequential gaps.
 
 ## Studio/Script Sync plugin with limited evidence
 

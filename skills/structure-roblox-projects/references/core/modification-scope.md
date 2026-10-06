@@ -1,6 +1,6 @@
 # Modification scope
 
-Use this reference when explicit restrictions, ambiguous ownership/pre-existing changes, or broad/generated operations could take a write outside the requested outcome. The normal integration authority is defined in [SKILL.md](../../SKILL.md#feature-integration-and-implementation).
+Use this reference when explicit restrictions, ambiguous ownership/pre-existing changes, or broad/generated operations could take a write outside the requested outcome. The normal integration authority is defined in the [work loop](../../SKILL.md#work-loop).
 
 ## Resolve the boundary
 
@@ -24,4 +24,3 @@ For example, “add inventory startup” normally includes wiring the existing b
 Use an existing compatible extension point if it solves the task cleanly within the boundary. Otherwise identify the minimum blocked edit, why it is needed, the validation impact, and the approval or owner action required. Avoid adding lasting compatibility machinery merely to evade a simple restricted edit.
 
 Scope resolution is complete when every necessary write is authorized or identified as a specific blocker. Continue independent authorized work; do not describe blocked integration as complete.
-

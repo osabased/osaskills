@@ -1,4 +1,4 @@
 interface:
   display_name: "Direction Selection"
   short_description: "Choose or reassess consequential directions"
-  default_prompt: "Use $direction-selection when a consequential direction must be chosen or reassessed. Exit routine or cheaply reversible choices, compare proportionately, and return the governed commitment plus Direction Gate status."
+  default_prompt: "Use $direction-selection for a consequential choice; skip routine details, compare proportionately, and return the supported commitment or exact unresolved input."

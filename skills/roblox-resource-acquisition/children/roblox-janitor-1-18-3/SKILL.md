@@ -9,33 +9,22 @@ Reviewed target: `1.18.3`, source reviewed 2026-10-03. The [resource contract](r
 
 ## Before use
 
-Resolve `PROJECT` to the affected project root, `CHILD` to this installed directory, and `PARENT` from the available `roblox-resource-acquisition` skill location. Read its `references/child-usage.md` once per task and apply first-use freshness, guard and repair rules. Project resolution failure is unknown state and enters parent reconciliation.
-
-Policy is conditional: declared identity and the narrow block query precede ordinary use; installed source integrity is checked before completion. Run:
-
-```text
-python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
-python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/janitor.yaml"
-```
-
-Only `HEALTHY` permits ordinary use. `BLOCKED`/`UNKNOWN`, mismatched pins, verifier drift, hard defects or invalidated repair evidence enter the parent's reconciliation path. A recurring safe workaround still activates parent repair diagnosis.
+Resolve the affected project and installed `roblox-resource-acquisition` parent; read its `references/child-usage.md` once per task for commands, guards, first-use checks and repair. This child uses **conditional** reconciliation: require declaration `PASS` and record query `HEALTHY` before ordinary use; check installed integrity before completion. An unknown project/target or `BLOCKED`/`UNKNOWN` stops affected use.
 
 ## Common use
 
-- Create `Janitor.new()` before fallible acquisition. Register native or LemonSignal connections with `owner:Add(connection, "Disconnect", optionalIndex)` immediately after acquisition. Register owned objects with their explicit `"Destroy"` method and callbacks with `true`. Replacing an index cleans its previous resource synchronously. Use `Remove(index)` for cleanup; `RemoveNoClean(index)` transfers ownership without cleanup.
-
-Keep producer connections and consumer destruction in separate explicit phases. Detach the owner and set a disposed flag before teardown. Protect each top-level phase so a failed phase cannot skip the next one. Do not rely on order among entries in a Janitor or on retry after a throwing entry. Call a raw Janitor's `Destroy()` at most once; its successful implementation clears the table and metatable.
+Create `Janitor.new()` before fallible acquisition and register resources immediately: `owner:Add(connection, "Disconnect", optionalIndex)` for native/LemonSignal connections, explicit `"Destroy"` for owned objects, and `true` for callbacks. Index replacement cleans the previous resource synchronously. `Remove(index)` cleans; `RemoveNoClean(index)` transfers ownership without cleanup.
 
 ## Ownership and critical constraints
 
-Create cleanup ownership before fallible acquisition and register resources immediately. Entry order is unspecified; a throwing entry can abort cleanup and leave `CurrentlyCleaning` set. Split producer disconnection and consumer destruction into explicit protected phases. Detach the owner and mark disposal before teardown; raw successful `Destroy` runs at most once.
+Entry order is unspecified. A throwing entry can abort cleanup and leave `CurrentlyCleaning` set; retry is not a recovery guarantee. Disconnect producers and destroy consumers in separate protected phases so one failure cannot skip the next phase. Detach the owner and set a disposed flag before teardown. Call raw `Destroy()` at most once: success clears the table and metatable.
 
-The shared package can be replicated. Client and server require caches and cleanup owners are separate; a server Janitor cannot clean client UI. Use a client feature owner for UI and a server owner for privileged gameplay. Janitor creates no remote channel.
+Client/server cleanup owners are separate. A server Janitor cannot clean client UI. Use client feature owners for UI and server owners for privileged gameplay; Janitor creates no remote channel.
 
 ## Complete and read further
 
-Run `python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT"`; require exit 0 and JSON `status: PASS` with this exact resource selector and the installed-integrity lane. Use the project's source/build checks for authored consumers and generated placement. These checks establish identity/static integration; runtime, rendering, input and clean-diagnostics claims require their own project evidence.
+Run the shared installed-integrity check; require exit 0, `status: PASS`, this exact selector and `lane: installed-integrity`. Project source/build checks cover authored consumers and mapping. Runtime, rendering, input and diagnostics claims need separate project evidence.
 
 - For installation, locked restoration or mapping compatibility, read [setup](references/setup.md).
-- When changing API usage, activation, partial acquisition or teardown, read [API and lifecycle](references/api-and-lifecycle.md).
+- For additional APIs, cross-library integration or partial-acquisition/teardown recipes, read [API and lifecycle](references/api-and-lifecycle.md).
 - For a matching failure symptom or a resource-specific security question, read [troubleshooting](references/troubleshooting.md).

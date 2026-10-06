@@ -31,25 +31,24 @@ git clone https://github.com/osabased/osaskills.git
 cd osaskills
 ```
 
-Inspect the selected skill before installing it. From this checkout's root, this command copies the complete `preference-discovery` folder into your user-level Codex skills directory:
+Inspect the selected skill before installing it. From this checkout's root, this command copies the complete `direction-selection` folder into your user-level Codex skills directory:
 
 ```sh
-python -c "from pathlib import Path; import shutil; src = Path('skills/preference-discovery'); dst = Path.home() / '.agents' / 'skills' / src.name; dst.parent.mkdir(parents=True, exist_ok=True); shutil.copytree(src, dst); print(dst / 'SKILL.md')"
+python -c "from pathlib import Path; import shutil; src = Path('skills/direction-selection'); dst = Path.home() / '.agents' / 'skills' / src.name; dst.parent.mkdir(parents=True, exist_ok=True); shutil.copytree(src, dst); print(dst / 'SKILL.md')"
 ```
 
 The command refuses to overwrite an existing destination. For an update, review and back up any local edits before replacing that one skill folder. Updating this checkout does not update the installed copy.
 
-Alternatively, copy the selected folder manually; Python is not needed to read or manually install instruction-only skills. Preserve the whole folder, including any `references/`, `scripts/`, `agents/`, and `templates/` subdirectories. The result must be `~/.agents/skills/preference-discovery/SKILL.md`, not another nested `skills/` directory. For project-only use, put it at `<project-root>/.agents/skills/preference-discovery/` instead. Avoid duplicate installations of the same skill. Use the home and filesystem of the environment running Codex; Windows and WSL installations are separate.
+Alternatively, copy the selected folder manually; Python is not needed to read or manually install instruction-only skills. Preserve the whole folder, including any `references/`, `scripts/`, `agents/`, and `templates/` subdirectories. The result must be `~/.agents/skills/direction-selection/SKILL.md`, not another nested `skills/` directory. For project-only use, put it at `<project-root>/.agents/skills/direction-selection/` instead. Avoid duplicate installations of the same skill. Use the home and filesystem of the environment running Codex; Windows and WSL installations are separate.
 
 ### Verify discovery and try it
 
-In Codex CLI or the IDE extension, open `/skills` or type `$` and confirm that `preference-discovery` is listed. If it is missing, check the directory layout and restart Codex. Select it and try this read-only task:
+In Codex CLI or the IDE extension, open `/skills` or type `$` and confirm that `direction-selection` is listed. If it is missing, check the directory layout and restart Codex. Select it and try this read-only task:
 
 ```text
-Use $preference-discovery. This draft feels too corporate:
-"We are delighted to announce our innovative new inventory system."
-Show two short alternatives and help me identify which qualities I want.
-Do not edit files.
+Use $direction-selection. Help choose an approach for a shared inventory service.
+Reliability and ease of maintenance matter most. Use the repository evidence,
+compare credible alternatives, and recommend the next step. Do not edit files.
 ```
 
 A sensible response alone does not prove that the host loaded the skill; check the skill selector and the loaded-skill trace when the host exposes one.
@@ -73,7 +72,9 @@ uv run python -m pytest -q -ra skills/roblox-resource-acquisition/tests
 uv run python -m pytest -q -ra skills/structure-roblox-projects/tests
 ```
 
-The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive Codex skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison](./skills/roblox-resource-acquisition/evals/README.md), [direction-selection](./skills/direction-selection/evals/README.md), or [preference-discovery](./skills/preference-discovery/evals/README.md) evaluation guide.
+The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive Codex skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison](./skills/roblox-resource-acquisition/evals/README.md) or [direction-selection](./skills/direction-selection/evals/README.md) evaluation guide.
+
+The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) records the original/revised/no-skill advisory responses, validation results, and limits of that comparison.
 
 The VOD discovery adapters and panel mock can be checked without footage, model downloads, or Premiere:
 

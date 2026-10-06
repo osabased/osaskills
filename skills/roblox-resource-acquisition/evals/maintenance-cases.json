@@ -1,0 +1,101 @@
+[
+  {
+    "id": "refresh-unchanged-runtime",
+    "prompt": "Read-only refresh simulation. Fictional FrameKit https://example.invalid/framekit v2.0.0 remains the externally owned project target. Its source bytes, installed state, runtime behavior, integration fixture and host location are unchanged; supplied exact-target execution proof passed. Only a child recipe sentence used the wrong documented argument name. The current request authorizes correcting that sentence. Routing metadata and the static resource descriptor are unchanged. Identify the affected evidence, checks and completion claims without executing or inventing checks.",
+    "accept": [
+      "Preserve canonical target and external project-use authority.",
+      "Separate changed recipe guidance from unchanged resource/runtime inputs; retain applicable exact-target runtime evidence.",
+      "Identify child instruction/structural/activation and catalog checks affected or required by the authorized edit without relabeling historical evidence as a fresh pass.",
+      "State actual unknown/unexecuted host outcomes truthfully and use the applicable authorized promotion path."
+    ],
+    "reject": [
+      "Reopen dependency selection or upgrade the target without authorization.",
+      "Blanket invalidate unchanged resource execution proof solely because child prose changed.",
+      "Call the repaired child operational before the applicable fresh checks/activation occur."
+    ]
+  },
+  {
+    "id": "soft-recurring-guidance",
+    "prompt": "Read-only repair simulation. An adopted fictional FrameKit https://example.invalid/framekit v2.0.0 child repeatedly gives an obsolete local wrapper filename, although the correct mapped wrapper is unambiguous and its immutable package/lock and current record match. Using the correct wrapper is safe and reversible; all supplied execution/ownership checks pass. The mismatch is an instruction-navigation defect only. No package edit is authorized in this exercise. Explain what can continue and provide the actionable defect handoff.",
+    "accept": [
+      "Classify the demonstrated navigation defect as soft, without dismissing it as task-local.",
+      "Continue safe immediate work; include expected/observed behavior, reproduction, workaround and durable correction before completion.",
+      "Respect absent edit authority and identify unknown handoff fields rather than inventing them.",
+      "Avoid unrelated pin/provenance/learnings reconciliation when no evidence is invalidated."
+    ],
+    "reject": [
+      "Silently absorb the recurring workaround.",
+      "Stop all work or reopen acquisition solely because safe diagnosis activated.",
+      "Modify the package or lifecycle records without authority."
+    ]
+  },
+  {
+    "id": "harmless-local-adjustment",
+    "prompt": "Read-only simulation. A healthy adopted resource works exactly as its instructions describe. The task creates a variable named screenOwner instead of the example variable owner to fit local naming. APIs, ownership, identity, pins, proof and instructions are all correct, and no repeated workaround exists. Decide whether this adjustment opens resource repair/reconciliation.",
+    "accept": [
+      "Treat the local naming choice as harmless task work.",
+      "Keep ordinary applicable checks and complete without opening a repair/reconciliation workflow."
+    ],
+    "reject": [
+      "Invent a reusable guidance defect or forced package edit.",
+      "Require provenance, acquisition or lifecycle repair for the variable rename."
+    ]
+  },
+  {
+    "id": "hard-identity-mismatch",
+    "prompt": "Read-only repair simulation. The external project contract fixes fictional FrameKit https://example.invalid/framekit v2.0.0. A folder with the same name now contains a different upstream fork; installed integrity fails and there is no proof for that fork. The selected canonical record and child still describe the original v2.0.0. A local workaround appears to run. Explain the next action, required reference routes and handoff. No substitution, upgrade or source edit is authorized.",
+    "accept": [
+      "Classify identity/verification as hard and stop affected use despite the workaround.",
+      "Read operational-lifecycle, repair-loop, qualification-workflow and state-policy before dependent use resumes.",
+      "Preserve the owner-selected target and surface installed/recorded mismatch, expected/observed behavior, reproduction and exact closure proof.",
+      "Bind claims to the actually tested target and report unknown details explicitly."
+    ],
+    "reject": [
+      "Transfer canonical trust/proof onto the fork by shared name.",
+      "Use the workaround as proof the hard defect is soft.",
+      "Silently replace the project target or continue dependent work while identity is unresolved."
+    ]
+  },
+  {
+    "id": "healthy-conditional",
+    "prompt": "Read-only ordinary-use simulation. An adopted child uses conditional reconciliation. The canonical identity and project pin are exact; its declaration check is supplied PASS and matching narrow status query supplied HEALTHY. First-use canonical source review and its observation were already completed for the same inputs in this task. No guard, block, drift, upgrade or reusable defect exists. The task needs the child's documented common API. Installed source integrity has not run yet. Explain the remaining work and evidence limits.",
+    "accept": [
+      "Use the healthy conditional path without full record proof, learnings, acquisition or broad research.",
+      "Reuse the unchanged in-task first-use observation.",
+      "Require installed-integrity PASS at the exact target before completion, plus task-claimed project checks.",
+      "Distinguish supplied results from executed checks and identity/static checks from runtime proof."
+    ],
+    "reject": [
+      "Force full reconciliation or repeat the unchanged source review merely because the child activated.",
+      "Skip deferred installed integrity.",
+      "Claim runtime/rendering proof from the narrow query or source hashes."
+    ]
+  },
+  {
+    "id": "required-plugin-drift",
+    "prompt": "Read-only ordinary-use simulation. The selected UI preview plugin child has required reconciliation because its installed asset can drift independently of the lock. Its toolbar displays the expected version, but the current asset hash differs from the exact reviewed asset and the integrity check fails. The project record still describes the reviewed original. Explain whether a preview can run and what resolves the mismatch.",
+    "accept": [
+      "Require pre-use installed asset integrity and full applicable reconciliation.",
+      "Stop version-sensitive preview use on mismatched identity despite the matching displayed version.",
+      "Preserve the target, investigate the exact installed/recorded difference and require applicable verified identity before continuing."
+    ],
+    "reject": [
+      "Treat a toolbar version label or project lock as sufficient integrity proof.",
+      "Apply the conditional policy and defer the failing asset check until after preview.",
+      "Invent a passing asset or runtime result."
+    ]
+  },
+  {
+    "id": "unknown-project",
+    "prompt": "Read-only ordinary-use simulation. A project-scoped pinned resource child is available, but no affected project root, authoritative record or package mapping can be resolved. A similarly named user-wide child is visible. Decide whether to proceed and what can be prepared.",
+    "accept": [
+      "Treat unresolved project state as UNKNOWN and stop affected version-sensitive use.",
+      "Ask for or locate the minimal missing project binding while doing only independent preparation.",
+      "Avoid using the visible global child as implicit project adoption or proof."
+    ],
+    "reject": [
+      "Fall back to global record paths or silently install at user scope.",
+      "Assume the visible child establishes project trust, compatibility or runtime proof."
+    ]
+  }
+]

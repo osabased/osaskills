@@ -1,50 +1,42 @@
 # Needs-led Roblox project setup
 
-Use for creating or setting up a new Roblox project, or deliberately choosing an established project's new foundation. Existing-project orientation uses [project orientation](project-orientation.md). A bare invocation first resolves which of these jobs is needed.
+Use for new-project setup or a deliberately chosen new foundation. Existing-project onboarding uses [project orientation](project-orientation.md). A bare invocation first establishes which job is needed, including whether a project already exists in Studio or elsewhere.
 
-The user wants this sequence: learn their needs, research current suitable approaches, present one coherent setup for review, then implement the approved setup. An initial generic invocation is not approval to scaffold, install, sync, or save project guidance.
+The recorded review preference is: learn the needs, research suitable approaches, present a coherent setup, then implement the approved result. A generic setup request starts this workflow; an already approved setup proceeds without another approval round.
 
-## Learn the needs that change the setup
+## Resolve the needs that change the setup
 
-Inspect supplied context and ask unanswered questions in small rounds, normally one to three independent questions. Resolve material needs before selecting a stack:
+Use supplied context and project evidence first. Ask unanswered, decision-sensitive questions in small rounds, normally one to three:
 
-- artifact/product: experience and intended systems, multiple places, reusable package/model, plugin, prototypes, or other project type;
-- authoring: Studio and external editor preferences, Luau/TypeScript or another language, ownership of code/assets, collaboration, Git/reproducible builds/CI, and existing Studio content;
-- architecture and dependencies: scale, runtime/lifetime constraints, networking/state/persistence/UI/testing needs, library/framework posture, existing choices, deployment environment, and budget/maintenance constraints when relevant.
+- Product/host: game and intended systems, places, plugin, package/model, or prototype.
+- Authoring: Studio/external editor, language, code/asset ownership, existing content, collaboration, Git/build/CI needs.
+- Constraints: runtime/lifetimes, networking/persistence/UI/testing, library posture, existing choices, maintenance or deployment constraints.
 
-Skip answered or irrelevant subjects. Reuse explicit project choices and the applicable [default tooling](../../SKILL.md#default-tooling) rather than reopening those choices. Ask about use cases for unresolved roles; keep remaining architecture, languages, tools, and frameworks open. Reuse an explicitly provided needs brief instead of requiring another intake round.
+Skip answered and irrelevant subjects. Make routine details consistent with the chosen direction; use [preference resolution](../conventions/preference-resolution.md) for genuinely consequential open choices.
 
-## Research suitable approaches
+## Choose a supported fit
 
-Use [evidence and freshness](../core/evidence-and-freshness.md). Research workflow candidates and tool/library roles under the actual needs, current supported behavior, compatibility, and maintenance constraints. Confirm current authoritative documentation and compatible stable targets before presenting a current recommendation. Separate beta/preview options from established support.
+Research relevant approaches using [evidence and freshness](../core/evidence-and-freshness.md). Compare plausible candidates for unresolved roles, including plain modules and built-in capabilities. Use [tooling defaults](default-tooling.md) only where the setup needs those roles; preserve established compatible choices. Match authoring to source ownership before selecting synchronization. No language, framework, SSA contract, or loader is universal.
 
-Compare meaningful candidates for unresolved roles rather than collecting a catalogue. Plain modules and built-in tooling are valid candidates, as are frameworks or compiler pipelines when their roles fit. Apply [default tooling](../../SKILL.md#default-tooling) to the roles the setup needs, including Pesde for new package selections and the authoring choice that matches source ownership. No default Canonical SSA, ModuleLoader identity, language, framework, or orchestrator is assumed.
+Recommend the supported fit with its deciding tradeoff and remaining material uncertainty. When credible alternatives lack a project-specific basis for selection, present the unresolved choice for the user. Qualifying a resource does not authorize installation before the setup review; [resource acquisition](../../../roblox-resource-acquisition/SKILL.md) handles relevant qualification/adoption without reselecting project-owned pins.
 
-When credible approaches compete without a clear project-specific basis for selection, present their fit, costs, and uncertainties as options for the user to choose. Resolve those consequential choices before the final coherent setup. Do not ask the user to choose every trivial folder or configuration value; make routine choices consistent with the selected direction.
+## Present one implementable proposal
 
-If a community resource is selected for a role, use the available resource-acquisition workflow for relevant qualification/adoption. Selection does not authorize installation; implementation follows review. Preserve existing project-owned identities and pins when setting up an established project unless the selected change includes replacing them.
+Show enough detail to review what will exist and how it will work:
 
-## Present one coherent review proposal
+- Needs served, selected approach, and material source-backed tradeoffs.
+- Project/artifact roots, authored/generated/asset ownership, and filesystem-to-DataModel or host mapping.
+- Exact executable paths, classes/contexts and owners; lifecycle/readiness, dependencies, and planned communication/authority boundaries.
+- Needed tools/dependencies and compatible targets; preparation/restore behavior and local/CI checks.
+- Separate Studio/host validation, intended edits/installations/sync, owner actions, and recovery where needed.
+- Remaining evidence gaps and proposed guidance destination.
 
-Once needs and consequential options are resolved, present an implementable plan with:
+Use [practices](../core/practices.md) and references for the selected boundaries. A package/plugin needs its consumer or host contract, not invented game bootstraps. If saving guidance in the same approval, include its exact content/pointer under [review and persistence](../conventions/project-profile-persistence.md).
 
-- requirements/constraints served and why the selected approach fits;
-- artifact/place/project roots, authoring owners, source/generated/asset boundaries, and filesystem-to-DataModel or host mapping;
-- executable entrypoint path/class/context/owner, discovery/lifecycle/readiness and dependency direction;
-- major feature/shared/network/asset boundaries and concrete communication ownership for planned interfaces;
-- selected tools/dependencies by role, compatible targets, preparation and update/restore behavior, and source citations for material current recommendations;
-- canonical local/CI checks where applicable, focused iteration checks, and separate Studio/host runtime checks;
-- intended edits/installations/sync operations, any owner actions, recovery where needed, and proposed project guidance/pointer destination;
-- unresolved evidence and what the user is being asked to approve.
+Present the concrete proposal and wait for review unless it has already been approved. This review does not reopen choices the user has already settled.
 
-Use [practices](../core/practices.md) for execution/placement/Remote contracts and relevant specialist references for the chosen workflow. A plugin/package/custom pipeline needs its own host/consumer contract rather than an invented game bootstrap pair.
+## Implement and verify
 
-Present the complete proposal before implementation and wait for user approval. If the request already approves a specific previously reviewed setup, act on that approval. An initial request to help set up a project starts this workflow; it does not waive the review preference. Guidance saving follows [review and persistence](../conventions/project-profile-persistence.md); include the exact guide/pointer preview if it is to be authorized in the same review.
+Implement the approved foundation with native project tools. Keep restore distinct from updates and authored source distinct from generated output. Add only needed roles and qualify new verification gates with representative failing probes when their ability to catch meaningful errors is uncertain.
 
-## Implement and qualify the selected foundation
-
-Implement the reviewed setup through this skill's Implementation route. Use the project's selected/native tools and runtime; make commands portable to the supported host/CI environment. Keep dependency restoration distinct from intentional updates and authored source distinct from compiler outputs. Add only roles justified by the selected setup.
-
-Prove the relevant gate covers the selected source classes, mappings/host topology, startup and dependencies, development/release boundaries, and intended runtime behavior. For a new/materially changed gate, use small isolated negative probes when needed to establish that it catches meaningful errors rather than merely exits successfully. Restore the clean fixture after a probe. Ordinary feature work reuses this passing evidence while its inputs remain valid.
-
-Run the smallest applicable checks and distinguish static/build proof from Studio/host execution. Setup is complete when the reviewed foundation works at the claimed evidence level, selected dependencies have clear roles/owners, applicable checks pass or specific unavailable checks are named, and any approved guidance save is verified. Pending documentation approval or unavailable runtime evidence must remain explicit.
+Run the applicable checks and distinguish static/build results from Studio/host execution. Setup is complete at the claimed evidence level when the approved foundation is integrated, dependencies and startup have clear ownership, and applicable checks pass. Name required unavailable checks; verify approved guidance writes separately. Material deviations from the reviewed setup return for review rather than becoming new defaults.
