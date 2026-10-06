@@ -11,7 +11,7 @@ Determine whether a system achieves its required outcome across interactions. Fo
 
 State the required outcome, review question, and smallest sufficient end-to-end boundary. Retain the stage, target, configuration, workload, and requirements that could change the conclusion. Expand scope only for a relevant dependency or the user's request.
 
-If one component can answer the question without cross-part reasoning, return `System Review Applicability: HANDOFF` with the reason and fitting owner. Review establishes defects and correction constraints; comparison among consequential corrections belongs to `direction-selection`.
+If one component can answer the question without cross-part reasoning, return `System Review Applicability: HANDOFF` with the reason and fitting owner. Review establishes defects and correction constraints; keep broader design choices with the caller unless the user requested that comparison.
 
 ## Trace the behavior
 
@@ -29,7 +29,7 @@ Group symptoms of the same failed control; preserve independently material failu
 
 - **Correction:** recommend the smallest coherent correction when its cause and effect are established and neighboring requirements are preserved.
 - **Diagnostic handoff:** when the causal boundary or correction is unresolved, name the missing discriminating evidence, next safe check, and owner.
-- **Direction handoff:** when consequential corrections compete, return the decision boundary, constraints, established options, and evidence without ranking them.
+- **Design choice:** when consequential corrections compete, return the constraints, established options, evidence, and deciding tradeoff to the caller. Compare them when the user's request includes choosing a correction.
 
 An unresolved correction leaves an established defect open. Record **Close when**: the exact scenario and positive observable evidence needed for closure. A plausible patch or a failure that disappears does not suffice unless it meets that condition.
 

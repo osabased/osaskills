@@ -1,5 +1,7 @@
 # Skill simplification review — 2026-10-06
 
+**Historical snapshot:** this review records the initial simplification at [ba7eaac](https://github.com/osabased/osaskills/tree/ba7eaac7c93bbc934991aa021f3ea5017d063459). Later changes moved the resource children, removed `direction-selection`, and refocused `consolidate` on open-ended agent responses. The saved cases, answers, judgments, and fingerprints describe that earlier version; they do not evaluate those later changes.
+
 ## Decision and scope
 
 Retain all six included top-level skills and all eight bundled resource children, with smaller entrypoints and conditional detail. Leave `skills/vod-discovery/**` unchanged.

@@ -50,11 +50,9 @@ For a meaningful comparison, apply [community-evidence.md](community-evidence.md
 
 Preserve the fixed targets, roles/pins, adequate authorized project capabilities, curated policy preferences, and lifecycle scope established by [qualification-workflow.md](qualification-workflow.md). Comparison does not independently reopen those boundaries or turn trust into runtime proof.
 
-Keep straightforward, supported choices local. Resolve a directly inspectable resource fact through its evidence route rather than starting a direction comparison merely because it is unknown.
+Make supported resource choices from the acquisition brief and this rubric. Reuse applicable qualification and evidence; inspect or test only remaining decision-sensitive facts.
 
-When a consequential direction remains live because alternatives compete, comparative justification is weak, framing or candidate-space adequacy is uncertain, or material evidence challenges the choice, use `$direction-selection` when available. Enter through its applicability router, not directly into full mode. Carry forward the brief, constraints, authority, candidates, and existing evidence; do not restart completed qualification. Resource acquisition returns bounded resource-evidence answers to the owning comparison. Honor the returned commitment-scoped decision or blocker; a blocker cannot be bypassed by a local fallback. Acquisition retains the authorized lifecycle work after the comparison returns, not a second competing direction decision.
-
-If that skill is unavailable, apply the local comparison rules proportionately and report any decision-sensitive evidence or authority blocker. Do not claim an invocation or Direction Gate result that did not occur, or require installation merely to answer a supported local choice. Selection alone grants neither trust nor mutation authority.
+When a material tradeoff depends on an unresolved user/project preference, explain the concrete alternatives and ask its owner. Keep that choice unresolved while continuing any independent authorized work. Selection alone grants neither trust nor mutation authority.
 
 ## Evidence strength
 

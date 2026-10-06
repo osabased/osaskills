@@ -19,7 +19,7 @@ npx skills@latest add osabased/osaskills --list
 Install selected skills for Codex:
 
 ```sh
-npx skills@latest add osabased/osaskills --skill consolidate direction-selection --agent codex
+npx skills@latest add osabased/osaskills --skill consolidate system-review --agent codex
 ```
 
 Add `--global` for availability across projects. On Windows, `--copy` selects copies when symlinks are unsuitable. Use the terminal of the environment running your agent; Windows and WSL installations are separate.
@@ -37,15 +37,14 @@ Review local customizations before updating. Confirm availability in your agent'
 
 | Problem | Owning skill |
 |---|---|
-| My agent is having trouble turning findings and suggestions into a defensible, actionable proposal | [**consolidate**](./skills/consolidate/) |
-| My agent is having trouble choosing or reassessing a consequential direction | [**direction-selection**](./skills/direction-selection/) |
+| My agent left me with unfamiliar findings or open-ended choices, and I need a clear explanation and next step | [**consolidate**](./skills/consolidate/) |
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
 | My agent needs feedback on uncertain motion before costly production work | [**motion-studies**](./skills/motion-studies/) |
 | My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
 | My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
 | I need to find useful moments across long VODs and prepare concise Premiere markers with relevant alternate POVs | [**vod-discovery**](./skills/vod-discovery/) |
 
-Install `direction-selection` alongside `consolidate` for consequential-choice handoffs. Install `roblox-resource-acquisition` alongside `structure-roblox-projects` for the shared acquisition and maintenance workflow. The CLI does not infer these relationships.
+Install `roblox-resource-acquisition` alongside `structure-roblox-projects` for the shared acquisition and maintenance workflow. The CLI does not infer this dependency.
 
 ## Bundled Roblox resource guidance
 
@@ -85,7 +84,7 @@ uv run python -m pytest -q -ra skills/roblox-resource-acquisition/tests
 uv run python -m pytest -q -ra skills/structure-roblox-projects/tests
 ```
 
-The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison](./skills/roblox-resource-acquisition/evals/README.md) or [direction-selection](./skills/direction-selection/evals/README.md) evaluation guide.
+The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison evaluation guide](./skills/roblox-resource-acquisition/evals/README.md).
 
 The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) records the original/revised/no-skill advisory responses, validation results, and limits of that comparison.
 
