@@ -1,9 +1,9 @@
 ---
-name: consolidate
+name: then-what
 description: Turn an open-ended agent response into a clear explanation, recommendation, and concrete next step. Use when findings or unfamiliar choices leave the user unsure what matters or what to do.
 ---
 
-# Consolidate
+# Then What
 
 Close the loop on the user's goal. Carry the reasoning burden: explain what the findings mean, recommend what to do, and take the next authorized step.
 

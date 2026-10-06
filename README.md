@@ -19,7 +19,7 @@ npx skills@latest add osabased/osaskills --list
 Install selected skills for Codex:
 
 ```sh
-npx skills@latest add osabased/osaskills --skill consolidate system-review --agent codex
+npx skills@latest add osabased/osaskills --skill then-what system-review --agent codex
 ```
 
 Add `--global` for availability across projects. On Windows, `--copy` selects copies when symlinks are unsuitable. Use the terminal of the environment running your agent; Windows and WSL installations are separate.
@@ -37,7 +37,7 @@ Review local customizations before updating. Confirm availability in your agent'
 
 | Problem | Owning skill |
 |---|---|
-| My agent left me with unfamiliar findings or open-ended choices, and I need a clear explanation and next step | [**consolidate**](./skills/consolidate/) |
+| My agent left me with unfamiliar findings or open-ended choices, and I need a clear explanation and next step | [**then-what**](./skills/then-what/) |
 | My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
 | My agent needs feedback on uncertain motion before costly production work | [**motion-studies**](./skills/motion-studies/) |
 | My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
