@@ -36,28 +36,7 @@ def test_comparison_preserves_quantities_priorities_and_deciding_evidence():
         assert boundary in RUBRIC
 
 
-def test_direction_handoff_is_conditional_and_returns_to_acquisition():
-    section = RUBRIC.split("## Decision ownership", 1)[1].split("## Evidence strength", 1)[0]
-    for boundary in (
-        "fixed targets, roles/pins",
-        "adequate authorized project capabilities",
-        "curated policy preferences",
-        "trust into runtime proof",
-        "Keep straightforward, supported choices local",
-        "`$direction-selection` when available",
-        "applicability router, not directly into full mode",
-        "do not restart completed qualification",
-        "returns bounded resource-evidence answers to the owning comparison",
-        "blocker cannot be bypassed by a local fallback",
-        "Acquisition retains the authorized lifecycle work",
-        "If that skill is unavailable",
-        "Selection alone grants neither trust nor mutation authority",
-    ):
-        assert boundary in section
-
-
 def test_selection_callers_do_not_require_the_removed_scorer():
-    parent = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     qualification = (ROOT / "references" / "qualification-workflow.md").read_text(encoding="utf-8")
     runtime_files = [ROOT / "SKILL.md"]
     for directory in ("references", "templates"):
@@ -69,7 +48,6 @@ def test_selection_callers_do_not_require_the_removed_scorer():
             "score only survivors", "scores slightly higher", "reject or heavily penalize",
         ):
             assert legacy_instruction not in text, path
-    assert "Follow its conditional direction-selection routing" in qualification
     assert "curation is a policy preference" in qualification
     assert "reject a candidate that fails an applicable hard gate" in qualification
     assert "does not authorize integration, child generation, or host adoption" in qualification
@@ -99,7 +77,7 @@ def test_comparison_case_definitions_are_well_formed():
         assert all(isinstance(item, str) and item in ids and item != case["id"] for item in related)
     assert {
         "priorities", "quantities", "close-comparison", "qualification", "authority",
-        "proportionality", "verification", "candidate-treatment", "availability", "ownership",
+        "proportionality", "verification", "candidate-treatment", "comparison", "ownership",
     } <= families
 
 

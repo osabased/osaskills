@@ -1,0 +1,74 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: bootstrapper
+  name: Bootstrapper 1.2.2
+  canonical_url: https://github.com/LDGerrits/Bootstrapper
+  package_id: ldgerrits/bootstrapper
+  selector:
+    kind: commit
+    value: ff6700d32875dde5ef9e3625a159436ebd4dc3e9
+    tree: 4f94dfb887d0d0f81faaf00849d8670e5e8ed7de
+  source_review_date: '2026-10-02'
+  devforum_url: null
+routing:
+  use_when:
+  - Implementing or diagnosing Bootstrapper 1.2.2 loading, init/start phases or owned signal bindings
+    at this commit.
+  avoid_when:
+  - A direct require or tiny native Instance change solves the task.
+  - Selecting/upgrading a loader, designing general project topology, implementing Vide UI, or managing
+    UI Labs.
+  - 'The project''s adopted Bootstrapper target differs: preserve that target and resolve matching guidance.'
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring, or changing package mapping
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: using additional APIs, cross-library integration or partial-acquisition/teardown recipes
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing a matching failure or resource-specific security boundary
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: .agents/roblox/resources/records/bootstrapper.yaml
+  learnings: .agents/roblox/resources/learnings/
+installation:
+  profile: pesde-git
+  dependency_section: dependencies
+  target: roblox
+  new_structure: false
+  integrity:
+    files:
+      src/init.luau: dd7f94d7a0a10de13b838e65549c9de3b540c568c7c44cf89f0b3ace2b1725fc
+    version_header:
+      path: src/init.luau
+      contains: --v1.2.2
+    manifest:
+      path: wally.toml
+      name: ldgerrits/bootstrapper
+      version: 1.2.2

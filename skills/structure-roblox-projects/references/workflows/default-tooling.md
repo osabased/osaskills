@@ -1,6 +1,22 @@
 # Default tooling: setup and verification
 
-Use the [selected defaults](../../SKILL.md#default-tooling) for their stated roles. Compatible established equivalents take precedence. Before a needed tool's first use in a task, follow [evidence and freshness](../core/evidence-and-freshness.md) for the canonical release/documentation comparison with its installed or project-pinned target. This list selects preferences; a project setup still follows the [reviewed setup workflow](onboarding.md). Adding this list does not install tools or authorize a project migration. Choose compatible stable targets when adopting tools and identify any preview target explicitly.
+Use when configuring a needed tooling role. Compatible established choices take precedence; preserve existing pins and toolchains. Add only roles justified by the task or selected setup. Before a needed tool's first use, follow [evidence and freshness](../core/evidence-and-freshness.md). New setup follows the [reviewed setup workflow](onboarding.md).
+
+## Preferred defaults by role
+
+| Tool | Role when needed |
+| --- | --- |
+| [Rokit](https://github.com/rojo-rbx/rokit) | Project-pinned CLI tool versions. |
+| [Pesde](https://docs.pesde.dev/) | Luau/Roblox packages; preserve an established Wally setup. |
+| [Lune](https://github.com/lune-org/lune) | Luau automation and offline place/model processing. |
+| [Lute](https://github.com/luau-lang/lute) | Syntax-aware transformations or standalone Luau executables. |
+| [StyLua](https://github.com/JohnnyMorganz/StyLua) | Luau formatting and formatting checks. |
+| [Selene](https://github.com/Kampfkarren/selene) | Luau linting with matching environment definitions. |
+| [Luau-LSP](https://github.com/JohnnyMorganz/luau-lsp) | Editor language support and standalone type analysis. |
+| [Lest](https://github.com/lest-luau/lest) | Automated Luau unit and regression tests. |
+| [Roblox Headless Renderer](https://github.com/TabooHarmony/roblox-headless-renderer) | UI layout, text overflow, and clipping diagnostics across viewports. |
+
+Choose authoring from ownership: [Rojo](rojo.md) for filesystem-owned mappings, [Script Sync](script-sync.md) for external code editing while Studio owns the project. Reuse the selected workflow. Choose compatible stable targets for new adoptions and identify previews explicitly; a preferred tool is not a verified integration.
 
 ## Tool versions and execution environments
 

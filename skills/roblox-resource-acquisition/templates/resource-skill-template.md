@@ -9,9 +9,9 @@ Reviewed target: IMMUTABLE SELECTOR, source reviewed YYYY-MM-DD. The child descr
 
 ## Before use
 
-Resolve the affected project, this child and the installed parent from available skill locations. Read the parent's shared child usage contract at references/child-usage.md once per task. Apply guard, first-use freshness, reconciliation and repair rules. Project-scope resolution failure is unknown state, with no global fallback.
+Resolve the affected project and installed parent. Read its shared usage contract at references/child-usage.md once per task for commands, guards, first-use checks and repair. Unknown project-scoped state stops affected use without a global fallback.
 
-Document the selected policy's concise concrete shared checker/status commands and their observable results. Resolve path parameters through project bindings. Keep full reconciliation procedures in the parent.
+State the selected policy and immediate pass/stop conditions. Reuse the shared commands; add only resource-specific asset/custom-check inputs. Keep full reconciliation procedures in the parent.
 
 ## Common use
 

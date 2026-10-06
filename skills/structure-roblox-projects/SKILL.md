@@ -1,93 +1,50 @@
 ---
 name: structure-roblox-projects
-description: "Situate agents in unfamiliar Roblox projects, maintain reusable project guidance, and guide new-project setup. Also use for material placement, startup, authoring, or migration decisions. Reuse usable guidance for routine edits rather than repeating onboarding."
+description: "Orient in Roblox projects and resolve placement, startup, authoring, or migration boundaries. Use for unfamiliar projects, structural work, requested reusable guidance, and new-project setup. Reuse established guidance and investigate only what the task needs."
 ---
 
 # Structure Roblox Projects
 
-Help an agent understand how to work in this Roblox project, or help the user establish a suitable new project. Detect the actual project; no language, framework, authoring workflow, game topology, or tool stack is the universal default.
+Work from the project's actual authoring and runtime ownership. Preserve a coherent existing foundation and finish the requested task; examples and preferred tools are options for unresolved needs.
 
-## Choose the work
+## Work loop
 
-- **Existing-project onboarding:** when entering an unfamiliar Roblox project without usable guidance, build a broad reusable overview using [project orientation](references/workflows/project-orientation.md). Trigger this during ordinary project tasks too. Present the overview and a separate assessment for user review before saving either or adding an instruction pointer. Continue independently authorized work while documentation review is pending when sufficient evidence supports that work.
-- **Reuse existing guidance:** read the applicable project guide, check its scope and relevant facts against current evidence, and inspect the current task's integration edges. Missing or stale sections call for focused investigation, not a full repeat of onboarding. A legacy conventions profile alone may be useful without constituting a complete overview.
-- **New-project setup:** ask about the user's needs, research suitable current approaches, and present one coherent setup for review before implementation. Follow [setup](references/workflows/onboarding.md); a bare invocation first determines whether a project already exists.
-- **Implementation, Design, Review, or Migration:** complete the requested work through the routes below. Orientation supplies context; it does not convert a value edit into structural redesign or an ordinary move into a migration.
+1. **Locate the owned source.** Read project instructions and useful existing guidance. Establish the affected project/targets, authored versus generated content, authoring/sync owners, and the startup or consumer paths relevant to this task. Follow mappings and imports instead of inferring execution from folder names. An empty working directory does not establish that an existing Studio project is empty.
+2. **Trace the affected boundary.** Resolve runtime/replication, lifecycle, dependencies, and the checks needed for the change. Recheck stale or contradictory guidance locally. Stop orientation when these questions have supported answers or specific material gaps; a routine edit does not require a broad overview, a new guide, or an architecture assessment.
+3. **Complete the authorized work.** Preserve established conventions, toolchain, and pins. Include necessary caller, entrypoint, mapping, configuration, and focused-check edits. Trace topology-sensitive moves before applying them and keep a proportionate recovery path. Use the references below for boundaries the task actually crosses.
+4. **Verify and stop.** Inspect the diff and generated effect, then run the smallest checks covering the changed behavior. Broaden only for failures or unresolved integration risks. Completion means the requested behavior is integrated and applicable checks pass; identify blocked or unavailable checks precisely. A build, offline execution, or loader-state flag alone does not prove Studio startup, rendering, input, or multiplayer behavior.
 
-Project guidance belongs to the affected project. [Project guide interpretation](references/conventions/project-profile.md) covers existing documentation and legacy profiles; [review and persistence](references/conventions/project-profile-persistence.md) covers saving. Honor existing project instructions and explicit restrictions.
+Keep privileged gameplay rules/state, secrets, persistence, purchases, and client-input validation server-authoritative; replicate only what clients need. Shared ModuleScript source does not share mutable state across Luau environments. Give each execution environment a clear startup/lifecycle owner, and keep earliest-loading content small.
 
-## Establish reliable context
+For explicit restrictions or ambiguous pre-existing/generated ownership, use [modification scope](references/core/modification-scope.md). A shared file is not automatically restricted. Continue independent authorized work when a required write is blocked, and identify the exact unfinished integration.
 
-Resolve project boundaries, authoring owners, source/generated distinctions, runtime and replication boundaries, startup and lifecycle, major systems and dependencies, conventions, and verification. For initial onboarding, cover the project broadly at those boundaries; for subsequent work, investigate only relevant edges. Directory names, method signatures, and installed tools are clues, not proof of their roles.
+## Match the requested deliverable
 
-Use [evidence and freshness](references/core/evidence-and-freshness.md) for open-ended selection intake, current platform/tool claims, and supported recommendations. Establish the intended use before choosing a library, tool, or workflow; ask and wait when a missing input could change the choice. Reuse supplied context and adequate authorized project capabilities. Before each needed library or development tool's first use in a task, including default tooling and existing resource skills, apply the shared [first-use freshness check](../roblox-resource-acquisition/references/on-demand-maintenance.md#first-use-freshness-check). Compare canonical stable releases and relevant documentation with the actual adopted target, reuse unchanged checks within the task, and disclose unavailable lookups. If the sibling policy is absent, perform that bounded check directly with canonical sources and disclose the missing shared maintenance capability. Separate observed project facts, supported behavior, recommendations, and uncertainty. Check actual project versions before applying version-sensitive advice. Recommend the supported fit while leaving consequential unresolved directions to the user; distinguish dispute from a demonstrable compatibility or correctness defect. Preserve established targets until an upgrade or redesign is selected.
+- **Reusable onboarding:** use [project orientation](references/workflows/project-orientation.md) when the user wants a project overview or durable agent guidance. Cover the actual project broadly at ownership/integration boundaries and keep factual guidance separate from optional improvements. [Project guidance](references/conventions/project-profile.md) covers reuse and saving; honor its review preference without blocking separately authorized code work.
+- **New setup or a deliberately changed foundation:** use [needs-led setup](references/workflows/onboarding.md). Resolve material needs, research the fit, and present one implementable setup for review. Act on an already approved setup without asking again.
+- **Review or design:** stay read-only unless implementation is requested. Support findings with concrete project impact. A design identifies source/generated ownership, exact entrypoint paths/classes/contexts and owners, dependency/communication boundaries, and checks for the proposed behavior.
+- **Migration:** use [migration](references/workflows/migration.md) for an explicit migration or plan. Ordinary moves use its relevant tracing/recovery safeguards without a migration-wide inventory.
 
-At activated use, check for the sibling `.skill-maintenance/structure-roblox-projects.json` guard; ordinary dependent use waits while it exists. For reusable guidance defects or package maintenance, use the shared [on-demand maintenance policy](../roblox-resource-acquisition/references/on-demand-maintenance.md) when available. It does not select project architecture or grant project writes. If the sibling package is missing, use this skill's evidence rules and report only the upkeep capability that is unavailable.
+## Boundary references
+
+| When the task needs it | Read |
+| --- | --- |
+| Placement, executable entrypoints, grouping, source of truth, or Remote design | [Practices](references/core/practices.md) |
+| A consequential project choice remains unresolved | [Preference resolution](references/conventions/preference-resolution.md) |
+| Rojo mapping, build/serve workflow, topology, or artifact composition changes | [Rojo](references/workflows/rojo.md) |
+| Script Sync ownership, conflicts, managed topology, or metadata changes | [Script Sync](references/workflows/script-sync.md) |
+| The exact documented ModuleLoader SSA contract is adopted or explicitly selected | [SSA compatibility](references/ssa/ssa.md); [bootstrap](references/ssa/ssa-bootstrap.md) for infrastructure changes |
+| Server Authority prediction/rollback or shared deterministic simulation | [Server Authority](references/platform/server-authority.md) |
+| An active or materially suspected capability sandbox | [Script Capabilities](references/platform/script-capabilities.md) |
+
+Plugins, packages/models, compilers, and custom or mixed workflows keep their real host/consumer contracts. Use their canonical documentation when these references do not cover the boundary.
 
 ## Default tooling
 
-Use these preferred defaults when the role applies and the project has no established equivalent. Preserve explicit project choices, restrictions, and compatible existing toolchains.
+When configuring tools, use [tooling defaults and verification](references/workflows/default-tooling.md) for the roles needed. Compatible established choices take precedence, including Wally. Choose the authoring workflow from source ownership before enabling sync. Acquisition, integration, or upgrades use [resource acquisition](../roblox-resource-acquisition/SKILL.md) within the authorized scope.
 
-| Tool | Default role |
-| --- | --- |
-| [Rokit](https://github.com/rojo-rbx/rokit) | Manage project-pinned CLI tool versions. |
-| [Pesde](https://docs.pesde.dev/) | Manage Luau/Roblox package dependencies when packages are needed. |
-| [Lune](https://github.com/lune-org/lune) | Run Luau automation, development scripts, and offline place/model processing. |
-| [Lute](https://github.com/luau-lang/lute) | Perform syntax-aware Luau transformations or package standalone Luau executables when needed. |
-| [StyLua](https://github.com/JohnnyMorganz/StyLua) | Format Luau source and check formatting in CI. |
-| [Selene](https://github.com/Kampfkarren/selene) | Lint Luau source with the appropriate environment definitions. |
-| [Luau-LSP](https://github.com/JohnnyMorganz/luau-lsp) | Provide editor language support and standalone type analysis. |
-| [Lest](https://github.com/lest-luau/lest) | Run automated Luau unit and regression tests. |
-| [Roblox Headless Renderer](https://github.com/TabooHarmony/roblox-headless-renderer) | Check UI layout, text overflow, and clipping across viewport sizes. |
+## Current evidence and maintenance
 
-For authoring, prefer [Rojo](https://rojo.space/docs/v7/) when the filesystem owns the mapped project, or [Script Sync](https://create.roblox.com/docs/scripting/sync) for external code editing while Studio owns the project. Establish authoring ownership before choosing or enabling synchronization; reuse the selected workflow. Preserve an established [Wally](https://github.com/UpliftGames/wally) setup; prefer Pesde for new package selections unless a concrete compatibility need calls for Wally.
+Before a needed library or tool's first use in a task, follow [evidence and freshness](references/core/evidence-and-freshness.md). Reuse unchanged checks within the task and preserve adopted targets. Current platform, compatibility, or recommendation claims need authoritative evidence for the actual project version; disclose unavailable lookups.
 
-Read [tooling setup and verification](references/workflows/default-tooling.md) when configuring these roles or their checks. Add only roles the task or selected setup needs. When acquisition, integration, or an upgrade is needed, use [resource acquisition](../roblox-resource-acquisition/SKILL.md), preserve established project pins, and record selected versions and verification in project guidance. A preferred default is not proof that an arbitrary version or project integration has passed.
-
-## Load specialist guidance when needed
-
-Evaluate both current and proposed structures. Initial orientation may inspect mappings and entrypoints without applying an implementation procedure.
-
-| Decision or boundary | Reference |
-| --- | --- |
-| Ordinary placement, executable entrypoints, grouping, source of truth, or Remote design | [Practices](references/core/practices.md) |
-| Material project choices still unresolved after inspection or setup intake | [Preference resolution](references/conventions/preference-resolution.md) |
-| Explicit restrictions, ambiguous pre-existing ownership, or broad/generated writes | [Modification scope](references/core/modification-scope.md) |
-| Rojo mapping, build/serve workflow, topology changes, or artifact composition | [Rojo](references/workflows/rojo.md) |
-| Script Sync ownership, conflicts, managed topology, or metadata | [Script Sync](references/workflows/script-sync.md) |
-| The exact documented ModuleLoader SSA contract is adopted or explicitly selected | [SSA compatibility](references/ssa/ssa.md); load [bootstrap](references/ssa/ssa-bootstrap.md) for infrastructure changes |
-| Server Authority prediction/rollback or shared deterministic simulation | [Server Authority](references/platform/server-authority.md) |
-| An active or materially suspected capability sandbox | [Script Capabilities](references/platform/script-capabilities.md) |
-| Explicit migration, or topology-sensitive moves requiring tracing/recovery | [Migration](references/workflows/migration.md), using its applicable mode |
-
-Other compilers, sync systems, frameworks, plugins, packages, models, and build pipelines use the same orientation/evidence contracts and their canonical documentation. A missing specialist reference is not grounds to reshape a project into a familiar template.
-
-## Complete the requested work
-
-### Feature integration and Implementation
-
-The requested behavior authorizes necessary edits to modules, callers, shared entrypoints, mappings, configuration, and focused checks, subject to explicit restrictions. Preserve pre-existing work and coherent ownership; use modification scope only when a real boundary is unresolved.
-
-Trace affected startup, require/import, discovery, communication, and mapping edges before topology-sensitive changes. Establish recovery for those changes, inspect the diff/generated output, and run the smallest checks covering the changed boundary. Broaden for failures or unresolved integration risks. Preserve compiled/generated output ownership.
-
-Saving new or revised guidance follows the review gate even during implementation. Documentation approval is independent of authorization for the requested code change. A reviewed setup can include an exact guide/pointer preview and authorize those writes together; re-preview material differences from that approved result.
-
-Completion means the behavior is integrated and applicable checks pass. Distinguish source/build evidence from Studio runtime proof and name any unavailable required check. A successful build or loader-state flag alone does not prove successful startup.
-
-### Review and Design
-
-Support material findings with project evidence, concrete impact, and the smallest compatible improvement. Describe conflicting supported approaches as options. Separate observed weaknesses from suggestions and unresolved evidence.
-
-For Design, provide an implementable topology: filesystem/DataModel or host homes, source and generated ownership, execution/replication boundaries, startup/lifecycle, dependencies, communication contracts, and checks. Name executable path/class/context/owner per entrypoint. Review and design stay read-only unless implementation is requested.
-
-### Migration
-
-Use the full migration workflow only for an explicitly requested migration or migration plan. Account for concrete source/target paths, affected references, cutover, recovery, owner actions, and verification. Ordinary moves apply relevant safeguards without triggering unrelated migration accounting.
-
-## Structural invariants
-
-- Keep privileged gameplay rules/state, secrets, persistence, purchases, and client-input validation server-authoritative. Replicate only what clients need.
-- Keep earliest-loading content small and intentional.
-- Identify a clear startup owner and lifecycle for each execution environment; point dependencies toward cohesive domain/shared modules.
-- Shared module source does not share mutable state across Luau environments.
-- Adopt tools, frameworks, packages, or lifecycle machinery for demonstrated project needs. Explicit user choices and coherent established ownership govern the project.
+At activation, check the sibling `.skill-maintenance/structure-roblox-projects.json` guard. If present, ordinary dependent use waits for recovery through [on-demand maintenance](../roblox-resource-acquisition/references/on-demand-maintenance.md). Use that policy for a demonstrated reusable-guidance defect or package upkeep, not as an extra project workflow. If the sibling is unavailable, use canonical sources and disclose the missing capability when it matters.
