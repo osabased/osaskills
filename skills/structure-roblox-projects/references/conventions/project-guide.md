@@ -9,7 +9,7 @@ Agent-facing docs and data live in the project's agent directory, `AGENT_DIR`:
 - Use `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`.
 - If both exist, use the one that already contains `roblox/`. If neither or both do, use `.claude/`.
 
-The project guide is `AGENT_DIR/roblox/project.md`. Resource and observation data go in `AGENT_DIR/roblox/resources/`.
+The project guide is `AGENT_DIR/roblox/project.md`.
 
 ## Reuse existing guidance
 

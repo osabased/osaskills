@@ -20,6 +20,18 @@ sys.modules[SPEC.name] = CHECKER
 SPEC.loader.exec_module(CHECKER)
 
 
+def rojo_runs() -> bool:
+    """True when `rojo` runs outside a toolchain project; a bare rokit/aftman shim does not."""
+    if not shutil.which("rojo"):
+        return False
+    with tempfile.TemporaryDirectory() as directory:
+        try:
+            result = subprocess.run(["rojo", "--version"], cwd=directory, check=False, capture_output=True, text=True)
+        except OSError:
+            return False
+    return result.returncode == 0
+
+
 def sourcemap(
     include_preview: bool = False,
     duplicate_service: bool = False,
@@ -201,7 +213,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                     ),
                 )
 
-    @unittest.skipUnless(shutil.which("rojo"), "Rojo is not installed")
+    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
     def test_rojo_thin_profiles_keep_development_and_exclude_it_from_release(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -299,7 +311,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                 ),
             )
 
-    @unittest.skipUnless(shutil.which("rojo"), "Rojo is not installed")
+    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
     def test_rojo_service_beside_root_path_duplicates_only_in_the_place_build(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

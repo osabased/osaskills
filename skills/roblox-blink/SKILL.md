@@ -9,7 +9,7 @@ Pinned target: `0.18.9` (source reviewed 2026-10-03). [resource.yaml](resource.y
 
 ## Check the pin
 
-If the project pins Blink, confirm it matches the target (`pesde run blink -- --version` prints `0.18.9`). If the `roblox-resource-acquisition` skill is installed beside this one, run its checks per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent, Python, or a project record is unavailable, read the project's manifest/lock directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
+If the project pins Blink, confirm it matches the target (`pesde run blink -- --version` prints `0.18.9`). If the `roblox-resource-acquisition` skill is installed beside this one, run its checks per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
 
 ## Core API
 

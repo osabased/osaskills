@@ -2,6 +2,7 @@
 from pathlib import Path
 
 import pytest
+import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 SKILLS = ROOT.parent
@@ -26,7 +27,10 @@ def test_bundled_child_routes_to_sibling_parent(child):
 
 
 @pytest.mark.skipif(not BUNDLES, reason='No bundled children beside the parent (standalone install)')
-def test_bundled_catalog_can_be_distributed_together(catalog_mod):
-    errors, _, _, fingerprint = catalog_mod.validate_catalog(BUNDLES, host='portable')
-    assert errors == [], '\n'.join(errors)
-    assert fingerprint.startswith('sha256:')
+def test_bundled_children_are_present_without_record_paths():
+    assert {child.name for child in BUNDLES} >= {
+        'roblox-vide', 'roblox-charm', 'roblox-ui-labs', 'roblox-bootstrapper',
+        'roblox-janitor', 'roblox-lemonsignal', 'roblox-blink', 'roblox-nevermore-ui'}
+    for child in BUNDLES:
+        reconciliation = yaml.safe_load((child / 'resource.yaml').read_text(encoding='utf-8'))['reconciliation']
+        assert set(reconciliation) == {'policy', 'reason'}, child.name

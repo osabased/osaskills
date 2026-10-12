@@ -13,7 +13,7 @@ This repository ships pinned child skills beside this one, each in its own folde
 | Blink: networking schema compiler | [roblox-blink](../../roblox-blink/SKILL.md) | 0.18.9 |
 | Nevermore UI: Blend, Rx and Brio | [roblox-nevermore-ui](../../roblox-nevermore-ui/SKILL.md) | Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2 |
 
-The links work in this repository and in installs where the children sit beside this skill. All eight use [resource child contract 1](resource-skill-contract.md). Each child's `resource.yaml` holds the exact identity, profile and integrity hashes. Read each child's advice-only or executable boundary before relying on it.
+The links work in this repository and in installs where the children sit beside this skill. All eight use [child contract 1](child-authoring.md#resourceyaml). Each child's `resource.yaml` holds the exact identity, profile and integrity hashes. Read each child's advice-only or executable boundary before relying on it.
 
 `structure-roblox-projects` is a separate project-structure skill, not a resource child.
 
@@ -26,7 +26,7 @@ The links work in this repository and in installs where the children sit beside 
    - **Manual:** copy the whole child folder and the `roblox-resource-acquisition` folder into `<project>/.claude/skills/` (or `~/.claude/skills/` for every project). Keep references and scripts.
    - **Cowork / claude.ai:** upload each skill folder as a zip, or install the plugin. Scripts may not run there; children fall back to advisory mode.
 3. Do not overwrite an unrelated existing skill with the same name; stop and report the collision.
-4. Keep records, manifests, locks and fixtures in the project. The children carry no project state.
-5. Installing files establishes placement only. To call a child installed and working, see [installing children](operational-lifecycle.md).
+4. Keep manifests, locks and fixtures in the project. The children carry no project state.
+5. Installing files establishes placement only. A child is working once it appears in the skill list and `/<name>` invokes it.
 
-Older installs may use versioned names such as `roblox-vide-0-4-1` and records whose `generated_skill` names them. Rename the record's `generated_skill` when you switch to the unversioned child; the status query reports the old name as unknown, not as a mismatch.
+Older installs may use versioned names such as `roblox-vide-0-4-1`. Remove the old folder when you switch to the unversioned child, so the two don't compete.

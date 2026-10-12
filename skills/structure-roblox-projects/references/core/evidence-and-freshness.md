@@ -22,7 +22,7 @@ Keep observations, conventions, recommendations, and uncertainty distinct. A sup
 
 Check only what this task uses, not the whole dependency graph. Reuse a check already done in this task while its inputs are unchanged. A newer release does not authorize an upgrade. A failed lookup does not erase valid proof for an unchanged exact target. Unknown identity, a known incompatibility, or a hard defect still blocks dependent use.
 
-If the project keeps a source-observation log, append the check to it. Project logs live in `AGENT_DIR/roblox/resources/` (see [agent directory](../conventions/project-guide.md#agent-directory)); user-wide logs live in `~/.claude/roblox/resources/`. A legacy `~/.roblox-resources/` may be read; suggest moving it to `~/.claude/roblox/resources/`.
+If the project keeps a source-observation log, append the check to it.
 
 ## Make a bounded recommendation
 

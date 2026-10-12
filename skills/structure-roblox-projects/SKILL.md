@@ -58,5 +58,3 @@ Running a project's already-pinned tools needs no freshness research. Check curr
 ## Companion skill
 
 The `roblox-resource-acquisition` skill is optional. If it is installed beside this one ([SKILL.md](../roblox-resource-acquisition/SKILL.md)), use it to choose, acquire, adopt, or repair libraries and tools. If it is missing, use canonical sources directly; nothing here requires it.
-
-If a `.skill-maintenance/structure-roblox-projects.json` file exists next to this skill's folder, an update is mid-install: tell the user before relying on this skill.

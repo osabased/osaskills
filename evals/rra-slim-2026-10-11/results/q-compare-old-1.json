@@ -1,0 +1,29 @@
+{
+ "id": "q-compare-old-1",
+ "task": "q-compare",
+ "cond": "old",
+ "rep": 1,
+ "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/bundled-skills.md",
+  "read:roblox-resource-acquisition/references/evaluation-rubric.md"
+ ],
+ "max_turns": 12,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Grep",
+  "Read",
+  "Read"
+ ],
+ "result": "**Use Janitor.** I didn't compare Janitor and Trove on their merits, because the question is already settled by your project. `wally.toml` declares `Janitor = \"howmanysmall/janitor@1.18.3\"`, and I found no Trove or Maid dependency. Adding Trove would give you two cleanup libraries doing the same job, and nothing in per-round cleanup needs a second one. The pinned `roblox-janitor` skill matches that version, so its guidance applies directly.\n\nFor a round system, one Janitor per round covers all three kinds of object:\n\n- **Parts and other instances:** `janitor:Add(part, \"Destroy\")`. You can also use `janitor:Add(part)`, which destroys it by default.\n- **Tweens:** `janitor:Add(tween, \"Cancel\")`. This stops the tween when the round ends. Destroying it alone doesn't cancel playback.\n- **Connections:** `janitor:Add(conn, \"Disconnect\")`.\n- **Ending the round:** call `janitor:Cleanup()` and drop the reference. That leaves any janitor you reuse in a clean state. Call `Destroy()` only if the janitor itself is done.\n- **Instances that may be destroyed early:** `LinkToInstance` ties a janitor to an instance's lifetime, for example a round folder or a player's character.\n\nI'd keep each round's janitor on the round object, so ending the round and cleaning up are a single call. That also makes early exits and aborted rounds go through the same path.\n\nI haven't run any of this in your project, and I'm relying on the bundled pin and its skill. Please test one full round followed by an aborted round. Check that tweens stop and that no connections or parts are left behind.\n\nI changed nothing.",
+ "cost": 0.0756131,
+ "turns": 6,
+ "seconds": 15.4,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-cc6crdmx",
+ "written": {}
+}

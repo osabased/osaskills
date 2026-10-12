@@ -17,7 +17,7 @@ REFERENCES = {
 
 def _mode(name: str) -> str:
     match = re.search(
-        rf"^### `{re.escape(name)}`\n(.*?)(?=^## |^### |\Z)",
+        rf"^## {re.escape(name)}\n(.*?)(?=^## |\Z)",
         PARENT,
         re.MULTILINE | re.DOTALL,
     )
@@ -94,40 +94,27 @@ def test_every_reference_is_linked_from_skill_md_or_another_reference():
     assert orphans == [], f"unreferenced files: {orphans}"
 
 
-def test_evaluate_compare_routes_only_decision_and_state_references():
-    assert _links(_mode("evaluate/compare")) == {
-        "references/qualification-workflow.md",
-        "references/evaluation-rubric.md",
-    }
+def test_evaluate_compare_routes_only_to_choosing():
+    assert _links(_mode("Evaluate or compare")) == {"references/choosing.md"}
 
 
-def test_acquire_adopt_reaches_each_in_scope_contract():
+def test_add_adopt_reaches_each_in_scope_reference():
     assert {
-        "references/adoption-policy.md",
-        "references/qualification-workflow.md",
-        "references/project-adoption.md",
-        "references/generation-validation.md",
-        "references/operational-lifecycle.md",
-        "references/state-policy.md",
-    } <= _links(_mode("acquire/adopt"))
+        "references/choosing.md",
+        "references/adopting.md",
+        "references/bundled-skills.md",
+        "references/child-authoring.md",
+    } <= _links(_mode("Add, adopt or upgrade"))
 
 
-def test_refresh_and_repair_reach_their_contracts():
-    for mode in ("refresh", "repair/reconcile"):
-        assert {
-            "references/qualification-workflow.md",
-            "references/project-adoption.md",
-            "references/generation-validation.md",
-            "references/repair-loop.md",
-        } <= _links(_mode(mode)), mode
-
-
-def test_record_location_has_one_canonical_owner():
-    state = REFERENCES["state-policy.md"]
-    project = "`<project-root>/AGENT_DIR/roblox/resources/records/<slug>.yaml`"
-    user = "`~/.claude/roblox/resources/records/<slug>.yaml`"
-    assert state.index(project) < state.index(user)
-    assert "state-policy.md#portable-resource-record-location" in REFERENCES["operational-lifecycle.md"]
+def test_removed_lifecycle_machinery_stays_removed():
+    texts = {"SKILL.md": PARENT, **REFERENCES}
+    for name, text in texts.items():
+        for removed in (
+            "check_resource_status", "validate_resource_record", "validate_skill_catalog",
+            ".skill-maintenance", "verified-acquisition", "learnings store", "roblox/resources/records",
+        ):
+            assert removed not in text, f"{name}: {removed}"
 
 
 def test_no_codex_host_paths_or_invocation_syntax_remain():
@@ -137,24 +124,19 @@ def test_no_codex_host_paths_or_invocation_syntax_remain():
         assert ".agents/skills" not in text, name
         assert ".codex" not in text, name
         assert "$roblox-" not in text and "$skill-name" not in text, name
-        for line in text.splitlines():
-            if ".roblox-resources" in line:
-                assert "legacy `~/.roblox-resources/" in line, f"{name}: project data belongs under AGENT_DIR/roblox/resources/: {line}"
+        assert ".roblox-resources" not in text, name
     assert not (ROOT / "agents").exists()
 
 
 def test_templates_match_the_contract():
     spec = yaml.safe_load((ROOT / "templates/resource-skill-template.yaml").read_text(encoding="utf-8"))
     assert spec["scope"] == "project"
-    assert spec["reconciliation"]["record"] == "roblox/resources/records/RESOURCE-SLUG.yaml"
-    assert spec["reconciliation"]["learnings"] == "roblox/resources/learnings/"
+    assert set(spec["reconciliation"]) == {"policy", "reason"}
     assert spec["guidance"]["shared_usage"] == "references/child-usage.md"
     template = (ROOT / "templates/resource-skill-template.md").read_text(encoding="utf-8")
     for heading in ("## Check the pin", "## Core API", "## Gotchas", "## Read further"):
         assert heading in template
     assert "../roblox-resource-acquisition/references/child-usage.md" in template
-    record = yaml.safe_load((ROOT / "templates/resource-record.yaml").read_text(encoding="utf-8"))
-    assert record["schema_version"] == 3 and "project_use" in record
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():

@@ -1,0 +1,34 @@
+{
+ "id": "q-addsignal-new-2",
+ "task": "q-addsignal",
+ "cond": "new",
+ "rep": 2,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Glob"
+ ],
+ "result": "I didn't change any files, because this project already has a signal library: `wally.toml` pins `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`. That's the same version the bundled `roblox-lemonsignal` skill covers, and `default.project.json` already maps `Packages` into `ReplicatedStorage`. Adding GoodSignal or another library would just duplicate it.\n\nI only read the files and haven't run anything. There's no `Packages/` folder yet and I can't run commands, so the library isn't installed.\n\nTo finish setup on your side:\n1. Run `wally install`. It creates `Packages/` and `wally.lock`, so commit the lock.\n2. Require it from any module with `require(ReplicatedStorage.Packages.LemonSignal)`.\n3. Expose events from a module like this:\n   ```lua\n   local LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\n   local Module = {}\n   Module.Changed = LemonSignal.new()\n\n   -- elsewhere: Module.Changed:Fire(value)\n   -- consumers: Module.Changed:Connect(function(value) ... end)\n   ```\n4. Check that `LemonSignal.new()` works in a Studio play test or a Lune script.\n\nI didn't touch `CLAUDE.md` for the same reason: the library isn't being newly adopted, and no `CLAUDE.md` exists yet. The `roblox-lemonsignal` skill is already available for the usage details.\n\nTell me if you want a specific module wired up with an event, or a different signal library instead.",
+ "cost": 0.10811589999999999,
+ "turns": 13,
+ "seconds": 20.3,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-5dpnh7e8",
+ "written": {}
+}

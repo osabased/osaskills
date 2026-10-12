@@ -63,12 +63,14 @@ def test_pesde_wally_child_checks_a_plain_wally_project(tmp_path):
         install.check(child, project)
 
 
-def test_wally_profile_server_section_and_exact_pin(tmp_path):
+def test_wally_profile_server_section_and_exact_pin(tmp_path, capsys):
     child = make_child(tmp_path, profile="wally", section="server-dependencies")
     assert contract.load_contract(child)["installation"]["profile"] == "wally"
     project, _ = make_project(tmp_path, requirement="example/widget@=1.2.3", section="server-dependencies")
     result = install.check(child, project)
     assert result["status"] == "PASS" and "notes" not in result
+    assert install.main([str(child), "--project", str(project)]) == 0
+    assert json.loads(capsys.readouterr().out)["status"] == "PASS"
 
 
 @pytest.mark.parametrize("requirement,locked,message", [

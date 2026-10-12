@@ -1,0 +1,39 @@
+{
+ "id": "q-tool-old-2",
+ "task": "q-tool",
+ "cond": "old",
+ "rep": 2,
+ "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Write",
+  "Write",
+  "Write"
+ ],
+ "result": "I've added StyLua config files and I'm about to wrap up. I didn't run anything, so none of it has been tested.\n\nI created three files in the project root:\n- **`rokit.toml`** pins `stylua = \"johnnymorganz/stylua@2.1.0\"`. The project had no tool manifest, so this is a new one.\n- **`stylua.toml`** sets `syntax = \"Luau\"` and keeps StyLua's default style.\n- **`.styluaignore`** skips `Packages/`, `ServerPackages/`, `DevPackages/`, `sourcemap.json` and `.claude/`, so installed packages, generated output and the skill files aren't formatted.\n\nI picked 2.1.0 from memory and couldn't check it against the latest StyLua release. Please confirm it exists and bump it if you want something newer.\n\nTo use it:\n1. Run `rokit install` to restore the pinned tool. If Rokit isn't installed yet, install that first.\n2. Run `stylua --check src` to see what would change.\n3. Run `stylua src` to format.\n\nA CI step or editor format-on-save would be the natural next addition. I didn't add one because you only asked for StyLua itself.",
+ "cost": 0.11589290000000001,
+ "turns": 14,
+ "seconds": 23.4,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-mmj_vzco",
+ "written": {
+  ".styluaignore": "# Installed packages (Wally/pesde) and generated output\nPackages/\nServerPackages/\nDevPackages/\nsourcemap.json\n\n# Agent skills and tooling, not game source\n.claude/\n",
+  "rokit.toml": "[tools]\nstylua = \"johnnymorganz/stylua@2.1.0\"\n",
+  "stylua.toml": "syntax = \"Luau\"\n"
+ }
+}

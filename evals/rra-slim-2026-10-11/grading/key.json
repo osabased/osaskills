@@ -1,0 +1,20 @@
+{
+ "q-addsignal:A": "q-addsignal-new-1",
+ "q-addsignal:B": "q-addsignal-old-1",
+ "q-addsignal:C": "q-addsignal-new-2",
+ "q-addsignal:D": "q-addsignal-old-2",
+ "q-compare:A": "q-compare-old-2",
+ "q-compare:B": "q-compare-new-1",
+ "q-compare:C": "q-compare-new-2",
+ "q-compare:D": "q-compare-old-1",
+ "q-mismatch:A": "q-mismatch-old-2",
+ "q-mismatch:B": "q-mismatch-old-1",
+ "q-mismatch:C": "q-mismatch-new-2",
+ "q-mismatch:D": "q-mismatch-new-1",
+ "q-tool:A": "q-tool-new-2",
+ "q-tool:B": "q-tool-old-2",
+ "q-tool:C": "q-tool-old-1",
+ "q-tool:D": "q-tool-new-1",
+ "q-mismatch:E": "q-mismatch-new-1-v2",
+ "q-mismatch:F": "q-mismatch-new-2-v2"
+}

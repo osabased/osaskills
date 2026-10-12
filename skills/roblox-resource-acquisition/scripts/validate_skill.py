@@ -11,7 +11,7 @@ from typing import Any
 from urllib.parse import unquote, urlsplit
 
 from _common import load_yaml
-from _resource_contract import load_contract, within, url_identity
+from _resource_contract import load_contract, within
 
 
 PARENT_PREFIX = "../roblox-resource-acquisition/"
@@ -60,18 +60,6 @@ def unfenced(text: str) -> str:
         if active is None:
             result.append(line)
     return "\n".join(result)
-
-
-def parse_sections(body: str) -> tuple[dict[str, str], Counter]:
-    """Generic Markdown utility for parent/competitor routing, never child schema."""
-    text = unfenced(body)
-    matches = list(re.finditer(r"^## ([^\n]+)$", text, re.M))
-    sections = {}
-    counts = Counter(match[1].strip() for match in matches)
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        sections.setdefault(match[1].strip(), text[match.end():end].strip())
-    return sections, counts
 
 
 def anchors(text: str) -> set[str]:
@@ -150,9 +138,6 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         errors.append("frontmatter metadata keys and values must be strings")
     try:
         contract = load_contract(root)
-        for field in ("record", "learnings"):
-            if str(contract["reconciliation"][field]).startswith((".agents/", ".claude/")):
-                warnings.append(f"reconciliation.{field} names a fixed agent directory; roblox/resources/... (relative to AGENT_DIR) works for both .claude/ and .agents/ projects")
         declared = {within(root, item["path"]) for item in contract["guidance"]["documents"]}
         reachable = {(root / "SKILL.md").resolve()}
         pending = list(reachable)

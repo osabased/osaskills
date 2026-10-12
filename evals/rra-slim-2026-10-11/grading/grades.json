@@ -1,0 +1,208 @@
+{
+  "q-addsignal": {
+    "A": {
+      "criteria": {"A1": 1, "A2": 1, "A3": 1, "A4": 1, "A5": 1},
+      "notes": {
+        "A1": "\"wally.toml has LemonSignal = data-oriented-house/lemonsignal@2.0.0\"; made no edits.",
+        "A2": "\"A second signal library would only duplicate it.\"",
+        "A3": "Shows LemonSignal.new(), :Fire in comment, consumers :Connect(fn), owner calls :Destroy() on teardown.",
+        "A4": "\"wally install\" then commit wally.lock.",
+        "A5": "Mostly lean; a closing paragraph about not writing the CLAUDE.md resource list is minor record-keeping talk."
+      },
+      "overall": 8.5
+    },
+    "B": {
+      "criteria": {"A1": 1, "A2": 1, "A3": 0, "A4": 1, "A5": 1},
+      "notes": {
+        "A1": "\"wally.toml lists LemonSignal = data-oriented-house/lemonsignal@2.0.0 under [dependencies]\".",
+        "A2": "Made no edits, no second library.",
+        "A3": "Shows .new(), :Fire and :Destroy(), but never shows a consumer calling :Connect; only mentions adding connections to Janitor.",
+        "A4": "\"Running wally install in the project root creates both.\"",
+        "A5": "Brief; one line \"No new records\" about CLAUDE.md is slight ceremony but acceptable."
+      },
+      "overall": 7.5
+    },
+    "C": {
+      "criteria": {"A1": 1, "A2": 1, "A3": 0, "A4": 1, "A5": 1},
+      "notes": {
+        "A1": "\"wally.toml pins LemonSignal = data-oriented-house/lemonsignal@2.0.0\".",
+        "A2": "\"Adding GoodSignal or another library would just duplicate it.\"",
+        "A3": "new/Fire/Connect shown, but no cleanup (:Disconnect/:Destroy) mentioned anywhere.",
+        "A4": "\"Run wally install. It creates Packages/ and wally.lock\".",
+        "A5": "Short; one sentence about CLAUDE.md is minor."
+      },
+      "overall": 7.5
+    },
+    "D": {
+      "criteria": {"A1": 1, "A2": 1, "A3": 1, "A4": 1, "A5": 1},
+      "notes": {
+        "A1": "\"LemonSignal is already in this project ... wally.toml declares ... lemonsignal@2.0.0\".",
+        "A2": "\"there's nothing to add, pin or record.\"",
+        "A3": "LemonSignal.new(), :Connect(fn) in comment, :Fire(amount), Destroy() on owned signal, Janitor \"Destroy\"/\"Disconnect\".",
+        "A4": "\"Rojo won't build until wally install creates them ... then rojo sourcemap or rojo serve.\"",
+        "A5": "Lean, no record-keeping; adds useful runtime-boundary note (Blink/RemoteEvent)."
+      },
+      "overall": 9.0
+    }
+  },
+  "q-compare": {
+    "A": {
+      "criteria": {"C1": 1, "C2": 1, "C3": 1, "C4": 1, "C5": 1},
+      "notes": {
+        "C1": "\"I didn't change anything.\"",
+        "C2": "\"wally.toml:8 pins howmanysmall/janitor@1.18.3 ... Adding Trove would put a second cleanup library\".",
+        "C3": "\"Use Janitor\"; deciding tradeoff: Trove's Extend not worth a second dependency.",
+        "C4": "Add(tween, \"Cancel\"), Cleanup() reusable vs Destroy(), trove:Extend(), child Janitor nesting all accurate.",
+        "C5": "No adoption/record talk; brief caveat only."
+      },
+      "overall": 8.5
+    },
+    "B": {
+      "criteria": {"C1": 1, "C2": 1, "C3": 1, "C4": 1, "C5": 1},
+      "notes": {
+        "C1": "\"This is an evaluation only, and nothing was changed.\"",
+        "C2": "\"It's already a declared dependency. Trove isn't in either manifest\".",
+        "C3": "Clear Janitor recommendation; tradeoff: another API and pin for no advantage; says what would change it.",
+        "C4": "Cleanup/Destroy, LinkToInstance, threads/functions accurate; no invented API. Trove side is generic.",
+        "C5": "No adoption or CLAUDE.md talk, though a \"What I checked\" paragraph (choosing.md, DevForum) is some process reporting."
+      },
+      "overall": 8.0
+    },
+    "C": {
+      "criteria": {"C1": 1, "C2": 1, "C3": 1, "C4": 1, "C5": 1},
+      "notes": {
+        "C1": "\"This is an evaluation only, and I haven't changed anything.\"",
+        "C2": "\"wally.toml already declares Janitor = howmanysmall/janitor@1.18.3. Trove isn't declared anywhere\".",
+        "C3": "\"Recommendation: use Janitor\"; Trove \"loses here only because it adds a dependency without adding anything you need.\"",
+        "C4": "Add(part), Add(tween, \"Cancel\", \"Tween\") index replace, LinkToInstance, Trove Extend accurate; correctly flags that a throwing cleanup stops the Janitor and later calls return immediately.",
+        "C5": "No adoption/record talk; producer/consumer split and pcall-rollback are extra but relevant."
+      },
+      "overall": 9.0
+    },
+    "D": {
+      "criteria": {"C1": 1, "C2": 1, "C3": 1, "C4": 1, "C5": 1},
+      "notes": {
+        "C1": "\"I changed nothing.\"",
+        "C2": "\"wally.toml declares Janitor = howmanysmall/janitor@1.18.3, and I found no Trove or Maid dependency.\"",
+        "C3": "Clear recommendation; tradeoff is two libraries for one job. Explicitly declines to compare on merits, so Trove is not weighed at all.",
+        "C4": "Add(part)/Add(part, \"Destroy\"), Add(tween, \"Cancel\"), Add(conn, \"Disconnect\"), Cleanup vs Destroy, LinkToInstance all accurate.",
+        "C5": "No ceremony; practical test suggestion."
+      },
+      "overall": 7.5
+    }
+  },
+  "q-mismatch": {
+    "A": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 1, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"wally.toml pins Janitor 1.17.0, but the Janitor skill targets 1.18.3.\" Made the edit (File written section present).",
+        "M2": "Pin untouched; \"You may want to bump the pin or confirm the version.\"",
+        "M3": "Janitor.new, Add(Instance.new(\"Part\")), Add(Heartbeat:Connect(...)), janitor:Destroy() at round end, require ReplicatedStorage.Packages.Janitor. Relies on Janitor's default methods (Destroy / connection->Disconnect) rather than explicit names, which works but is implicit.",
+        "M4": "\"I only used Janitor.new, Add and Destroy ... I haven't checked that against the 1.17.0 source.\"",
+        "M5": "No record or lifecycle ceremony."
+      },
+      "overall": 8.5
+    },
+    "B": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 1, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"wally.toml pins Janitor at 1.17.0, but the roblox-janitor skill targets 1.18.3\". Made the edit (File written section present).",
+        "M2": "Pin untouched; \"You may want to bump the pin.\"",
+        "M3": "Same correct structure inside runRound(): new, Add part, Add Heartbeat connection, Destroy after ROUND_LENGTH; correct require path. Implicit default methods.",
+        "M4": "\"I only used Janitor.new, Add and Destroy. I believe 1.17.0 has all three, but I haven't confirmed that.\"",
+        "M5": "No ceremony."
+      },
+      "overall": 8.0
+    },
+    "C": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 0, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"wally.toml pins howmanysmall/janitor@1.17.0, but the skill is written for 1.18.3.\" STOPPED: no File written section, no edit made.",
+        "M2": "Offers bumping the pin as an option; did not change it.",
+        "M3": "No code written despite \"Make the edit\"; only a plan.",
+        "M4": "Plan uses only Janitor.new/:Add/:Cleanup and flags them as unverified for 1.17.0.",
+        "M5": "Mostly lean; a reference to not running \"the parent skill's pin checks\" is minor process talk."
+      },
+      "overall": 4.0
+    },
+    "D": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 1, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"wally.toml pins howmanysmall/janitor@1.17.0, but the Janitor skill is pinned to 1.18.3.\" Made the edit (File written section present).",
+        "M2": "Pin untouched; \"either bump wally.toml to 1.18.3 or tell me the 1.17.0 pin is intentional.\"",
+        "M3": "new, Add part, Add Heartbeat connection, Destroy at round end, correct require path. Implicit default methods.",
+        "M4": "\"used only Janitor.new, Add and Destroy. I believe those behave the same in 1.17.0, but I haven't checked.\"",
+        "M5": "No ceremony."
+      },
+      "overall": 8.0
+    },
+    "E": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 1, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"wally.toml pins Janitor at 1.17.0, while the Janitor skill targets 1.18.3.\" Made the edit (File written section present).",
+        "M2": "\"I kept your pin.\"",
+        "M3": "Janitor.new, Add(Instance.new(\"Part\")), Add(Heartbeat:Connect(...)), returned endRound closure calls janitor:Destroy(); correct require path. Implicit default methods (Destroy/Disconnect) rather than explicit names, the same as A/B/D.",
+        "M4": "\"The calls I used (new, Add, Destroy) are basic API ... but I didn't check its source.\"",
+        "M5": "No ceremony. Doesn't mention wally install (only \"didn't check that Packages/ exists\"), which is not a rubric item."
+      },
+      "overall": 8.5
+    },
+    "F": {
+      "criteria": {"M1": 1, "M2": 1, "M3": 1, "M4": 1, "M5": 1},
+      "notes": {
+        "M1": "\"Janitor is pinned to howmanysmall/janitor@1.17.0 in wally.toml, but the Janitor skill targets 1.18.3.\" Made the edit (File written section present).",
+        "M2": "\"I kept the project's pin.\"",
+        "M3": "new, Add part, Add Heartbeat connection (bobbing), janitor:Destroy() after ROUND_LENGTH inside runRound; correct require path. Implicit default methods, the same as A/B/D.",
+        "M4": "\"The calls I used (new, Add, Destroy) are core API and should work in 1.17.0, but I couldn't confirm\".",
+        "M5": "No ceremony; tells the user to run wally install."
+      },
+      "overall": 8.0
+    }
+  },
+  "q-tool": {
+    "A": {
+      "criteria": {"T1": 1, "T2": 1, "T3": 1, "T4": 1, "T5": 1},
+      "notes": {
+        "T1": "rokit.toml: stylua = \"JohnnyMorganz/StyLua@2.0.2\" (exact, real version).",
+        "T2": "stylua.toml with syntax = \"Luau\".",
+        "T3": "rokit install, stylua src, stylua --check src for CI.",
+        "T4": "\"I picked 2.0.2 because I'm sure it exists. I had no way to look up the newest release\".",
+        "T5": "Three small files; opinionated style choices are disclosed."
+      },
+      "overall": 9.0
+    },
+    "B": {
+      "criteria": {"T1": 1, "T2": 1, "T3": 1, "T4": 1, "T5": 1},
+      "notes": {
+        "T1": "rokit.toml: stylua = \"johnnymorganz/stylua@2.1.0\" (exact, real version).",
+        "T2": "stylua.toml with only syntax = \"Luau\" (keeps defaults).",
+        "T3": "rokit install, stylua --check src, stylua src; notes installing Rokit first.",
+        "T4": "\"I picked 2.1.0 from memory and couldn't check it ... Please confirm it exists\".",
+        "T5": "Minimal; odd \"I'm about to wrap up\" phrasing only."
+      },
+      "overall": 8.5
+    },
+    "C": {
+      "criteria": {"T1": 1, "T2": 1, "T3": 1, "T4": 1, "T5": 1},
+      "notes": {
+        "T1": "rokit.toml: stylua = \"JohnnyMorganz/stylua@2.1.0\".",
+        "T2": "stylua.toml with syntax = \"Luau\".",
+        "T3": "rokit install (notes trust prompt), stylua --check --respect-ignores src, stylua --respect-ignores src.",
+        "T4": "\"The 2.1.0 pin is from memory ... check it on the StyLua releases page\".",
+        "T5": "Guessed Blink ignore patterns are flagged as guesses; otherwise lean."
+      },
+      "overall": 9.0
+    },
+    "D": {
+      "criteria": {"T1": 1, "T2": 1, "T3": 1, "T4": 1, "T5": 1},
+      "notes": {
+        "T1": "rokit.toml: stylua = \"JohnnyMorganz/StyLua@2.0.2\".",
+        "T2": "stylua.toml with syntax = \"Luau\".",
+        "T3": "rokit install, stylua --check --respect-ignores src, stylua --respect-ignores src.",
+        "T4": "\"I picked 2.0.2 because I know it exists. I couldn't check for a newer release, so run rokit update\".",
+        "T5": "Lean; a stray line about not touching staged skill files is harmless."
+      },
+      "overall": 9.0
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+ "id": "q-compare-new-1",
+ "task": "q-compare",
+ "cond": "new",
+ "rep": 1,
+ "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 12,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Use Janitor.** Your `wally.toml` already pins `howmanysmall/janitor@1.18.3`, and it covers per-round cleanup of parts, tweens and connections.\n\n**Why Janitor**\n- **It's already a declared dependency.** Trove isn't in either manifest, so adding it would be a second cleanup library for the same job.\n- **It fits the lifecycle.** Make one Janitor per round. Add each part, tween and connection as it's created. Call `janitor:Cleanup()` when the round ends. The same instance can be reused for the next round, or you can `Destroy()` it. It cleans Instances, connections, threads and functions, and `LinkToInstance` ties a Janitor to an Instance's lifetime.\n- **A child skill is bundled.** `roblox-janitor` is pinned to the same 1.18.3.\n\n**Trove's tradeoff**\n- Trove covers the same ground (Instances, connections, tweens, threads), so it wouldn't fail on fit.\n- It has no advantage that matters here, and it would add another API to learn and another pin to maintain.\n\n**What would change this:** a project rule or a teammate preference for Trove, or a feature you need that Janitor 1.18.3 lacks. Neither is visible in the repo.\n\n**What I checked:** I read the two manifests and the Roblox resource-acquisition skill's selection guidance (`choosing.md`). I did not install or run either library, and I didn't look at the DevForum or either repository's issues. The Trove comparison comes from general knowledge, not a check against a pinned version. This is an evaluation only, and nothing was changed.",
+ "cost": 0.0714481,
+ "turns": 7,
+ "seconds": 17.4,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-bql1lrfn",
+ "written": {}
+}

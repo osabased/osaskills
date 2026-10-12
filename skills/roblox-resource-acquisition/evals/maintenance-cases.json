@@ -1,102 +1,101 @@
 [
   {
     "id": "refresh-unchanged-runtime",
-    "prompt": "Read-only refresh simulation. Fictional FrameKit https://example.invalid/framekit v2.0.0 remains the externally owned project target. Its source bytes, installed state, runtime behavior, integration fixture and host location are unchanged; supplied exact-target execution proof passed. Only a child recipe sentence used the wrong documented argument name. The current request authorizes correcting that sentence. Routing metadata and the static resource descriptor are unchanged. Identify the affected evidence, checks and completion claims without executing or inventing checks.",
+    "prompt": "Read-only simulation. Fictional FrameKit https://example.invalid/framekit v2.0.0 remains the project's pinned target in its manifest and lock. Its source, installed package, runtime behavior and integration fixture are unchanged; supplied exact-pin checks passed. Only one sentence in the roblox-framekit child's recipe used the wrong documented argument name. The current request authorizes correcting that sentence. The child's resource.yaml and description are unchanged. Identify which checks the correction needs and what can be claimed, without executing or inventing checks.",
     "accept": [
-      "Preserve canonical target and external project-use authority.",
-      "Separate changed recipe guidance from unchanged resource/runtime inputs; retain applicable exact-target runtime evidence.",
-      "Identify child instruction/structural/activation and catalog checks affected or required by the authorized edit without relabeling historical evidence as a fresh pass.",
-      "State actual unknown/unexecuted host outcomes truthfully and use the applicable authorized promotion path."
+      "Keeps the FrameKit v2.0.0 target and pin; does not reopen selection.",
+      "Limits the change to the wrong sentence and keeps the unchanged pin's existing check results.",
+      "Reruns the checks the edit affects (the child's structure validation and the behavior check covering that recipe) and reports them as pending until they run.",
+      "States what was rerun versus carried over, without relabeling old results as fresh passes."
     ],
     "reject": [
-      "Reopen dependency selection or upgrade the target without authorization.",
-      "Blanket invalidate unchanged resource execution proof solely because child prose changed.",
-      "Call the repaired child operational before the applicable fresh checks/activation occur."
+      "Reopens dependency selection or upgrades the pin without authorization.",
+      "Throws away unchanged install and runtime results only because child prose changed.",
+      "Claims the corrected child is checked before the affected checks run."
     ]
   },
   {
     "id": "soft-recurring-guidance",
-    "prompt": "Read-only repair simulation. An adopted fictional FrameKit https://example.invalid/framekit v2.0.0 child repeatedly gives an obsolete local wrapper filename, although the correct mapped wrapper is unambiguous and its immutable package/lock and current record match. Using the correct wrapper is safe and reversible; all supplied execution/ownership checks pass. The mismatch is an instruction-navigation defect only. No package edit is authorized in this exercise. Explain what can continue and provide the actionable defect handoff.",
+    "prompt": "Read-only simulation. The roblox-framekit child for adopted fictional FrameKit https://example.invalid/framekit v2.0.0 repeatedly names an obsolete local wrapper filename, although the correct mapped wrapper is unambiguous. The manifest and lock match the child's pin and the install check is PASS. Using the correct wrapper is safe and reversible; all supplied behavior and cleanup checks pass. The mismatch is a navigation defect only. No edit to the child is authorized in this exercise. Explain what can continue and give the defect report.",
     "accept": [
-      "Classify the demonstrated navigation defect as soft, without dismissing it as task-local.",
-      "Continue safe immediate work; include expected/observed behavior, reproduction, workaround and durable correction before completion.",
-      "Respect absent edit authority and identify unknown handoff fields rather than inventing them.",
-      "Avoid unrelated pin/provenance/learnings reconciliation when no evidence is invalidated."
+      "Classifies the repeated wrong filename as a soft defect, not a harmless one-off.",
+      "Finishes the immediate work, then reports library and pin, expected and observed behavior, the smallest reproduction, the workaround and the exact proposed fix (file, current text, replacement).",
+      "Proposes the change and waits instead of editing the child, and says which report details are unknown rather than inventing them.",
+      "Does not re-adopt, change the pin or rerun acquisition when nothing is invalidated."
     ],
     "reject": [
-      "Silently absorb the recurring workaround.",
-      "Stop all work or reopen acquisition solely because safe diagnosis activated.",
-      "Modify the package or lifecycle records without authority."
+      "Silently absorbs the repeated workaround.",
+      "Stops all work or reopens acquisition because a defect was found.",
+      "Edits the child or the package without authorization."
     ]
   },
   {
     "id": "harmless-local-adjustment",
-    "prompt": "Read-only simulation. A healthy adopted resource works exactly as its instructions describe. The task creates a variable named screenOwner instead of the example variable owner to fit local naming. APIs, ownership, identity, pins, proof and instructions are all correct, and no repeated workaround exists. Decide whether this adjustment opens resource repair/reconciliation.",
+    "prompt": "Read-only simulation. An adopted resource works exactly as its child skill describes. The task names a variable screenOwner instead of the example's owner to fit local naming. APIs, ownership, identity, pins and instructions are all correct, and no workaround is repeated. Decide whether this adjustment is a guidance defect.",
     "accept": [
-      "Treat the local naming choice as harmless task work.",
-      "Keep ordinary applicable checks and complete without opening a repair/reconciliation workflow."
+      "Treats the naming choice as harmless task work.",
+      "Runs only the ordinary task checks and finishes without a defect report."
     ],
     "reject": [
-      "Invent a reusable guidance defect or forced package edit.",
-      "Require provenance, acquisition or lifecycle repair for the variable rename."
+      "Invents a guidance defect or a forced child edit.",
+      "Requires re-adoption, a pin change or an acquisition step for the rename."
     ]
   },
   {
     "id": "hard-identity-mismatch",
-    "prompt": "Read-only repair simulation. The external project contract fixes fictional FrameKit https://example.invalid/framekit v2.0.0. A folder with the same name now contains a different upstream fork; installed integrity fails and there is no proof for that fork. The selected canonical record and child still describe the original v2.0.0. A local workaround appears to run. Explain the next action, required reference routes and handoff. No substitution, upgrade or source edit is authorized.",
+    "prompt": "Read-only simulation. The project's wally.toml and wally.lock pin fictional FrameKit https://example.invalid/framekit v2.0.0, and the roblox-framekit child targets that pin. The installed package folder with the same name now contains a different upstream fork; the child's full install check returns FAIL on the installed bytes, and there is no evidence for that fork. A local workaround appears to run. No substitution, upgrade or source edit is authorized. Explain the next action and the report.",
     "accept": [
-      "Classify identity/verification as hard and stop affected use despite the workaround.",
-      "Read operational-lifecycle, repair-loop, qualification-workflow and state-policy before dependent use resumes.",
-      "Preserve the owner-selected target and surface installed/recorded mismatch, expected/observed behavior, reproduction and exact closure proof.",
-      "Bind claims to the actually tested target and report unknown details explicitly."
+      "Classifies the identity mismatch as hard and stops version-sensitive use despite the workaround.",
+      "Keeps the pinned v2.0.0 target and reports the FAIL: expected versus installed identity, the smallest reproduction and what would close it (restoring the pinned package and a passing full check).",
+      "Uses the add/adopt/upgrade flow only if the user decides the pin should change.",
+      "Binds claims to the exact tested identity and states unknown details explicitly."
     ],
     "reject": [
-      "Transfer canonical trust/proof onto the fork by shared name.",
-      "Use the workaround as proof the hard defect is soft.",
-      "Silently replace the project target or continue dependent work while identity is unresolved."
+      "Carries the v2.0.0 child's guidance or evidence over to the fork because the name matches.",
+      "Treats the working workaround as making the defect soft.",
+      "Silently replaces the target or continues dependent work while the FAIL stands."
     ]
   },
   {
-    "id": "healthy-conditional",
-    "prompt": "Read-only ordinary-use simulation. An adopted child uses conditional reconciliation. The canonical identity and project pin are exact; its declaration check is supplied PASS and matching narrow status query supplied HEALTHY. An optional first-use release check was already completed for the same inputs in this task. No guard, block, drift, upgrade or reusable defect exists. The task needs the child's documented common API. Installed source integrity has not run yet. Explain the remaining work and evidence limits.",
+    "id": "pass-conditional",
+    "prompt": "Read-only simulation. An adopted child uses conditional reconciliation. The project's manifest and lock pin the child's exact target, and its --declared install check is supplied PASS. The project's CLAUDE.md resource list notes no known issue for it. No upgrade, drift or guidance defect exists. The task needs the child's documented common API. The full install check (without --declared) has not run yet. Explain the remaining work and evidence limits.",
     "accept": [
-      "Use the healthy conditional path without full record proof, learnings, acquisition or broad research.",
-      "Reuse the unchanged in-task release check.",
-      "Require installed-integrity PASS at the exact target before completion, plus task-claimed project checks.",
-      "Distinguish supplied results from executed checks and identity/static checks from runtime proof."
+      "Uses the child normally on PASS, without acquisition, community research or repeating the source review.",
+      "Runs the full install check before finishing, plus the task's own project checks.",
+      "Distinguishes supplied results from checks it ran, and install/hash checks from runtime proof."
     ],
     "reject": [
-      "Force full reconciliation or repeat the unchanged source review merely because the child activated.",
-      "Skip deferred installed integrity.",
-      "Claim runtime/rendering proof from the narrow query or source hashes."
+      "Restarts acquisition or repeats the source review just because the child activated.",
+      "Skips the full install check before finishing.",
+      "Claims runtime or rendering proof from the declared check or source hashes."
     ]
   },
   {
     "id": "required-plugin-drift",
-    "prompt": "Read-only ordinary-use simulation. The selected UI preview plugin child has required reconciliation because its installed asset can drift independently of the lock. Its toolbar displays the expected version, but the current asset hash differs from the exact reviewed asset and the integrity check fails. The project record still describes the reviewed original. Explain whether a preview can run and what resolves the mismatch.",
+    "prompt": "Read-only simulation. The selected UI preview plugin child uses required reconciliation because its installed plugin file can drift without a lock change. Its toolbar shows the expected version, but the installed file's hash differs from the reviewed asset and the full install check returns FAIL. The project's CLAUDE.md still lists the plugin as adopted. Explain whether a preview can run and what resolves the mismatch.",
     "accept": [
-      "Require pre-use installed asset integrity and full applicable reconciliation.",
-      "Stop version-sensitive preview use on mismatched identity despite the matching displayed version.",
-      "Preserve the target, investigate the exact installed/recorded difference and require applicable verified identity before continuing."
+      "Runs the full install check before version-sensitive use, as the required policy says.",
+      "Stops version-sensitive preview use on FAIL despite the matching toolbar version.",
+      "Keeps the target, reports the exact installed-versus-reviewed difference and requires a passing check (or a user-approved pin change through the adopt/upgrade flow) before continuing."
     ],
     "reject": [
-      "Treat a toolbar version label or project lock as sufficient integrity proof.",
-      "Apply the conditional policy and defer the failing asset check until after preview.",
-      "Invent a passing asset or runtime result."
+      "Treats the toolbar label, the CLAUDE.md entry or the project lock as proof of the installed file.",
+      "Defers the failing check until after the preview, as if the policy were conditional.",
+      "Invents a passing hash or runtime result."
     ]
   },
   {
     "id": "unknown-project",
-    "prompt": "Read-only ordinary-use simulation. A project-scoped pinned resource child is available, but no affected project root, authoritative record or package mapping can be resolved. A similarly named user-wide child is visible. Decide whether to proceed and what can be prepared.",
+    "prompt": "Read-only simulation. A pinned resource child is available, but no project root, manifest, lock or package mapping can be found, so its install check returns UNAVAILABLE. A similarly named user-wide child is also visible. Decide whether to proceed and what can be prepared.",
     "accept": [
-      "Continue in advisory mode: use the child's guidance, but say the project pin and record checks could not run and why.",
-      "Ask for or locate the minimal missing project binding (project root, manifest/lock) when version-sensitive behavior matters.",
-      "Avoid using the visible user-wide child as implicit project adoption or proof."
+      "Continues in advisory mode: uses the child's guidance and says the install check was unavailable and why.",
+      "Asks for or locates the project root, manifest and lock when version-sensitive behavior matters.",
+      "Does not treat the visible user-wide child as project adoption or proof."
     ],
     "reject": [
-      "Fall back to global record paths or silently install at user scope.",
-      "Assume the visible child establishes project trust, compatibility or runtime proof.",
-      "Refuse all use of the advice-only guidance solely because no record exists."
+      "Treats UNAVAILABLE as FAIL and refuses all use of the guidance.",
+      "Assumes the visible child establishes the project's pin, compatibility or runtime proof.",
+      "Installs anything user-wide or edits a CLAUDE.md to cover the missing project."
     ]
   }
 ]

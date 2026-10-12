@@ -1,0 +1,218 @@
+[
+ {
+  "id": "q-addsignal-old-1",
+  "task": "q-addsignal",
+  "cond": "old",
+  "rep": 1,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-old-2",
+  "task": "q-addsignal",
+  "cond": "old",
+  "rep": 2,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-new-1",
+  "task": "q-addsignal",
+  "cond": "new",
+  "rep": 1,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-new-2",
+  "task": "q-addsignal",
+  "cond": "new",
+  "rep": 2,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-compare-old-1",
+  "task": "q-compare",
+  "cond": "old",
+  "rep": 1,
+  "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 12,
+  "kind": "quality"
+ },
+ {
+  "id": "q-compare-old-2",
+  "task": "q-compare",
+  "cond": "old",
+  "rep": 2,
+  "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 12,
+  "kind": "quality"
+ },
+ {
+  "id": "q-compare-new-1",
+  "task": "q-compare",
+  "cond": "new",
+  "rep": 1,
+  "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 12,
+  "kind": "quality"
+ },
+ {
+  "id": "q-compare-new-2",
+  "task": "q-compare",
+  "cond": "new",
+  "rep": 2,
+  "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 12,
+  "kind": "quality"
+ },
+ {
+  "id": "q-mismatch-old-1",
+  "task": "q-mismatch",
+  "cond": "old",
+  "rep": 1,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ },
+ {
+  "id": "q-mismatch-old-2",
+  "task": "q-mismatch",
+  "cond": "old",
+  "rep": 2,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ },
+ {
+  "id": "q-mismatch-new-1",
+  "task": "q-mismatch",
+  "cond": "new",
+  "rep": 1,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ },
+ {
+  "id": "q-mismatch-new-2",
+  "task": "q-mismatch",
+  "cond": "new",
+  "rep": 2,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ },
+ {
+  "id": "q-tool-old-1",
+  "task": "q-tool",
+  "cond": "old",
+  "rep": 1,
+  "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-tool-old-2",
+  "task": "q-tool",
+  "cond": "old",
+  "rep": 2,
+  "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+  "with_skills": true,
+  "skills": "old",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-tool-new-1",
+  "task": "q-tool",
+  "cond": "new",
+  "rep": 1,
+  "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-tool-new-2",
+  "task": "q-tool",
+  "cond": "new",
+  "rep": 2,
+  "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-mismatch-new-1-v2",
+  "task": "q-mismatch",
+  "cond": "new-v2",
+  "rep": 1,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ },
+ {
+  "id": "q-mismatch-new-2-v2",
+  "task": "q-mismatch",
+  "cond": "new-v2",
+  "rep": 2,
+  "prompt": "In src/server/init.server.luau, spawn a part each round and use Janitor to clean up the part and a Heartbeat connection when the round ends. Make the edit (you can't run commands).",
+  "with_skills": true,
+  "skills": "new",
+  "max_turns": 15,
+  "kind": "quality",
+  "patch": {
+   "wally.toml": "[package]\nname = \"dev/arena\"\nversion = \"0.1.0\"\nregistry = \"https://github.com/UpliftGames/wally-index\"\nrealm = \"shared\"\n\n[dependencies]\nJanitor = \"howmanysmall/janitor@1.17.0\"\nLemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"\nCharm = \"littensy/charm@0.11.1\"\n"
+  }
+ }
+]
