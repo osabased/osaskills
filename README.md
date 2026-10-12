@@ -60,6 +60,16 @@ Use the guide only when your project pins the same version. Installing a guide d
 
 Agent-facing project files live in the project's agent directory: `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. The Roblox project guide goes in `<agent dir>/roblox/project.md` and VOD project notes in `<agent dir>/vod/project-context.md`. Adopted Roblox resources are listed in a marked block in the project's `CLAUDE.md`; their pins stay in the project's manifests and locks.
 
+## Staying current
+
+The Roblox workflow skills track the latest stable release of every tool and library they pin (Rojo, Rokit, Wally, pesde, Lune, Lute, StyLua, Selene, Luau-LSP, Lest, ModuleLoader, and the bundled library guides). Each skill's `versions.json` records what its guidance was last reviewed against.
+
+- **When an agent uses the skills,** it runs `scripts/check_updates.py` (cached for a day). In a plugin install, a session-start hook runs the same check and tells the agent only when something is outdated.
+- **When something is outdated,** the agent mentions it, finishes your task, then reads the release notes, updates the skill, reruns its checks against the new version, and opens one pull request per item. It never changes your game project's pins for this. Pull requests need push access to this repository; other installs just report the outdated item.
+- **Weekly,** the [Freshness workflow](./.github/workflows/freshness.yml) runs the same check in CI and keeps an "Outdated skill pins" issue up to date.
+
+The plugin has no fixed version, so each commit is a new version. Turn on auto-update for this marketplace in `/plugin` → Marketplaces to receive merged updates automatically.
+
 ## Scripts
 
 Instruction-only skills need no setup. The Roblox resource checkers need Python 3.11+ and PyYAML. With [uv](https://docs.astral.sh/uv/) you don't need to install anything first:
@@ -90,4 +100,4 @@ for t in skills/vod-discovery/tests/test_*.js; do node "$t"; done
 claude plugin validate .
 ```
 
-The real-Rojo tests skip when `rojo` can't run (not on `PATH`, or a Rokit shim outside a Rokit project), and a skipped test is not real-build coverage. CI runs the test suites above, with Rojo 7.7.0 installed. None of these checks measure how well a skill triggers or how an agent performs with it; for that, see [`evals/`](./evals/) and the [resource-comparison guide](./skills/roblox-resource-acquisition/evals/README.md). The [2026-10-11 Sonnet with/without comparison](./evals/sonnet-ab-2026-10-11/README.md) measures triggering and answer quality with the current skills. The [2026-10-11 audit](./evals/rra-slim-2026-10-11/README.md) records the slimming of the two Roblox workflow skills and an old-versus-new comparison. The [plugin triggering check](./evals/plugin-trigger-2026-10-11/README.md) repeats the triggering test with the installed plugin, including that the user-only skills stay out of automatic use. The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) is a historical snapshot that predates the Claude port and uses the old skill names.
+The real-Rojo tests skip when `rojo` can't run (not on `PATH`, or a Rokit shim outside a Rokit project), and a skipped test is not real-build coverage. CI runs the test suites above, with Rojo 7.7.1 installed. None of these checks measure how well a skill triggers or how an agent performs with it; for that, see [`evals/`](./evals/) and the [resource-comparison guide](./skills/roblox-resource-acquisition/evals/README.md). The [2026-10-11 Sonnet with/without comparison](./evals/sonnet-ab-2026-10-11/README.md) measures triggering and answer quality with the current skills. The [2026-10-11 audit](./evals/rra-slim-2026-10-11/README.md) records the slimming of the two Roblox workflow skills and an old-versus-new comparison. The [plugin triggering check](./evals/plugin-trigger-2026-10-11/README.md) repeats the triggering test with the installed plugin, including that the user-only skills stay out of automatic use. The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) is a historical snapshot that predates the Claude port and uses the old skill names.

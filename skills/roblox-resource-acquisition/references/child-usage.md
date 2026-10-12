@@ -1,5 +1,7 @@
 # Shared child usage (contract 1)
 
+> **Version check:** before answering, once per session, also run `python "PARENT/scripts/check_updates.py"` (cached for a day). If the child's library has a newer release, say so; the project's pin still decides what you use. Then follow [keeping current](keeping-current.md).
+
 Read this once per task when a child skill (for example `roblox-janitor`) is active. The child's `resource.yaml` holds the canonical identity, exact pin and install-check profile.
 
 ## Check the pin

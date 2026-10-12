@@ -1,5 +1,7 @@
 # Rojo structure work
 
+> **Version check:** this page's Rojo facts were reviewed against the version in [`versions.json`](../../versions.json). Before answering, once per session, run this skill's [`scripts/check_updates.py`](../../scripts/check_updates.py) with `python` (cached for a day). If Rojo has a newer release, say so and follow [keeping current](../core/keeping-current.md).
+
 Use when reviewing, designing, adopting, removing, or changing a Rojo mapping or workflow; editing a `*.project.json`, `*.meta.json`, or `*.model.json` file; or moving content into, out of, or within Rojo mapping where path, name, topology, `syncback`, or live `rojo serve` safety can change the resulting DataModel. A routine source edit inside a clear, stable mapping doesn't need this reference.
 
 For a small filesystem-first project, prefer a compact source tree and let the project file define the DataModel mapping:
@@ -53,7 +55,7 @@ One verified Rojo 7.7 shape is a shared `common.project.json` holding the full t
 }
 ```
 
-Glob patterns match paths relative to the project file's directory, so write `src/client/Preview`, not `client/Preview`. `**/Preview` excludes an `init`-backed directory and everything under it; `**/Preview/**` alone leaves the directory's own ModuleScript in place. Rojo 7.7.0 also supports `!` negation in these patterns.
+Glob patterns match paths relative to the project file's directory, so write `src/client/Preview`, not `client/Preview`. `**/Preview` excludes an `init`-backed directory and everything under it; `**/Preview/**` alone leaves the directory's own ModuleScript in place. Rojo 7.7.0 and later also support `!` negation in these patterns.
 
 Don't add a service such as `ReplicatedStorage` beside the wrapper's root `$path`. In 7.7.0 and 7.7.1, `rojo build` then emits two of that service, while `rojo sourcemap` shows one and silently drops the wrapper's added children. This is why both artifacts must be checked. Use this shape only when it fits the project, adapt the names, and recheck against the project's pinned Rojo.
 

@@ -9,6 +9,8 @@ Choose the smallest reliable solution for the actual task. Keep the project's ch
 
 **Child skill:** a per-library skill such as `roblox-janitor`, with a `SKILL.md` and a static `resource.yaml` holding the exact pin. Bundled children for Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink and Nevermore UI are listed in the [bundled catalog](references/bundled-skills.md). Having guidance available does not install or adopt the library.
 
+**First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which library has a newer release, and after the task follow [keeping current](references/keeping-current.md). Skip silently if it can't run.
+
 ## Start with the need
 
 Check the manifests first (`wally.toml`, `pesde.toml`, `package.json`, `rokit.toml`). If a dependency the project already declares, a Roblox built-in or a small local implementation does the job, use it and validate it. Stop there: no acquisition references, no `CLAUDE.md` edit, and no report about skipped steps. Use the dependency's child skill if one is installed.

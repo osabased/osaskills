@@ -1,5 +1,7 @@
 # ModuleLoader 3.0.4 SSA compatibility
 
+> **Version check:** before answering, once per session, run this skill's [`scripts/check_updates.py`](../../scripts/check_updates.py) with `python` (cached for a day). A newer ModuleLoader release means this contract needs the [upgrade review](#migration-and-upgrade) through [keeping current](../core/keeping-current.md); existing SSA projects keep their pin.
+
 Use this contract to create canonical Single Script Architecture (SSA), explicitly migrate a project to it, or change its loader, entrypoints, discovery, configuration, acquisition, or upgrade behavior. Read [`ssa.md`](ssa.md) for the feature contract that the infrastructure must expose.
 
 This reference is a fixed-target compatibility contract for projects that deliberately adopted the target below. It is not a greenfield default or a claim about the current recommended release. Research new startup choices through the setup/evidence workflow; preserve an existing project target unless a reviewed change selects another.

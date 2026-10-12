@@ -1,0 +1,186 @@
+{
+ "schema": 1,
+ "items": [
+  {
+   "id": "vide",
+   "name": "Vide",
+   "source": {
+    "github": "centau/vide"
+   },
+   "reviewed": "0.4.1",
+   "reviewed_on": "2026-10-02",
+   "files": [
+    "../roblox-vide/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ],
+   "notes": "Pinned by commit; resolve the new release tag to its commit."
+  },
+  {
+   "id": "charm",
+   "name": "Charm",
+   "source": {
+    "wally": "littensy/charm"
+   },
+   "reviewed": "0.11.1",
+   "reviewed_on": "2026-10-03",
+   "files": [
+    "../roblox-charm/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  },
+  {
+   "id": "ui-labs",
+   "name": "UI Labs",
+   "source": {
+    "github": "PepeElToro41/ui-labs"
+   },
+   "reviewed": "1.6.1",
+   "reviewed_on": "2026-10-02",
+   "files": [
+    "../roblox-ui-labs/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ],
+   "notes": "Studio plugin asset; recompute asset_sha256 from the release's .rbxm."
+  },
+  {
+   "id": "bootstrapper",
+   "name": "Bootstrapper",
+   "source": {
+    "github": "LDGerrits/Bootstrapper"
+   },
+   "reviewed": "1.2.2",
+   "reviewed_on": "2026-10-02",
+   "files": [
+    "../roblox-bootstrapper/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ],
+   "notes": "Pinned by commit; resolve the new release tag to its commit."
+  },
+  {
+   "id": "janitor",
+   "name": "Janitor",
+   "source": {
+    "wally": "howmanysmall/janitor"
+   },
+   "reviewed": "1.18.3",
+   "reviewed_on": "2026-10-03",
+   "files": [
+    "../roblox-janitor/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  },
+  {
+   "id": "lemonsignal",
+   "name": "LemonSignal",
+   "source": {
+    "wally": "data-oriented-house/lemonsignal"
+   },
+   "reviewed": "2.0.0",
+   "reviewed_on": "2026-10-03",
+   "files": [
+    "../roblox-lemonsignal/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  },
+  {
+   "id": "blink",
+   "name": "Blink",
+   "source": {
+    "github": "1Axen/blink"
+   },
+   "reviewed": "0.18.9",
+   "reviewed_on": "2026-10-03",
+   "files": [
+    "../roblox-blink/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ],
+   "notes": "Published on the pesde registry as 1axen/blink."
+  },
+  {
+   "id": "nevermore-blend",
+   "name": "Nevermore Blend",
+   "source": {
+    "npm": "@quenty/blend"
+   },
+   "reviewed": "12.50.1",
+   "reviewed_on": "2026-10-05",
+   "files": [
+    "../roblox-nevermore-ui/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ],
+   "notes": "Update blend, rx, brio and loader together; they are companions in roblox-nevermore-ui."
+  },
+  {
+   "id": "nevermore-rx",
+   "name": "Nevermore Rx",
+   "source": {
+    "npm": "@quenty/rx"
+   },
+   "reviewed": "13.34.1",
+   "reviewed_on": "2026-10-05",
+   "files": [
+    "../roblox-nevermore-ui/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  },
+  {
+   "id": "nevermore-brio",
+   "name": "Nevermore Brio",
+   "source": {
+    "npm": "@quenty/brio"
+   },
+   "reviewed": "14.37.1",
+   "reviewed_on": "2026-10-05",
+   "files": [
+    "../roblox-nevermore-ui/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  },
+  {
+   "id": "nevermore-loader",
+   "name": "Nevermore loader",
+   "source": {
+    "npm": "@quenty/loader"
+   },
+   "reviewed": "10.11.2",
+   "reviewed_on": "2026-10-05",
+   "files": [
+    "../roblox-nevermore-ui/",
+    "references/bundled-skills.md"
+   ],
+   "repo_files": [
+    "README.md"
+   ]
+  }
+ ]
+}

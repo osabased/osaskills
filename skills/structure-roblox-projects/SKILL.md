@@ -7,6 +7,8 @@ description: "Roblox/Luau project structure and integration: where scripts and m
 
 Work from where the project's code actually lives and how it actually starts. Keep a coherent existing structure, toolchain, and pins, and finish the requested task. The defaults here are for choices the project has not already made.
 
+**First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping current](references/core/keeping-current.md). Skip silently if it can't run.
+
 ## Placement quick reference
 
 - Server-only code: `Script`s in `ServerScriptService`; server-only modules and assets in `ServerScriptService` or `ServerStorage`. Clients never receive them.

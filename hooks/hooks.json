@@ -1,0 +1,17 @@
+{
+  "description": "Once a day, tell the agent when the Roblox skills are behind the latest tool or library releases.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/freshness.py\" 2>/dev/null || python \"${CLAUDE_PLUGIN_ROOT}/hooks/freshness.py\" 2>/dev/null || true",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
