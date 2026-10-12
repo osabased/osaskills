@@ -44,7 +44,7 @@ enum Shape = "Kind" { -- tagged enum: { Kind = "Circle", Radius = ... }
 	Rect { Size: vector },
 }
 
-map Scores = { [string]: u32 }(..100) -- bounded entry count
+map Scores = { [string]: u32 } -- no size bound at 0.18.9; the entry count is a u16
 map Pair<K, V> = { [K]: V } -- generics, also on tagged enums
 set Flags = { FeatureA, FeatureB } -- { [string]: true }
 
