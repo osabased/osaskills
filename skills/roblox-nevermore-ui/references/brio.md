@@ -1,6 +1,6 @@
-# Brio 14.37.1
+# Brio 14.37.2
 
-Checked against `src/brio/src/Shared/Brio.lua` at commit `7ab0297`.
+Checked against `src/brio/src/Shared/Brio.lua` at commit `3286fd3`.
 
 ## API
 
@@ -36,4 +36,4 @@ end))
 ## Sources
 
 - [Brio API](https://quenty.github.io/NevermoreEngine/api/Brio/)
-- [Brio implementation at the reviewed commit](https://github.com/Quenty/NevermoreEngine/blob/7ab0297833aa73c193d8c20dc23332280439af7c/src/brio/src/Shared/Brio.lua)
+- [Brio implementation at the reviewed commit](https://github.com/Quenty/NevermoreEngine/blob/3286fd397c9c42e7f29c8a881ac7dde12887e783/src/brio/src/Shared/Brio.lua)

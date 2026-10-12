@@ -1,11 +1,11 @@
 ---
 name: roblox-nevermore-ui
-description: Nevermore (Quenty/NevermoreEngine) Blend, Rx and Brio UI libraries plus the Nevermore loader for Roblox Luau, pinned Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2. Use when writing Blend.New, Blend.mount, Blend.State, Blend.Computed, Blend.OnEvent/OnChange/Children/Spring UI, Rx pipelines (Pipe, map, switchMap, combineLatest, fromSignal), Brio lifetimes, Nevermore UI Labs stories, or loader bootstrap and imports. Not for Vide UI or replacing Bootstrapper startup.
+description: Nevermore (Quenty/NevermoreEngine) Blend, Rx and Brio UI libraries plus the Nevermore loader for Roblox Luau, pinned Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3. Use when writing Blend.New, Blend.mount, Blend.State, Blend.Computed, Blend.OnEvent/OnChange/Children/Spring UI, Rx pipelines (Pipe, map, switchMap, combineLatest, fromSignal), Brio lifetimes, Nevermore UI Labs stories, or loader bootstrap and imports. Not for Vide UI or replacing Bootstrapper startup.
 ---
 
-# Nevermore UI: Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2
+# Nevermore UI: Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3
 
-Pinned target: `@quenty/blend` `12.50.1` from NevermoreEngine commit `7ab0297833aa73c193d8c20dc23332280439af7c` (source reviewed 2026-10-05), with `@quenty/rx` 13.34.1, `@quenty/brio` 14.37.1 and `@quenty/loader` 10.11.2 as checked companions. [resource.yaml](resource.yaml) holds the exact identities. Upstream published patch releases on 2026-10-09; keep the project's pins unless the task is an upgrade.
+Pinned target: `@quenty/blend` `12.50.2` from NevermoreEngine commit `3286fd397c9c42e7f29c8a881ac7dde12887e783` (source reviewed 2026-10-11), with `@quenty/rx` 13.34.2, `@quenty/brio` 14.37.2 and `@quenty/loader` 10.11.3 as checked companions. [resource.yaml](resource.yaml) holds the exact identities. Upstream published patch releases on 2026-10-09; keep the project's pins unless the task is an upgrade.
 
 ## Check the pin
 

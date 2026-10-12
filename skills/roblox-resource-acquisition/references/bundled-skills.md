@@ -11,7 +11,7 @@ This repository ships pinned child skills beside this one, each in its own folde
 | Janitor: resource cleanup | [roblox-janitor](../../roblox-janitor/SKILL.md) | 1.18.3 |
 | LemonSignal: custom events | [roblox-lemonsignal](../../roblox-lemonsignal/SKILL.md) | 2.0.0 |
 | Blink: networking schema compiler | [roblox-blink](../../roblox-blink/SKILL.md) | 0.18.9 |
-| Nevermore UI: Blend, Rx and Brio | [roblox-nevermore-ui](../../roblox-nevermore-ui/SKILL.md) | Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2 |
+| Nevermore UI: Blend, Rx and Brio | [roblox-nevermore-ui](../../roblox-nevermore-ui/SKILL.md) | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
 The links work in this repository and in installs where the children sit beside this skill. All eight use [child contract 1](child-authoring.md#resourceyaml). Each child's `resource.yaml` holds the exact identity, profile and integrity hashes. Read each child's advice-only or executable boundary before relying on it.
 

@@ -54,7 +54,7 @@ Each library skill is an API guide for one pinned version: core API table, examp
 | [roblox-janitor](./skills/roblox-janitor/) | Janitor (cleanup) | 1.18.3 |
 | [roblox-lemonsignal](./skills/roblox-lemonsignal/) | LemonSignal (signals) | 2.0.0 |
 | [roblox-blink](./skills/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
-| [roblox-nevermore-ui](./skills/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2 |
+| [roblox-nevermore-ui](./skills/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
 Use the guide only when your project pins the same version. Installing a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
 
