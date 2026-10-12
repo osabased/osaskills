@@ -12,7 +12,7 @@
 | A list renders in the wrong order | `indexes`/`values` output order is not guaranteed. Set `LayoutOrder` and use a `UIListLayout` with `SortOrder = LayoutOrder`. |
 | `duplicate property X at depth N` | The same property key appears twice at one nesting level of a props table. |
 | `table source passed to values() contains duplicate values` | `values()` keys scopes by value. Use `indexes()` or make the values unique. |
-| Type error for `create "UIPadding"` / `"UISizeConstraint"` | A gap in the 0.4.1 `Instances` type map; it works at runtime. Use `Instance.new` under the owned root, or cast the class name. |
+| Type error for `create "UIStroke"`, `"UIPadding"` or another class | The 0.4.1 `Instances` type map lists only 19 classes (SKILL.md, Gotchas); it works at runtime. Casting the name doesn't clear the error. Use `Instance.new` under the owned root, or cast `create` itself: `(create :: any) "UIStroke" { ... }`. |
 | User-defined type function diagnostics | Enable the new solver in both the editor and the CLI ([setup](setup.md#type-checking)). |
 | A Getter type error at a property | Annotate the getter (`local label: () -> string = ...`) instead of widening to `any`. |
 | A Charm value never updates the UI | Charm getters don't create Vide dependencies. Bridge them through a Vide Source (see the `roblox-charm` skill). |

@@ -25,4 +25,4 @@ Run strict analysis on your own modules. The vendor package may report internal 
 
 ## Newer code
 
-Upstream master has unreleased commits after 0.4.1, including `UIPadding`/`UISizeConstraint` types (#92). Keep the project's pin unless the task is an upgrade.
+Upstream `main` has unreleased commits after 0.4.1, including `create` types for `UIStroke`, `UIPadding`, `UISizeConstraint` and other UI classes (#79, extended in #92). Keep the project's pin unless the task is an upgrade.

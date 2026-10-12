@@ -67,7 +67,7 @@ items({ "Sword", "Shield", "Potion" }) -- the list updates; call stop() to tear 
 - Cleanups run in insertion order, and the first error stops the rest. Keep cleanup callbacks nonthrowing.
 - Do not call `Vide.step()` on teardown. Its first call permanently disconnects the package-wide Heartbeat that drives `spring` and delayed scope teardown.
 - A table Source notifies on every write of an unfrozen table, even the same one: after an in-place mutation, `s(s())` re-renders. Rewriting the same frozen table, or the same primitive, does nothing.
-- `create "UIPadding"` and `create "UISizeConstraint"` are type errors only at 0.4.1, because its `Instances` type map omits them. At runtime `create` calls `Instance.new`. Use `Instance.new` under the owned root, or cast the class name. Don't edit vendor source.
+- At 0.4.1, `create` type-checks only the 19 classes in its `Instances` type map: `Folder`, `ScreenGui`, `SurfaceGui`, `BillboardGui`, `Frame`, `CanvasGroup`, `ScrollingFrame`, `TextLabel`, `TextButton`, `TextBox`, `ImageLabel`, `ImageButton`, `UIListLayout`, `UIGridLayout`, `UICorner`, `UIGradient`, `UIAspectRatioConstraint`, `Camera` and `WorldModel`. Under the new solver any other class, such as `UIStroke`, `UIPadding`, `UISizeConstraint` or `UIScale`, is a type error, and casting the name (`"UIStroke" :: any`) doesn't clear it. At runtime `create` calls `Instance.new`, so the code works. Use `Instance.new` under the owned root, or cast `create` itself: `(create :: any) "UIStroke" { ... }`. Don't edit vendor source.
 
 ## Read further
 
