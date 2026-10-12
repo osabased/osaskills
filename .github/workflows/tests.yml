@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  tests:
-    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+  resource-acquisition:
+    name: roblox-resource-acquisition / ${{ matrix.os }} / Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -37,7 +37,7 @@ jobs:
         run: python -m pytest -q
 
   coverage:
-    name: Branch coverage / Python 3.14
+    name: roblox-resource-acquisition branch coverage / Python 3.14
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -55,3 +55,45 @@ jobs:
         run: python -m coverage run -m pytest -q
       - name: Enforce coverage baseline
         run: python -m coverage report
+
+  structure-roblox-projects:
+    name: structure-roblox-projects / Python 3.11 + Rojo 7.7.0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - name: Install test dependencies
+        run: python -m pip install -r skills/roblox-resource-acquisition/requirements-dev.txt
+      - name: Install Rojo 7.7.0
+        run: |
+          curl -fsSL -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.0/rojo-7.7.0-linux-x86_64.zip
+          mkdir -p "$HOME/.local/bin"
+          unzip -o rojo.zip -d "$HOME/.local/bin"
+          chmod +x "$HOME/.local/bin/rojo"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Run tests
+        run: python -m pytest -q -ra skills/structure-roblox-projects/tests
+
+  vod-discovery:
+    name: vod-discovery / Python 3.13 + Node 22
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: skills/vod-discovery/requirements.txt
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install dependencies
+        run: python -m pip install -r skills/vod-discovery/requirements.txt
+      - name: Python tests
+        run: python -B -m unittest discover -s skills/vod-discovery/tests -p "test_*.py"
+      - name: Node tests
+        run: for t in skills/vod-discovery/tests/test_*.js; do node "$t"; done
