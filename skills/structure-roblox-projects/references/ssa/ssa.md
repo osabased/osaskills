@@ -17,13 +17,13 @@ Create only the boundaries the feature needs. Use matching feature names across 
 
 These paths are relative to `ServerScriptService` for `Server/` and `ReplicatedStorage` for `Client/`, `Shared/`, and `Remotes/`. Shared ModuleScripts share source and visibility, not mutable runtime state; server and client execute them independently.
 
-Represent the resulting DataModel through the active source-of-truth workflow. For Rojo, a feature directory can use `init.luau` so the directory maps to the lifecycle-root ModuleScript while retaining child implementation modules. Read [`rojo.md`](../workflows/rojo.md) or [`script-sync.md`](../workflows/script-sync.md) when that specialist branch is active.
+Represent the resulting DataModel through the active source-of-truth workflow. For Rojo, give a feature directory an `init.luau` so the directory maps to the lifecycle-root ModuleScript and its child implementation modules stay nested under it. A directory without `init.luau` becomes a Folder, and the loader treats every ModuleScript inside it as its own lifecycle root. Read [`rojo.md`](../workflows/rojo.md) or [`script-sync.md`](../workflows/script-sync.md) when that specialist branch is active.
 
 ## 2. Fill the discovery slot
 
-> **Discovery slot:** A direct-child ModuleScript under `Server/` or `Client/` is a loader-owned lifecycle root.
+> **Discovery slot:** A ModuleScript under `Server/` or `Client/` whose path back to that root is only Folders is a loader-owned lifecycle root. A ModuleScript nested under another ModuleScript is not.
 
-Put child implementation modules beneath their owning feature root. Every ModuleScript in a discovery slot must intentionally participate as a lifecycle root; place helpers, APIs, and domain modules below that root or in an applicable Shared subtree.
+Put child implementation modules beneath their owning feature-root ModuleScript; a plain Folder does not hide them from the loader. Every ModuleScript in a discovery slot must intentionally participate as a lifecycle root. Place helpers, APIs, and domain modules below that root or in an applicable Shared subtree, or mark them `IgnoreLoader`.
 
 `Shared/` modules are dependency modules, not loader-owned lifecycle roots.
 
@@ -36,7 +36,7 @@ Lifecycle methods are optional:
 - `Init` prepares feature-local state and dependencies.
 - `Start` activates behavior such as event connections or long-running work, then returns after activation.
 
-The loader attempts every successful load before it attempts any `Init`, then attempts `Start` after the Init phase. Within each phase, upstream honors `LoaderPriority` (higher first). Do not rely on incidental order among equal-priority siblings; use priority ordering only when it is an explicit startup contract.
+The loader attempts every successful load before it attempts any `Init`, then attempts `Start` after the Init phase. A module whose `Init` errors gets no `Start`. Within each phase, upstream honors `LoaderPriority` (higher first). Do not rely on incidental order among equal-priority siblings; use priority ordering only when it is an explicit startup contract.
 
 A direct dependency on another lifecycle root is valid when it makes ownership clearer, but `require()` returns that module's API; it does not imply that the dependency's `Init` or `Start` has run. Keep requires acyclic. Move lifecycle-independent access into a nested API/domain module or an applicable Shared module when that makes the dependency explicit.
 
@@ -60,7 +60,7 @@ Completion requires all of the following:
 
 - no new loader load, Init, or Start warning attributable to the changed feature;
 - direct evidence that the changed feature behavior works; and
-- every new helper is nested outside a discovery slot and every lifecycle dependency remains acyclic.
+- every new helper is nested under its lifecycle-root ModuleScript (not just a Folder) or lives in Shared, and every lifecycle dependency remains acyclic.
 
 Loader loaded-state attributes alone do not establish lifecycle success. Report unrelated pre-existing failures without expanding the write set to repair them.
 
