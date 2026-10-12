@@ -5,16 +5,18 @@
  "loaded": [
   "tool:osaskills:roblox-vide"
  ],
+ "reads": [],
  "tools": [
   "Skill",
   "Glob",
   "Read",
   "Read",
   "Read",
+  "Read",
   "Write",
   "Write"
  ],
- "cost": 0.09360679999999999,
+ "cost": 0.0924494,
  "rc": 1,
  "init_skills": 14,
  "result": null,

@@ -1,0 +1,24 @@
+{
+ "id": "pos-charm",
+ "expect": "roblox-charm",
+ "prompt": "Add a Charm atom for the player's coins in src/shared, plus a computed that says whether they can afford a 50-coin item.",
+ "loaded": [
+  "tool:osaskills:roblox-charm"
+ ],
+ "reads": [],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob",
+  "Grep"
+ ],
+ "cost": 0.0693249,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

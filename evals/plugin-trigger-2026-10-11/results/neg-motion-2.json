@@ -3,13 +3,17 @@
  "expect": "!motion-studies",
  "prompt": "Before we commit, help me try out how the settings modal transition in my React app should feel - timing, easing, maybe a spring.",
  "loaded": [],
+ "reads": [],
  "tools": [
   "Glob",
   "Grep",
+  "Read",
   "Glob",
-  "Grep"
+  "Read",
+  "Read",
+  "Read"
  ],
- "cost": 0.06501,
+ "cost": 0.0638589,
  "rc": 1,
  "init_skills": 14,
  "result": null,

@@ -6,11 +6,12 @@
  ],
  "prompt": "/osaskills:vod-discovery I have a 2 hour VOD at D:/vods/a.mkv. Don't run anything; tell me the first step.",
  "loaded": [],
+ "reads": [],
  "tools": [],
- "cost": 0.0619984,
+ "cost": 0.0633456,
  "rc": 0,
  "init_skills": 14,
- "result": "**First step: scope.** Before any processing, I need a few answers from you:\n\n1. **POVs:** Is `a.mkv` a single POV, or are there other recordings of the same session? If there are others, I need their paths and order.\n2. **Languages:** What language(s) are spoken? This decides the speech model.\n3. **Delivery:** Do you want markers on new Premiere clips, markers on clips already in a project, or a layered review timeline? A layered timeline also needs a main POV.\n4. **Time budget:** How long can processing take?\n\nI'd also check for existing project notes in `.claude/vod/project-context.md` or `.agents/vod/project-context.md`, plus any `events.json`.\n\nAfter that, step 2 is `vod.py doctor` to check the environment. Then a pilot run, `prepare --limit-packets 1`, to time it and inspect the first packet before preparing the full 2 hours.\n\nOne thing to check now: if `a.mkv` has more than one audio track (for example OBS game, mic and voice-chat), the XML export routes won't work. You would import the original in Premiere and add markers with the UXP panel instead.",
+ "result": "The first step is **Scope**. I haven't run anything.\n\nI'd confirm only what blocks processing:\n\n- **Source and POV:** I'm assuming `D:/vods/a.mkv` is the only file and a single POV. I won't invent a main POV or read order from filenames. Tell me if there are other parts or POVs.\n- **Spoken languages:** this decides which speech model fits the footage.\n- **Delivery:** the options are source markers on new Premiere clips, markers on clips already in a project, or a layered review timeline. A single-POV VOD with no main POV set points to source markers (`premiere_xml.py`).\n- **Time budget:** this sets how many packets I prepare per run. A 2-hour file is fine to process, but I won't assume overnight runs are acceptable.\n\nI'd also check whether this project has notes (`.claude/vod/project-context.md`) or an existing `events.json`, so I can reuse them.\n\n**Next steps, once you confirm:**\n1. Run `vod.py doctor` to check the environment.\n2. Run a pilot, `prepare --limit-packets 1`. I'd time it and inspect that one packet before preparing the full 2 hours.\n\nOne thing to check now: if `a.mkv` has multiple audio tracks, such as OBS game, mic and voice chat, the XML route can't take it. We'd import the original into Premiere and add markers with the UXP panel instead. I'll check this during the pilot.",
  "stderr": "",
  "verdict": "PASS"
 }

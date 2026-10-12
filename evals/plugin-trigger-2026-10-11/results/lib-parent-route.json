@@ -1,0 +1,31 @@
+{
+ "id": "lib-parent-route",
+ "expect": "roblox-janitor",
+ "reads_expect": "references/child-usage.md",
+ "max_turns": 6,
+ "prompt": "Before writing any Janitor code, check that this project's Janitor pin matches the version your Janitor skill covers, following that skill's own pin-check instructions. Tell me which checks you could and couldn't run.",
+ "loaded": [
+  "tool:osaskills:roblox-janitor"
+ ],
+ "reads": [
+  "roblox-resource-acquisition/references/child-usage.md",
+  "roblox-resource-acquisition/libraries/roblox-janitor/resource.yaml"
+ ],
+ "denied": [],
+ "tools": [
+  "Skill",
+  "Read",
+  "Glob",
+  "Read",
+  "Bash",
+  "Read",
+  "Read",
+  "Glob"
+ ],
+ "cost": 0.0972198,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "The declared pin matches, but I could only check it by hand. Bash is disabled in this session, so I couldn't run the parent skill's checker script.\n\n**Checks I could run (by reading files)**\n- **Manifest pin:** `wally.toml` declares `Janitor = \"howmanysmall/janitor@1.18.3\"`, from the `UpliftGames/wally-index` registry. The skill's `resource.yaml` targets `howmanysmall/janitor` 1.18.3 with the same registry, so they match. The same file has no `^` or `~` range.\n- **Other manifest:** `pesde.toml` doesn't declare Janitor. It only has vide, which is pinned to a git revision, and blink at `=0.18.9`.\n- **Known issues:** The project has no `CLAUDE.md`, so there are no blocked uses or known issues recorded for Janitor.\n\n**Checks I couldn't run**\n- **`check_resource_install.py --declared`:** This is the formal `PASS`/`FAIL` result, and I couldn't run it. The manual comparison above covers the same ground, but it isn't the script's verdict.\n- **Lock file:** There is no `wally.lock`, so I couldn't confirm the version actually resolved.\n- **Installed package:** There is no `Packages/_Index`, so nothing is installed. I couldn't hash the source against the integrity values in `resource.yaml`, and I couldn't check the `typed-promise` 4.0.6 and `evaera/promise` 4.0.0 companions. This full check is due before I finish, once the packages are installed.\n- **Update check (`check_updates.py`):** I couldn't run it, so I don't know whether a newer Janitor release exists. The project's 1.18.3 pin is what I'd use either way.\n\nThe Janitor guidance applies to this project's pin. The packages aren't installed yet, so I'll need `wally install` before any code can run against them.",
+ "stderr": "",
+ "verdict": "PASS"
+}

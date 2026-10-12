@@ -18,6 +18,26 @@ A slash-invoked skill expands into the prompt and leaves no tool event. The harn
 
 `rc=1` on some runs means the 3-turn limit cut the answer off. The skill-loading decision comes earlier, so it doesn't affect these checks. The run cost about $0.95.
 
+## Rerun after nesting the library skills
+
+[PR #50](https://github.com/osabased/osaskills/pull/50) moved the eight library skills into `skills/roblox-resource-acquisition/libraries/`. This rerun loaded that checkout with `python harness.py --plugin-dir <checkout>` and added four cases:
+
+- `pos-janitor` and `pos-charm`, for two more library skills;
+- `lib-parent-route`, which has a library skill follow its pin check into RRA's shared `references/child-usage.md`;
+- `probe-read-scope`, which checks which skill files a headless run can read.
+
+`results/` now holds this run. [Git history](https://github.com/osabased/osaskills/commits/main/evals/plugin-trigger-2026-10-11/results) has the earlier one.
+
+| Check | Result |
+|---|---|
+| Skills registered at startup | All 14 `osaskills:*` skills, including the 8 nested libraries, in every run |
+| Model's skill list (`probe-listing`) | The same 11 automatic skills as before |
+| The 14 original cases | All pass, as before |
+| `roblox-janitor`, `roblox-charm` | Each loaded through the Skill tool |
+| `lib-parent-route` | `roblox-janitor` resolved `../../references/child-usage.md`, read it, and followed its pin-check steps |
+
+The first rerun of `lib-parent-route` had its read **denied**, and so did the skill's own `references/setup.md`. A headless run can't approve reads outside the project, and with `--plugin-dir` the skill files are outside it. The harness now passes `--add-dir <checkout>` alongside `--plugin-dir`, and it counts a read only when it succeeds. Before this, an attempted read counted as a pass. The two route cases cost about $0.17 to rerun, and the full run cost $1.19.
+
 ## Limits
 
 - There is 1 run per prompt, on one model, and the prompts are fairly direct.
