@@ -11,7 +11,7 @@ Skills for Claude covering Roblox development, VOD discovery, and review workflo
 /plugin install osaskills@osaskills
 ```
 
-Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The plugin installs every skill side by side, so the Roblox library skills always find `roblox-resource-acquisition`. Plugin skills are namespaced, for example `/osaskills:then-what`.
+Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The Roblox library skills live in `skills/roblox-resource-acquisition/libraries/`; the plugin loads them from there, so they always find `roblox-resource-acquisition`. Plugin skills are namespaced, for example `/osaskills:then-what`.
 
 ### Cowork / Claude desktop
 
@@ -21,7 +21,7 @@ Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osas
 
 ```sh
 npx skills@latest add osabased/osaskills --agent claude-code
-npx skills@latest add osabased/osaskills --skill roblox-resource-acquisition roblox-vide --agent claude-code
+npx skills@latest add osabased/osaskills --full-depth --skill roblox-resource-acquisition roblox-vide --agent claude-code
 ```
 
 Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact, and put Roblox library skills next to `roblox-resource-acquisition`.
@@ -47,14 +47,14 @@ Each library skill is an API guide for one pinned version: core API table, examp
 
 | Skill | Library | Pin |
 |---|---|---|
-| [roblox-vide](./skills/roblox-vide/) | Vide (reactive UI) | 0.4.1 |
-| [roblox-charm](./skills/roblox-charm/) | Charm (reactive state) | 0.11.1 |
-| [roblox-ui-labs](./skills/roblox-ui-labs/) | UI Labs (story previews) | 1.6.1 |
-| [roblox-bootstrapper](./skills/roblox-bootstrapper/) | Bootstrapper (startup lifecycle) | 1.2.2 |
-| [roblox-janitor](./skills/roblox-janitor/) | Janitor (cleanup) | 1.18.3 |
-| [roblox-lemonsignal](./skills/roblox-lemonsignal/) | LemonSignal (signals) | 2.0.0 |
-| [roblox-blink](./skills/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
-| [roblox-nevermore-ui](./skills/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
+| [roblox-vide](./skills/roblox-resource-acquisition/libraries/roblox-vide/) | Vide (reactive UI) | 0.4.1 |
+| [roblox-charm](./skills/roblox-resource-acquisition/libraries/roblox-charm/) | Charm (reactive state) | 0.11.1 |
+| [roblox-ui-labs](./skills/roblox-resource-acquisition/libraries/roblox-ui-labs/) | UI Labs (story previews) | 1.6.1 |
+| [roblox-bootstrapper](./skills/roblox-resource-acquisition/libraries/roblox-bootstrapper/) | Bootstrapper (startup lifecycle) | 1.2.2 |
+| [roblox-janitor](./skills/roblox-resource-acquisition/libraries/roblox-janitor/) | Janitor (cleanup) | 1.18.3 |
+| [roblox-lemonsignal](./skills/roblox-resource-acquisition/libraries/roblox-lemonsignal/) | LemonSignal (signals) | 2.0.0 |
+| [roblox-blink](./skills/roblox-resource-acquisition/libraries/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
+| [roblox-nevermore-ui](./skills/roblox-resource-acquisition/libraries/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
 Use the guide only when your project pins the same version. Installing a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
 

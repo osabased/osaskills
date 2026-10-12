@@ -2,7 +2,7 @@
 
 Use this only when the user asks for a child skill, or the same pinned resource is clearly reused across projects. First check the [bundled catalog](bundled-skills.md): reuse a bundled or existing child for the same exact pin instead of writing a duplicate.
 
-A child is a per-library skill: a short `SKILL.md`, a static `resource.yaml`, optional `references/`, and a `scripts/` checker only when the shared profiles can't express the check. Children sit beside this skill (for example `skills/roblox-janitor/` next to `skills/roblox-resource-acquisition/`), so the shared contract is at `../roblox-resource-acquisition/references/child-usage.md`. A child must still work as advice when that sibling is missing.
+A child is a per-library skill: a short `SKILL.md`, a static `resource.yaml`, optional `references/`, and a `scripts/` checker only when the shared profiles can't express the check. Children live in this skill's `libraries/` folder (for example `libraries/roblox-janitor/`), so the shared contract is at `../../references/child-usage.md`. Some installs place a child beside this skill instead, so a child names both locations and must still work as advice when the parent is missing.
 
 Contents: [Before writing](#before-writing) · [SKILL.md](#skillmd) · [resource.yaml](#resourceyaml) · [Install profiles](#install-profiles) · [Validate](#validate) · [Executable claims](#executable-claims) · [Install](#install)
 

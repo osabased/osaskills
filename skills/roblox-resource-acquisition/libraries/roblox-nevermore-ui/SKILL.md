@@ -9,7 +9,7 @@ Pinned target: `@quenty/blend` `12.50.2` from NevermoreEngine commit `3286fd397c
 
 ## Check the pin
 
-If the project pins these npm packages, confirm all four match the target. If the `roblox-resource-acquisition` skill is installed beside this one, run its checks per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent or Python is unavailable, read `package.json` and `package-lock.json` directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+If the project pins these npm packages, confirm all four match the target. If the `roblox-resource-acquisition` skill is available (two folders up when this skill sits in its `libraries/` folder, otherwise beside this one), run its checks per [child usage](../../references/child-usage.md). If the parent or Python is unavailable, read `package.json` and `package-lock.json` directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
 
 ## Core API
 
