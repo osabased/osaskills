@@ -123,8 +123,8 @@
    "source": {
     "npm": "@quenty/blend"
    },
-   "reviewed": "12.50.1",
-   "reviewed_on": "2026-10-05",
+   "reviewed": "12.50.2",
+   "reviewed_on": "2026-10-11",
    "files": [
     "../roblox-nevermore-ui/",
     "references/bundled-skills.md"
@@ -140,8 +140,8 @@
    "source": {
     "npm": "@quenty/rx"
    },
-   "reviewed": "13.34.1",
-   "reviewed_on": "2026-10-05",
+   "reviewed": "13.34.2",
+   "reviewed_on": "2026-10-11",
    "files": [
     "../roblox-nevermore-ui/",
     "references/bundled-skills.md"
@@ -156,8 +156,8 @@
    "source": {
     "npm": "@quenty/brio"
    },
-   "reviewed": "14.37.1",
-   "reviewed_on": "2026-10-05",
+   "reviewed": "14.37.2",
+   "reviewed_on": "2026-10-11",
    "files": [
     "../roblox-nevermore-ui/",
     "references/bundled-skills.md"
@@ -172,8 +172,8 @@
    "source": {
     "npm": "@quenty/loader"
    },
-   "reviewed": "10.11.2",
-   "reviewed_on": "2026-10-05",
+   "reviewed": "10.11.3",
+   "reviewed_on": "2026-10-11",
    "files": [
     "../roblox-nevermore-ui/",
     "references/bundled-skills.md"

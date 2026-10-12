@@ -10,14 +10,14 @@ resource:
   package_id: '@quenty/blend'
   selector:
     kind: version
-    value: 12.50.1
-    release_commit: 7ab0297833aa73c193d8c20dc23332280439af7c
-  source_review_date: '2026-10-05'
+    value: 12.50.2
+    release_commit: 3286fd397c9c42e7f29c8a881ac7dde12887e783
+  source_review_date: '2026-10-11'
   devforum_url: null
 routing:
   use_when:
   - Writing or debugging Nevermore Blend UI, Rx pipelines, Brio lifetimes, Nevermore UI Labs stories or loader
-    bootstrap/imports in a project pinned to Blend 12.50.1, Rx 13.34.1, Brio 14.37.1 and loader 10.11.2.
+    bootstrap/imports in a project pinned to Blend 12.50.2, Rx 13.34.2, Brio 14.37.2 and loader 10.11.3.
   avoid_when:
   - Vide UI, framework selection, or replacing Bootstrapper startup.
   - The project pins different Nevermore package versions; keep those pins and find matching guidance.
@@ -68,8 +68,8 @@ installation:
   profile: npm
   registry: https://registry.npmjs.org
   dependency_section: dependencies
-  archive_url: https://registry.npmjs.org/@quenty/blend/-/blend-12.50.1.tgz
-  archive_integrity: sha512-aDcbghw0sMqlECNmEJmhrPnjKfwvsu4toTgNypEAjjydIsJmXLzfRs1INdhOImv5yKVpzk0cBG1ftBUER+twiQ==
+  archive_url: https://registry.npmjs.org/@quenty/blend/-/blend-12.50.2.tgz
+  archive_integrity: sha512-DVnfBH6Q41D132npJSwE5gB+IdLTppaDIpuW71S4wTu38xaK46wLo42btg8Emvpb3DpGyVlnyNrv39kf1SE9cA==
   integrity:
     aggregate:
       directory: src
@@ -79,13 +79,13 @@ installation:
     manifest:
       path: package.json
       name: '@quenty/blend'
-      version: 12.50.1
+      version: 12.50.2
   companions:
   - package_id: '@quenty/rx'
-    version: 13.34.1
+    version: 13.34.2
     dependency_section: dependencies
-    archive_url: https://registry.npmjs.org/@quenty/rx/-/rx-13.34.1.tgz
-    archive_integrity: sha512-YpYjqp7bhzKd92H5on9vVG6x37NRYtqIg+tjavPHBW6qKg3MLeWFLVbs/TSwPKFzhEzGkrI0yEzs/jjk0yKHUg==
+    archive_url: https://registry.npmjs.org/@quenty/rx/-/rx-13.34.2.tgz
+    archive_integrity: sha512-c155/2kWmirt+YweiEsUlHKp65E7vBxx8kpRL3w64q5tzrw3Zv41HDojBZFayJfSAWcUGFNpUb8BhVj7/x7/7g==
     integrity:
       aggregate:
         directory: src
@@ -95,12 +95,12 @@ installation:
       manifest:
         path: package.json
         name: '@quenty/rx'
-        version: 13.34.1
+        version: 13.34.2
   - package_id: '@quenty/brio'
-    version: 14.37.1
+    version: 14.37.2
     dependency_section: dependencies
-    archive_url: https://registry.npmjs.org/@quenty/brio/-/brio-14.37.1.tgz
-    archive_integrity: sha512-it7NN5igWtfVFDVSU8HUs5gObKrs4irRpBvmnPPILLVH9QI/4L/q/2xFuD3z9PmEo8D7teAg3jUCz8nVvx9B+Q==
+    archive_url: https://registry.npmjs.org/@quenty/brio/-/brio-14.37.2.tgz
+    archive_integrity: sha512-xnpGaZJAz8a5JNxUA0JqdljgNuGOranYnFdpXJPjcHig/nKpI4Kx6488HX970Gx3w3AB0U/zlukIlhCrjCNmfQ==
     integrity:
       aggregate:
         directory: src
@@ -110,19 +110,19 @@ installation:
       manifest:
         path: package.json
         name: '@quenty/brio'
-        version: 14.37.1
+        version: 14.37.2
   - package_id: '@quenty/loader'
-    version: 10.11.2
+    version: 10.11.3
     dependency_section: dependencies
-    archive_url: https://registry.npmjs.org/@quenty/loader/-/loader-10.11.2.tgz
-    archive_integrity: sha512-e5OkHAA2sjzcM1zKtvCNILrtY0IgbPu409+2UNublqcEDHl8uabWyeJlKdoo8I+u/V3msEgGbmxmeaKzvAffLg==
+    archive_url: https://registry.npmjs.org/@quenty/loader/-/loader-10.11.3.tgz
+    archive_integrity: sha512-tRgA4inVtrNu71yCct0wc+eC5U1aixuLyETOIpsYCgSSrRmn9/t5Am94sbnw9jpr73ZG/01pvrzCMiDHVOv0GA==
     integrity:
       aggregate:
         directory: src
         suffix: .lua
         recursive: true
-        sha256: 47123902ce68774a2c8b54fe2aae638c80027e5250a8c95291ae5bada38e0467
+        sha256: b9ef0c6dd2cdcafe4a9424155956aa9929947435b76f2143fd6533191b1faa27
       manifest:
         path: package.json
         name: '@quenty/loader'
-        version: 10.11.2
+        version: 10.11.3

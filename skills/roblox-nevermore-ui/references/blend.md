@@ -1,6 +1,6 @@
-# Blend 12.50.1
+# Blend 12.50.2
 
-Checked against `src/blend/src/Shared/Blend/Blend.lua` at commit `7ab0297`.
+Checked against `src/blend/src/Shared/Blend/Blend.lua` at commit `3286fd3`.
 
 ## Props table rules (`Blend.mount`, also used by `Blend.New`)
 
@@ -57,5 +57,5 @@ end
 ## Sources
 
 - [Blend API](https://quenty.github.io/NevermoreEngine/api/Blend/)
-- [Blend implementation at the reviewed commit](https://github.com/Quenty/NevermoreEngine/blob/7ab0297833aa73c193d8c20dc23332280439af7c/src/blend/src/Shared/Blend/Blend.lua)
+- [Blend implementation at the reviewed commit](https://github.com/Quenty/NevermoreEngine/blob/3286fd397c9c42e7f29c8a881ac7dde12887e783/src/blend/src/Shared/Blend/Blend.lua)
 - [UI Labs function stories](https://ui-labs.luau.page/docs/stories/function) and [generic stories](https://ui-labs.luau.page/docs/stories/advanced/generic)

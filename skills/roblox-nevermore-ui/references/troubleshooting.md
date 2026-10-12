@@ -11,6 +11,7 @@
 | `Brio is dead` | The Brio was used after death. Check `IsDead()` before use and after every yield. |
 | `Bad promise` from `Rx.fromPromise` | A non-Nevermore Promise (for example Janitor's `evaera/promise`) was passed in. Use a Nevermore Promise, or adapt with `Observable.new`. |
 | `attempt to call a nil value` on a loader | The loader was used after `Loader:Destroy()`, which removes the metatable. Don't destroy a shared loader per component. |
+| Studio memory climbs while a story hot-reloads | Each `bootstrapStory` call registers the package root again. Pin loader 10.11.3 or later, which stops re-populating loader links, and route stories through a shared adapter that bootstraps once ([setup](setup.md)). |
 | A UI Labs story leaks after an error | A function story can't return its cleanup on a failed construction. Clean up reachable resources before rethrowing; keep the borrowed target and loader. |
 | `Rx.filter` is nil | Rx calls it `Rx.where`. |
 
