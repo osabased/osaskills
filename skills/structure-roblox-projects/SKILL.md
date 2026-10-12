@@ -11,6 +11,7 @@ Work from where the project's code actually lives and how it actually starts. Ke
 
 - Server-only code: `Script`s in `ServerScriptService`; server-only modules and assets in `ServerScriptService` or `ServerStorage`. Clients never receive them.
 - Client entrypoint: a `Script` with `RunContext = Client` in `ReplicatedStorage` (Roblox's current recommendation), or a `LocalScript` in `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or `StarterPack`. A `LocalScript` in `ReplicatedStorage` never runs. A Client-RunContext `Script` in a Starter container runs twice (original and clone).
+- Rojo 7 file suffixes: `*.client.luau` builds a `LocalScript` unless the project sets `"emitLegacyScripts": false`, which makes it a `Script` with `RunContext = Client` (`*.server.luau` likewise becomes `RunContext = Server`). So a default-settings `init.client.luau` mapped into `ReplicatedStorage` never runs. Script Sync's suffixes (`.local.luau`, `.legacy.luau`) mean nothing to Rojo, which builds them as ModuleScripts.
 - Shared modules, types, constants, and Remotes: `ReplicatedStorage`. Everything there is visible to clients, so keep secrets out.
 - Earliest loading UI only: `ReplicatedFirst`.
 - A ModuleScript runs once per Luau environment (server, each client, each `Actor`). Its returned state is not shared between them.
