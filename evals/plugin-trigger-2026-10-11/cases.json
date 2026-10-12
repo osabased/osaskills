@@ -29,5 +29,14 @@
  {"id": "exp-motion", "expect": "motion-studies", "markers": ["named constant"],
   "prompt": "/osaskills:motion-studies How should the shop button press feel in my Roblox game? Don't build anything yet; tell me the first step."},
  {"id": "exp-vod", "expect": "vod-discovery", "markers": ["vod.py doctor"],
-  "prompt": "/osaskills:vod-discovery I have a 2 hour VOD at D:/vods/a.mkv. Don't run anything; tell me the first step."}
+  "prompt": "/osaskills:vod-discovery I have a 2 hour VOD at D:/vods/a.mkv. Don't run anything; tell me the first step."},
+
+ {"id": "pos-janitor", "expect": "roblox-janitor",
+  "prompt": "Write a round manager module for src/server that uses Janitor to clean up the round's connections and spawned parts when the round ends."},
+ {"id": "pos-charm", "expect": "roblox-charm",
+  "prompt": "Add a Charm atom for the player's coins in src/shared, plus a computed that says whether they can afford a 50-coin item."},
+ {"id": "lib-parent-route", "expect": "roblox-janitor", "reads_expect": "references/child-usage.md", "max_turns": 6,
+  "prompt": "Before writing any Janitor code, check that this project's Janitor pin matches the version your Janitor skill covers, following that skill's own pin-check instructions. Tell me which checks you could and couldn't run."},
+ {"id": "probe-read-scope", "expect": null, "max_turns": 5,
+  "prompt": "Load your Janitor skill. Then use the Read tool on exactly two files, one at a time: that skill's own references/setup.md, and the references/child-usage.md file its pin check links to. For each, say whether the read succeeded or was denied. Do nothing else."}
 ]

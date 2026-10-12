@@ -5,16 +5,18 @@
  "loaded": [
   "tool:osaskills:structure-roblox-projects"
  ],
+ "reads": [],
  "tools": [
   "Skill",
   "Glob",
   "Read",
-  "Glob"
+  "Glob",
+  "Read"
  ],
- "cost": 0.07907360000000001,
- "rc": 0,
+ "cost": 0.0732228,
+ "rc": 1,
  "init_skills": 14,
- "result": "Your entrypoint is already at `src/client/init.client.luau`, which maps to `ReplicatedStorage.Client`. As the project is configured, it won't run.\n\n`default.project.json` doesn't set `emitLegacyScripts`, so Rojo builds `*.client.luau` as a `LocalScript`. A `LocalScript` in `ReplicatedStorage` never runs.\n\nPick one of these fixes:\n\n1. **Recommended: keep the location and add `\"emitLegacyScripts\": false`** at the top level of `default.project.json`. Rojo then builds `init.client.luau` as a `Script` with `RunContext = Client`, which does run from `ReplicatedStorage`. It also turns `init.server.luau` into a `Script` with `RunContext = Server`, which is fine in `ServerScriptService`.\n2. **Use the classic layout instead.** Map the client folder under `StarterPlayer.StarterPlayerScripts` (`\"StarterPlayer\": { \"StarterPlayerScripts\": { \"$path\": \"src/client\" } }`). A `LocalScript` runs fine there. Don't combine this with `RunContext = Client` there, because it would run twice.\n\nI haven't edited anything. I also haven't checked in Studio that it runs.",
+ "result": null,
  "stderr": "",
  "verdict": "PASS"
 }

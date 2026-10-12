@@ -3,13 +3,15 @@
  "expect": "!motion-studies",
  "prompt": "I'm not sure how the inventory panel in my Roblox game should slide in. Can you prototype a couple of easing/timing options I can try in Studio before we build it properly?",
  "loaded": [],
+ "reads": [],
  "tools": [
   "Glob",
   "Read",
   "Read",
+  "Read",
   "Write"
  ],
- "cost": 0.0971846,
+ "cost": 0.0868947,
  "rc": 1,
  "init_skills": 14,
  "result": null,

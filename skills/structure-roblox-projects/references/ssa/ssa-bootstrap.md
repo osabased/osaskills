@@ -25,7 +25,9 @@ In an SSA project the loader is part of the architecture, not an ordinary librar
 
 When the project already uses or deliberately selects Wally, declare `ModuleLoader = "crusherfire/module-loader@4.0.0"` and map the resulting package alias to `ReplicatedStorage/Packages/ModuleLoader`. Otherwise acquire the exact [`v4.0.0` `ModuleLoader.rbxm` release asset](https://github.com/ActualFire-Games/module-loader/releases/tag/v4.0.0).
 
-Download the exact release asset or Wally version and check the SHA-256 above. The [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) skill, when installed, can do this with the pin above as a fixed target. Verification may block the target, but it does not authorize a substitute or upgrade. If the target cannot be acquired or verified well enough, report the block here. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
+The release asset is a starter bundle, not the bare module. Keep only `UngroupInReplicatedStorage/ModuleLoader` and place it at `ReplicatedStorage/Packages/ModuleLoader`. Discard the bundle's `Start` scripts (in `UngroupInServerScriptService` and `UngroupInStarterPlayerScripts`) and its `README` module; `ServerMain` and `ClientMain` below replace them. A Rojo project can't map the asset with `$path`, because the bundle builds as a `Model`. Use the Wally package there, or extract the module in Studio and save it as its own `.rbxm`.
+
+Download the exact release asset or Wally version and check the SHA-256 above. For the asset, check the downloaded file before extracting anything from it. The [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) skill, when installed, can do this with the pin above as a fixed target. Verification may block the target, but it does not authorize a substitute or upgrade. If the target cannot be acquired or verified well enough, report the block here. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
 
 For existing projects, keep any exact `Structural dependencies` target recorded in the project guide or a legacy `AGENT_DIR/roblox/structure.md` profile ([agent directory](../conventions/project-guide.md#agent-directory)), at its stated scope. For a newly selected target, keep identity, version, and acquisition in the project's manifests, and explain placement, lifecycle, and upgrade ownership in the project guide by reference. Save guide changes through the [project guide](../conventions/project-guide.md#save-it) workflow.
 
@@ -137,7 +139,7 @@ To upgrade a project:
 For creation or bootstrap changes, verify:
 
 - the effective DataModel and instance `RunContext` values;
-- the direct server and client startup calls, including both requiring the same replicated ModuleLoader instance;
+- the direct server and client startup calls, including both requiring the same replicated ModuleLoader instance, and no leftover `Start` scripts from the release bundle;
 - the exact loader identity/pin, selected acquisition form, package/asset location, and disabled global wait;
 - that no helper ModuleScript under `Server/` or `Client/` sits below only Folders, since each would load as a lifecycle root;
 - one representative lifecycle root per affected runtime;

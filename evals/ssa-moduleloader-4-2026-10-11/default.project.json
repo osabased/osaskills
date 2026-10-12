@@ -1,0 +1,22 @@
+{
+  "name": "ml4-probe",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Packages": {
+        "$className": "Folder",
+        "ModuleLoader": { "$path": "vendor/ModuleLoader.rbxm" }
+      },
+      "ProbeLog": { "$path": "src/ProbeLog.luau" },
+      "ClientMain": { "$path": "src/ClientMain.client.luau" },
+      "ClientProbeReport": { "$path": "src/ClientProbeReport.client.luau" },
+      "Client": { "$path": "src/client" }
+    },
+    "ServerScriptService": {
+      "ServerMain": { "$path": "src/ServerMain.server.luau" },
+      "ServerProbeReport": { "$path": "src/ServerProbeReport.server.luau" },
+      "Server": { "$path": "src/server" }
+    }
+  }
+}

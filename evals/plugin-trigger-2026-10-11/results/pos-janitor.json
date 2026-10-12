@@ -1,0 +1,25 @@
+{
+ "id": "pos-janitor",
+ "expect": "roblox-janitor",
+ "prompt": "Write a round manager module for src/server that uses Janitor to clean up the round's connections and spawned parts when the round ends.",
+ "loaded": [
+  "tool:osaskills:roblox-janitor"
+ ],
+ "reads": [],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Write"
+ ],
+ "cost": 0.090352,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

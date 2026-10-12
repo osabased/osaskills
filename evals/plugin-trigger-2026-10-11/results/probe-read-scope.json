@@ -1,0 +1,25 @@
+{
+ "id": "probe-read-scope",
+ "expect": null,
+ "max_turns": 5,
+ "prompt": "Load your Janitor skill. Then use the Read tool on exactly two files, one at a time: that skill's own references/setup.md, and the references/child-usage.md file its pin check links to. For each, say whether the read succeeded or was denied. Do nothing else.",
+ "loaded": [
+  "tool:osaskills:roblox-janitor"
+ ],
+ "reads": [
+  "roblox-resource-acquisition/libraries/roblox-janitor/references/setup.md",
+  "roblox-resource-acquisition/references/child-usage.md"
+ ],
+ "denied": [],
+ "tools": [
+  "Skill",
+  "Read",
+  "Read"
+ ],
+ "cost": 0.0766025,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "Both reads succeeded. Neither was denied.\n\n1. `references/setup.md` in the Janitor skill folder was read successfully.\n2. `references/child-usage.md` was read successfully. The skill's pin check links to it as `../../references/child-usage.md`, which resolves to the parent `roblox-resource-acquisition` folder.\n\nI did nothing else.",
+ "stderr": "",
+ "verdict": "INFO"
+}

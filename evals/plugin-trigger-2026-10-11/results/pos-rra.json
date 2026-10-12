@@ -5,16 +5,17 @@
  "loaded": [
   "tool:osaskills:roblox-resource-acquisition"
  ],
+ "reads": [],
  "tools": [
   "Skill",
   "Glob",
   "Read",
   "Read",
-  "Read",
-  "Read",
-  "Read"
+  "Glob",
+  "Glob",
+  "Glob"
  ],
- "cost": 0.07722099999999998,
+ "cost": 0.06859910000000001,
  "rc": 1,
  "init_skills": 14,
  "result": null,
