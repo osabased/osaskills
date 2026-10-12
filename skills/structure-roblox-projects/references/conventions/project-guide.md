@@ -2,13 +2,22 @@
 
 Use when the user asks for a project overview, agent onboarding, or a saved guide, or when existing guidance needs a correction. Ordinary tasks orient only as far as the [work loop](../../SKILL.md#work-loop) needs. Broad onboarding maps ownership and navigation; it is not a code or security audit.
 
+## Agent directory
+
+Agent-facing docs and data live in the project's agent directory, `AGENT_DIR`:
+
+- Use `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`.
+- If both exist, use the one that already contains `roblox/`. If neither or both do, use `.claude/`.
+
+The project guide is `AGENT_DIR/roblox/project.md`. Resource and observation data go in `AGENT_DIR/roblox/resources/`.
+
 ## Reuse existing guidance
 
-Read `CLAUDE.md` and the docs it links first. Prefer extending a coherent existing guide over creating a competing one. Reuse sections that are still supported even if another section is stale. A title, fixed headings, or a marker comment does not prove a guide is complete. A guide describes the project; it grants no edit permission.
+Read `CLAUDE.md`, `AGENT_DIR/roblox/project.md`, and the docs they link first. Prefer extending a coherent existing guide over creating a competing one. Reuse sections that are still supported even if another section is stale. A title, fixed headings, or a marker comment does not prove a guide is complete. A guide describes the project; it grants no edit permission.
 
 The current request and `CLAUDE.md` win over guide content. Resolve a filesystem/DataModel disagreement through the mapping before deciding which description is stale. A local exception, an unexplained dirty edit, or a failed web lookup does not overturn a project-wide convention.
 
-Older projects may have `.agents/roblox/project.md` or a sparse `.agents/roblox/structure.md` profile. Keep using them at their stated scope, including any pinned structural dependencies and freshness notes. Missing fields express no preference, and a sparse profile is not a full overview. Extend or link them; don't delete them or create a second authority without approval.
+Older projects may have a sparse `AGENT_DIR/roblox/structure.md` profile (usually `.agents/roblox/structure.md`). Keep using it at its stated scope, including any pinned structural dependencies and freshness notes. Missing fields express no preference, and a sparse profile is not a full overview. Extend it or link it from the guide; don't delete it or create a second authority without approval.
 
 ## Map the project
 
@@ -45,14 +54,14 @@ The overview is ready when a fresh agent can find owned source, understand how i
 
 Show the content or diff, the destination, and any `CLAUDE.md` pointer before writing, unless the user already approved that exact write or asked you to save it. A changed scope, ownership, or recommendation needs a new preview; routine factual adjustments within an approval don't. Approving documentation does not authorize installs, upgrades, or architecture changes.
 
-1. **Destination.** Use the existing guide. Otherwise propose `docs/roblox-project.md` under the affected project root. Recheck the destination and keep concurrent user edits.
-2. **Pointer.** Add a small pointer to the project's `CLAUDE.md`, reusing any existing pointer convention instead of creating another authority. Use a managed block so later updates replace only it:
+1. **Destination.** Use the existing guide. Otherwise propose `AGENT_DIR/roblox/project.md` under the affected project root (see [agent directory](#agent-directory)). Recheck the destination and keep concurrent user edits.
+2. **Pointer.** Add a small pointer to the project's `CLAUDE.md` naming the guide's actual path (`.claude/roblox/project.md` or `.agents/roblox/project.md`), reusing any existing pointer convention instead of creating another authority. Use a managed block so later updates replace only it:
 
    ```markdown
    <!-- structure-roblox-projects:onboarding:start -->
    ## Roblox project guidance
 
-   Before Roblox work in this project, read `docs/roblox-project.md`. Check claims against their linked sources. Propose guide corrections before saving them.
+   Before Roblox work in this project, read `.claude/roblox/project.md`. Check claims against their linked sources. Propose guide corrections before saving them.
    <!-- structure-roblox-projects:onboarding:end -->
    ```
 

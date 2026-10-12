@@ -474,7 +474,7 @@ def test_host_local_states_do_not_leak_to_another_hosts_copy(status_mod, tmp_pat
     child.mkdir(parents=True)
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
     fixtures.write_contract(child)
-    record_path = project / ".roblox-resources" / "records" / "widget-resource.yaml"
+    record_path = project / ".claude" / "roblox" / "resources" / "records" / "widget-resource.yaml"
     record_path.parent.mkdir(parents=True)
     record = fixtures.matching_widget_record()
     record["reconciliation"]["status"] = "matched"
@@ -484,7 +484,7 @@ def test_host_local_states_do_not_leak_to_another_hosts_copy(status_mod, tmp_pat
     record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
     assert status_mod.query_pair(child, record_path)["status"] == "healthy"
 
-    # A project-relative location resolves against the project root that owns .roblox-resources/.
+    # A project-relative location resolves against the project root that owns AGENT_DIR/roblox/resources/.
     own = fixtures.operational_adoption()
     own.update(location=".claude/skills/roblox-widget-resource/SKILL.md", status="disabled")
     record["host_adoptions"] = [other, own]

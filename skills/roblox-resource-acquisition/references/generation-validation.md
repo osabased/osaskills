@@ -6,7 +6,7 @@ Use this only when a child skill is in scope: the user asked for one, or the sam
 
 An untrusted resource needs its resource proof before you write a child. A policy-trusted resource may get source-grounded guidance while runtime proof is unavailable; record trust, source understanding and runtime status separately. Preserve externally owned identity, pin and role decisions. Writing a child grants neither trust nor project authority.
 
-Resolve the project with [project adoption](project-adoption.md). Stage outside discovery, for example `<project>/.roblox-resources/artifacts/skills/<skill-name>/`. An unknown project never authorizes a user-wide install. Keep one editable installed child; staging copies are validation artifacts.
+Resolve the project with [project adoption](project-adoption.md). Stage outside discovery, for example `AGENT_DIR/roblox/resources/artifacts/skills/<skill-name>/` in the project. An unknown project never authorizes a user-wide install. Keep one editable installed child; staging copies are validation artifacts.
 
 Read the [resource child contract](resource-skill-contract.md) and the [entrypoint](../templates/resource-skill-template.md) and [descriptor](../templates/resource-skill-template.yaml) templates. Replace every scaffold value with real exact-target facts.
 

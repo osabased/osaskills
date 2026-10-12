@@ -30,9 +30,9 @@ Adoption is complete when the resource proof passes, the project's own checks pa
 
 ## Reuse across projects
 
-Default to one editable child per project. Stage outside discovery at `<project>/.roblox-resources/artifacts/skills/<skill-name>/`, then move the validated child to `<project>/.claude/skills/<skill-name>/`. Resolve the project root first; if it cannot be found, report that and continue other preparation without installing user-wide. Records keep the selected identity, pin, role, integration evidence and authority. See [project adoption](project-adoption.md#place-project-children) and [installing children](operational-lifecycle.md#one-editable-copy-per-scope).
+Default to one editable child per project. Stage outside discovery at `AGENT_DIR/roblox/resources/artifacts/skills/<skill-name>/` (AGENT_DIR rule in [state policy](state-policy.md#portable-resource-record-location)), then move the validated child to `<project>/.claude/skills/<skill-name>/`. Resolve the project root first; if it cannot be found, report that and continue other preparation without installing user-wide. Records keep the selected identity, pin, role, integration evidence and authority. See [project adoption](project-adoption.md#place-project-children) and [installing children](operational-lifecycle.md#one-editable-copy-per-scope).
 
-An explicit user-wide request may stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install at `~/.claude/skills/<skill-name>/`. Reuse that child across projects in that scope; visibility does not adopt the resource in any project or transfer proof. Existing user-wide children stay where they are.
+An explicit user-wide request may stage at `~/.claude/roblox/resources/artifacts/skills/<skill-name>/` and install at `~/.claude/skills/<skill-name>/`. Reuse that child across projects in that scope; visibility does not adopt the resource in any project or transfer proof. Existing user-wide children stay where they are.
 
 Write reusable installation, mental model, common APIs, lifecycle, verification and troubleshooting guidance. Resolve the active project, package placement, declared pin and records at use time; keep task-specific paths and historical evidence out of the shared instructions. Development-tool guidance covers the commands, configuration and outputs the tool actually owns.
 

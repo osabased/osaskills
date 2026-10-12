@@ -332,7 +332,7 @@ def test_non_generated_host_skill_can_participate_as_routing_competitor(catalog_
     assert with_competitor != generated_only
 
 
-def test_legacy_agents_record_path_still_validates_with_a_warning(skill_mod, tmp_path):
+def test_explicit_agents_record_path_still_validates_with_a_note(skill_mod, tmp_path):
     import yaml
     child = tmp_path / "roblox-widget-resource"
     child.mkdir()
@@ -342,4 +342,4 @@ def test_legacy_agents_record_path_still_validates_with_a_warning(skill_mod, tmp
     (child / "resource.yaml").write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
     errors, warnings = skill_mod.validate_skill(child)
     assert errors == []
-    assert any(".roblox-resources/" in warning for warning in warnings)
+    assert any("AGENT_DIR" in warning for warning in warnings)

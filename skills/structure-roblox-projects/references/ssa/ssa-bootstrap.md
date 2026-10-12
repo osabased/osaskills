@@ -25,7 +25,7 @@ When the project already uses or deliberately selects Wally, declare `ModuleLoad
 
 When acquisition or integration is part of the task and the [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) skill is installed, use it in `acquire/adopt` mode with the identity and pin above as a fixed target. Without it, download the exact release asset or Wally version and check the SHA-256 above. Verification may block the target, but it does not authorize a substitute or upgrade. If the target cannot be acquired or verified well enough, report the block here. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
 
-For existing projects, keep any exact `Structural dependencies` target recorded in the project guide or a legacy `.agents/roblox/structure.md` profile, at its stated scope. For a newly selected target, keep identity, version, and acquisition in the project's manifests, and explain placement, lifecycle, and upgrade ownership in the project guide by reference. Save guide changes through the [project guide](../conventions/project-guide.md#save-it) workflow.
+For existing projects, keep any exact `Structural dependencies` target recorded in the project guide or a legacy `AGENT_DIR/roblox/structure.md` profile ([agent directory](../conventions/project-guide.md#agent-directory)), at its stated scope. For a newly selected target, keep identity, version, and acquisition in the project's manifests, and explain placement, lifecycle, and upgrade ownership in the project guide by reference. Save guide changes through the [project guide](../conventions/project-guide.md#save-it) workflow.
 
 ## Resulting DataModel
 

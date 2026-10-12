@@ -22,7 +22,7 @@ Optional. When the task depends on version-specific behavior of a library or too
 4. Do not install, upgrade or replace anything because of this check, and do not re-run valid proof for an unchanged target.
 5. If a lookup fails, use the [bounded fallbacks](search-playbook.md#when-an-evidence-route-fails) and say that currentness is unknown. A failed lookup does not erase valid proof for the unchanged target.
 
-Writing the observation down is optional. When the user wants a log, append one JSON line per check to `<project>/.roblox-resources/maintenance/source-observations.jsonl` (or `~/.roblox-resources/maintenance/source-observations.jsonl` for checks not tied to a project) with subject, canonical URL, reviewed selector, UTC time, channel and outcome (`unchanged`, `correction-pending`, `decision-needed`, `lookup-unavailable` or `applied`). The log is history only; records keep the resource's identity, verification and blocks.
+Writing the observation down is optional. When the user wants a log, append one JSON line per check to `AGENT_DIR/roblox/resources/maintenance/source-observations.jsonl` in the project (or `~/.claude/roblox/resources/maintenance/source-observations.jsonl` for checks not tied to a project) with subject, canonical URL, reviewed selector, UTC time, channel and outcome (`unchanged`, `correction-pending`, `decision-needed`, `lookup-unavailable` or `applied`). The log is history only; records keep the resource's identity, verification and blocks.
 
 ## Triggered research
 
@@ -46,7 +46,7 @@ Stage a candidate outside any skill folder (`.claude/skills/` and `~/.claude/ski
 The helper handles file additions, edits and removals that keep each path's file/directory type. It does not snapshot permissions or empty directories; a repair that needs those requires a separate recovery plan.
 
 1. Validate the staged candidate and the affected claims first. Keep the smallest failing reproduction. If a required check cannot run, leave the live copy alone unless a hard defect already requires a block.
-2. Start a transaction with the live skill, the candidate and a recovery directory outside discovery, for example `<project>/.roblox-resources/maintenance/transactions/<id>/`. Pass the live record and the candidate record together when both change. Never remove a guard just because it is old.
+2. Start a transaction with the live skill, the candidate and a recovery directory outside discovery, for example `AGENT_DIR/roblox/resources/maintenance/transactions/<id>/` in the project. Pass the live record and the candidate record together when both change. Never remove a guard just because it is old.
 3. Apply only if the live skill and record still match the snapshot. A mismatch means concurrent work: leave it and reconcile.
 4. With ordinary use blocked, run the invalidated checks against the promoted copy. For a full update, confirm the skill appears in `/skills` (or is invoked with `/<name>`) in a fresh session; when that cannot be observed, finish as `installed`, not `operational`. Pass fresh evidence to the helper's completion step rather than editing the guarded record directly.
 5. Complete only with a check receipt bound to the promoted fingerprints. The helper checks receipt shape and fingerprints, not the truth of the checks, and never runs commands from receipts or records. For a child, also run the record, bundle and catalog validators. Report the fix as applied only after the guard is removed.

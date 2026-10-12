@@ -7,7 +7,7 @@ Read this once per task when a child skill (for example `roblox-janitor`) is act
 - **Parent:** the `roblox-resource-acquisition` skill directory. Look first for the sibling `../roblox-resource-acquisition/` next to the child, then `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`. In a plugin install, the parent is the sibling folder.
 - **Child:** the active child's own directory.
 - **Project:** the root of the affected Roblox project (where `wally.toml`, `pesde.toml`, `package.json` or `default.project.json` lives).
-- **Record:** `PROJECT/` plus the descriptor's `reconciliation.record`, normally `.roblox-resources/records/<slug>.yaml`. An explicitly supplied record path wins. Older projects may still have `.agents/roblox/resources/`; move it to `.roblox-resources/`.
+- **Record:** `PROJECT/AGENT_DIR/` plus the descriptor's `reconciliation.record` (normally `roblox/resources/records/<slug>.yaml`). `AGENT_DIR` is the project's `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`. If both exist, use the one that already contains `roblox/`; if neither or both do, use `.claude/`. `check_resource_status.py --child CHILD --project PROJECT` applies this rule for you. An explicitly supplied record path wins (use `--pair CHILD RECORD`).
 
 ## Run the checks
 
@@ -15,10 +15,10 @@ Use `uv` when it is available, because it supplies Python 3.11+ and PyYAML witho
 
 ```sh
 uv run --no-project --python ">=3.11" --with pyyaml python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
-uv run --no-project --python ">=3.11" --with pyyaml python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "RECORD"
+uv run --no-project --python ">=3.11" --with pyyaml python "PARENT/scripts/check_resource_status.py" --child "CHILD" --project "PROJECT"
 ```
 
-Otherwise use any `python` 3.11+ with PyYAML installed. Replace `PARENT`, `CHILD`, `PROJECT` and `RECORD` with real paths.
+Otherwise use any `python` 3.11+ with PyYAML installed. Replace `PARENT`, `CHILD` and `PROJECT` with real paths.
 
 `check_resource_install.py` reads `pesde.toml`/`pesde.lock`, `wally.toml`/`wally.lock` (with `Packages/_Index`), or `package.json`/`package-lock.json`, according to the child's profile. For a nonstandard layout pass `--manifest`, `--lock`, `--alias`, `--package-dir`, `--companion PACKAGE=DIR` or `--asset`. It never runs dependency code or commands taken from records.
 

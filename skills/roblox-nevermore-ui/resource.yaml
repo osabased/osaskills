@@ -64,8 +64,8 @@ reconciliation:
   policy: conditional
   reason: exact direct npm declarations and archive-bound locks gate ordinary use; reviewed installed-source
     integrity gates completion
-  record: .roblox-resources/records/nevermore-ui.yaml
-  learnings: .roblox-resources/learnings/
+  record: roblox/resources/records/nevermore-ui.yaml
+  learnings: roblox/resources/learnings/
 installation:
   profile: npm
   registry: https://registry.npmjs.org

@@ -29,13 +29,14 @@ from validate_resource_bundle import (
 )
 from validate_resource_record import load_record, nonempty_string
 from guard_skill_update import marker_path
+from _resource_contract import load_contract, resolve_agent_path, resolve_user_store_path
 
 RECONCILIATION_STATES = {"matched", "mismatched", "blocked", "unknown", "not-applicable"}
 VERIFICATION_STATES = {"unverified", "unavailable", "verified", "failed"}
 HOST_STATES = {"installed", "operational", "blocked", "disabled", "removed", "unavailable", "failed"}
 
 
-RECORD_DIRS = ([".roblox-resources", "records"], [".agents", "roblox", "resources", "records"])
+RECORD_DIRS = ([".claude", "roblox", "resources", "records"], [".agents", "roblox", "resources", "records"])
 
 
 def _host_adoption_match(adoption: dict[str, Any], child_name: str, skill_root: Path, record_path: Path) -> str | None:
@@ -205,6 +206,17 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
     return result
 
 
+def resolve_record(skill_root: Path, project: Path | None) -> tuple[Path | None, str]:
+    """Find the child's record from its descriptor: AGENT_DIR/roblox/resources/records/<slug>.yaml."""
+    contract = load_contract(skill_root, check_documents=False)
+    reconciliation = contract["reconciliation"]
+    if project is not None:
+        return resolve_agent_path(project.resolve(), reconciliation["record"]), ""
+    if contract["scope"] == "user":
+        return resolve_user_store_path(reconciliation["no_project_record"])
+    return None, "project-scoped child needs --project; record checks skipped"
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Read-only batch query for current blocks on generated resource skills."
@@ -213,22 +225,49 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--pair",
         action="append",
         nargs=2,
+        default=[],
         metavar=("SKILL_DIR", "RECORD_YAML"),
-        required=True,
-        help="generated child directory and its matching project resource record (a missing file reports NO-RECORD); repeat for a batch",
+        help="child directory and an explicit record path (a missing file reports NO-RECORD); repeat for a batch",
     )
+    parser.add_argument(
+        "--child",
+        action="append",
+        default=[],
+        metavar="SKILL_DIR",
+        help="child directory whose record is found from its resource.yaml under the project's AGENT_DIR "
+             "(.claude/ or .agents/); repeat for a batch",
+    )
+    parser.add_argument("--project", type=Path, help="project root used to resolve AGENT_DIR for --child")
     parser.add_argument("--json", action="store_true", help="emit one JSON array instead of line output")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if not args.pair and not args.child:
+        parser.error("supply --pair SKILL_DIR RECORD_YAML or --child SKILL_DIR [--project PROJECT]")
+    return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     results = [query_pair(Path(skill).resolve(), Path(record).resolve()) for skill, record in args.pair]
+    for skill in args.child:
+        skill_root = Path(skill).resolve()
+        try:
+            record, note = resolve_record(skill_root, args.project)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            results.append({"skill": str(skill_root), "record": "", "status": "unknown", "reason": str(exc)})
+            continue
+        if record is None:
+            results.append({"skill": str(skill_root), "record": "", "status": "unknown", "reason": note})
+            continue
+        result = query_pair(skill_root, record.resolve())
+        if note:
+            result["note"] = note
+        results.append(result)
     if args.json:
         print(json.dumps(results, indent=2, sort_keys=True))
     else:
         for result in results:
-            print(f"{result['status'].upper()}: {result['skill']} :: {result['reason']}")
+            suffix = f" ({result['note']})" if result.get("note") else ""
+            print(f"{result['status'].upper()}: {result['skill']} :: {result['reason']}{suffix}")
     if any(result["status"] in {"blocked", "mismatch", "failed"} for result in results):
         return 1
     if any(result["status"] == "unknown" for result in results):

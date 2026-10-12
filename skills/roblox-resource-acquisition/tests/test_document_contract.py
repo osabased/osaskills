@@ -124,8 +124,8 @@ def test_refresh_and_repair_reach_their_contracts():
 
 def test_record_location_has_one_canonical_owner():
     state = REFERENCES["state-policy.md"]
-    project = "`<project-root>/.roblox-resources/records/<slug>.yaml`"
-    user = "`~/.roblox-resources/records/<slug>.yaml`"
+    project = "`<project-root>/AGENT_DIR/roblox/resources/records/<slug>.yaml`"
+    user = "`~/.claude/roblox/resources/records/<slug>.yaml`"
     assert state.index(project) < state.index(user)
     assert "state-policy.md#portable-resource-record-location" in REFERENCES["operational-lifecycle.md"]
 
@@ -138,16 +138,16 @@ def test_no_codex_host_paths_or_invocation_syntax_remain():
         assert ".codex" not in text, name
         assert "$roblox-" not in text and "$skill-name" not in text, name
         for line in text.splitlines():
-            if ".agents/roblox/resources" in line:
-                assert "lder projects" in line or "lder children" in line, f"{name}: {line}"
+            if ".roblox-resources" in line:
+                assert "legacy `~/.roblox-resources/" in line, f"{name}: project data belongs under AGENT_DIR/roblox/resources/: {line}"
     assert not (ROOT / "agents").exists()
 
 
 def test_templates_match_the_contract():
     spec = yaml.safe_load((ROOT / "templates/resource-skill-template.yaml").read_text(encoding="utf-8"))
     assert spec["scope"] == "project"
-    assert spec["reconciliation"]["record"] == ".roblox-resources/records/RESOURCE-SLUG.yaml"
-    assert spec["reconciliation"]["learnings"] == ".roblox-resources/learnings/"
+    assert spec["reconciliation"]["record"] == "roblox/resources/records/RESOURCE-SLUG.yaml"
+    assert spec["reconciliation"]["learnings"] == "roblox/resources/learnings/"
     assert spec["guidance"]["shared_usage"] == "references/child-usage.md"
     template = (ROOT / "templates/resource-skill-template.md").read_text(encoding="utf-8")
     for heading in ("## Check the pin", "## Core API", "## Gotchas", "## Read further"):

@@ -12,7 +12,8 @@ Choose the smallest reliable solution for the actual task. Preserve the project'
 - **Resource:** a third-party Roblox library/module or development tool.
 - **Pin / selector:** the exact version, commit or dated source state in use.
 - **Child skill:** a per-library skill such as `roblox-janitor` with a `SKILL.md` plus a static `resource.yaml`. Children share this skill's checkers through [child usage](references/child-usage.md).
-- **Record:** the project's YAML file for one resource at `<project>/.roblox-resources/records/<slug>.yaml`. It holds trust, verification and blocks. Older projects may still have `.agents/roblox/resources/`; move it to `.roblox-resources/`.
+- **AGENT_DIR:** the project's agent directory. It is the project's `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`. If both exist, use the one that already contains `roblox/`; if neither or both do, use `.claude/`. All project resource data lives under `AGENT_DIR/roblox/resources/`; the user-wide store is `~/.claude/roblox/resources/`.
+- **Record:** the project's YAML file for one resource at `AGENT_DIR/roblox/resources/records/<slug>.yaml`. It holds trust, verification and blocks.
 - **Trust basis:** why a resource may be used at all: `curated`, `project`, `explicit-user` or `verified-acquisition`. Trust is not proof that it works.
 - **Project-use authority:** who owns the choice of resource for a role. Another skill or project document may own it; then preserve its target.
 - **Guard:** a `.skill-maintenance/<skill-name>.json` file beside an installed skill's folder. It means an update of that skill is in progress. Finish or recover the update before using the skill.

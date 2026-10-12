@@ -29,8 +29,8 @@ guidance:
 reconciliation:
   policy: conditional
   reason: CONCRETE-POLICY-REASON
-  record: .roblox-resources/records/RESOURCE-SLUG.yaml
-  learnings: .roblox-resources/learnings/
+  record: roblox/resources/records/RESOURCE-SLUG.yaml  # relative to AGENT_DIR
+  learnings: roblox/resources/learnings/
 installation:
   # wally | pesde-wally (checks pesde.toml or, when absent, wally.toml) | pesde-registry |
   # pesde-git | npm | asset | custom. See references/resource-skill-contract.md.

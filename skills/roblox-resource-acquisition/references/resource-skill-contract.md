@@ -50,10 +50,8 @@ The descriptor is safe YAML; duplicate keys, unknown fields and unsupported vers
 | `routing` | Nonempty `use_when` and `avoid_when` lists. The frontmatter description remains what the host routes on. |
 | `guidance` | `claim_scope` (`advice-only` or `executable-integration`), `shared_usage: references/child-usage.md`, `documents` and `executable_fixture` (null for advice-only). |
 | `guidance.documents` | Each Markdown `path` with nonempty `roles` and `when`. `SKILL.md` must carry `routing`, `common-use`, `ownership`, `security`, `verification` and `maintenance`; `setup` and `troubleshooting` must be covered somewhere. Other roles: `recipes`, `lifecycle`, `api`. Every declared reference must be linked from `SKILL.md`. |
-| `reconciliation` | `policy: required / conditional / not-applicable`, a concrete `reason`, and project-relative `record` and `learnings` paths, normally `.roblox-resources/records/<slug>.yaml` and `.roblox-resources/learnings/`. User scope also declares `no_project_record` and `no_project_learnings` under `~/.roblox-resources/`. |
+| `reconciliation` | `policy: required / conditional / not-applicable`, a concrete `reason`, and `record` and `learnings` paths relative to AGENT_DIR: `roblox/resources/records/<slug>.yaml` and `roblox/resources/learnings/` (scripts resolve AGENT_DIR as `.claude/` or `.agents/` by the rule in [state policy](state-policy.md#portable-resource-record-location)). Explicit `.claude/roblox/resources/...` or `.agents/roblox/resources/...` project paths are also accepted. User scope also declares `no_project_record` and `no_project_learnings` under `~/.claude/roblox/resources/` (or `~/.agents/roblox/resources/`; legacy `~/.roblox-resources/` is read). |
 | `installation` | One profile below. No shell commands or pass/status fields. |
-
-Older children may name `.agents/roblox/resources/...` record paths; they still validate, but move project data to `.roblox-resources/`.
 
 ## Installation profiles
 

@@ -53,8 +53,8 @@ reconciliation:
   policy: conditional
   reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
     to completion
-  record: .roblox-resources/records/charm.yaml
-  learnings: .roblox-resources/learnings/
+  record: roblox/resources/records/charm.yaml
+  learnings: roblox/resources/learnings/
 installation:
   profile: pesde-wally
   dependency_section: dependencies

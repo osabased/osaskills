@@ -15,7 +15,7 @@ Recent Claude Code versions also accept `/plugin install osaskills --marketplace
 
 ### Cowork / Claude desktop
 
-Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what` or `motion-studies` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
+Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `motion-studies` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
 
 ### Skills CLI or manual copy
 
@@ -37,7 +37,7 @@ Check that Claude actually loaded a skill: it should appear under `/skills`, and
 | You want to preview an uncertain animation before production work | [motion-studies](./skills/motion-studies/) | `/motion-studies` only |
 | You need to understand an existing Roblox project, place code correctly, set up Rojo or Script Sync, or start a new project | [structure-roblox-projects](./skills/structure-roblox-projects/) | automatic |
 | You want to choose, add, compare, or upgrade a Roblox library or development tool | [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) | automatic |
-| You need to find moments across long VODs and prepare Premiere markers or a review timeline with alternate POVs | [vod-discovery](./skills/vod-discovery/) | automatic |
+| You need to find moments across long VODs and prepare Premiere markers or a review timeline with alternate POVs | [vod-discovery](./skills/vod-discovery/) | `/vod-discovery` only |
 
 With the plugin, prefix the name: `/osaskills:then-what`.
 
@@ -58,7 +58,7 @@ Each library skill is an API guide for one pinned version: core API table, examp
 
 Use the guide only when your project pins the same version. Installing a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
 
-Project data for these skills lives in `.roblox-resources/` at the project root. Older projects may still have `.agents/roblox/resources/`; move it to `.roblox-resources/`.
+Agent-facing project files live in the project's agent directory: `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. Roblox resource records go in `<agent dir>/roblox/resources/`, the Roblox project guide in `<agent dir>/roblox/project.md`, and VOD project notes in `<agent dir>/vod/project-context.md`. The user-wide store is `~/.claude/roblox/resources/`; if you have an older `~/.roblox-resources/`, the skills read it and suggest moving it.
 
 ## Scripts
 

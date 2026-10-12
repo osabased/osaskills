@@ -265,8 +265,8 @@ def write_contract(child, *, use_when=None):
             'documents': [{'path': 'SKILL.md', 'roles': sorted(CORE_ROLES | {'setup', 'troubleshooting', 'api'}),
                 'when': 'every activated use'}], 'executable_fixture': None},
         'reconciliation': {'policy': 'required', 'reason': 'Material installed state can differ.',
-            'record': '.roblox-resources/records/widget-resource.yaml',
-            'learnings': '.roblox-resources/learnings/'},
+            'record': 'roblox/resources/records/widget-resource.yaml',
+            'learnings': 'roblox/resources/learnings/'},
         'installation': {'profile': 'custom', 'custom_checker': 'scripts/check_widget.py'},
     }
     (child / 'scripts').mkdir(exist_ok=True)

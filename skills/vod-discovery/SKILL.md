@@ -1,6 +1,7 @@
 ---
 name: vod-discovery
-description: Find and log candidate moments in long local video recordings such as Twitch/YouTube VODs, OBS stream recordings and gameplay sessions, including multi-POV sessions from several streamers whose clocks drift. Extracts frames, contact sheets and local Whisper transcripts, searches speech across POVs, links POVs with local anchors, and exports factual Premiere Pro source markers, a layered review timeline (FCP7 XML) or a local Keep/Later/Skip review queue. Use when asked to find highlights, key moments or what happened in hours of footage, line up or sync POVs, or prepare Premiere markers or a review timeline. Not for final edits, downloading videos or short clips.
+description: Find and log candidate moments in long local video recordings such as Twitch/YouTube VODs, OBS stream recordings and gameplay sessions, including multi-POV sessions from several streamers whose clocks drift. Extracts frames, contact sheets and local Whisper transcripts, searches speech across POVs, links POVs with local anchors, and exports factual Premiere Pro source markers, a layered review timeline (FCP7 XML) or a local Keep/Later/Skip review queue. Invoke with /vod-discovery to find highlights, key moments or what happened in hours of footage, line up POVs, or prepare Premiere markers or a review timeline. Not for final edits, downloading videos or short clips.
+disable-model-invocation: true
 ---
 
 # VOD discovery
@@ -23,7 +24,7 @@ Scripts live in `scripts/`. Examples write `<skill>` for this folder and `$PY` f
 
 ## Workflow
 
-1. **Scope.** Get source paths and part order, POV identities, languages, the delivery wanted and the time budget. Reuse this project's notes (`project-context.md`), `events.json`, plan and queue when present; never carry names, paths or ranges over from another project. Ask only what blocks processing. Do not invent a main POV or treat filename order as chronology.
+1. **Scope.** Get source paths and part order, POV identities, languages, the delivery wanted and the time budget. Reuse this project's notes (`.claude/vod/project-context.md` or `.agents/vod/project-context.md`; see [setup](references/setup.md#project-notes)), `events.json`, plan and queue when present; never carry names, paths or ranges over from another project. Ask only what blocks processing. Do not invent a main POV or treat filename order as chronology.
 2. **Environment.** Inspect the machine rather than asking the editor for details, and run `$PY <skill>/scripts/vod.py doctor`. If it reports problems, follow [setup](references/setup.md). Match the speech model to the footage's languages.
 3. **Pilot.** Run `prepare --limit-packets 1`, time it, and inspect the packet before preparing hours. A `--no-transcribe` run is a visual-only pilot.
 4. **Prepare the rest** within the agreed scope (see [Long jobs](#long-jobs)), then index speech across POVs with [discovery tools](references/discovery-tools.md).

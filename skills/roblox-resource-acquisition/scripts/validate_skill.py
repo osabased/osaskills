@@ -151,8 +151,8 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
     try:
         contract = load_contract(root)
         for field in ("record", "learnings"):
-            if str(contract["reconciliation"][field]).startswith(".agents/"):
-                warnings.append(f"reconciliation.{field} uses the old .agents/roblox/resources/ location; use .roblox-resources/")
+            if str(contract["reconciliation"][field]).startswith((".agents/", ".claude/")):
+                warnings.append(f"reconciliation.{field} names a fixed agent directory; roblox/resources/... (relative to AGENT_DIR) works for both .claude/ and .agents/ projects")
         declared = {within(root, item["path"]) for item in contract["guidance"]["documents"]}
         reachable = {(root / "SKILL.md").resolve()}
         pending = list(reachable)

@@ -83,8 +83,8 @@ def test_live_verification_field_rejected_and_record_state_can_change(child, bun
 
 def test_project_scope_cannot_use_user_fallback(child):
     data = read(child)
-    data['reconciliation']['no_project_record'] = '~/.roblox-resources/records/widget-resource.yaml'
-    data['reconciliation']['no_project_learnings'] = '~/.roblox-resources/learnings/'
+    data['reconciliation']['no_project_record'] = '~/.claude/roblox/resources/records/widget-resource.yaml'
+    data['reconciliation']['no_project_learnings'] = '~/.claude/roblox/resources/learnings/'
     write(child, data)
     with pytest.raises(ValueError, match='cannot fall back'):
         contract.load_contract(child)

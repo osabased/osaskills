@@ -26,7 +26,7 @@ All examples use `$PY` for this environment's Python and `<skill>` for the skill
 
 ## Project notes
 
-Record project decisions in a project-owned `project-context.md` beside the analysis: source paths and part order, POV identities, review scope, editing preferences, environment and runtime locations. It is an agent-readable note, not a configuration file; pass real settings through script arguments. Keep machine-specific paths out of this skill.
+Record project decisions in `AGENT_DIR/vod/project-context.md` under the video project's root, where `AGENT_DIR` is the project's `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/` (if both exist, use the one that already contains `vod/`, else `.claude/`). An older `project-context.md` beside the analysis still counts; offer to move it. Record: source paths and part order, POV identities, review scope, editing preferences, environment and runtime locations. It is an agent-readable note, not a configuration file; pass real settings through script arguments. Keep machine-specific paths out of this skill.
 
 ## Prepare
 

@@ -9,14 +9,14 @@ Before creating or updating persistent lifecycle state, use the project/environm
 When the environment has no authoritative resource-record format or storage location, resolve portable schema-version 3 resource records in this order:
 
 1. an explicit record path supplied by the user, project, or environment;
-2. `<project-root>/.roblox-resources/records/<slug>.yaml` when a project root is in scope;
-3. `~/.roblox-resources/records/<slug>.yaml` otherwise.
+2. `<project-root>/AGENT_DIR/roblox/resources/records/<slug>.yaml` when a project root is in scope;
+3. `~/.claude/roblox/resources/records/<slug>.yaml` otherwise (the same rule applied to the home directory, so `~/.agents/roblox/resources/` when only that exists).
 
-Older projects may still have `.agents/roblox/resources/`; move it to `.roblox-resources/`.
+`AGENT_DIR` is the project's `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`. If both exist, use the one that already contains `roblox/`; if neither or both do, use `.claude/`. All project resource data lives under `AGENT_DIR/roblox/resources/`: `records/`, `learnings/`, `curated/`, `artifacts/` and `maintenance/`. A child's `resource.yaml` names its record relative to `AGENT_DIR` (`roblox/resources/records/<slug>.yaml`), and `check_resource_status.py --child CHILD --project PROJECT` resolves it by this rule. If a legacy `~/.roblox-resources/` exists, read it and suggest moving it to `~/.claude/roblox/resources/`.
 
 Use the first applicable location in that order for a new portable record, and use the same precedence when resolving an existing portable record. This location rule does not itself authorize creating or updating persistent state; it only selects the destination when the surrounding task or environment already authorizes that lifecycle write.
 
-For separately maintained global version variants without a project root, select an explicit selector-qualified record path, such as `~/.roblox-resources/records/<slug>--<selector>.yaml`, and write that exact discovery route into the variant child. Keep the resource slug/canonical identity unchanged and bind each record to its actual target and generated child. Do not overwrite an existing target's singleton fallback record to register a different variant. With a project root, that project's authoritative record still wins.
+For separately maintained global version variants without a project root, select an explicit selector-qualified record path, such as `~/.claude/roblox/resources/records/<slug>--<selector>.yaml`, and write that exact discovery route into the variant child. Keep the resource slug/canonical identity unchanged and bind each record to its actual target and generated child. Do not overwrite an existing target's singleton fallback record to register a different variant. With a project root, that project's authoritative record still wins.
 
 ## Record project use separately
 

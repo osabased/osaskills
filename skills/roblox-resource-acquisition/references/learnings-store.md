@@ -22,8 +22,8 @@ Learnings decay. They lower the cost of the next check by saying where to look f
 Resolve stores in this order:
 
 1. an explicit learnings-store path supplied by the user/project/environment;
-2. `<project-root>/.roblox-resources/learnings/` when present (older projects may still have `.agents/roblox/resources/learnings/`; move it to `.roblox-resources/`);
-3. `~/.roblox-resources/learnings/` when present.
+2. `<project-root>/AGENT_DIR/roblox/resources/learnings/` when present (AGENT_DIR rule in [state policy](state-policy.md#portable-resource-record-location));
+3. `~/.claude/roblox/resources/learnings/` when present (or `~/.agents/roblox/resources/learnings/` by the same rule; read a legacy `~/.roblox-resources/learnings/` and suggest moving it).
 
 Unlike the curated registry, entries are not exclusive: **all valid entries from all discovered stores load together**. There is no override-by-slug. When two learnings disagree about the same volatile fact, the fact is uncertain — re-check it from current sources rather than picking a winner. Project-local entries describe that project's context and carry more weight inside it.
 

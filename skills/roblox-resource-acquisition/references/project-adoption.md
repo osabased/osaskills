@@ -17,7 +17,7 @@ Trust and project-use authority are different claims. `trust.basis: project` say
 
 ## Check for conflicts before changing anything
 
-Read the project's `CLAUDE.md` (and files it imports with `@path`) and any project guidance it points to that could choose a resource for the same role, such as a structure guide.
+Read the project's `CLAUDE.md` (and files it imports with `@path`) and any project guidance it points to that could choose a resource for the same role, such as the structure guide at `AGENT_DIR/roblox/project.md`.
 
 A conflict exists only when existing guidance and the proposed use pick incompatible resources for the **same role and scope**. Adjacent capabilities are not conflicts. When one exists:
 
@@ -61,7 +61,7 @@ Rules:
 3. If the markers exist, change only the content between them.
 4. If no `CLAUDE.md` exists, create one containing only the block.
 5. List adopted resources only. Do not copy versions, provenance, verification history or API guidance into the block; the record and child hold those.
-6. Name the owner only when that prevents ambiguity, for example: `Structural selection is governed by docs/roblox-project.md.`
+6. Name the owner only when that prevents ambiguity, for example: `Structural selection is governed by .claude/roblox/project.md.` (the structure skill's guide at `AGENT_DIR/roblox/project.md`)
 7. Add "Use the `<child>` skill." only when that child is installed for this project (or user-wide on request). A missing or broken child does not remove an otherwise valid choice.
 8. When the resource is blocked for its adopted use, keep the entry but mark that use blocked and point to repair.
 9. Remove the block entirely when no adopted resources remain, leaving everything else untouched.
@@ -76,13 +76,13 @@ Claude Code loads `CLAUDE.md` from the working directory and its parents at star
 
 Children are opt-in (see [adoption policy](adoption-policy.md#scope-and-autonomy)). When one is requested:
 
-- stage it outside discovery at `<project>/.roblox-resources/artifacts/skills/<skill-name>/`;
+- stage it outside discovery at `AGENT_DIR/roblox/resources/artifacts/skills/<skill-name>/`;
 - install it at `<project>/.claude/skills/<skill-name>/`;
-- keep the record at `<project>/.roblox-resources/records/<slug>.yaml` unless the project already uses another authoritative location.
+- keep the record at `AGENT_DIR/roblox/resources/records/<slug>.yaml` unless the project already uses another authoritative location.
 
-Older projects may still have `.agents/roblox/resources/`; move it to `.roblox-resources/`.
+AGENT_DIR follows the rule in [state policy](state-policy.md#portable-resource-record-location).
 
-If the project root cannot be found, report that and continue other preparation; do not install user-wide instead. A user-wide request may stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install at `~/.claude/skills/<skill-name>/`, with the same exact-target, collision and validation rules.
+If the project root cannot be found, report that and continue other preparation; do not install user-wide instead. A user-wide request may stage at `~/.claude/roblox/resources/artifacts/skills/<skill-name>/` and install at `~/.claude/skills/<skill-name>/`, with the same exact-target, collision and validation rules.
 
 Before writing into a skill folder, inspect any existing folder at that path. If it is the same managed child, update it through the guarded flow. If it is unrelated or its ownership is unclear, stop and report the collision; never overwrite, merge, rename or repurpose an existing skill. Keep one editable copy per scope and record its location in `host_adoptions`.
 

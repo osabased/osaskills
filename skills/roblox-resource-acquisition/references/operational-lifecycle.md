@@ -64,9 +64,9 @@ Confirm the install by checking that the skill appears in `/skills` (or the host
 
 ## One editable copy per scope
 
-Stage a new or repaired child outside any skill folder, for example `<project>/.roblox-resources/artifacts/skills/<name>/`, then move it into `<project>/.claude/skills/<name>/`. Do not leave two editable copies in the same scope. Record the installed location in `host_adoptions`.
+Stage a new or repaired child outside any skill folder, for example `AGENT_DIR/roblox/resources/artifacts/skills/<name>/` in the project, then move it into `<project>/.claude/skills/<name>/`. Do not leave two editable copies in the same scope. Record the installed location in `host_adoptions`.
 
-An explicit user-wide request may stage at `~/.roblox-resources/artifacts/skills/<name>/` and install at `~/.claude/skills/<name>/`. Reuse that child across projects in that scope; being visible everywhere does not adopt the resource in any project. Leave existing installs where they are unless moving them is separately authorized.
+An explicit user-wide request may stage at `~/.claude/roblox/resources/artifacts/skills/<name>/` and install at `~/.claude/skills/<name>/`. Reuse that child across projects in that scope; being visible everywhere does not adopt the resource in any project. Leave existing installs where they are unless moving them is separately authorized.
 
 A later repair edits the installed child in place through [guarded correction](on-demand-maintenance.md#guarded-correction-and-recovery). A copy installed elsewhere (another project or the user folder) is updated separately and only when authorized.
 
