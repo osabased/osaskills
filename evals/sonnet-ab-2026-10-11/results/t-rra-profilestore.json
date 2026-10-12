@@ -1,0 +1,20 @@
+{
+ "id": "t-rra-profilestore",
+ "prompt": "should I use ProfileStore or just write my own DataStore wrapper for player data",
+ "expect": "roblox-resource-acquisition",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "tools": [
+  "Skill"
+ ],
+ "result": "**Use ProfileStore.** A hand-rolled wrapper only makes sense if you need something unusual.\n\n**Why**\n- The hard part of player data is correctness under failure, not calling `GetAsync`/`UpdateAsync`. That means:\n  - **Session locking:** a player who rejoins or teleports between servers must not have two servers writing the same data. This is the usual cause of item duplication and rollbacks.\n  - **Release and shutdown handling:** `BindToClose` has a limited time window, and saves have to finish inside it.\n  - **Throttling and retries:** DataStore calls fail, and your retry code must not make that worse.\n  - **Auto-save and data reconciliation:** adding new default fields to existing profiles without wiping them.\n- ProfileStore (loleris/MadStudio) is the successor to ProfileService. It covers all of the above and is widely used in production.\n- Wrappers written from scratch usually work in testing and then fail on edge cases: a rejoin race, a server crash mid-save, or `BindToClose` running out of time.\n\n**Write your own only if:**\n- Your data isn't a per-player profile, for example global or shared state with different consistency needs.\n- You need cross-server transactional trades or similar. ProfileStore doesn't do that on its own, so you'd layer something on top regardless.\n- You want to learn how it works. In that case, do it in a side project rather than on live player data.\n\n**If you adopt it**\n- Keep a thin module of your own around it for your template, migrations and `Profile` lifecycle hooks. That's the part worth owning. Don't wrap its core session logic.\n- Pin an exact version or commit and record it. Don't track a moving branch for something that holds player saves.\n- Handle `profile:OnSessionEnd` by kicking the player. Keep all reads and writes of the data table on the server.\n\nI answered from general knowledge and haven't checked the current ProfileStore API or version here. I also haven't looked at your project, so I don't know if it already has a data dependency. If you want me to adopt it, I can pin a version, wire it into the project and run the checks.",
+ "cost": 0.0660741,
+ "turns": 3,
+ "seconds": 18.9,
+ "rc": 0,
+ "written": {}
+}

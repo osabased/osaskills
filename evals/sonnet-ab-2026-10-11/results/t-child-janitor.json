@@ -1,0 +1,25 @@
+{
+ "id": "t-child-janitor",
+ "prompt": "use our Janitor to clean up this tween and the LemonSignal connection when the frame is destroyed",
+ "expect": "roblox-janitor",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-janitor",
+  "roblox-lemonsignal"
+ ],
+ "tools": [
+  "Skill",
+  "Skill",
+  "Grep",
+  "Glob",
+  "Grep"
+ ],
+ "result": null,
+ "cost": 0.07010169999999999,
+ "turns": 4,
+ "seconds": 7.9,
+ "rc": 1,
+ "written": {}
+}

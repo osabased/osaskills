@@ -1,0 +1,28 @@
+{
+ "id": "t-child-charm",
+ "prompt": "make a Charm atom for the player's coins and subscribe to it on the client",
+ "expect": "roblox-charm",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-charm"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.0705873,
+ "turns": 4,
+ "seconds": 10.6,
+ "rc": 1,
+ "written": {}
+}

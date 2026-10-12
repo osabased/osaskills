@@ -1,0 +1,22 @@
+{
+ "id": "q-blink-with-2",
+ "task": "q-blink",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-blink"
+ ],
+ "tools": [
+  "Skill"
+ ],
+ "result": "`network/main.blink`:\n\n```blink\noption ServerOutput = \"../src/server/Network/Server.luau\"\noption ClientOutput = \"../src/client/Network/Client.luau\"\noption RemoteScope = \"MyGame\"\n\nevent DamageNumber {\n\tFrom: Server,\n\tType: Reliable,\n\tCall: ManyAsync,\n\tData: (Position: vector, Amount: u16),\n}\n\nevent AimDirection {\n\tFrom: Client,\n\tType: Unreliable,\n\tCall: SingleAsync,\n\tData: vector,\n}\n\nfunction GetLoadout {\n\tYield: Coroutine,\n\tReturn: string(1..32)[0..6],\n}\n```\n\nI used `Data: (Position: vector, Amount: u16)` for `DamageNumber`, which sends two values. I'm going from the skill's note that `(A, B)` sends several values, and I haven't compiled it. If the compiler rejects the labels, use `(vector, u16)`. Handlers and `Fire` then take positional arguments.\n\nCompile with `pesde run blink -- network/main`.\n\n**Server** (`ServerScriptService`):\n\n```luau\nlocal Net = require(script.Parent.Network.Server)\n\n-- Unreliable client -> server\nNet.AimDirection.On(function(player, direction)\n\t-- Types are not authorization: sanity-check the vector here (e.g. magnitude)\n\tplayer:SetAttribute(\"AimDirection\", direction)\nend)\n\n-- Client-invoked function: return up to 6 item ids\nNet.GetLoadout.On(function(player)\n\treturn { \"sword_01\", \"shield_02\", \"potion_hp\" }\nend)\n\n-- Reliable server -> client\nlocal function showDamage(player: Player, position: Vector3, amount: number)\n\tNet.DamageNumber.Fire(player, position, amount)\n\t-- or Net.DamageNumber.FireAll(position, amount)\nend\n```\n\n**Client** (`StarterPlayerScripts`):\n\n```luau\nlocal Net = require(script.Parent.Network.Client)\n\nNet.DamageNumber.On(function(position, amount)\n\tprint((\"-%d at %s\"):format(amount, tostring(position)))\nend)\n\n-- Yields until the server replies\nlocal loadout = Net.GetLoadout.Invoke()\nfor _, itemId in loadout do\n\tprint(itemId)\nend\n\n-- Send aim every frame (unreliable, so drops are fine)\ngame:GetService(\"RunService\").RenderStepped:Connect(function()\n\tlocal camera = workspace.CurrentCamera\n\tNet.AimDirection.Fire(camera.CFrame.LookVector)\nend)\n```\n\nNotes:\n- **Receive-side risk:** Blink 0.18.9 parses the whole incoming buffer before any handler runs (issue #45). `AimDirection` is untrusted client-to-server traffic, so the schema bounds don't protect the parser. Before shipping, add a tested byte and rate budget on the receive path, or report the risk to the project owner.\n- **Server-side checks:** the bounds on `GetLoadout` only shape the data. Build the loadout from the player's real data on the server.\n- **Unreliable limit:** unreliable payloads are capped at 1000 bytes. A single vector is well under that.\n- **Require timing:** requiring a generated module starts networking. Require `Server` and `Client` only where you want networking live.",
+ "cost": 0.06930929999999999,
+ "turns": 3,
+ "seconds": 18.8,
+ "rc": 0,
+ "written": {}
+}

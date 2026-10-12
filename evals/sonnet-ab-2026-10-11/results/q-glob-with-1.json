@@ -1,0 +1,24 @@
+{
+ "id": "q-glob-with-1",
+ "task": "q-glob",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "structure-roblox-projects",
+  "read:structure-roblox-projects/references/workflows/rojo.md"
+ ],
+ "tools": [
+  "Skill",
+  "Read"
+ ],
+ "result": "Use the top-level `globIgnorePaths` field in the project file. It is an array of glob patterns matched against paths relative to the project file's directory.\n\n```json\n{\n  \"name\": \"MyGame\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"**/Preview\"\n  ],\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"...\": \"your existing tree\"\n  }\n}\n```\n\n- **Stories:** `**/*.story.luau` drops every story file wherever it sits.\n- **Init-backed folders:** `**/Preview` ignores the directory itself, so `init.luau` and everything under it go with it. If you wrote `**/Preview/**` instead, the folder's own `init.luau` ModuleScript would stay in the build. Don't use that form alone.\n- **Scoping:** to hit only the Shop preview, use the project-relative path `src/client/Shop/Preview`. Don't drop the `src/` prefix, because patterns are relative to the project file's directory.\n- **Negation:** Rojo 7.7 supports `!` negation, for example `!**/Keep/Preview` to keep one.\n\n**Dev and release split:** `globIgnorePaths` applies to everything built from that project file, including `rojo serve`. If you want previews and stories in dev and only dropped in release, use a shared `common.project.json` with the full tree. Then add thin wrappers whose `tree` is just `{ \"$path\": \"common.project.json\" }`, with the ignore list only in the release wrapper:\n\n```json\n{\n  \"name\": \"MyGame Release\",\n  \"globIgnorePaths\": [\"**/*.story.luau\", \"**/Preview\"],\n  \"tree\": { \"$path\": \"common.project.json\" }\n}\n```\n\nBuild with `rojo build release.project.json -o game.rbxlx`. Don't add extra services such as `ReplicatedStorage` next to that wrapper's root `$path`. In 7.7.0, `rojo build` then emits two copies of the service, while `rojo sourcemap` shows one and silently drops the added children.\n\n**Verify the result:** I haven't run this against your project. Check the built `.rbxlx` or `rojo sourcemap` output for leftover `Preview` or `.story` instances. Excluded files also disappear from sourcemap-based tooling such as luau-lsp and test discovery, so keep that in mind if you still want type checking on stories.",
+ "cost": 0.089286,
+ "turns": 4,
+ "seconds": 15.7,
+ "rc": 0,
+ "written": {}
+}

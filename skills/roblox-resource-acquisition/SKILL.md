@@ -20,7 +20,7 @@ Choose the smallest reliable solution for the actual task. Preserve the project'
 
 ## Start with the needed work
 
-- **No acquisition needed:** if a Roblox built-in, an existing authorized project dependency or a small local implementation does the job, do that and validate it. Do not open a registry, comparison or record.
+- **No acquisition needed:** check the manifests first (`wally.toml`, `pesde.toml`, `package.json`). If a dependency the project already declares, a Roblox built-in or a small local implementation does the job, use it and validate it. Stop there: don't read the adoption references, write a record or edit `CLAUDE.md`, and don't report that you skipped them. Use the dependency's child skill if one is installed.
 - **A resource is needed:** choose a mode below. For an open-ended choice, establish the intended use first. A target that the project already fixes stays fixed unless its owner changes it.
 - **Using an adopted resource:** follow its child skill. Read [maintenance](references/on-demand-maintenance.md) only when a correction, changed practice or guarded update is needed.
 

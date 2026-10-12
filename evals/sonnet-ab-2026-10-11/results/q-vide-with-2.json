@@ -1,0 +1,22 @@
+{
+ "id": "q-vide-with-2",
+ "task": "q-vide",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-vide"
+ ],
+ "tools": [
+  "Skill"
+ ],
+ "result": "This uses Vide 0.4.1, which matches the commit you pinned. I haven't run it in Studio.\n\n```luau\n--!strict\nlocal Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal Vide = require(ReplicatedStorage.Packages.vide) -- use your project's mapped path\nlocal create, source, derive, indexes, cleanup = Vide.create, Vide.source, Vide.derive, Vide.indexes, Vide.cleanup\n\n-- `items` is a Vide source holding an array of item names, e.g. source({ \"Sword\", \"Shield\" }).\nlocal function ShopPanel(items: Vide.Source<{ string }>)\n\tlocal open = source(false)\n\n\tlocal gui = create \"ScreenGui\" {\n\t\tName = \"ShopPanel\",\n\t\tResetOnSpawn = false,\n\n\t\tcreate \"TextButton\" {\n\t\t\tName = \"Toggle\",\n\t\t\tSize = UDim2.fromOffset(200, 40),\n\t\t\tText = derive(function()\n\t\t\t\treturn if open() then \"Close shop list\" else `Shop ({#items()} items)`\n\t\t\tend),\n\t\t\tActivated = function()\n\t\t\t\topen(not open())\n\t\t\tend,\n\t\t},\n\n\t\tcreate \"Frame\" {\n\t\t\tName = \"ItemList\",\n\t\t\tPosition = UDim2.fromOffset(0, 48),\n\t\t\tSize = UDim2.fromOffset(200, 240),\n\t\t\tVisible = open, -- a source is a getter, so the property is reactive\n\n\t\t\tcreate \"UIListLayout\" {\n\t\t\t\tSortOrder = Enum.SortOrder.LayoutOrder,\n\t\t\t},\n\n\t\t\t-- One scope and one label per index. The name arrives as a Source.\n\t\t\tindexes(items, function(name, i)\n\t\t\t\treturn create \"TextLabel\" {\n\t\t\t\t\tSize = UDim2.new(1, 0, 0, 28),\n\t\t\t\t\tLayoutOrder = i,\n\t\t\t\t\tText = name,\n\t\t\t\t}\n\t\t\tend),\n\t\t},\n\t}\n\n\t-- The mount disposer destroys only the scope, not the Instance you return.\n\tcleanup(gui)\n\treturn gui\nend\n\n-- Mounting and teardown\nlocal items = source({ \"Sword\", \"Shield\", \"Potion\" })\n\nlocal playerGui = Players.LocalPlayer:WaitForChild(\"PlayerGui\")\nlocal dispose: (() -> ())? = Vide.mount(function()\n\treturn ShopPanel(items)\nend, playerGui)\n\n-- Call when the shop closes for good.\nlocal function closeShop()\n\tlocal d = dispose\n\tdispose = nil -- clear first: a second call to a root disposer errors\n\tif d then\n\t\td()\n\tend\nend\n\n-- Later, `items({ \"Sword\", \"Shield\", \"Potion\", \"Bow\" })` updates the list in place.\n-- Teardown is `closeShop()`.\n```\n\n**How the pieces work**\n- **Toggle:** The button's `Activated` function is an event listener, because `Activated` is an event on the instance. The `Text` getter and `Visible = open` are reactive properties.\n- **List:** `indexes` builds one label per index and keeps it when a name changes. Use `values` instead if names are unique and you want one label per value.\n- **Teardown:** `closeShop()` destroys the Vide scope, which runs every `cleanup` registered inside it. That includes `cleanup(gui)`, so the ScreenGui is destroyed along with it. Without that line the ScreenGui would stay parented to `PlayerGui` after the disposer ran.\n- **Double calls:** Calling a disposer twice errors, so `closeShop` clears `dispose` before calling it and is safe to call repeatedly.\n\n**Things to avoid**\n- Don't call `Vide.step()` on teardown. It permanently disconnects the package-wide Heartbeat that drives `spring` and delayed scope teardown.\n- Keep effects, `derive` functions and the `indexes` callback pure and synchronous. In strict mode they run twice per update, and yielding inside them errors.\n- If you mutate the `items` table in place, call `items(items())` to trigger a re-render. Writing a new table, as in the example above, needs no extra step.",
+ "cost": 0.0723389,
+ "turns": 3,
+ "seconds": 18.7,
+ "rc": 0,
+ "written": {}
+}

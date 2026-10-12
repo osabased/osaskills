@@ -1,0 +1,23 @@
+{
+ "id": "t-neg-tween",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "expect": null,
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Read",
+  "Read",
+  "Write"
+ ],
+ "result": null,
+ "cost": 0.0696631,
+ "turns": 4,
+ "seconds": 15.1,
+ "rc": 1,
+ "written": {
+  "src/client/FadeIn.luau": "--!strict\nlocal TweenService = game:GetService(\"TweenService\")\n\nlocal TRANSPARENCY_PROPERTIES: { [string]: { string } } = {\n\tFrame = { \"BackgroundTransparency\" },\n\tScrollingFrame = { \"BackgroundTransparency\", \"ScrollBarImageTransparency\" },\n\tTextLabel = { \"BackgroundTransparency\", \"TextTransparency\", \"TextStrokeTransparency\" },\n\tTextButton = { \"BackgroundTransparency\", \"TextTransparency\", \"TextStrokeTransparency\" },\n\tTextBox = { \"BackgroundTransparency\", \"TextTransparency\", \"TextStrokeTransparency\" },\n\tImageLabel = { \"BackgroundTransparency\", \"ImageTransparency\" },\n\tImageButton = { \"BackgroundTransparency\", \"ImageTransparency\" },\n\tUIStroke = { \"Transparency\" },\n}\n\nlocal DEFAULT_INFO = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)\n\nlocal FadeIn = {}\n\n-- Fades `root` and all its descendants from fully transparent to their current\n-- (designed) transparency values. Returns the tweens so callers can cancel or await them.\nfunction FadeIn.play(root: Instance, tweenInfo: TweenInfo?): { Tween }\n\tlocal info = tweenInfo or DEFAULT_INFO\n\tlocal tweens: { Tween } = {}\n\n\tlocal function fade(instance: Instance)\n\t\tlocal properties = TRANSPARENCY_PROPERTIES[instance.ClassName]\n\t\tif not properties then\n\t\t\treturn\n\t\tend\n\n\t\tlocal goals = {}\n\t\tfor _, property in properties do\n\t\t\tgoals[property] = (instance :: any)[property]\n\t\t\t;(instance :: any)[property] = 1\n\t\tend\n\t\ttable.insert(tweens, TweenService:Create(instance, info, goals))\n\tend\n\n\tfade(root)\n\tfor _, descendant in root:GetDescendants() do\n\t\tfade(descendant)\n\tend\n\n\t-- Make visible only after everything is hidden, so there is no one-frame flash.\n\tif root:IsA(\"ScreenGui\") then\n\t\troot.Enabled = true\n\telseif root:IsA(\"GuiObject\") then\n\t\troot.Visible = true\n\tend\n\n\tfor _, tween in tweens do\n\t\ttween:Play()\n\tend\n\n\treturn tweens\nend\n\nreturn FadeIn\n"
+ }
+}

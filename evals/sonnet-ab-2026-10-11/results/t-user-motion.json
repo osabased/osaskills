@@ -1,0 +1,25 @@
+{
+ "id": "t-user-motion",
+ "prompt": "I'm not sure how the shop panel should slide in, can we try a few options?",
+ "expect": "-none (user-only motion-studies)",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.0724449,
+ "turns": 4,
+ "seconds": 9.7,
+ "rc": 1,
+ "written": {}
+}

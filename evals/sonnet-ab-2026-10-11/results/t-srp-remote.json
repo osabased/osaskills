@@ -1,0 +1,27 @@
+{
+ "id": "t-srp-remote",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "expect": "structure-roblox-projects",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "structure-roblox-projects",
+  "read:structure-roblox-projects/references/core/practices.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "# Shop RemoteEvents and server-side purchase validation\n\n## Where the RemoteEvents go\n\nPut them in `ReplicatedStorage/Remotes`. Both sides need to reach them, and `ReplicatedStorage` is where shared communication instances belong. Your project doesn't have a `Remotes` folder yet. The Rojo tree in `default.project.json` maps `Shared`, `Client` and `Packages`, but nothing for Remotes.\n\nDeclare them in the project file so Rojo creates them and they exist before any script runs:\n\n```json\n\"ReplicatedStorage\": {\n  \"Shared\": { \"$path\": \"src/shared\" },\n  \"Client\": { \"$path\": \"src/client\" },\n  \"Packages\": { \"$path\": \"Packages\" },\n  \"Remotes\": {\n    \"$className\": \"Folder\",\n    \"Shop\": {\n      \"$className\": \"Folder\",\n      \"PurchaseItem\": { \"$className\": \"RemoteFunction\" },\n      \"InventoryChanged\": { \"$className\": \"RemoteEvent\" }\n    }\n  }\n}\n```\n\n- **Don't put them under `src/shared`.** `src/shared/init.luau` makes `Shared` a ModuleScript, so the Remotes would end up as children of a module.\n- **Use a RemoteFunction for the purchase request,** because the client wants an accept/reject answer. A RemoteEvent works too if the server replies on a separate event.\n- **Use a RemoteEvent for the server-to-client update** (`InventoryChanged`). The server pushes the new inventory and currency state after a purchase.\n- **Check `src/client`'s entrypoint.** `src/client/init.client.luau` is mapped into `ReplicatedStorage`. It only runs if Rojo turns it into a `Script` with `RunContext = Client`, because a `LocalScript` in `ReplicatedStorage` never runs. Recent Rojo versions do this, but confirm it in Studio.\n- **Keep the item catalog server-side.** Prices and entitlements belong in `src/server`, not `src/shared`. Anything in `ReplicatedStorage` is visible to clients. If the UI needs display data, put only names and icons in `Shared` and keep prices authoritative on the server.\n\n## How the server validates a purchase\n\nThe client sends only an item ID. It never sends a price, a currency amount, or a \"success\" flag. The server handler does the following:\n\n1. **Check the payload.** Confirm `typeof(itemId) == \"string\"` and that the ID exists in the server's catalog. Reject anything else, and don't error on bad input.\n2. **Check eligibility.** The player must not already own the item (if it's a one-time purchase), must meet any level or unlock requirement, and the item must currently be for sale.\n3. **Look up the price in the server catalog.** Ignore anything the client claims about cost.\n4. **Rate-limit and debounce per player.** Keep a per-player \"purchase in flight\" flag so double-clicks or spammed calls can't run the handler twice at once.\n5. **Check funds and deduct atomically.** Read the player's server-side data and confirm they can afford it. Then deduct the cost and grant the item in the same step, with no `task.wait` or yield between the check and the deduction. If you must yield (for example on a DataStore write), hold the in-flight lock across it, then re-check and roll back on failure.\n6. **Persist, then confirm.** Save through your data layer (for example ProfileStore, with session locking). Return `true` to the client only after the server's state has changed, then fire `InventoryChanged` with the authoritative state. The client UI should update from that event, not from its own assumption that the purchase worked.\n7. **Return a result.** Send back `{ ok = false, reason = \"InsufficientFunds\" }` or similar. Don't leak internals.\n\nFor Robux purchases (developer products), don't use a Remote as the source of truth. Handle `MarketplaceService.ProcessReceipt` on the server. Grant the item there, make it idempotent by recording the `PurchaseId` so retries don't double-grant, and return `PurchaseGranted` only after the data is saved. The Remote then only tells the server which product the player wants to be prompted for.\n\n## Tests\n\nFor each Remote, test both accepted and rejected input: a valid purchase, an unknown ID, a wrong type, insufficient funds, an already-owned item, and two rapid calls.\n\nI haven't changed any files. I can add the `Remotes` entries to `default.project.json` and sketch a `ShopService` module under `src/server` if you'd like. Tell me which data layer you use so the deduct-and-save step matches it.",
+ "cost": 0.1060382,
+ "turns": 9,
+ "seconds": 25.1,
+ "rc": 0,
+ "written": {}
+}

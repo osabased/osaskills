@@ -1,0 +1,18 @@
+{
+ "id": "t-user-thenwhat",
+ "prompt": "ok so then what? what should I do next with these findings?",
+ "expect": "-none (user-only then-what)",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Glob"
+ ],
+ "result": "I can't see any findings, so I can't tell you what to do with them yet.\n\nThis conversation has no earlier messages. I also searched the project directory. It only holds skill files under `.claude/skills/`: Roblox libraries, `vod-discovery` and similar. I found no report, notes or review output.\n\nWhich of these is closest?\n\n- **Findings from an earlier session.** Paste them here, or give me the file path. A new session doesn't carry over what a previous one produced.\n- **Output from a review or audit** (code review, security review, system review). Paste the output or point me to where it was saved. I'll sort the items into must-fix, worth-fixing and ignore, then start on the first group.\n- **Research or analysis results**, such as library comparisons or VOD discovery output. Tell me what decision you're trying to make, and I'll turn the results into a recommendation and a short action list.\n\nOnce I can see them, I'll give you a ranked next-steps list. I can also start the fixes if that's what you want.",
+ "cost": 0.061783,
+ "turns": 2,
+ "seconds": 9.2,
+ "rc": 0,
+ "written": {}
+}

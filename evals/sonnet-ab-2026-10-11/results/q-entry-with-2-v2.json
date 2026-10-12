@@ -1,0 +1,32 @@
+{
+ "id": "q-entry-with-2-v2",
+ "task": "q-entry",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Grep"
+ ],
+ "result": "**Put the entrypoint in `src/client/`, and make it a `Script` with `RunContext = Client`.** That means `src/client/init.client.luau` (the file that's already there) plus one project setting to make it run.\n\n**How the project is wired today**\n- `default.project.json` maps `src/client` to `ReplicatedStorage.Client`, `src/shared` to `ReplicatedStorage.Shared`, and `src/server` to `ServerScriptService.Server`.\n- `src/client/init.client.luau` is only `print(\"client\")`, and `src/server/init.server.luau` is only `print(\"server\")`. `src/shared/init.luau` returns `{}`.\n- The project file has no `emitLegacyScripts` setting. Rojo 7 therefore builds `init.client.luau` as a `LocalScript`.\n- A `LocalScript` in `ReplicatedStorage` never runs. As wired, the current client entrypoint is dead code, and a controller added there would be dead too.\n- There is no `CLAUDE.md` and no project guide, and nothing in the repo suggests a loader such as Bootstrapper is in use.\n- `wally.toml` lists Janitor, LemonSignal and Charm. `pesde.toml` lists Vide, plus Blink as a dev dependency. The project file maps a `Packages` folder, but I didn't find one on disk, so no packages are installed yet.\n\n**What I'd do**\n1. Add `\"emitLegacyScripts\": false` at the top level of `default.project.json`. Then `init.client.luau` builds as a `Script` with `RunContext = Client`, which Roblox recommends for `ReplicatedStorage`.\n2. Keep that one script as the single client startup owner. It should only `require` and start the controller.\n3. Put the controller itself in a ModuleScript beside it, for example `src/client/InputController.luau`. This lets you test and reuse it.\n4. Keep shared types, constants and Remote definitions in `src/shared`. Validate anything the controller sends to the server on the server side.\n\n**Alternative:** keep the default Rojo behavior and map the client folder into `StarterPlayer.StarterPlayerScripts` as a `LocalScript`. That is a bigger change to the existing layout, so I'd go with the setting above.\n\nThe `emitLegacyScripts` flip also turns `init.server.luau` into a `Script` with `RunContext = Server`. That is harmless in `ServerScriptService`, but check that nothing relies on the legacy class.\n\nI haven't run `rojo build` or tried this in Studio, so none of it is verified. I made no edits.",
+ "cost": 0.1204401,
+ "turns": 13,
+ "seconds": 23.0,
+ "rc": 0,
+ "written": {}
+}

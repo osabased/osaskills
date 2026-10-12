@@ -1,0 +1,22 @@
+{
+ "id": "t-sr-checkout",
+ "prompt": "Our checkout calls the payment API, then writes the order row, then the client retries on timeout. Review this flow end to end: what happens if the payment succeeds but the order write fails?",
+ "expect": "system-review",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "system-review"
+ ],
+ "tools": [
+  "Skill",
+  "Grep",
+  "Glob"
+ ],
+ "result": "**Verdict:** INSUFFICIENT EVIDENCE. I couldn't find your checkout code. The working directory has only `.claude/skills/*` (Roblox and VOD tooling), with no payment client, order writer or retry logic. So this review traces the flow as you described it, not the code. The failure scenario below follows from the sequence itself. Whether it's a real defect depends on three things I couldn't inspect.\n\n**Required outcome:** each checkout charges the customer exactly once, and a paid checkout always ends with exactly one order.\n\n**Scenario A: payment succeeds, order write fails, no retry**\n- Setup: the payment API has committed the charge. The order insert hits a DB error, a deploy, or a crash.\n- State: money has moved, there is no order row, and the customer sees an error or a hang.\n- Result: the customer is charged for nothing. Nothing in the described flow records that the payment happened, so nothing can reconcile it later.\n\n**Scenario B: payment succeeds, order write fails, client retries**\n- Setup: same as A. The retry re-enters the flow at \"call payment API\".\n- Event: the retry sends a new charge request.\n- State: this depends on whether the request carries a stable idempotency key. Without one, there is a second charge. With one, the provider returns the original result.\n- Result without a key: the customer is double-charged, and the order write may then succeed, leaving one order for two payments.\n\n**Scenario C: timeout on the payment call itself**\n- Setup: the provider commits the charge, but the response is lost or slow.\n- Event: the client retries.\n- State: the first charge is committed, but the caller never saw the acknowledgement. This is the same double-charge exposure as B, and a response timeout doesn't tell you whether the charge happened.\n\n**Scenario D: retry after a successful order write**\n- Setup: the order write commits, but the response to the client times out.\n- Event: the client retries.\n- State: without a unique constraint on the order, you get a duplicate order row, even if the charge is deduplicated.\n\n**What the code has to show before this can pass:**\n1. The payment request carries an idempotency key that is stable across retries. It should be generated once per checkout attempt, on the client or when the cart is created, and not per HTTP call.\n2. The order write is idempotent. This could be a unique constraint on that key, or an upsert, so a retry returns the existing order.\n3. There is a recovery path for \"paid but no order\". This could be a pending order row written before the charge and then updated, an outbox, or a reconciliation job that matches provider charges to orders.\n\nIf all three exist, A to D are closed. If any is missing, that scenario is a defect.\n\n**Constraints on a fix:**\n- The charge must be keyed to the checkout attempt.\n- The order record has to exist, or be recoverable, whenever a charge exists.\n- Don't make the retry path skip the payment call based on local state. A retry after a lost response has no local state to go on.\n\nThe usual shape is to write an order in a `pending` state with the idempotency key first. Then charge with that key, and mark the order `paid` in a second step. Webhooks or a sweeper can complete orders whose second step failed.\n\n**Close when:** these three tests pass against the real code:\n- Kill the process after the provider confirms the charge and before the order insert. The retry should produce one charge and one order.\n- Drop the payment response and retry. The provider should show one charge.\n- Retry after a committed order write. There should be one order row.\n\n**Evidence gap:** point me at the checkout handler, the payment client wrapper and the order repository. I'll then check each of the three conditions and give a per-finding verdict.",
+ "cost": 0.0879688,
+ "turns": 5,
+ "seconds": 16.2,
+ "rc": 0,
+ "written": {}
+}

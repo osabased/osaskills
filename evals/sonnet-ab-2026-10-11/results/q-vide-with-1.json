@@ -1,0 +1,22 @@
+{
+ "id": "q-vide-with-1",
+ "task": "q-vide",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-vide"
+ ],
+ "tools": [
+  "Skill"
+ ],
+ "result": "Here is the component. I didn't open `pesde.toml`, so I'm taking your word that Vide is pinned at 5ed4c01 (0.4.1). The code uses only APIs that exist at that pin.\n\n```luau\n--!strict\nlocal Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal Vide = require(ReplicatedStorage.Packages.vide) -- use the project's mapped path\nlocal create, source, indexes, cleanup = Vide.create, Vide.source, Vide.indexes, Vide.cleanup\n\n-- `items` is a Vide source (or any getter) returning an array of item names.\nlocal function ShopPanel(items: () -> { string })\n\tlocal open = source(false)\n\n\tlocal gui = create \"ScreenGui\" {\n\t\tName = \"ShopPanel\",\n\t\tResetOnSpawn = false, -- otherwise the UI is destroyed on respawn while the Vide scope lives on\n\n\t\tcreate \"TextButton\" {\n\t\t\tName = \"Toggle\",\n\t\t\tSize = UDim2.fromOffset(160, 40),\n\t\t\tPosition = UDim2.fromOffset(16, 16),\n\t\t\tText = Vide.derive(function()\n\t\t\t\treturn open() and \"Close shop\" or \"Open shop\"\n\t\t\tend),\n\t\t\tActivated = function() -- event property: function value is a listener\n\t\t\t\topen(not open())\n\t\t\tend,\n\t\t},\n\n\t\tcreate \"Frame\" {\n\t\t\tName = \"ItemList\",\n\t\t\tPosition = UDim2.fromOffset(16, 64),\n\t\t\tSize = UDim2.fromOffset(240, 280),\n\t\t\tVisible = open, -- a source is a getter, so this is reactive\n\n\t\t\tcreate \"UIListLayout\" {\n\t\t\t\tSortOrder = Enum.SortOrder.LayoutOrder,\n\t\t\t\tPadding = UDim.new(0, 4),\n\t\t\t},\n\n\t\t\t-- One scope per index; the name arrives as a Source, so it is passed straight to Text.\n\t\t\tindexes(items, function(name, i)\n\t\t\t\treturn create \"TextLabel\" {\n\t\t\t\t\tSize = UDim2.new(1, 0, 0, 28),\n\t\t\t\t\tLayoutOrder = i,\n\t\t\t\t\tText = name,\n\t\t\t\t}\n\t\t\tend),\n\t\t},\n\t}\n\n\t-- mount's disposer only destroys the scope; it does not destroy the returned Instance.\n\tcleanup(gui)\n\n\treturn gui\nend\n\n-- Usage -----------------------------------------------------------------\n\nlocal shopItems = source({ \"Sword\", \"Shield\", \"Potion\" })\n\nlocal destroyShop: (() -> ())? = Vide.mount(function()\n\treturn ShopPanel(shopItems)\nend, Players.LocalPlayer:WaitForChild(\"PlayerGui\"))\n\n-- Items update live:\nshopItems({ \"Sword\", \"Shield\", \"Potion\", \"Bow\" })\n\n-- Teardown when the shop closes for good.\nlocal function closeShop()\n\tlocal dispose = destroyShop\n\tdestroyShop = nil -- clear first: calling a disposer twice errors (\"root already destroyed\")\n\tif dispose then\n\t\tdispose()\n\tend\nend\n```\n\n- **Teardown:** `closeShop()` destroys the mount's scope. That runs `cleanup(gui)`, which destroys the ScreenGui and its descendants. The `indexes` scopes are destroyed with it.\n- **Double close:** The reference is cleared before the disposer runs, so a second `closeShop()` does nothing instead of erroring.\n- **Mutating the list:** If you mutate the items table in place, call `shopItems(shopItems())` to re-render. A table source notifies on every write of an unfrozen table. Writing a new table, as above, is simpler.\n- **Strict mode:** The `derive` and the reactive properties must stay pure and synchronous. In strict mode they run twice per update, and yielding inside them errors.\n- **Vide.step():** Don't call `Vide.step()` on teardown. It permanently disconnects the package-wide Heartbeat that drives `spring` and delayed scope teardown.",
+ "cost": 0.0728691,
+ "turns": 3,
+ "seconds": 20.2,
+ "rc": 0,
+ "written": {}
+}

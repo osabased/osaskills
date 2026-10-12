@@ -1,0 +1,18 @@
+{
+ "id": "q-blink-without-2",
+ "task": "q-blink",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "`network/main.blink`:\n\n```\noption ServerOutput = \"src/server/Network.luau\"\noption ClientOutput = \"src/client/Network.luau\"\n\nevent DamageNumber {\n\tFrom: Server,\n\tType: Reliable,\n\tCall: SingleSync,\n\tData: (Position: vector, Amount: u16),\n}\n\nevent AimDirection {\n\tFrom: Client,\n\tType: Unreliable,\n\tCall: SingleSync,\n\tData: vector,\n}\n\nfunction GetLoadout {\n\tYield: Coroutine,\n\tReturn: string[..6],\n}\n```\n\n**Server** (`ServerScriptService`):\n\n```lua\nlocal Network = require(path.to.server.Network)\n\n-- client -> server, unreliable\nNetwork.AimDirection.On(function(player: Player, direction: vector)\n\t-- use direction for the player's aim\nend)\n\n-- server -> client, reliable\nlocal function showDamage(player: Player, position: vector, amount: number)\n\tNetwork.DamageNumber.Fire(player, position, amount)\n\t-- also: FireAll(position, amount), FireExcept(player, position, amount), FireList({ ... }, position, amount)\nend\n\n-- loadout function: return at most 6 item id strings\nNetwork.GetLoadout.SetCallback(function(player: Player)\n\treturn { \"sword_01\", \"bow_02\", \"potion_hp\" }\nend)\n```\n\n**Client** (`LocalScript`):\n\n```lua\nlocal Network = require(path.to.client.Network)\n\nNetwork.DamageNumber.On(function(position: vector, amount: number)\n\t-- spawn a floating damage number at position\nend)\n\n-- send aim direction (e.g. every frame or on a timer)\nNetwork.AimDirection.Fire(vector.create(0, 0, -1))\n\n-- Yield: Coroutine, so Invoke blocks until the server returns\nlocal loadout = Network.GetLoadout.Invoke()\nfor _, itemId in loadout do\n\tprint(itemId)\nend\n```\n\nNotes:\n- I wrote this from memory of Blink's syntax. I didn't check it against the 0.18.9 docs or run the compiler, so run `blink network/main.blink` to confirm it compiles.\n- The `ServerOutput` and `ClientOutput` paths are placeholders, so change them to match your project layout.\n- Because `Data` is a tuple, `Fire` and `On` take positional arguments. If you'd rather pass a table, write `Data: struct { Position: vector, Amount: u16 }` instead. Then `Fire(player, { Position = ..., Amount = ... })` and the `On` callback receives that table.\n- `Yield: Coroutine` makes `Invoke` yield like a normal call. You can use `Future` or `Promise` instead if you want those return types.\n- Blink enforces the `[..6]` limit on both ends, so a server callback that returns more than 6 strings will error.",
+ "cost": 0.051457300000000004,
+ "turns": 1,
+ "seconds": 22.0,
+ "rc": 0,
+ "written": {}
+}

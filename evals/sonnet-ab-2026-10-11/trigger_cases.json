@@ -1,0 +1,194 @@
+[
+ {
+  "id": "t-rra-add-signal",
+  "prompt": "add a signal library to my roblox game, we use wally",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-rra-janitor-trove",
+  "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-rra-profilestore",
+  "prompt": "should I use ProfileStore or just write my own DataStore wrapper for player data",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-rra-hitbox",
+  "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-rra-bump-vide",
+  "prompt": "Vide has a new release, should we bump our pinned version?",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-rra-rokit",
+  "prompt": "add StyLua and Selene to the project's rokit toolchain",
+  "expect": "roblox-resource-acquisition",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-srp-entry",
+  "prompt": "where should my client entrypoint script go in this project?",
+  "expect": "structure-roblox-projects",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-srp-glob",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+  "expect": "structure-roblox-projects",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-srp-onboard",
+  "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+  "expect": "structure-roblox-projects",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-srp-remote",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+  "expect": "structure-roblox-projects",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-child-vide",
+  "prompt": "write a Vide component for an inventory list with a toggle button",
+  "expect": "roblox-vide",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-child-blink",
+  "prompt": "write a blink schema for a damage number event the server sends to clients",
+  "expect": "roblox-blink",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-child-janitor",
+  "prompt": "use our Janitor to clean up this tween and the LemonSignal connection when the frame is destroyed",
+  "expect": "roblox-janitor",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-child-charm",
+  "prompt": "make a Charm atom for the player's coins and subscribe to it on the client",
+  "expect": "roblox-charm",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-sr-checkout",
+  "prompt": "Our checkout calls the payment API, then writes the order row, then the client retries on timeout. Review this flow end to end: what happens if the payment succeeds but the order write fails?",
+  "expect": "system-review",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-sr-holdup",
+  "prompt": "We cache inventory in Redis and invalidate from a queue consumer after each DB write. Will this hold up under retries and consumer crashes?",
+  "expect": "system-review",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-neg-tween",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "expect": null,
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-neg-luau",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "expect": null,
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-neg-react",
+  "prompt": "add a date picker package to my React web app",
+  "expect": null,
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-neg-style",
+  "prompt": "rename the variable x to playerCount in src/server/init.server.luau",
+  "expect": null,
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-user-vod",
+  "prompt": "find the highlights in my 4 hour twitch VOD at /videos/stream.mp4",
+  "expect": "-none (user-only vod-discovery)",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-user-thenwhat",
+  "prompt": "ok so then what? what should I do next with these findings?",
+  "expect": "-none (user-only then-what)",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-user-motion",
+  "prompt": "I'm not sure how the shop panel should slide in, can we try a few options?",
+  "expect": "-none (user-only motion-studies)",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ },
+ {
+  "id": "t-explicit-thenwhat",
+  "prompt": "/then-what The audit found the cache index is 10x faster, Redis is untested, and mobile wasn't load tested.",
+  "expect": "then-what",
+  "with_skills": true,
+  "max_turns": 3,
+  "kind": "trigger"
+ }
+]

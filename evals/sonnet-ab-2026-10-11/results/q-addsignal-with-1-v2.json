@@ -1,0 +1,36 @@
+{
+ "id": "q-addsignal-with-1-v2",
+ "task": "q-addsignal",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-lemonsignal/SKILL.md",
+  "read:roblox-lemonsignal/resource.yaml",
+  "read:roblox-lemonsignal/references/setup.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Write"
+ ],
+ "result": "The project already had a signal library, so I didn't add a new dependency. `wally.toml` declares `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`, and `default.project.json` maps `Packages` into `ReplicatedStorage`. I added one file, `src/shared/Signal.luau`. It's a thin wrapper that re-exports `new` and `wrap`, plus the `Signal<T...>` and `Connection` types. I couldn't run anything, so none of this is verified.\n\nA module can expose an event like this:\n\n```luau\nlocal Signal = require(ReplicatedStorage.Shared.Signal)\n\nlocal Health = {}\nHealth.Damaged = Signal.new() :: Signal.Signal<number, Player?>\nreturn Health\n```\n\n- **Install:** `Packages/` doesn't exist yet, so run `pesde install` or `wally install` before syncing. The wrapper's `require(ReplicatedStorage.Packages.LemonSignal)` fails until then. I'm assuming the folder is named `LemonSignal`; check the installed name or the sourcemap.\n- **Types:** I haven't checked that the package exports the `Signal` and `Connection` types, so confirm the strict-mode type exports resolve once it's installed.\n- **Lifetime:** `Destroy()` on a signal only drops its listeners. The signal is still usable afterwards, and any thread blocked in `Wait()` stays suspended.\n- **Scope:** signals only work within one runtime (client or server). They aren't networking.\n\nI left `src/shared/init.luau` alone, so `Signal` is a child module of `Shared`.",
+ "cost": 0.11991470000000001,
+ "turns": 12,
+ "seconds": 24.3,
+ "rc": 0,
+ "written": {
+  "src/shared/Signal.luau": "--!strict\n-- Project entry point for custom events (LemonSignal 2.0.0, pinned in wally.toml).\n-- Modules expose events as fields: `Health.Damaged = Signal.new()`.\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nexport type Signal<T...> = LemonSignal.Signal<T...>\nexport type Connection = LemonSignal.Connection\n\nreturn {\n\tnew = LemonSignal.new,\n\twrap = LemonSignal.wrap,\n}\n"
+ }
+}

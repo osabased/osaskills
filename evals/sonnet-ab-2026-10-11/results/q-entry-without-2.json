@@ -1,0 +1,24 @@
+{
+ "id": "q-entry-without-2",
+ "task": "q-entry",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Short answer:** the entrypoint should be `src/client/init.client.luau`, a LocalScript. It already exists, but the project mapping means it won't run as wired today.\n\n**How it's wired**\n\n- `default.project.json` is a Rojo project named \"arena\". It maps `src/shared` to `ReplicatedStorage.Shared`, `src/client` to `ReplicatedStorage.Client`, and `src/server` to `ServerScriptService.Server`.\n- `src/client/init.client.luau` is just `print(\"client\")`. Rojo turns the `.client.luau` suffix into a LocalScript.\n- `src/server/init.server.luau` is the server equivalent, a Script.\n- `src/shared/init.luau` is `return {}`, a ModuleScript.\n- `wally.toml` and `pesde.toml` are both present, and `Packages` is mapped under ReplicatedStorage.\n\n**The problem**\n\nA LocalScript placed in `ReplicatedStorage` doesn't execute. Client scripts only run under containers like `StarterPlayerScripts`, `StarterGui`, `StarterCharacterScripts` or the player's `Backpack`. So the existing `print(\"client\")` never fires.\n\n**Recommendation**\n\n1. Remap the client folder in `default.project.json` so it runs. The usual shape is:\n   ```json\n   \"StarterPlayer\": {\n     \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n   }\n   ```\n   You can keep `Shared` and `Packages` in ReplicatedStorage so both sides can require them.\n2. Keep `init.client.luau` as the one bootstrap LocalScript. It should only require and start things.\n3. Put the controller itself in a ModuleScript, for example `src/client/InputController.luau`, and have the bootstrap call something like `InputController.start()`. Don't make the controller its own `.client.luau`. A single entrypoint gives you deterministic start order, and ModuleScripts are easier to test.\n4. Put anything the server also needs, like action names or input-to-intent types, in `src/shared`. The controller logic itself stays client-only.\n\nI didn't edit any files. If you want, I can make the mapping change and add the `InputController` stub.",
+ "cost": 0.054761500000000005,
+ "turns": 6,
+ "seconds": 16.1,
+ "rc": 0,
+ "written": {}
+}

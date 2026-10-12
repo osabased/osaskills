@@ -1,0 +1,29 @@
+{
+ "id": "q-addsignal-without-2",
+ "task": "q-addsignal",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Grep",
+  "Write"
+ ],
+ "result": "The project already declares a signal library, so the only change I made was adding one file. I didn't run anything, and I haven't checked that the new file loads.\n\n`wally.toml` already lists `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`, and `default.project.json` already maps `Packages` into `ReplicatedStorage`. I left the manifests alone.\n\nI added `src/shared/Signal.luau`. It re-exports LemonSignal and its `Signal` and `Connection` types, so modules can use the library without requiring it by package path.\n\nTwo things to check:\n- The `Signal` and `Connection` type names depend on what LemonSignal 2.0.0 exports. If it doesn't export them, `luau-lsp` or the analyzer will complain and you'll need to adjust that file.\n- You need to run `wally install` to create the `Packages` folder. Rojo will warn about the missing path until then.\n\nA module can then expose an event like this:\n\n```luau\nlocal Signal = require(ReplicatedStorage.Shared.Signal)\n\nlocal Arena = {}\nArena.PlayerJoined = Signal.new()\n\nArena.PlayerJoined:Connect(function(player) end)\nArena.PlayerJoined:Fire(player)\n```",
+ "cost": 0.0678981,
+ "turns": 9,
+ "seconds": 18.6,
+ "rc": 0,
+ "written": {
+  "src/shared/Signal.luau": "local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nexport type Signal<T... = ...any> = LemonSignal.Signal<T...>\nexport type Connection = LemonSignal.Connection\n\nreturn LemonSignal\n"
+ }
+}

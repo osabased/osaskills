@@ -1,0 +1,24 @@
+{
+ "id": "q-janitor-with-1",
+ "task": "q-janitor",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-janitor",
+  "roblox-lemonsignal"
+ ],
+ "tools": [
+  "Skill",
+  "Skill"
+ ],
+ "result": "I haven't checked `wally.toml` for the pins. I wrote this against the Janitor 1.18.3 and LemonSignal 2.0.0 APIs only.\n\n## The class\n\n```luau\n--!strict\nlocal RunService = game:GetService(\"RunService\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)       -- use your mapped path\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Tether = {}\nTether.__index = Tether\n\nexport type Tether = typeof(setmetatable(\n\t{} :: {\n\t\tPart: Part,\n\t\t_janitor: any,\n\t\t_disposed: boolean,\n\t},\n\tTether\n))\n\nfunction Tether.new(\n\thost: Instance,\n\tsource: LemonSignal.Signal<number>, -- type only if your wrapper re-exports it\n\tonTick: (dt: number) -> (),\n\tonCleanup: () -> ()\n): Tether\n\tlocal self = setmetatable({\n\t\t_janitor = Janitor.new(),\n\t\t_disposed = false,\n\t}, Tether) :: any\n\tlocal janitor = self._janitor\n\n\t-- Part: default method is \"Destroy\".\n\tlocal part = janitor:Add(Instance.new(\"Part\"))\n\tpart.Anchored = true\n\tpart.Parent = workspace\n\tself.Part = part\n\n\t-- LemonSignal connection: it's a table, so the default would be \"Destroy\"\n\t-- and cleanup would silently skip it. Name the method.\n\tjanitor:Add(source:Connect(function(value)\n\t\tif not self._disposed then\n\t\t\tpart.Position = Vector3.new(0, value, 0)\n\t\tend\n\tend), \"Disconnect\")\n\n\t-- Heartbeat is a native RBXScriptConnection: default is \"Disconnect\".\n\tjanitor:Add(RunService.Heartbeat:Connect(function(dt)\n\t\tif not self._disposed then\n\t\t\tonTick(dt)\n\t\tend\n\tend))\n\n\t-- Cleanup callback: functions are called on cleanup. Wrapped in pcall (see below).\n\tjanitor:Add(function()\n\t\tlocal ok, err = pcall(onCleanup)\n\t\tif not ok then\n\t\t\twarn(\"Tether onCleanup failed: \" .. tostring(err))\n\t\tend\n\tend)\n\n\t-- Tie everything to the host's lifetime.\n\tjanitor:LinkToInstance(host)\n\n\treturn self\nend\n\nfunction Tether.Destroy(self: Tether)\n\tif self._disposed then\n\t\treturn\n\tend\n\tself._disposed = true\n\tself._janitor:Destroy()\nend\n\nreturn Tether\n```\n\n## What happens if a cleanup callback throws\n\nThis follows Janitor 1.18.3's documented behavior. I haven't run it.\n\nIf you add `onCleanup` directly with `janitor:Add(onCleanup)` and it throws:\n\n1. **The order is unspecified.** Janitor walks its table with `next()`, so the Part, the LemonSignal connection, the Heartbeat connection and the callback can run in any order.\n2. **The throw stops the loop.** Every entry that hadn't run yet is skipped. If the callback happens to run first, the Part stays in `workspace`, the signal listener stays connected, and the Heartbeat callback keeps firing. The `_disposed` flag only makes those callbacks no-ops. The objects still leak.\n3. **The Janitor stays marked as cleaning.** Later `Cleanup()` and `Destroy()` calls silently do nothing, so you can't retry. The skipped entries can't be cleaned up through this Janitor.\n4. **Who sees the error depends on the trigger.**\n   - **Host destroyed:** `LinkToInstance` runs `Cleanup` inside the host's `Destroying` handler. The error shows up in the output as an unhandled error in that handler, and no caller can catch it.\n   - **Your `:Destroy()` called:** the error propagates out of `Tether:Destroy()`. By then `_disposed` is already `true`, so a second call returns early.\n\nThe class avoids this by wrapping the user callback in `pcall` and turning a failure into a `warn`. That way one bad callback can't skip the Part, the signal connection or the Heartbeat connection. If you need ordering (for example, run the callback before the Part is destroyed), use a second Janitor or explicit steps. A single Janitor doesn't guarantee order.",
+ "cost": 0.088229,
+ "turns": 5,
+ "seconds": 23.5,
+ "rc": 0,
+ "written": {}
+}

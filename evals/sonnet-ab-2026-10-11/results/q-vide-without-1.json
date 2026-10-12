@@ -1,0 +1,21 @@
+{
+ "id": "q-vide-without-1",
+ "task": "q-vide",
+ "cond": "without",
+ "rep": 1,
+ "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Read"
+ ],
+ "result": "This is written from my memory of Vide's API. The Vide source isn't installed in this project (only `pesde.toml` is), so I couldn't check it against rev `5ed4c01`. Before you rely on it, check the `mount`/`create`/`indexes` signatures and the destroy-on-teardown behavior against that source.\n\n```lua\n--!strict\nlocal Players = game:GetService(\"Players\")\nlocal vide = require(path.to.vide)\n\nlocal create = vide.create\nlocal source = vide.source\nlocal indexes = vide.indexes\nlocal mount = vide.mount\n\ntype ShopProps = {\n\titems: () -> { string }, -- a source/derive, or any function returning the list\n}\n\nlocal function ShopPanel(props: ShopProps)\n\tlocal open = source(false)\n\n\treturn create \"ScreenGui\" {\n\t\tName = \"ShopGui\",\n\t\tResetOnSpawn = false, -- survive respawns; teardown is explicit\n\n\t\tcreate \"TextButton\" {\n\t\t\tName = \"Toggle\",\n\t\t\tSize = UDim2.fromOffset(120, 36),\n\t\t\tPosition = UDim2.fromOffset(16, 16),\n\t\t\tText = function()\n\t\t\t\treturn if open() then \"Close shop\" else \"Open shop\"\n\t\t\tend,\n\t\t\tActivated = function()\n\t\t\t\topen(not open())\n\t\t\tend,\n\t\t},\n\n\t\tcreate \"Frame\" {\n\t\t\tName = \"ItemList\",\n\t\t\tPosition = UDim2.fromOffset(16, 60),\n\t\t\tSize = UDim2.fromOffset(220, 260),\n\t\t\tVisible = open, -- sources are accepted directly as property values\n\n\t\t\tcreate \"UIListLayout\" {\n\t\t\t\tSortOrder = Enum.SortOrder.LayoutOrder,\n\t\t\t\tPadding = UDim.new(0, 4),\n\t\t\t},\n\n\t\t\t-- one label per index; the label is reused when the name at that index changes\n\t\t\tindexes(props.items, function(name, index)\n\t\t\t\treturn create \"TextLabel\" {\n\t\t\t\t\tName = \"Item\",\n\t\t\t\t\tSize = UDim2.new(1, 0, 0, 28),\n\t\t\t\t\tLayoutOrder = index,\n\t\t\t\t\tText = name, -- `name` is a getter, so Vide binds it reactively\n\t\t\t\t}\n\t\t\tend),\n\t\t},\n\t}\nend\n\n-- Mount into PlayerGui and hand back the teardown function.\nlocal function openShop(items: () -> { string }): () -> ()\n\tlocal playerGui = Players.LocalPlayer:WaitForChild(\"PlayerGui\")\n\treturn mount(function()\n\t\treturn ShopPanel { items = items }\n\tend, playerGui)\nend\n\n-- usage\nlocal stock = source({ \"Sword\", \"Shield\", \"Potion\" })\nlocal closeShop = openShop(stock)\n\n-- when the shop closes for good:\ncloseShop() -- stops the effects and destroys the ScreenGui and its descendants\ncloseShop = nil\n```\n\n- **Teardown:** `mount` returns a destroy function. Calling it once stops every effect and source binding in the tree and destroys the instances `create` made. Keep that function and call it exactly once when the shop is done.\n- **Don't parent by hand:** Don't also do `gui.Parent = playerGui` yourself. Pass the target to `mount` so Vide owns the lifetime.\n- **Extra resources:** If you add connections or tasks inside the component, register them with `vide.cleanup(...)` so they run on the same destroy.\n- **Hiding versus destroying:** The toggle only flips `Visible`, so the panel stays alive while hidden. Use `closeShop()` only for permanent close.\n- **Duplicate names:** I used `indexes` rather than `values` so duplicate item names can't collide. If names are unique and you want labels tied to the name rather than the position, swap to `values(props.items, function(name) ... end)`. The `name` argument is then a plain string, not a getter, and the map's second argument is a getter for the index.",
+ "cost": 0.06861529999999999,
+ "turns": 3,
+ "seconds": 27.1,
+ "rc": 0,
+ "written": {}
+}
