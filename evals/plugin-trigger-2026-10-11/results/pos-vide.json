@@ -1,0 +1,23 @@
+{
+ "id": "pos-vide",
+ "expect": "roblox-vide",
+ "prompt": "Write a Vide 0.4.1 health bar component driven by a source, mounted into PlayerGui, with proper teardown.",
+ "loaded": [
+  "tool:osaskills:roblox-vide"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Write",
+  "Write"
+ ],
+ "cost": 0.09360679999999999,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

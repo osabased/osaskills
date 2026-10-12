@@ -1,0 +1,16 @@
+{
+ "id": "neg-vod-1",
+ "expect": "!vod-discovery",
+ "prompt": "I have 6 hours of Twitch VODs from three streamers in D:/vods (a.mkv, b.mkv, c.mkv). Find the highlights and make Premiere markers for them.",
+ "loaded": [],
+ "tools": [
+  "Bash",
+  "Glob"
+ ],
+ "cost": 0.06269,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "I couldn't make the markers. Bash is disabled in this session, so I can't run ffmpeg or any analysis. I also don't have permission to read `D:/vods`, so I haven't looked at the files.\n\nTo go ahead, I need two things:\n1. Read access to `D:\\vods`, and Bash (or another way to run commands) so I can run ffmpeg and Python.\n2. Which kind of highlights you want. The usual signals are chat-reaction spikes, loud audio peaks, and sudden changes in the scene. Chat-based detection needs the chat logs. Without them, I'd work from audio loudness and scene changes.\n\nOnce that's set up, I'd do this:\n- Extract the audio from each file and score it for loudness spikes and excited speech. I'd merge nearby peaks and keep the top moments per streamer.\n- Write a Premiere-importable marker file for each VOD. Either a CSV in Premiere's marker format or an FCP XML with markers, whichever you prefer. Each marker would have a timecode and a short label.\n\nTell me the frame rate and your preferred marker format (CSV or XML), and whether you have chat logs.",
+ "stderr": "",
+ "verdict": "PASS"
+}

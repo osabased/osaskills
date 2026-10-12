@@ -1,0 +1,18 @@
+{
+ "id": "neg-motion-2",
+ "expect": "!motion-studies",
+ "prompt": "Before we commit, help me try out how the settings modal transition in my React app should feel - timing, easing, maybe a spring.",
+ "loaded": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Glob",
+  "Grep"
+ ],
+ "cost": 0.06501,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

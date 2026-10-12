@@ -1,0 +1,19 @@
+{
+ "id": "pos-system-review",
+ "expect": "system-review",
+ "prompt": "Will this hold up? Our checkout calls the payment API, then writes the order row, then enqueues a confirmation email. What happens if the process crashes after the charge but before the DB write?",
+ "loaded": [
+  "tool:osaskills:system-review"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Grep"
+ ],
+ "cost": 0.0671948,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

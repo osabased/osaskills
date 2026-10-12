@@ -1,0 +1,18 @@
+{
+ "id": "exp-thenwhat",
+ "expect": "then-what",
+ "markers": [
+  "Done when"
+ ],
+ "prompt": "/osaskills:then-what Findings: 1) N+1 query in orders list, 2) missing index on orders.user_id, 3) payment webhook retries without an idempotency key.",
+ "loaded": [],
+ "tools": [
+  "Glob"
+ ],
+ "cost": 0.0638618,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "🧭 **Recommendation:** Fix the webhook idempotency first (finding 3). Then add the `orders.user_id` index (2). Fix the N+1 query (1) last.\n\n**Why:**\n- **Webhook retries:** Without an idempotency key (a unique ID that lets the server spot a repeat), a retried payment webhook can be processed twice. That could double-charge or double-fulfill, which is the only finding that can lose money or data.\n- **Index:** It's a cheap, low-risk change. Lookups by user stop scanning the whole table, and the N+1 gets cheaper even before it's fixed.\n- **N+1:** The orders list runs one extra query per order, so it's slow but still correct. A batched query or join fixes it, but it touches code and needs tests.\n- **Repo contents:** This directory has no code that matches these findings. It holds only a Roblox project skeleton (`default.project.json`, `src/client`, `src/server`, `src/shared`, and `pesde.toml`/`wally.toml`), with no orders, webhook, or SQL code. So I haven't checked any of the three findings against real code. They're unverified here, not disproven.\n\n➡️ **Next (User):** Tell me where the codebase with the orders and webhook code is. Give me the path, or open the session in that repo. I'll start with the webhook handler.\n\n**Done when:** I can point to the webhook handler and the orders query code. After that, a duplicate webhook delivery is processed only once, which a test confirms.",
+ "stderr": "",
+ "verdict": "PASS"
+}

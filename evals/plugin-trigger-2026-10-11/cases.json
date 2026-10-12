@@ -1,0 +1,33 @@
+[
+ {"id": "probe-listing", "expect": null,
+  "prompt": "Do not use any tools. List verbatim every skill name in your available-skills listing whose name contains 'osaskills', one per line. If none, reply NONE."},
+
+ {"id": "neg-vod-1", "expect": "!vod-discovery",
+  "prompt": "I have 6 hours of Twitch VODs from three streamers in D:/vods (a.mkv, b.mkv, c.mkv). Find the highlights and make Premiere markers for them."},
+ {"id": "neg-vod-2", "expect": "!vod-discovery",
+  "prompt": "What happened around the boss fight in my 3 hour OBS recording at C:/rec/session.mp4? I want to clip the best moments."},
+ {"id": "neg-motion-1", "expect": "!motion-studies",
+  "prompt": "I'm not sure how the inventory panel in my Roblox game should slide in. Can you prototype a couple of easing/timing options I can try in Studio before we build it properly?"},
+ {"id": "neg-motion-2", "expect": "!motion-studies",
+  "prompt": "Before we commit, help me try out how the settings modal transition in my React app should feel - timing, easing, maybe a spring."},
+ {"id": "neg-thenwhat-1", "expect": "!then-what",
+  "prompt": "Here's what the audit agent found: 1) N+1 query in the orders list, 2) missing index on orders.user_id, 3) payment webhook retries without an idempotency key, 4) stale README. I don't know what matters here. What should I do next?"},
+ {"id": "neg-thenwhat-2", "expect": "!then-what",
+  "prompt": "My agent left me with three options for the auth refactor: A) keep server sessions, B) move to JWT, C) hybrid. I don't understand the tradeoffs. Which one, and what's the next step?"},
+
+ {"id": "pos-system-review", "expect": "system-review",
+  "prompt": "Will this hold up? Our checkout calls the payment API, then writes the order row, then enqueues a confirmation email. What happens if the process crashes after the charge but before the DB write?"},
+ {"id": "pos-rra", "expect": "roblox-resource-acquisition",
+  "prompt": "add a signal library to my roblox game, we use wally"},
+ {"id": "pos-vide", "expect": "roblox-vide",
+  "prompt": "Write a Vide 0.4.1 health bar component driven by a source, mounted into PlayerGui, with proper teardown."},
+ {"id": "pos-structure", "expect": "structure-roblox-projects",
+  "prompt": "Where should my client entrypoint script go in this Rojo project, and should it be a LocalScript?"},
+
+ {"id": "exp-thenwhat", "expect": "then-what", "markers": ["Done when"],
+  "prompt": "/osaskills:then-what Findings: 1) N+1 query in orders list, 2) missing index on orders.user_id, 3) payment webhook retries without an idempotency key."},
+ {"id": "exp-motion", "expect": "motion-studies", "markers": ["named constant"],
+  "prompt": "/osaskills:motion-studies How should the shop button press feel in my Roblox game? Don't build anything yet; tell me the first step."},
+ {"id": "exp-vod", "expect": "vod-discovery", "markers": ["vod.py doctor"],
+  "prompt": "/osaskills:vod-discovery I have a 2 hour VOD at D:/vods/a.mkv. Don't run anything; tell me the first step."}
+]
