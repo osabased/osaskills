@@ -1,8 +1,9 @@
 {
   "name": "osaskills",
-  "version": "1.0.0",
   "description": "Skills for Roblox development (project structure, library adoption, pinned library guides), VOD moment discovery with Premiere export, system review, motion studies, and turning findings into next steps.",
-  "author": { "name": "osabased" },
+  "author": {
+    "name": "osabased"
+  },
   "repository": "https://github.com/osabased/osaskills",
   "license": "MIT"
 }

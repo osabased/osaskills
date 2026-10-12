@@ -55,8 +55,6 @@ reconciliation:
   policy: conditional
   reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
     to completion
-  record: roblox/resources/records/vide.yaml
-  learnings: roblox/resources/learnings/
 installation:
   profile: pesde-git
   dependency_section: dependencies

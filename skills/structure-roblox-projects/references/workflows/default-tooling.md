@@ -1,5 +1,7 @@
 # Default tooling: setup and verification
 
+> **Version check:** the tool guidance here was reviewed against the versions in [`versions.json`](../../versions.json). Before answering, once per session, run this skill's [`scripts/check_updates.py`](../../scripts/check_updates.py) with `python` (cached for a day). If a tool has a newer release, say so and follow [keeping current](../core/keeping-current.md).
+
 Use when configuring a tooling role the task or chosen setup needs. Keep compatible established choices, pins, and toolchains. Before introducing or upgrading a tool, follow [evidence and freshness](../core/evidence-and-freshness.md). New setups follow the [needs-led setup](onboarding.md).
 
 ## Defaults by role

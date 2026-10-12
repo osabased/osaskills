@@ -1,0 +1,35 @@
+{
+ "id": "q-tool-new-1",
+ "task": "q-tool",
+ "cond": "new",
+ "rep": 1,
+ "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob",
+  "Write",
+  "Write",
+  "Write"
+ ],
+ "result": "I added StyLua with three new files in the project root. I couldn't run anything, so none of it has been tested.\n\n- **`rokit.toml`**: pins `JohnnyMorganz/StyLua@2.0.2`. The project had no tool manager, so I used Rokit.\n- **`stylua.toml`**: sets `syntax = \"Luau\"`, 120 columns, tab indents, Unix line endings, double quotes where possible, and no require sorting. These are my own choices, because the project had no existing style config. If you'd rather match StyLua's defaults, delete the keys you don't care about. Your existing `src/` files may reformat on the first run.\n- **`.styluaignore`**: excludes `Packages/`, `DevPackages/`, `ServerPackages/`, `sourcemap.json` and `.claude/`. The `.claude/` folder holds skill example scripts, which aren't project source.\n\nI picked 2.0.2 because I know it exists. I couldn't check for a newer release, so run `rokit update` if you want the latest.\n\nNext steps, from the project root:\n1. Run `rokit install`.\n2. Run `stylua --check --respect-ignores src` to see what would change.\n3. Run `stylua --respect-ignores src` to format.\n\nI didn't wire up CI or an editor integration. I also didn't touch the staged and modified skill files already in your working tree.",
+ "cost": 0.1083352,
+ "turns": 10,
+ "seconds": 20.0,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-8dj54y2v",
+ "written": {
+  ".styluaignore": "# Installed packages and generated output\nPackages/\nDevPackages/\nServerPackages/\nsourcemap.json\n\n# Agent skills and their example scripts are not project source\n.claude/\n",
+  "rokit.toml": "[tools]\nstylua = \"JohnnyMorganz/StyLua@2.0.2\"\n",
+  "stylua.toml": "syntax = \"Luau\"\ncolumn_width = 120\nline_endings = \"Unix\"\nindent_type = \"Tabs\"\nindent_width = 4\nquote_style = \"AutoPreferDouble\"\ncall_parentheses = \"Always\"\n\n[sort_requires]\nenabled = false\n"
+ }
+}

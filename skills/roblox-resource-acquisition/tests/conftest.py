@@ -1,4 +1,4 @@
-"""Shared test setup: load the validator scripts as importable modules."""
+"""Shared test setup: load the scripts as importable modules."""
 import importlib.util
 import sys
 from pathlib import Path
@@ -28,38 +28,8 @@ def common():
 
 
 @pytest.fixture(scope="session")
-def registry_mod():
-    return load_script("validate_curated_registry")
-
-
-@pytest.fixture(scope="session")
-def learnings_mod():
-    return load_script("validate_learnings_store")
-
-
-@pytest.fixture(scope="session")
-def record_mod():
-    return load_script("validate_resource_record")
-
-
-@pytest.fixture(scope="session")
 def skill_mod():
     return load_script("validate_skill")
-
-
-@pytest.fixture(scope="session")
-def bundle_mod():
-    return load_script("validate_resource_bundle")
-
-
-@pytest.fixture(scope="session")
-def status_mod():
-    return load_script("check_resource_status")
-
-
-@pytest.fixture(scope="session")
-def catalog_mod():
-    return load_script("validate_skill_catalog")
 
 
 @pytest.fixture(scope="session")

@@ -1,0 +1,40 @@
+{
+ "id": "q-addsignal-old-1",
+ "task": "q-addsignal",
+ "cond": "old",
+ "rep": 1,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Bash",
+  "Read",
+  "Read",
+  "Glob",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "I made no edits, because the project already has LemonSignal set up.\n\n- **Already declared:** `wally.toml` lists `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"` under `[dependencies]`, with the `shared` realm. `default.project.json` maps `Packages` to `ReplicatedStorage.Packages`, so both server and client can require it.\n- **Pin matches:** 2.0.0 is the version the bundled `roblox-lemonsignal` skill covers.\n- **Not installed yet:** there is no `Packages/` folder and no `wally.lock`. Running `wally install` in the project root creates both. That's the step I couldn't do. The project has both `wally.toml` and `pesde.toml`, and LemonSignal is only in `wally.toml`, so that's the one to install from.\n- **How a module uses it:** it can expose an event like this (use whatever path your sourcemap gives):\n\n```luau\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Health = {}\nHealth.Damaged = LemonSignal.new() -- Signal<number>\n\nfunction Health.damage(amount: number)\n\tHealth.Damaged:Fire(amount)\nend\n\nreturn Health\n```\n\n- **Cleanup:** listeners fire newest first. Call `:Destroy()` on any signal you create when its owner is torn down. If you use Janitor (also in `wally.toml`), add connections with `\"Disconnect\"` and signals with `\"Destroy\"`.\n- **No new records:** I didn't add a record or `CLAUDE.md` entry, since nothing new was acquired.\n\nIf you want a placeholder module in `src/shared` that exposes a signal, I can add one. I held off because `src/shared/init.luau` currently just returns `{}` and I don't know what your modules look like.",
+ "cost": 0.2133196,
+ "turns": 19,
+ "seconds": 33.0,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-amq4rybp",
+ "written": {}
+}

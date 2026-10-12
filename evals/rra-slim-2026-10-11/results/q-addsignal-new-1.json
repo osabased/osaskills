@@ -1,0 +1,33 @@
+{
+ "id": "q-addsignal-new-1",
+ "task": "q-addsignal",
+ "cond": "new",
+ "rep": 1,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Glob"
+ ],
+ "result": "I didn't edit any files. This project already declares a signal library, so nothing needed adding.\n\n`wally.toml` has `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`. That is the LemonSignal 2.0.0 package, and `default.project.json` already maps `Packages` into `ReplicatedStorage`. A second signal library would only duplicate it.\n\nThe package isn't installed yet. There's no `Packages/` folder and no `wally.lock` in the project, so a `require` of it would fail until you run this in the project root:\n\n```\nwally install\n```\n\nThen commit `wally.lock`. I couldn't run that or any check, so none of the following has been tested:\n- **Require path:** it should be `require(ReplicatedStorage.Packages.LemonSignal)`.\n- **Behaviour:** I haven't confirmed that `Fire` and `Connect` work at the pinned version.\n\nHow a module exposes a custom event, once the package is installed:\n\n```lua\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Health = {}\nHealth.Changed = LemonSignal.new()  -- Health.Changed:Fire(new, old)\n\nreturn Health\n```\n\nConsumers call `Health.Changed:Connect(fn)`. The owning module should call `Health.Changed:Destroy()` on teardown. Signals only reach code in the same runtime, so use RemoteEvents or Blink to cross the client/server boundary.\n\nI did not write the `CLAUDE.md` resource list. The skill only adds LemonSignal there once it's installed and checked, and the project has no `CLAUDE.md` yet. The project also already has a `roblox-lemonsignal` skill with the API details.",
+ "cost": 0.1042609,
+ "turns": 12,
+ "seconds": 20.7,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-brm3hbk3",
+ "written": {}
+}

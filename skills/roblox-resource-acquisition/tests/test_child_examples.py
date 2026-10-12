@@ -21,22 +21,19 @@ def load_helper(path, name):
 
 
 @pytest.mark.parametrize("folder", ["goodsignal", "rojo-build"])
-def test_worked_child_bundle(tmp_path, bundle_mod, folder):
+def test_worked_child_validates(tmp_path, skill_mod, folder):
     source = EXAMPLES / folder
-    record_path = source / "resource-record.example.yaml"
-    record = yaml.safe_load(record_path.read_text(encoding="utf-8"))
-    candidate = tmp_path / record["generated_skill"]
+    metadata, _ = skill_mod.parse_frontmatter((source / "SKILL.example.md").read_text(encoding="utf-8"))
+    candidate = tmp_path / metadata["name"]
     shutil.copytree(source, candidate)
     (candidate / "SKILL.md").write_bytes((source / "SKILL.example.md").read_bytes())
     (candidate / "resource.yaml").write_bytes((source / "resource.example.yaml").read_bytes())
     skill = candidate / "SKILL.md"
     skill.write_text(skill.read_text(encoding="utf-8").replace("resource.example.yaml", "resource.yaml"), encoding="utf-8")
-    errors, _ = bundle_mod.validate_bundle(record_path, record, candidate)
-    assert errors == []
-    # These examples do not import behavioral claims from structural evidence.
-    assert record["verification"]["status"] == "unverified"
-    assert record["skill_validation"]["checks"] == []
-    assert record["host_adoptions"] == []
+    errors, _ = skill_mod.validate_skill(candidate)
+    assert errors == [], "\n".join(errors)
+    descriptor = yaml.safe_load((candidate / "resource.yaml").read_text(encoding="utf-8"))
+    assert set(descriptor["reconciliation"]) == {"policy", "reason"}
 
 
 def test_tool_fixture_contract_and_failure_ownership(tmp_path, monkeypatch):

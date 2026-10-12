@@ -2,21 +2,20 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RUBRIC = (ROOT / "references" / "evaluation-rubric.md").read_text(encoding="utf-8")
+RUBRIC = (ROOT / "references" / "choosing.md").read_text(encoding="utf-8")
 
 
 def test_resource_criteria_keep_evidence_without_default_weights():
     assert "## Weighted comparison" not in RUBRIC
     assert "Score each 0-5" not in RUBRIC
     assert "earned weighted points" not in RUBRIC
-    assert "| Criterion | What good evidence looks like |" in RUBRIC
+    assert "| Criterion | Good evidence |" in RUBRIC
     for criterion in (
-        "Requirement fit", "Correctness evidence", "Integration cost",
-        "Maintenance/currentness", "API/documentation quality", "Security posture",
-        "Dependency burden", "Testability", "Performance fit", "Portability/lock-in",
+        "Fit", "Correctness", "Integration cost", "Maintenance",
+        "API and docs", "Security", "Dependencies", "Performance",
     ):
         assert f"| {criterion} |" in RUBRIC
-    assert RUBRIC.index("## Hard gates") < RUBRIC.index("## Evidence-and-priority comparison")
+    assert "Don't invent scores or weights." in RUBRIC
 
 
 def test_selection_callers_do_not_require_the_removed_scorer():
@@ -61,6 +60,7 @@ def test_comparison_case_definitions_are_well_formed():
 
 
 def test_hard_gates_come_before_comparison():
-    gates = RUBRIC.split("## Hard gates", 1)[1].split("## Evidence-and-priority comparison", 1)[0]
-    for name in ("Fit", "Evaluability", "Compatibility", "Safety", "Legitimacy", "Proof"):
+    assert RUBRIC.index("## 5. Apply the hard gates") < RUBRIC.index("## 6. Compare and decide")
+    gates = RUBRIC.split("## 5. Apply the hard gates", 1)[1].split("## 6. Compare and decide", 1)[0]
+    for name in ("Fit", "Evaluability", "Compatibility", "Safety", "License", "Proof"):
         assert f"- **{name}:**" in gates

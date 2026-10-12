@@ -1,0 +1,27 @@
+{
+ "id": "q-compare-old-2",
+ "task": "q-compare",
+ "cond": "old",
+ "rep": 2,
+ "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 12,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Grep"
+ ],
+ "result": "**Use Janitor.** I didn't change anything.\n\n- **It's already in your project.** `wally.toml:8` pins `howmanysmall/janitor@1.18.3`, and a bundled `roblox-janitor` skill matches that version. Adding Trove would put a second cleanup library in the project for no gain, and the project has no Trove code today.\n- **It covers what you listed.** Janitor cleans up parts and other Instances, tweens (via `Add(tween, \"Cancel\")`) and connections. It also handles threads and plain callbacks.\n- **It fits a per-round lifecycle.** Create one Janitor per round and add each object as you spawn it. When the round ends, call `janitor:Cleanup()`, which empties it and leaves it reusable for the next round. If you want a fresh one each round, call `Destroy()` instead.\n- **Trove isn't better enough to switch.** Trove does the same job, and `trove:Extend()` for sub-scopes is a nice touch. You can get the same nesting by adding a child Janitor to the round Janitor. The difference doesn't justify a second dependency.\n\nOne caveat: I didn't run anything or test it against your round system. I only checked the manifest and the bundled catalog. If the round system has its own cleanup convention that I haven't seen, that would take precedence.",
+ "cost": 0.07299130000000001,
+ "turns": 6,
+ "seconds": 14.4,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-38unp0j9",
+ "written": {}
+}

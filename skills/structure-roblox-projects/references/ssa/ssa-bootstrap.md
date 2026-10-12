@@ -1,5 +1,7 @@
 # ModuleLoader 3.0.4 SSA compatibility
 
+> **Version check:** before answering, once per session, run this skill's [`scripts/check_updates.py`](../../scripts/check_updates.py) with `python` (cached for a day). A newer ModuleLoader release means this contract needs the [upgrade review](#migration-and-upgrade) through [keeping current](../core/keeping-current.md); existing SSA projects keep their pin.
+
 Use this contract to create canonical Single Script Architecture (SSA), explicitly migrate a project to it, or change its loader, entrypoints, discovery, configuration, acquisition, or upgrade behavior. Read [`ssa.md`](ssa.md) for the feature contract that the infrastructure must expose.
 
 This reference is a fixed-target compatibility contract for projects that deliberately adopted the target below. It is not a greenfield default or a claim about the current recommended release. Research new startup choices through the setup/evidence workflow; preserve an existing project target unless a reviewed change selects another.
@@ -19,11 +21,11 @@ Canonical SSA pins:
 | License | MIT |
 | `ModuleLoader.rbxm` SHA-256 | `79ebdaa4e8291402d565e5318775c2208e554ccb36770db20be5978f15b30521` |
 
-`structure-roblox-projects` owns this dependency as part of Canonical SSA infrastructure: its canonical identity, exact pin, acquisition form, DataModel placement, expected behavior, and upgrade/replacement decision are structural architecture. Another workflow may acquire, verify, or document this exact target, but it must not select a substitute, advance the pin, or redefine the dependency independently.
+In an SSA project the loader is part of the architecture, not an ordinary library choice. Its identity, pin, acquisition form and placement change only through the [migration and upgrade](#migration-and-upgrade) steps below, never as a side effect of a dependency refresh.
 
 When the project already uses or deliberately selects Wally, declare `ModuleLoader = "crusherfire/module-loader@3.0.4"` and map the resulting package alias to `ReplicatedStorage/Packages/ModuleLoader`. Otherwise acquire the exact [`v3.0.4` `ModuleLoader.rbxm` release asset](https://github.com/ActualFire-Games/module-loader/releases/tag/v3.0.4).
 
-When acquisition or integration is part of the task and the [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) skill is installed, use it in `acquire/adopt` mode with the identity and pin above as a fixed target. Without it, download the exact release asset or Wally version and check the SHA-256 above. Verification may block the target, but it does not authorize a substitute or upgrade. If the target cannot be acquired or verified well enough, report the block here. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
+Download the exact release asset or Wally version and check the SHA-256 above. The [`roblox-resource-acquisition`](../../../roblox-resource-acquisition/SKILL.md) skill, when installed, can do this with the pin above as a fixed target. Verification may block the target, but it does not authorize a substitute or upgrade. If the target cannot be acquired or verified well enough, report the block here. Preserve the MIT notice when copying or vendoring the source or a substantial portion of it.
 
 For existing projects, keep any exact `Structural dependencies` target recorded in the project guide or a legacy `AGENT_DIR/roblox/structure.md` profile ([agent directory](../conventions/project-guide.md#agent-directory)), at its stated scope. For a newly selected target, keep identity, version, and acquisition in the project's manifests, and explain placement, lifecycle, and upgrade ownership in the project guide by reference. Save guide changes through the [project guide](../conventions/project-guide.md#save-it) workflow.
 
@@ -107,7 +109,7 @@ Treat a loader load, Init, or Start warning attributable to changed work as a va
 
 For an explicit migration, follow [`migration.md`](../workflows/migration.md) and account for every old entrypoint and registration path, duplicate-start risk, the resulting source-of-truth mapping, and a recovery boundary. Remove or redirect old startup only inside the authorized migration write set.
 
-Changing the ModuleLoader canonical identity, version/commit, acquisition form, or placement is Canonical SSA infrastructure work owned by `structure-roblox-projects`; do not let resource refresh independently advance it. Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Change the applicable project compatibility contract only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md), and propose the affected project-guide changes before saving them. A project-specific upgrade does not automatically rewrite this shared fixed-target reference.
+Changing the ModuleLoader identity, version/commit, acquisition form, or placement is an SSA infrastructure change; a resource refresh does not advance it. Before changing the pin, re-verify the target release's API, discovery defaults, lifecycle ordering and failure behavior, release integrity, license, and project-specific configuration. Change the applicable project compatibility contract only after the new target preserves or deliberately revises each affected public rule in [`ssa.md`](ssa.md), and propose the affected project-guide changes before saving them. A project-specific upgrade does not automatically rewrite this shared fixed-target reference.
 
 ## Validation
 

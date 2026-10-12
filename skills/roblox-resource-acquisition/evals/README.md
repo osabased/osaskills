@@ -1,33 +1,20 @@
-# Resource-comparison behavioral cases
+# Behavioral eval fixtures
 
-[comparison-cases.json](comparison-cases.json) contains fictional, closed-world cases for the resource-comparison policy. These are evaluation fixtures, not runtime instructions. Static checks validate their structure; they do not execute agents or prove better decisions.
+Hand-graded, closed-world cases for `roblox-resource-acquisition`. All resources, URLs and results in them are fictional fixtures. They are not runtime instructions, and the static tests only check their structure; a green test run says nothing about agent behavior.
 
-## Compare outcomes
+| File | Covers |
+| --- | --- |
+| [comparison-cases.json](comparison-cases.json) | Choosing between candidates: strict priorities vs thresholds, supplied quantitative models, unknown evidence vs real ties, hard gates, fixed targets and project-listed preferences, existing capabilities, unverified vs unavailable checks, bounded workarounds, owner-reserved choices, resumed evaluations. Each case has a `family`; paired cases list each other in `related`. |
+| [adoption-cases.json](adoption-cases.json) | The add/adopt flow: proactive adoption, pending adoption when a required check can't run, different pins across projects, unresolved project scope, explicit user-wide child placement, evaluation-only scope, an already-solved task, and a guidance fix vs a new release. |
+| [community-cases.json](community-cases.json) | Community evidence: copied endorsements, a project-named target, inaccessible channels, version/context disagreement, sparse evidence, and when no survey is needed. |
+| [maintenance-cases.json](maintenance-cases.json) | Using an adopted child: install check `PASS` / `UNAVAILABLE` / `FAIL`, conditional vs required reconciliation, and hard / soft / harmless guidance defects. |
+| [trigger-cases.json](trigger-cases.json) | Queries that should and should not select the skill, for tuning the `description`. Rerun after any description change; near-misses matter as much as positives. |
 
-Use fresh isolated sessions with the same model/settings, tool availability, and per-case budget for: no skill, the resource-acquisition skill at `bbb1bdfee536b3e44923520b93fa5c3e818a8e8a`, and the exact candidate commit. Explicitly invoke the skill in the two skill conditions. Load only its runtime instructions and conditionally needed references. Keep this README, grader-only `accept`/`reject` fields, related cases, and implementation discussion out of the evaluated agent's context.
+## Running a case
 
-Supply one `prompt` at a time. The supplied measurements and observations are fixtures, not claims about real resources or tools. Resumed-evaluation cases supply earlier evidence as context; they do not establish that the evaluated agent performed those checks. For cases asking for the next evidence step, judge whether it addresses the deciding gap without claiming execution.
+1. Start a fresh, isolated session per case with the same model, settings, tools and budget across conditions. Conditions: no skill, the skill at a baseline commit, and the skill at the candidate commit. In the skill conditions, invoke the skill explicitly.
+2. Give the agent only the case's `prompt` and the skill's runtime files (`SKILL.md` and the references it chooses to read). Keep `accept`, `reject`, `related`, other cases and this README out of its context.
+3. Grade outcomes, not wording: mark each `accept` item met, missed or unclear with an excerpt, and record any `reject` behavior separately. Supplied results in a prompt are fixtures; the agent must not present them as checks it ran.
+4. Run paired cases (`strict-priority` / `threshold-only`, `unknown-not-tie` / `supported-tie`) in separate sessions, and include neighboring cases so a local improvement can't hide a regression.
 
-Judge substantive outcomes rather than new terminology or headings. Record each expectation as met, missed, or unclear with an excerpt or trace; retain rejected behaviors separately. A supported quantitative calculation is valid. Unsupported grades and weights matter when they distort or substitute for the required reasoning, not merely because a response contains numbers.
-
-## Paired safeguards and limits
-
-Run `strict-priority` with `threshold-only`, and `unknown-not-tie` with `supported-tie`, in separate sessions. Include the authority, trust/verification, existing-capability, bounded-refinement, ordinary-comparison, owner-preference, resumed-evaluation, and missing-evidence cases so a local improvement does not hide regressions in neighboring boundaries.
-
-Keep exact commits, model/settings, responses/traces, judgments, and available tool/token/time measurements outside the evaluated agent's context. Choose repeat counts before reviewing results. Unavailable measurements remain unavailable. Do not add model calls to CI or interpret a green schema/document check as behavioral success. A static walkthrough can expose contradictory instructions but is not an independent model run or a measured improvement. Keep new real-world failures separate from repeatedly tuned fixtures.
-
-## Full adoption and cross-project cases
-
-[adoption-cases.json](adoption-cases.json) exercises proactive adoption, reliability/maintenance selection, default project scope, unresolved project scope, explicit user scope, unavailable tool proof, different project pins, explicit evaluation-only scope, an already-solved simple task, and factual repair versus upgrade decisions. Supply only one case's `prompt` and the runtime skill to each fresh read-only session; keep `accept`/`reject` fields and other cases hidden. Score decisions and truthful remaining work, not wording. These simulations establish instruction-response evidence only, never actual integration, runtime execution, host discovery or implicit routing.
-
-[community-cases.json](community-cases.json) exercises topic-level recommendations, repeated endorsements, version/context disagreement, fixed curated targets, inaccessible community channels and healthy-use boundaries. Follow the same isolated-session and hidden-grading rules; use only the supplied fictional evidence, and distinguish supplied proof from checks the agent actually ran.
-
-For a non-Git local skill, capture the exact baseline/candidate file fingerprints instead of inventing commits. A candidate-only run can expose defects but does not measure improvement against a matched baseline. Keep unavailable paired conditions explicit.
-
-## Maintenance and ordinary-use cases
-
-[maintenance-cases.json](maintenance-cases.json) preserves the behavioral requirements behind the parent router's former exact-prose tests: target-bound refresh, hard/soft/harmless repair, healthy conditional use, required plugin integrity and unresolved project scope. Use the same isolated-session and hidden-grading protocol. Static tests check reference reachability and fixture structure; they do not establish that an agent followed a repair route or performed a check. Use the comparison/adoption/community cases alongside them to check neighboring boundaries.
-
-## Triggering cases
-
-[trigger-cases.json](trigger-cases.json) lists realistic queries that should and should not select this skill. Use them to tune the `description` (for example with a description-optimization loop) and re-run them after any description change. A near-miss that should not trigger matters as much as a positive case.
+Choose repeat counts before looking at results. Keep commits, settings, transcripts and grades outside the evaluated context. A candidate-only run can expose defects but doesn't measure improvement. Don't add model calls to CI, and keep new real-world failures separate from fixtures that have been tuned against.

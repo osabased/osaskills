@@ -1,0 +1,55 @@
+name: Freshness
+
+# Weekly check that the Roblox skills still describe the latest stable release of every
+# tool and library they pin. Outdated items go into one tracking issue; an agent using
+# the skills (or you) updates them through a PR per skills/*/references/**/keeping-current.md.
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Check pinned versions
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          python skills/roblox-resource-acquisition/scripts/check_updates.py --no-cache \
+            skills/roblox-resource-acquisition/versions.json \
+            skills/structure-roblox-projects/versions.json | tee report.txt
+          echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+      - name: Update tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODE: ${{ steps.check.outputs.code }}
+        run: |
+          title="Outdated skill pins"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ "$CODE" = "1" ]; then
+            {
+              echo "The weekly freshness check found newer stable releases than the skills were last reviewed against."
+              echo "Update each one through a PR as described in \`keeping-current.md\` (one item per PR)."
+              echo
+              echo '```'
+              grep -v '^current' report.txt
+              echo '```'
+            } > body.md
+            if [ -n "$number" ]; then gh issue edit "$number" --body-file body.md; else gh issue create --title "$title" --body-file body.md; fi
+          elif [ "$CODE" = "0" ] && [ -n "$number" ]; then
+            gh issue close "$number" --comment "All pinned tools and libraries are current."
+          elif [ "$CODE" = "2" ]; then
+            echo "::warning::No item could be checked; see the log."
+          fi

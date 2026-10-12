@@ -1,5 +1,7 @@
 # Rojo structure work
 
+> **Version check:** this page's Rojo facts were reviewed against the version in [`versions.json`](../../versions.json). Before answering, once per session, run this skill's [`scripts/check_updates.py`](../../scripts/check_updates.py) with `python` (cached for a day). If Rojo has a newer release, say so and follow [keeping current](../core/keeping-current.md).
+
 Use when reviewing, designing, adopting, removing, or changing a Rojo mapping or workflow; editing a `*.project.json`, `*.meta.json`, or `*.model.json` file; or moving content into, out of, or within Rojo mapping where path, name, topology, `syncback`, or live `rojo serve` safety can change the resulting DataModel. A routine source edit inside a clear, stable mapping doesn't need this reference.
 
 For a small filesystem-first project, prefer a compact source tree and let the project file define the DataModel mapping:
@@ -18,7 +20,7 @@ default.project.json
 
 1. If version-sensitive behavior matters, check the repository's Rojo pin and run `rojo --version` when available.
 2. Determine the effective DataModel mapping, not just the directory tree. Inspect the applicable `*.project.json` / `*.project.jsonc`, nested projects, relevant `*.meta.json` and `*.model.json` files and their JSONC equivalents, `init.*` conventions, and the instance fields `$path`, `$className`, `$properties`, and `$ignoreUnknownInstances`.
-3. When they can affect the task, inspect version-dependent settings: `emitLegacyScripts` (7.4+; default `true` makes `*.client.luau` a `LocalScript` and `*.server.luau` a legacy `Script`, while `false` emits `Script`s with `RunContext` Client/Server; verified on 7.7.0), `syncRules` (7.5+), `globIgnorePaths`, suffix conventions, nested project behavior, and `syncbackRules` (7.7+). rojo.space lags behind for fields added after 7.4; the [changelog](https://github.com/rojo-rbx/rojo/blob/master/CHANGELOG.md) is more complete.
+3. When they can affect the task, inspect version-dependent settings: `emitLegacyScripts` (7.4+; default `true` makes `*.client.luau` a `LocalScript` and `*.server.luau` a legacy `Script`, while `false` emits `Script`s with `RunContext` Client/Server; verified on 7.7.0 and 7.7.1), `syncRules` (7.5+), `globIgnorePaths`, suffix conventions, nested project behavior, and `syncbackRules` (7.7+). rojo.space lags behind for fields added after 7.4; the [changelog](https://github.com/rojo-rbx/rojo/blob/master/CHANGELOG.md) is more complete.
 4. For moves or renames inside mapped content, check whether the path, filename, `init.*` role, suffix, nested project, or metadata changes the resulting DataModel even when no project file is edited.
 5. Trace the full DataModel effect of a mapping or topology change. A filesystem move or project/metadata edit can affect instances outside the subtree that appears to contain it.
 6. Keep structural changes separate from Rojo version upgrades. Change pins, manifests, lockfiles, or generated mappings only when the task covers those writes.
@@ -53,9 +55,9 @@ One verified Rojo 7.7 shape is a shared `common.project.json` holding the full t
 }
 ```
 
-Glob patterns match paths relative to the project file's directory, so write `src/client/Preview`, not `client/Preview`. `**/Preview` excludes an `init`-backed directory and everything under it; `**/Preview/**` alone leaves the directory's own ModuleScript in place. Rojo 7.7.0 also supports `!` negation in these patterns.
+Glob patterns match paths relative to the project file's directory, so write `src/client/Preview`, not `client/Preview`. `**/Preview` excludes an `init`-backed directory and everything under it; `**/Preview/**` alone leaves the directory's own ModuleScript in place. Rojo 7.7.0 and later also support `!` negation in these patterns.
 
-Don't add a service such as `ReplicatedStorage` beside the wrapper's root `$path`. In 7.7.0, `rojo build` then emits two of that service, while `rojo sourcemap` shows one and silently drops the wrapper's added children. This is why both artifacts must be checked. Use this shape only when it fits the project, adapt the names, and recheck against the project's pinned Rojo.
+Don't add a service such as `ReplicatedStorage` beside the wrapper's root `$path`. In 7.7.0 and 7.7.1, `rojo build` then emits two of that service, while `rojo sourcemap` shows one and silently drops the wrapper's added children. This is why both artifacts must be checked. Use this shape only when it fits the project, adapt the names, and recheck against the project's pinned Rojo.
 
 For repeatable checks, use [`../../scripts/check_rojo_artifact.py`](../../scripts/check_rojo_artifact.py) when the project can produce a text `.rbxlx` and a sourcemap. It needs Python 3.11+; build the artifacts separately with the project's pinned Rojo.
 

@@ -1,0 +1,38 @@
+{
+ "id": "q-tool-new-2",
+ "task": "q-tool",
+ "cond": "new",
+ "rep": 2,
+ "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Grep",
+  "Read",
+  "Read",
+  "Write",
+  "Write",
+  "Write"
+ ],
+ "result": "I added StyLua to the project with three new files in the project root. I couldn't run anything, so none of it has been tried.\n\n- **`rokit.toml`** pins `JohnnyMorganz/StyLua@2.0.2`. The project had no tool manager, so I used Rokit.\n- **`stylua.toml`** sets `syntax = \"Luau\"`, 120 columns, tab indentation, and double quotes unless a string contains one. Require sorting is off, so StyLua won't reorder `require` lines. Change any of these if you have a style preference.\n- **`.styluaignore`** keeps StyLua away from `Packages/`, `roblox_packages/`, `luau_packages/`, `sourcemap.json` and `.claude/`.\n\nI picked 2.0.2 because I'm sure it exists. I had no way to look up the newest release, so you may want to bump it.\n\nRun these in the project root:\n1. `rokit install` restores the pinned StyLua.\n2. `stylua src` formats the three existing files.\n3. `stylua --check src` is the read-only check you can use in CI or a pre-commit hook.\n\nThe existing `src/*` files are tiny, so `stylua src` probably won't change them.",
+ "cost": 0.1071315,
+ "turns": 13,
+ "seconds": 20.6,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-mea4tvqb",
+ "written": {
+  ".styluaignore": "# Package-manager output and generated files\nPackages/\nroblox_packages/\nluau_packages/\nsourcemap.json\n\n# Tool and skill content, not game source\n.claude/\n",
+  "rokit.toml": "[tools]\nstylua = \"JohnnyMorganz/StyLua@2.0.2\"\n",
+  "stylua.toml": "syntax = \"Luau\"\ncolumn_width = 120\nline_endings = \"Unix\"\nindent_type = \"Tabs\"\nindent_width = 4\nquote_style = \"AutoPreferDouble\"\ncall_parentheses = \"Always\"\ncollapse_simple_statement = \"Never\"\n\n[sort_requires]\nenabled = false\n"
+ }
+}

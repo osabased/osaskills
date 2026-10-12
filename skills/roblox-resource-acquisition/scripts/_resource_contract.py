@@ -1,4 +1,4 @@
-"""Static, versioned child specifications. Project records own live state and proof."""
+"""Static, versioned child specifications (resource-child contract 1)."""
 from __future__ import annotations
 
 from datetime import date
@@ -21,53 +21,7 @@ HEX256 = re.compile(r"^[0-9a-f]{64}$")
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 NPM_PACKAGE = re.compile(r"(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*")
 EXACT_RELEASE = re.compile(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?")
-
-
-# Project resource data lives under AGENT_DIR/roblox/resources/. Descriptor paths are
-# relative to AGENT_DIR (roblox/resources/...); explicit .claude/ or .agents/ paths are
-# project-relative and kept for older children.
-AGENT_DIRS = (".claude", ".agents")
-EXPLICIT_AGENT_PREFIXES = tuple(name + "/roblox/resources/" for name in AGENT_DIRS)
-LEGACY_USER_STORE = "~/.roblox-resources/"
-USER_STORE_PREFIXES = tuple("~/" + name + "/roblox/resources/" for name in AGENT_DIRS) + (LEGACY_USER_STORE,)
-
-
-def agent_dir(base: Path, *, create: bool = False) -> Path:
-    """AGENT_DIR rule: .claude/ if it exists, else .agents/ if it exists, else .claude/.
-
-    When both exist, use the one that already contains roblox/; if neither or both do, .claude/.
-    """
-    claude, agents = base / ".claude", base / ".agents"
-    if claude.is_dir() and agents.is_dir():
-        chosen = agents if (agents / "roblox").is_dir() and not (claude / "roblox").is_dir() else claude
-    elif agents.is_dir():
-        chosen = agents
-    else:
-        chosen = claude
-    if create:
-        chosen.mkdir(parents=True, exist_ok=True)
-    return chosen
-
-
-def resolve_agent_path(base: Path, value: str) -> Path:
-    """Resolve a descriptor/record path against a project (or home) directory."""
-    if value.startswith(EXPLICIT_AGENT_PREFIXES):
-        return base / value
-    return agent_dir(base) / value
-
-
-def resolve_user_store_path(value: str) -> tuple[Path, str]:
-    """Resolve a user-scope ~/... store path; fall back to a legacy ~/.roblox-resources/ copy."""
-    home = Path.home()
-    if value.startswith(LEGACY_USER_STORE):
-        rest = value.removeprefix(LEGACY_USER_STORE)
-    else:
-        rest = value.removeprefix("~/").split("/roblox/resources/", 1)[-1]
-    current = agent_dir(home) / "roblox" / "resources" / rest
-    legacy = home / ".roblox-resources" / rest
-    if not current.exists() and legacy.exists():
-        return legacy, "read legacy ~/.roblox-resources/; suggest moving it to ~/.claude/roblox/resources/"
-    return current, ""
+LEGACY_RECONCILIATION_FIELDS = {"record", "learnings", "no_project_record", "no_project_learnings"}
 
 
 def url_identity(value: str) -> tuple[str, str, int | None, str, str]:
@@ -280,21 +234,13 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
             core.update(roles)
     if not CORE_ROLES <= core or not {"setup", "troubleshooting"} <= coverage:
         raise ValueError("entrypoint must cover routing/use/ownership/security/verification/maintenance; setup and troubleshooting must be reachable")
-    reconciliation = mapping(data["reconciliation"], {"policy", "reason", "record", "learnings", "no_project_record", "no_project_learnings"}, {"policy", "reason", "record", "learnings"}, "reconciliation")
+    # record, learnings and no_project_* are legacy fields from older children. They are
+    # still accepted so installed children keep validating, but nothing reads them.
+    reconciliation = mapping(data["reconciliation"], {"policy", "reason"} | LEGACY_RECONCILIATION_FIELDS, {"policy", "reason"}, "reconciliation")
     choice(reconciliation["policy"], {"required", "conditional", "not-applicable"}, "reconciliation.policy")
     string(reconciliation["reason"], "reconciliation.reason")
-    for field in ("record", "learnings"):
-        value = string(reconciliation[field], "reconciliation." + field)
-        within(root, value)
-        if not value.startswith(("roblox/resources/",) + EXPLICIT_AGENT_PREFIXES):
-            raise ValueError(f"reconciliation.{field} must be relative to AGENT_DIR (roblox/resources/...) or an explicit .claude/ or .agents/ roblox/resources/ path")
-    if data["scope"] == "project" and any(field in reconciliation for field in ("no_project_record", "no_project_learnings")):
-        raise ValueError("project-scoped children cannot fall back to global records/learnings")
-    if data["scope"] == "user":
-        for field in ("no_project_record", "no_project_learnings"):
-            value = string(reconciliation.get(field), "reconciliation." + field)
-            if not value.startswith(USER_STORE_PREFIXES) or ".." in Path(value).parts:
-                raise ValueError("user-scope no-project evidence must resolve under ~/.claude/roblox/resources/ (or ~/.agents/roblox/resources/)")
+    for field in sorted(LEGACY_RECONCILIATION_FIELDS & set(reconciliation)):
+        string(reconciliation[field], "reconciliation." + field)
     install = mapping(data["installation"], {"profile", "dependency_section", "registry", "target", "new_structure", "integrity", "companions", "asset_sha256", "custom_checker", "archive_url", "archive_integrity"}, {"profile"}, "installation")
     profile = choice(install["profile"], PROFILES, "installation.profile")
     fields = {
@@ -358,8 +304,3 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
             raise ValueError("custom profile requires an existing child-owned scripts/ checker")
     return data
 
-
-def child_identity(root: Path) -> dict[str, Any]:
-    contract = load_contract(root, check_documents=False)
-    resource = contract["resource"]
-    return {"slug": resource["slug"], "canonical_url": resource["canonical_url"], "package_id": resource["package_id"], "devforum_url": resource["devforum_url"], "version": resource["selector"]["value"]}

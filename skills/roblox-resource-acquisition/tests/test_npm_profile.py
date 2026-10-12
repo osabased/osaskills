@@ -176,10 +176,24 @@ def test_added_nested_source_and_wrong_installed_package_fail(npm_case):
 def test_missing_project_and_escaping_alias_fail(npm_case, capsys):
     child, project, _, manifest, lock = npm_case
     assert install.main([str(child)]) == 2
-    assert 'UNKNOWN' in capsys.readouterr().out
+    assert json.loads(capsys.readouterr().out)['status'] == 'UNAVAILABLE'
     manifest['dependencies'] = {'../../outside': 'npm:@example/widget@1.2.3', '@example/lifetime': '2.3.4'}
     lock['packages']['']['dependencies'] = deepcopy(manifest['dependencies'])
     dump(project / 'package.json', manifest)
     dump(project / 'package-lock.json', lock)
     with pytest.raises(ValueError, match='escapes'):
         install.check(child, project, declared_only=True)
+
+
+def test_npm_cli_exit_codes_pass_fail_and_unavailable(npm_case, capsys):
+    child, project, _, manifest, _ = npm_case
+    assert install.main([str(child), '--project', str(project)]) == 0
+    assert json.loads(capsys.readouterr().out)['status'] == 'PASS'
+    manifest['dependencies']['@example/widget'] = '1.2.4'
+    dump(project / 'package.json', manifest)
+    assert install.main([str(child), '--project', str(project), '--declared']) == 1
+    assert json.loads(capsys.readouterr().out)['status'] == 'FAIL'
+    (project / 'package-lock.json').unlink()
+    assert install.main([str(child), '--project', str(project), '--declared']) == 2
+    result = json.loads(capsys.readouterr().out)
+    assert result['status'] == 'UNAVAILABLE' and result['advisory'] is True

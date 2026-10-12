@@ -2,14 +2,14 @@
 from copy import deepcopy
 import hashlib
 import json
-from pathlib import Path
+import subprocess
+import sys
 
 import pytest
 import yaml
 import fixtures
 import _resource_contract as contract
 import check_resource_install as install
-import guard_skill_update as guard
 
 
 @pytest.fixture
@@ -67,30 +67,54 @@ def test_invalid_source_coordinates_rejected(child, url):
         contract.load_contract(child)
 
 
-def test_live_verification_field_rejected_and_record_state_can_change(child, bundle_mod):
+def test_live_verification_field_rejected(child):
     data = read(child)
     data['resource']['verification'] = 'verified'
     write(child, data)
     with pytest.raises(ValueError, match='unknown fields'):
         contract.load_contract(child)
-    data['resource'].pop('verification')
-    write(child, data)
-    record = fixtures.matching_widget_record()
-    record['verification'].update(status='unavailable', validated_at='2026-08-16')
-    record['resource_proof']['unavailable_claims'] = ['Studio is unavailable.']
-    assert bundle_mod.validate_bundle(Path('record.yaml'), record, child)[0] == []
 
 
-def test_project_scope_cannot_use_user_fallback(child):
+def test_descriptor_without_record_or_learnings_validates(skill_mod, child):
     data = read(child)
-    data['reconciliation']['no_project_record'] = '~/.claude/roblox/resources/records/widget-resource.yaml'
-    data['reconciliation']['no_project_learnings'] = '~/.claude/roblox/resources/learnings/'
+    assert set(data['reconciliation']) == {'policy', 'reason'}
+    assert contract.load_contract(child)['reconciliation']['policy'] == 'required'
+    assert skill_mod.validate_skill(child) == ([], [])
+
+
+@pytest.mark.parametrize('scope', ['project', 'user'])
+def test_legacy_record_and_learnings_fields_are_still_accepted(skill_mod, child, scope):
+    data = read(child)
+    data['scope'] = scope
+    data['reconciliation'].update({
+        'record': '.agents/roblox/resources/records/widget-resource.yaml',
+        'learnings': 'roblox/resources/learnings/',
+        'no_project_record': '~/.roblox-resources/records/widget-resource.yaml',
+        'no_project_learnings': '~/.claude/roblox/resources/learnings/',
+    })
     write(child, data)
-    with pytest.raises(ValueError, match='cannot fall back'):
+    assert contract.load_contract(child)['scope'] == scope
+    assert skill_mod.validate_skill(child) == ([], [])
+
+
+@pytest.mark.parametrize('field,value', [
+    ('record', ''), ('learnings', 5), ('no_project_record', None), ('trust', 'trusted'),
+])
+def test_malformed_or_unknown_reconciliation_fields_fail(child, field, value):
+    data = read(child)
+    data['reconciliation'][field] = value
+    write(child, data)
+    with pytest.raises(ValueError, match='reconciliation'):
         contract.load_contract(child)
-    data['scope'] = 'user'
+
+
+@pytest.mark.parametrize('field', ['policy', 'reason'])
+def test_reconciliation_policy_and_reason_are_required(child, field):
+    data = read(child)
+    data['reconciliation'].pop(field)
     write(child, data)
-    assert contract.load_contract(child)['scope'] == 'user'
+    with pytest.raises(ValueError, match='missing fields'):
+        contract.load_contract(child)
 
 
 def test_conditional_reference_is_reachable_and_anchor_checked(skill_mod, child):
@@ -150,14 +174,24 @@ def test_profile_rejects_ignored_fields_and_custom_is_never_executed(child, tmp_
     assert not sentinel.exists()
 
 
-def test_unknown_project_is_exit_two_and_guard_stops_use(child, tmp_path, capsys):
+def test_missing_project_is_advisory_exit_two(child, tmp_path, capsys):
     assert install.main([str(child)]) == 2
-    assert 'UNKNOWN' in capsys.readouterr().out
-    marker = guard.marker_path(child)
-    marker.parent.mkdir()
-    marker.write_text('{}', encoding='utf-8')
-    with pytest.raises(ValueError, match='promotion'):
-        install.check(child, tmp_path)
+    result = json.loads(capsys.readouterr().out)
+    assert result['status'] == 'UNAVAILABLE' and result['advisory'] is True
+    assert '--project' in result['reason']
+    assert install.main([str(child), '--project', str(tmp_path / 'missing')]) == 2
+    assert json.loads(capsys.readouterr().out)['status'] == 'UNAVAILABLE'
+    assert install.main([str(child), '--project', str(tmp_path)]) == 2
+    result = json.loads(capsys.readouterr().out)
+    assert result['status'] == 'UNAVAILABLE' and 'custom checker' in result['reason']
+
+
+def test_malformed_descriptor_is_fail_exit_one(child, tmp_path, capsys):
+    data = read(child)
+    data['schema_version'] = 99
+    write(child, data)
+    assert install.main([str(child), '--project', str(tmp_path)]) == 1
+    assert json.loads(capsys.readouterr().out)['status'] == 'FAIL'
 
 
 def test_denied_read_is_unavailable_without_claiming_resource_failure(child, tmp_path, monkeypatch, capsys):
@@ -255,21 +289,18 @@ def test_asset_filename_is_project_binding_and_hash_is_identity(child, tmp_path)
         install.check(child, tmp_path)
 
 
-def test_parent_contract_input_detects_changed_shared_guidance(record_mod, child, monkeypatch, tmp_path):
-    parent = tmp_path / 'parent'
-    (parent / 'scripts').mkdir(parents=True)
-    (parent / 'references').mkdir()
-    usage = parent / 'references/child-usage.md'
-    usage.write_text('Shared contract version 1\n', encoding='utf-8')
-    monkeypatch.setattr(record_mod, '__file__', str(parent / 'scripts/validate_resource_record.py'))
-    record = fixtures.matching_widget_record()
-    record['skill_validation'].update(independent_behavioral_executed=True, independent_behavioral_passed=True,
-        environment='synthetic evidence test', result='Shared interface task passed.', claim_scope='advice-only',
-        checks=[{'check_id': 'shared-contract', 'kind': 'instruction-response', 'execution_mode': 'independent-agent',
-            'status': 'passed', 'tested_at': '2026-08-16', 'target_version_or_commit': '1.2.3',
-            'inputs': [{'role': 'parent-contract', 'path': 'references/child-usage.md', 'section': '',
-                'sha256': 'sha256:' + hashlib.sha256(usage.read_bytes()).hexdigest()}], 'result': 'Shared contract respected.'}])
-    assert record_mod.validate_record(Path('record.yaml'), record, current_skill_root=child, require_current_evidence=True)[0] == []
-    usage.write_text('Changed shared contract\n', encoding='utf-8')
-    errors, _ = record_mod.validate_record(Path('record.yaml'), record, current_skill_root=child, require_current_evidence=True)
-    assert any('input hash is stale' in error for error in errors)
+def test_unfilled_template_fails_cli(scripts_dir, tmp_path):
+    template = (scripts_dir.parent / 'templates' / 'resource-skill-template.md').read_text(encoding='utf-8')
+    (tmp_path / 'SKILL.md').write_text(template, encoding='utf-8')
+    proc = subprocess.run([sys.executable, str(scripts_dir / 'validate_skill.py'), str(tmp_path)],
+        capture_output=True, text=True)
+    assert proc.returncode == 1
+    assert 'resource.yaml is required' in proc.stdout
+
+
+def test_template_descriptor_is_contract_shaped_but_unfilled(scripts_dir, tmp_path):
+    descriptor = yaml.safe_load((scripts_dir.parent / 'templates' / 'resource-skill-template.yaml').read_text(encoding='utf-8'))
+    assert set(descriptor['reconciliation']) == {'policy', 'reason'}
+    write(tmp_path, descriptor)
+    with pytest.raises(ValueError):
+        contract.load_contract(tmp_path, check_documents=False)

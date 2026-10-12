@@ -1,0 +1,39 @@
+{
+ "id": "q-tool-old-1",
+ "task": "q-tool",
+ "cond": "old",
+ "rep": 1,
+ "prompt": "Add StyLua to this project so we can format our Luau code. Make the needed file edits (you can't run commands).",
+ "with_skills": true,
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "max_turns": 15,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Write",
+  "Write",
+  "Write"
+ ],
+ "result": "StyLua is configured, but I couldn't run any commands, so none of it has been run.\n\nI added three files at the project root:\n- **`rokit.toml`** pins `stylua = \"JohnnyMorganz/stylua@2.1.0\"`. The project had no tool manager, so I used Rokit.\n- **`stylua.toml`** sets Luau syntax, 120 columns, tab indentation and double quotes. The two Luau files in `src/` are one-liners, so I had no existing style to match. Adjust it if you prefer something else.\n- **`.styluaignore`** excludes `Packages/`, the other pesde package folders, `sourcemap.json`, Blink-generated output and `.claude/`. The `Blink/` and `*.blink.luau` patterns are guesses, because the project has no Blink output yet.\n\nThe 2.1.0 pin is from memory. I couldn't look up the current release, so check it on the StyLua releases page and bump it if there's a newer stable one.\n\nTo start using it:\n1. Run `rokit install`. It may ask you to trust the tool first.\n2. Run `stylua --check --respect-ignores src` to check formatting without changing files.\n3. Run `stylua --respect-ignores src` to apply formatting.\n\nI didn't add CI, an editor setting or a format-on-save hook. Say if you want any of those.",
+ "cost": 0.1136402,
+ "turns": 14,
+ "seconds": 22.9,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-f1pg53c0",
+ "written": {
+  ".styluaignore": "# Installed or generated code\nPackages/\nroblox_packages/\nluau_packages/\nlune_packages/\nsourcemap.json\n\n# Blink-generated output\n**/Blink/\n*.blink.luau\n\n# Bundled agent skills (not project source)\n.claude/\n",
+  "rokit.toml": "[tools]\nstylua = \"JohnnyMorganz/stylua@2.1.0\"\n",
+  "stylua.toml": "syntax = \"Luau\"\ncolumn_width = 120\nline_endings = \"Unix\"\nindent_type = \"Tabs\"\nindent_width = 4\nquote_style = \"AutoPreferDouble\"\ncall_parentheses = \"Always\"\ncollapse_simple_statement = \"Never\"\n\n[sort_requires]\nenabled = false\n"
+ }
+}

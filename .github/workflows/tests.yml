@@ -57,7 +57,7 @@ jobs:
         run: python -m coverage report
 
   structure-roblox-projects:
-    name: structure-roblox-projects / Python 3.11 + Rojo 7.7.0
+    name: structure-roblox-projects / Python 3.11 + Rojo 7.7.1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -66,9 +66,9 @@ jobs:
           python-version: "3.11"
       - name: Install test dependencies
         run: python -m pip install -r skills/roblox-resource-acquisition/requirements-dev.txt
-      - name: Install Rojo 7.7.0
+      - name: Install Rojo 7.7.1
         run: |
-          curl -fsSL -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.0/rojo-7.7.0-linux-x86_64.zip
+          curl -fsSL -o rojo.zip https://github.com/rojo-rbx/rojo/releases/download/v7.7.1/rojo-7.7.1-linux-x86_64.zip
           mkdir -p "$HOME/.local/bin"
           unzip -o rojo.zip -d "$HOME/.local/bin"
           chmod +x "$HOME/.local/bin/rojo"

@@ -57,8 +57,6 @@ reconciliation:
   policy: conditional
   reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
     to completion
-  record: roblox/resources/records/blink.yaml
-  learnings: roblox/resources/learnings/
 installation:
   profile: pesde-registry
   dependency_section: dev_dependencies

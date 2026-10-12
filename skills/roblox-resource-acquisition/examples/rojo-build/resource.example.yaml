@@ -46,8 +46,6 @@ guidance:
 reconciliation:
   policy: required
   reason: Project source/tool installation can change independently.
-  record: roblox/resources/records/rojo-rbx-rojo.yaml
-  learnings: roblox/resources/learnings/
 installation:
   profile: custom
   custom_checker: scripts/check_build.py

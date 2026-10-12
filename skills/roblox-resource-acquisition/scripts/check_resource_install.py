@@ -5,8 +5,8 @@ Profiles are data, never commands. No evidence commands or dependency code run.
 Aliases and source locations are project inputs, not canonical resource identity.
 
 Exit codes: 0 PASS; 1 FAIL (an observed mismatch: stop version-sensitive use);
-2 UNKNOWN/UNAVAILABLE (the check could not run: continue in advisory mode and say
-which check was skipped).
+2 UNAVAILABLE (the check could not run: continue in advisory mode and say which
+check was skipped).
 """
 from __future__ import annotations
 
@@ -18,7 +18,6 @@ import sys
 import tomllib
 
 from _resource_contract import load_contract, within, url_identity
-from guard_skill_update import marker_path
 
 
 WALLY_SECTIONS = ("dependencies", "server-dependencies", "dev-dependencies")
@@ -320,20 +319,17 @@ def require_files(*paths: Path) -> None:
 
 
 def check(skill: Path, project: Path | None, *, declared_only=False, manifest_path=None, lock_path=None, alias=None, package_dir=None, companions=None, asset=None) -> dict:
-    for directory in (skill.resolve(), Path(__file__).resolve().parent.parent):
-        if marker_path(directory).exists() or marker_path(directory).is_symlink():
-            raise ValueError("promotion is pending or interrupted; reconcile the maintenance guard")
     contract = load_contract(skill, check_documents=False)
     if project is None and contract["scope"] == "project":
-        raise Unavailable("UNKNOWN: project-scoped child requires an explicit resolved project; no global fallback")
+        raise Unavailable("project-scoped child requires an explicit resolved project (--project); no global fallback")
     if project is not None:
         project = project.resolve()
         if not project.is_dir():
-            raise Unavailable("UNKNOWN: project directory does not exist")
+            raise Unavailable("project directory does not exist")
     resource, install = contract["resource"], contract["installation"]
     result = {"status": "PASS", "resource": resource["slug"], "selector": resource["selector"]["value"]}
     if install["profile"] == "custom":
-        return {**result, "status": "UNAVAILABLE", "reason": "run the child-owned custom checker as documented; this tool never executes contract-supplied commands"}
+        return {**result, "status": "UNAVAILABLE", "advisory": True, "reason": "run the child-owned custom checker as documented; this tool never executes contract-supplied commands"}
     if install["profile"] == "asset":
         if asset is None or not asset.is_file():
             raise Unavailable("installed asset not supplied or not found; pass --asset with the installed file")
@@ -341,7 +337,7 @@ def check(skill: Path, project: Path | None, *, declared_only=False, manifest_pa
             raise ValueError("installed asset is mismatched: its SHA256 differs from the reviewed asset")
         return {**result, "lane": "asset-integrity", "asset": str(asset.resolve())}
     if project is None:
-        raise Unavailable("UNKNOWN: package checking needs an explicit project")
+        raise Unavailable("package checking needs an explicit project (--project)")
     if install["profile"] == "npm":
         manifest_path = manifest_path or project / "package.json"
         lock_path = lock_path or project / "package-lock.json"
@@ -425,16 +421,14 @@ def main(argv=None):
             companions[package] = Path(directory)
         result = check(args.skill, args.project, declared_only=args.declared, manifest_path=args.manifest, lock_path=args.lock, alias=args.alias, package_dir=args.package_dir, companions=companions, asset=args.asset)
     except PermissionError as exc:
-        print(json.dumps({"status": "UNAVAILABLE", "reason": f"installed-state read denied: {exc}"}))
+        print(json.dumps({"status": "UNAVAILABLE", "reason": f"installed-state read denied: {exc}", "advisory": True}))
         return 2
     except Unavailable as exc:
-        reason = str(exc).removeprefix("UNKNOWN: ")
-        print(json.dumps({"status": "UNKNOWN" if str(exc).startswith("UNKNOWN:") else "UNAVAILABLE", "reason": reason, "advisory": True}))
+        print(json.dumps({"status": "UNAVAILABLE", "reason": str(exc), "advisory": True}))
         return 2
     except (OSError, UnicodeError, ValueError, TypeError, KeyError, AttributeError) as exc:
-        unknown = str(exc).startswith("UNKNOWN:")
-        print(json.dumps({"status": "UNKNOWN" if unknown else "FAIL", "reason": str(exc)}))
-        return 2 if unknown else 1
+        print(json.dumps({"status": "FAIL", "reason": str(exc)}))
+        return 1
     print(json.dumps(result, sort_keys=True))
     return 2 if result["status"] == "UNAVAILABLE" else 0
 

@@ -1,0 +1,31 @@
+{
+ "id": "q-compare-new-2",
+ "task": "q-compare",
+ "cond": "new",
+ "rep": 2,
+ "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
+ "with_skills": true,
+ "skills": [
+  "roblox-resource-acquisition"
+ ],
+ "max_turns": 12,
+ "kind": "quality",
+ "tools": [
+  "Skill",
+  "Read",
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Grep",
+  "Read"
+ ],
+ "result": "**Recommendation: use Janitor.** This is an evaluation only, and I haven't changed anything.\n\n**Decisive evidence**\n- Your `wally.toml` already declares `Janitor = \"howmanysmall/janitor@1.18.3\"`. Trove isn't declared anywhere in the project. Adding it would mean a second cleanup library with the same job.\n- Janitor covers all three of your object types, based on the bundled `roblox-janitor` guidance (I read it, I didn't run it):\n  - **Parts:** `janitor:Add(part)` destroys them on cleanup.\n  - **Tweens:** `janitor:Add(tween, \"Cancel\", \"Tween\")` cancels the tween. Using an index also replaces the previous tween under that name.\n  - **Connections:** `janitor:Add(conn, \"Disconnect\")` disconnects them. The same call with `\"Destroy\"` handles a signal your round created.\n- It also fits a round system with these features:\n  - `LinkToInstance` cleans up when a round model is destroyed.\n  - A throwing `Cleanup` call is a bug, not a retryable state.\n  - Threads are cancelled, and Promises are cancelled if still pending.\n\n**Pattern for rounds:** create one `Janitor.new()` when a round starts and add everything to it as you create it. Call `janitor:Destroy()` when the round ends. If the round also has setup-time work that can fail, use the pcall-and-rollback pattern from the guidance. If teardown order matters, keep one Janitor for producers (connections, tasks) and one for consumers, and clean the producers first.\n\n**Trove:** it does the same job and is a reasonable library. It loses here only because it adds a dependency without adding anything you need. Trove has `Extend` for child troves, but that is a convenience, and I haven't checked its current version or maintenance.\n\n**What would change my mind**\n- A project rule or team preference for Trove.\n- A need Janitor can't meet, such as the Janitor 1.18.3 `Cleanup` behavior biting you. If a cleanup entry throws, the Janitor stops cleaning and later calls return immediately. Make sure nothing you add can error during teardown.\n\nI didn't research Trove's current state or read DevForum threads, because the existing dependency settled the choice.",
+ "cost": 0.0933328,
+ "turns": 10,
+ "seconds": 19.9,
+ "rc": 0,
+ "stderr": "",
+ "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-a_ahmut6",
+ "written": {}
+}
