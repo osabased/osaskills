@@ -13,6 +13,8 @@ Skills for Claude covering Roblox development, VOD discovery, and review workflo
 
 Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The Roblox library skills live in `skills/roblox-resource-acquisition/libraries/`; the plugin loads them from there, so they always find `roblox-resource-acquisition`. Plugin skills are namespaced, for example `/osaskills:then-what`.
 
+Claude Code leaves auto-update off for third-party marketplaces. To get new versions automatically, open `/plugin` → **Marketplaces** → `osaskills` → **Enable auto-update**, or add `"autoUpdate": true` to the `osaskills` entry under `extraKnownMarketplaces` in `~/.claude/settings.json`. To update by hand, run `claude plugin update osaskills@osaskills`.
+
 ### Cowork / Claude desktop
 
 Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `motion-studies` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
