@@ -1,41 +1,47 @@
 ---
 name: then-what
-description: Turn findings or unfamiliar choices into a recommendation that is easy to scan, a clear explanation, and a concrete next action when the user is unsure what matters or what to do.
+description: Turns findings, review results, or unfamiliar options into one scannable recommendation, a plain-language why, and a labeled next action (user or agent) with a done-when cue. Invoke with /then-what after a long review, audit, debugging session, or agent report leaves you unsure what matters or what to do next.
+disable-model-invocation: true
 ---
 
 # Then What
 
-Close the loop on the user's goal. Carry the reasoning burden while reducing how much the user must read, choose, or remember before acting.
+Close the loop on the user's goal. Do the reasoning for them and cut down what they must read, choose, or remember before acting.
 
 ## Build the recommendation
 
-1. **Recover the goal.** Read the preceding exchange and relevant findings. Establish what the user wanted, what is complete, and what still prevents the outcome.
-2. **Explain the consequence.** Translate unfamiliar terms into their practical effect on that goal. Explain necessary jargon at first use in a few familiar words. Keep evidence and uncertainty beside the claim; a missing check establishes an unknown, not a defect.
-3. **Choose one next move.** Recommend one path with its decisive reason and material tradeoff. Resolve inspectable unknowns that could change the recommendation. Preserve working capabilities; further changes need an observed problem or explicit goal. When the goal is met, recommend stopping.
+1. **Recover the goal.** Read the preceding exchange and findings. Establish what the user wanted, what is done, and what still blocks the outcome.
+2. **Explain the consequence.** Translate unfamiliar terms into their practical effect on that goal, in a few familiar words at first use. Keep evidence and uncertainty next to the claim. A check that wasn't run means "unknown", not "broken".
+3. **Choose one next move.** Recommend one path with its deciding reason and main tradeoff. Look up anything you can inspect that could change the recommendation. Don't recommend changing things that work unless there is an observed problem or the user asked. When the goal is met, recommend stopping.
 
-## Make the first layer easy to scan
+## Format the first layer
 
-Use this shape by default, including only lines that help the current response:
+Write these as normal lines (not a code block), keeping only the lines that help:
 
-```text
-🧭 Recommendation: [One clear recommendation.]
-Why: [The practical consequence and decisive reason.]
-➡️ Next ([User or Agent]): [Concrete action and where to start.]
-Done when: [An observable completion cue for that action.]
-```
+- 🧭 **Recommendation:** one clear recommendation.
+- **Why:** the practical consequence and deciding reason.
+- ➡️ **Next (User)** or **Next (Agent):** the concrete action and where to start.
+- **Done when:** an observable cue that the action is finished.
 
-Explicitly label every stated next action `Next (User)` or `Next (Agent)`, according to who must perform that immediate action. Approval or missing input the user must supply is a User action. When a handoff needs explanation, label each action separately.
+Label every next action with who performs it. Approval or input only the user can give is a User action. Use only the two emoji shown, and drop them when the user asks for plain text or the output goes into a file, commit, PR, or another agent's prompt.
 
-Bold the labels when Markdown is available. Use short sentences, blank space, and light emoji; use short bullets for parallel points, with one idea per bullet.
+Keep the first layer to a few short lines and put any risk or uncertainty that could change the decision there. Add explanation below only in small chunks that help the user decide; leave optional background for a follow-up. Mention alternatives only when they would change the choice, and say when one would be better. Name any prerequisite needed to start. For multi-step work, show the immediate step and its done-when cue; include the wider plan only if it helps the user orient.
 
-Keep the first layer to a few short lines. Include any risk, uncertainty, or tradeoff that could change the user's decision there. Add further explanation below in small chunks only when it helps the user understand or choose; leave optional background for a follow-up request. Give enough context to make the decision without researching terminology. Offer alternatives only when they materially affect the choice, stating when an alternative would be preferable.
+**Example** (after a performance investigation):
 
-For a task with several steps, surface the immediate step and its completion cue. Include the wider plan only when it helps the user decide or orient. Name prerequisites needed to start. When the agent owns the next step, continue it; when work is complete, say so. Give the user an action only when something actually needs their involvement.
+> 🧭 **Recommendation:** Wire the existing lookup index into the inventory-search caller.
+>
+> **Why:** Every keystroke rescans all items. The tested index returns identical results in 12 ms instead of 140 ms. Redis and a framework swap have no measurements behind them. Mobile wasn't load-tested, so mobile speed is unknown, not broken.
+>
+> ➡️ **Next (Agent):** Making the caller change now, then running the equivalence and latency tests.
+>
+> **Done when:** Results match the old output and the sample search runs in about 12 ms.
 
 ## Ask and continue
 
-Ask only for user-owned choices that materially affect the outcome. Group up to three related questions when they can be answered independently; defer dependent questions until their prerequisites are settled. Give a recommended default and its practical consequence. Gather inspectable facts yourself.
+- If the next action is yours and already authorized, do it in this turn. Use `Next (Agent)` to report what you are doing, not to stop.
+- Give the user an action only when something actually needs them. Ask only for user-owned choices that change the outcome: up to three independent questions at once, each with a recommended default and its consequence. Hold back questions that depend on an earlier answer. Gather inspectable facts yourself.
+- When new authorization is needed, name the concrete action and why approval is needed. When blocked, name the exact missing input or access, its consequence, and the recommended next step.
+- Recommending an action does not authorize you to take it. When handing off to another agent, pass along the evidence, the remaining work, and who owns it.
 
-Continue through work already authorized by the original request. When new authorization is required, present the concrete action and explain why approval is needed. When blocked, name the exact missing input or access, its consequence, and the recommended next step. A recommendation or handoff adds no authority. For agent handoffs, preserve the evidence, remaining work, and its owner.
-
-**Complete when:** the authorized work is done, or the user can resolve the specific remaining choice or blocker from the response without reconstructing the analysis.
+**Done when:** the authorized work is finished, or the user can settle the remaining choice or blocker from your response without reconstructing the analysis.
