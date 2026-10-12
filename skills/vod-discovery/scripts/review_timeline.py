@@ -11,8 +11,8 @@ from fractions import Fraction
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from premiere_xml import build_xml, element, frame_rate, organize_project, rate
-from vod import export_events, number, probe, read, text
+from premiere_xml import build_xml, element, frame_rate, organize_project, rate, write_output
+from vod import export_events, number, parse_path_map, probe, read, run_cli, text
 
 
 MOMENT_LABEL = 'Mango'
@@ -37,8 +37,8 @@ def main_segments(master):
         yield start, end, MOMENT_LABEL if active else None
 
 
-def build_review(markers, probes, plan):
-    root = ET.fromstring(build_xml(markers, probes, plan['title'], organize=False))
+def build_review(markers, probes, plan, path_map=()):
+    root = ET.fromstring(build_xml(markers, probes, plan['title'], organize=False, path_map=path_map))
     children = root.find('./project/children')
     sources = {s['id']: s for s in markers['sources']}
     masters = dict(zip(sources, children.findall('clip')))
@@ -186,12 +186,19 @@ def build_review(markers, probes, plan):
     return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE xmeml>\n'+ET.tostring(root,encoding='unicode')
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--events', required=True)
     parser.add_argument('--plan', required=True)
     parser.add_argument('--out', required=True)
-    args = parser.parse_args()
+    parser.add_argument('--path-map', action='append', metavar='LOCAL=HOST',
+                        help='Write host paths for Premiere when media is probed through another mount, '
+                             'e.g. a Cowork VM folder=D:/VODs (repeatable)')
+    parser.add_argument('--force', action='store_true', help='Replace an existing --out file')
+    args = parser.parse_args(argv)
+    path_map = parse_path_map(args.path_map)
+    if Path(args.out).exists() and not args.force:
+        raise ValueError(f'{args.out} already exists; choose a new --out or pass --force to replace it')
     data, plan = read(args.events), read(args.plan)
     markers = export_events(data)
     # Full main parts with no reviewed events are still required in the timeline.
@@ -205,11 +212,9 @@ def main():
         if abs(duration-source['duration_sec']) > .1:
             raise ValueError('Source duration changed; review source mapping')
         probes[source['id']] = metadata
-    out = Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(build_review(markers, probes, plan), encoding='utf-8')
-    print(f'Wrote {out}; {len(plan["alternates"])} disabled alternate excerpts')
+    write_output(args.out, build_review(markers, probes, plan, path_map), args.force)
+    print(f'Wrote {args.out}; {len(plan.get("alternates", []))} disabled alternate excerpts')
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

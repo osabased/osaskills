@@ -10,6 +10,8 @@ from pathlib import Path
 import re
 import uuid
 
+from vod import run_cli
+
 
 REFERENCE = 'vod-discovery-benchmark/v1'
 ADJUDICATION = 'vod-discovery-adjudication/v1'
@@ -400,4 +402,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

@@ -70,7 +70,7 @@ foreach ($item in $items) {
 $report = [pscustomobject]@{
     schema='vod-frame-ocr/v1'; engine='Windows.Media.Ocr'; language=$engine.RecognizerLanguage.LanguageTag;
     manifest=$manifestPath; manifest_sha256=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash.ToLowerInvariant();
-    limitations='Raw OCR may misread names and notices. Check the image before making factual claims. Missing text does not prove an event is absent. Not included in the speech search index.';
+    limitations='Raw OCR may misread names and notices. Check the image before making factual claims. Missing text does not prove an event is absent. Not part of vod.py speech search; unified_search.py can index this report.';
     frames=$results
 }
 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($outputPath)) | Out-Null

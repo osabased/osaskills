@@ -4,17 +4,19 @@ Use this when the editor wants to make and resume Keep/Later/Skip decisions outs
 
 ## Build and run
 
-Requires Python 3.10+, FFmpeg and ffprobe on PATH. It uses the existing event and timeline adapters plus browser-native video; there are no npm packages, cloud services or new Python dependencies. Inputs are the complete validated `events.json` and an authored `timeline-plan.json` with stable `event_id` on every alternate. The existing XML constraints apply: one video and at most one mono/stereo audio stream per source, compatible main rates and supported source timecode. Unsupported audio layouts fail before rendering; no streams are silently dropped.
+Requires Python 3.11+, FFmpeg (with libx264) and ffprobe on PATH. It uses the existing event and timeline adapters plus browser-native video; there are no npm packages, cloud services or new Python dependencies. Inputs are the complete validated `events.json` and an authored `timeline-plan.json` with stable `event_id` on every alternate. The existing XML constraints apply: one video and at most one mono/stereo audio stream per source, compatible main rates and supported source timecode. Unsupported audio layouts fail before rendering; no streams are silently dropped.
 
-```powershell
-python <skill>/scripts/review_queue.py init --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/review-queue
-python <skill>/scripts/review_queue.py serve --queue outputs/review-queue --port 8765 --open
+```sh
+"$PY" <skill>/scripts/review_queue.py init --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/review-queue
+"$PY" <skill>/scripts/review_queue.py serve --queue outputs/review-queue --port 8765 --open
 ```
+
+`serve` runs until stopped, so start it in the background (`run_in_background`, or `nohup … > queue.log 2>&1 &`), read the URL from its first output line, and give it to the editor. `--open` launches a browser only where one exists.
 
 To reuse timestamped speech already prepared by `vod.py index`, attach that index before starting the server:
 
-```powershell
-python <skill>/scripts/review_queue.py transcripts --queue outputs/review-queue --index work/speech-search
+```sh
+"$PY" <skill>/scripts/review_queue.py transcripts --queue outputs/review-queue --index work/vods/search
 ```
 
 This copies validated speech occurrences into a separate `transcript.json` snapshot, retaining source clocks, audio stream indices, raw text and evidence references. It validates index signatures and prepared media identities without transcription, embedding or model downloads. Missing or unmapped sources and excluded invalid intervals remain explicit. Sources match by their full media paths, never just a filename or similar ID. For an index made from a verified excerpt of an original VOD, pass `--source-map map.json` with `schema: "vod-review-transcript-map/v1"` and a `sources` list of `indexed_source_id`, queue `source_id`, `offset_sec`, and factual `evidence` explaining that clock mapping. Do not infer a mapping from similar dialogue. Stop an active queue server before replacing its transcript attachment; saved choices remain intact.
@@ -23,13 +25,17 @@ This copies validated speech occurrences into a separate `transcript.json` snaps
 
 A failed or interrupted build retains validated previews and a `build.json` checkpoint. It is not serveable until all previews pass validation. Resume with the same inputs and padding:
 
-```powershell
-python <skill>/scripts/review_queue.py init --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/review-queue --resume
+```sh
+"$PY" <skill>/scripts/review_queue.py init --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/review-queue --resume
 ```
 
 Resume checks input hashes, source paths/size/mtime, saved snapshots and preview settings. Completed previews are reused only when their checksums and validated durations match; missing or damaged previews are rebuilt. Changing `--jobs` is allowed. Changed discovery inputs, media or padding require a new output folder. Builds made before checkpoints were introduced also require a fresh folder after failure. A separate OS lock prevents two processes preparing the same queue. To resume a completed queue, run `serve`; `init --resume` refuses to replace saved review choices.
 
-The URL is `http://127.0.0.1:8765`. The server binds only to loopback and serves registered previews/assets/exports, not arbitrary local files. It requires same-origin authenticated writes, detects conflicting tabs, and holds a process lock on this queue. On Windows launch background helpers with a hidden window and redirected logs. A queue in another folder may use another port. Stopping the server does not erase choices; restart it to continue.
+The current preview recipe uses libx264 veryfast CRF 25; the helper does not expose an AMF selection flag or require a particular GPU. A bounded development experiment did not establish a size/quality-equivalent reason to change that default. Evaluate any future hardware encoder on the current machine using representative clips, readable text, output size, quality, browser playback/seeking and the whole preparation path. An encoder listing alone is insufficient. Keep machine-specific measurements in project notes; see [validation.md](validation.md) for verification boundaries.
+
+The URL is `http://127.0.0.1:8765`; use `127.0.0.1` exactly, because the server rejects other host names such as `localhost`. The server binds only to loopback and serves registered previews/assets/exports, not arbitrary local files. It requires same-origin authenticated writes, detects conflicting tabs, and holds a process lock on this queue. A queue in another folder may use another port. Stopping the server does not erase choices; restart it to continue.
+
+In a Cowork VM or on another remote machine, the editor's browser usually cannot reach the VM's loopback address, so the dashboard is unavailable there. Previews and exports still work: `review_queue.py export` (below) writes the XML without a browser.
 
 ## Editor experience
 
@@ -64,19 +70,28 @@ Older keyboard profiles retain every customized binding. The two context actions
 
 On-demand previews publish only after duration, checksum and input/media checks. `context.json` is a separate cache manifest bound to the immutable queue hash; earlier registered preview URLs stay available to other tabs. Failures retain the last completed preview and do not change choices. Startup checksum-checks current context files and repairs missing/damaged files before serving, so a shorter fallback cannot overwrite a source position in added context. A failed repair leaves decisions intact and can be retried by restarting the server. Playback saves use optional `source_positions` in original source seconds; legacy relative `positions` remain readable. An extension does not change `queue.json` or its state binding. Cache files add storage as context grows; retain them with the queue when preserving playback positions in added context.
 
-**Export kept moments** filters source markers and authored alternate excerpts to Keep decisions, and cuts main video and linked audio at each kept moment's start/end. Moment sections use the Mango clip label and surrounding footage retains its normal/default label without an explicit color override; disabled alternate excerpts also use Mango. It retains the complete main VOD chronology, the original source clocks, media/POV bins, disabled alternate picture/audio and grouped stereo. Skip/Later/unreviewed main footage is not removed. Overlapping moments share footage and keep all distinct boundaries; see [timeline.md](timeline.md). Independent secondary-only kept moments remain available as source markers in their POV bin; they are not placed at invented main times. Related references can still point to unselected events by source time, without selecting their markers. **Export all moments**, under Review coverage, includes every discovery's cuts, colors, markers and alternates regardless of review choices. Added preview context never changes exported cuts.
+**Export kept moments** includes only Keep moments' source markers, boundary cuts and labels, and authored alternate excerpts; **Export all moments**, under Review coverage, includes every discovery regardless of choices. Both keep the complete main chronology, original source clocks, media/POV bins, disabled alternates and grouped stereo, as described in [timeline](timeline.md). Skip, Later and unreviewed main footage is never removed. Independent secondary-only kept moments stay as source markers in their POV bin, not at invented main times. Related references can still point to unselected events by source time without selecting their markers. Added preview context never changes exported cuts.
 
 Each export creates a new `exports/review-r<revision>-<unique>/` containing `review.xml`, `decisions.json` and `selection.json`. Notes remain in the saved decisions, not marker names. Export validates original media size/mtime and discovery snapshot/input hashes first. Changed inputs require a new queue through the update workflow below. The same queue can export repeatedly without overwriting past exports or a Premiere project.
 
-Download/import the XML into a new Premiere review project. Use Shift+1, expand `02 Sequences`, and open the sequence. Reimport is not a live update of an existing timeline. Mixed-resolution alternate fitting and actual Premiere playback still need the checks in [timeline.md](timeline.md); this dashboard does not operate Premiere.
+Without a browser, export from the command line after stopping the server:
+
+```sh
+"$PY" <skill>/scripts/review_queue.py export --queue outputs/review-queue --mode keep
+"$PY" <skill>/scripts/review_queue.py export --queue outputs/review-queue --mode all --path-map "$HOME/mnt/VODs=D:/VODs"
+```
+
+It prints the new export folder. `--path-map LOCAL=HOST` (also accepted by `serve`) writes the editor's media paths into the XML when the queue was built on a VM mount; see [premiere](premiere.md#media-paths-and-vms).
+
+Import the XML into a new Premiere review project and follow the checks in [premiere](premiere.md#after-import) and [timeline](timeline.md#verify-the-saved-result). Reimport is not a live update of an existing timeline; this dashboard does not operate Premiere.
 
 ## Update discoveries without losing review choices
 
 Keep event IDs stable across discovery revisions. Stop the old queue server after **Saved**, then create a sibling output folder:
 
-```powershell
-python <skill>/scripts/review_queue.py update --from-queue outputs/review-queue --events outputs/events-v2.json --plan outputs/timeline-plan-v2.json --out outputs/review-queue-v2
-python <skill>/scripts/review_queue.py serve --queue outputs/review-queue-v2 --port 8765 --open
+```sh
+"$PY" <skill>/scripts/review_queue.py update --from-queue outputs/review-queue --events outputs/events-v2.json --plan outputs/timeline-plan-v2.json --out outputs/review-queue-v2
+"$PY" <skill>/scripts/review_queue.py serve --queue outputs/review-queue-v2 --port 8765 --open
 ```
 
 The previous folder, choices, history, previews and exports stay intact. The new folder contains `migration.json` and byte-preserved previous queue/state/evidence/plan/probe/context snapshots under `migration/previous/`. On subsequent updates, older snapshots carry forward under `migration/ancestors/<queue-hash>/`; archived changed choices never reactivate through that history. The report records the donor revision and hash, matches, change reasons and removed IDs. A failed update retains its preview checkpoint; repeat `update` with `--resume` and the same donor, inputs, map and padding. Changed donor decisions or context require a fresh output so resumed work cannot silently miss newer review choices. An active previous server or changed snapshot refuses migration; revised external input files and media can be compared against the preserved old snapshots.
@@ -94,10 +109,8 @@ For deliberately renamed IDs, supply `--event-map path/to/map.json` with explici
 
 The map establishes identity only; material changes still require reconsideration. It cannot map one previous moment to multiple revised events. Relocated media is considered changed by this workflow; matching a filename or label does not establish original-media identity. The update prepares previews for the revised queue and does not update an existing Premiere project.
 
-## Assess whether it helps
-
 Updates archive the exact previous transcript snapshot alongside decision/evidence snapshots. Attached speech carries forward only for sources whose full media identity is unchanged and is rebound to the new queue hash. Changed or replaced media needs a fresh attachment. Derived navigation caches can be regenerated from the revised queue; the previous folder remains intact.
 
-The current preview recipe uses libx264 veryfast CRF 25; the helper does not expose an AMF selection flag or require a particular GPU. A bounded development experiment did not establish a size/quality-equivalent reason to change that default. Evaluate any future hardware encoder on the current machine using representative clips, readable text, output size, quality, browser playback/seeking and the whole preparation path. An encoder listing alone is insufficient. Keep machine-specific measurements in project notes; see [validation.md](validation.md) for verification boundaries.
+## Assess whether it helps
 
 The fatigue benefit is a hypothesis until the editor tries it. A useful first trial is five to ten existing moments, a break/restart, then revisiting Later. Ask whether it avoided rewatching/re-finding footage, whether the context was sufficient, and whether the extra handoff was worthwhile. No completion target or forced daily quota is needed. If the extra application increases friction, retain direct Premiere markers and use the queue only when helpful.

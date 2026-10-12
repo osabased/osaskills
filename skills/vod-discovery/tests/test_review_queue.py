@@ -132,6 +132,17 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertEqual(Path(a['path']).read_bytes(),Path(b['path']).read_bytes())
         self.assertTrue(Path(a['path']).with_name('decisions.json').exists())
 
+    def test_cli_export_maps_vm_paths_without_a_browser(self):
+        import contextlib, io, review_queue
+        self.store.mutate(dict(revision=0,event_id='fight',decision='keep'))
+        output=io.StringIO()
+        with contextlib.redirect_stdout(output):
+            review_queue.main(['export','--queue',str(self.root),'--path-map',f'{self.root}=D:/VODs'])
+        result=json.loads(output.getvalue())
+        urls=[e.text for e in ET.parse(result['path']).getroot().iter('pathurl')]
+        self.assertTrue(urls and all(u.startswith('file://localhost/D%3a/VODs/') for u in urls))
+        self.assertEqual(Store(self.root).state()['decisions']['fight']['decision'],'keep')
+
     def test_http_ranges_access_controls_and_persistent_save(self):
         profile=Preferences(self.root/'shared'/'keys.json')
         server=make_server(self.store,preferences=profile)

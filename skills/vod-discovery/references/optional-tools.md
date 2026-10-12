@@ -4,13 +4,14 @@ Use these when an investigation needs them, after transcript/image evidence narr
 
 ## Audalign: find a possible local correspondence
 
-[Audalign 1.3.1](https://github.com/benfmiller/audalign) is MIT licensed and runs locally with FFmpeg. Its pinned dependencies have been tested in a separate Python 3.12 environment; isolate them from core preparation dependencies rather than assuming the project's main Python version is compatible. Reuse a compatible environment when present. Windows PowerShell example:
+[Audalign 1.3.1](https://github.com/benfmiller/audalign) is MIT licensed and runs locally with FFmpeg. Its pinned dependencies have been tested in a separate Python 3.12 environment; isolate them from core preparation dependencies rather than assuming the project's main Python version is compatible. Reuse a compatible environment when present:
 
-```powershell
+```sh
 uv venv --python 3.12 work/audalign-env
-uv pip install --python work/audalign-env/Scripts/python.exe -r <skill>/requirements-audio.txt
-$env:MPLCONFIGDIR = Join-Path $PWD 'work/audalign-cache'
-work/audalign-env/Scripts/python.exe <skill>/scripts/audio_match.py --source-a 'D:/VODs/alice.mp4' --start-a 65 --end-a 95 --source-b 'D:/VODs/bob.mp4' --start-b 140 --end-b 185 --out work/audio-truce
+AUDIO_PY=work/audalign-env/bin/python   # Windows: work/audalign-env/Scripts/python.exe
+uv pip install --python "$AUDIO_PY" -r <skill>/requirements-audio.txt
+export MPLCONFIGDIR="$PWD/work/audalign-cache"
+"$AUDIO_PY" <skill>/scripts/audio_match.py --source-a /media/vods/alice.mp4 --start-a 65 --end-a 95 --source-b /media/vods/bob.mp4 --start-b 140 --end-b 185 --out work/audio-truce
 ```
 
 Make ffmpeg and ffprobe available on PATH. No account, API key, paid model or media upload is needed. If Python 3.12 is missing, provision a separate runtime with the available environment manager; preserve the main environment. If `uv` is unavailable, use the fallback in [setup.md](setup.md). Installation requires network access, matching does not.
@@ -37,7 +38,7 @@ Spectrogram correlation was tried but is not used by the helper: it assigned ind
 
 ## Windows OCR: find notices and other visible text
 
-The optional `scripts/ocr_frames.ps1` uses the installed [Windows OCR API](https://learn.microsoft.com/en-us/uwp/api/windows.media.ocr.ocrengine.recognizeasync?view=winrt-26100). It runs locally in Windows PowerShell 5.1, requires an installed OCR language, and needs no Python package, external model or computer-control skill. It reads images only.
+The optional `scripts/ocr_frames.ps1` uses the installed [Windows OCR API](https://learn.microsoft.com/en-us/uwp/api/windows.media.ocr.ocrengine.recognizeasync?view=winrt-26100). It runs only on Windows, in Windows PowerShell 5.1, with an installed OCR language, and needs no Python package or external model. It reads images only. It is not needed to read text yourself: view a large `detail` frame with the Read tool instead. Use OCR when you want searchable text reports for [unified search](unified-search.md).
 
 Use selected, sufficiently large detail frames when a notice, scoreboard, quest update or other text might answer a specific question. Create a JSON array by copying the exact source ID, source-local timestamp and absolute image path from the preparation metadata/frame map:
 

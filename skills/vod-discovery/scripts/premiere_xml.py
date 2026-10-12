@@ -6,11 +6,12 @@ imports. Source times are quantized to the nearest nominal source frame.
 import argparse
 from copy import deepcopy
 from fractions import Fraction
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from urllib.parse import quote
 import xml.etree.ElementTree as ET
 
-from vod import export_events, probe, read, text, validate_marker_presentation
+from vod import (WINDOWS_ABSOLUTE, export_events, map_path, parse_path_map, probe, read, run_cli, text,
+                 validate_marker_presentation)
 
 
 def element(parent, tag, value=None, **attrs):
@@ -37,11 +38,29 @@ def rate(parent, base, ntsc):
 
 
 def media_url(path):
-    # Match Premiere's own FCP XML export. Bare file:///C:/ was interpreted as
-    # a UNC path; adjacent pilot files masked the fault through auto-relinking.
-    if path.drive and not path.drive.startswith('\\\\'):
-        return 'file://localhost/' + quote(path.as_posix(), safe='/').replace('%3A', '%3a')
-    return path.as_uri()
+    """Encode an absolute media path for the machine that runs Premiere.
+
+    Accepts a Path or a string, so a mapped Windows host path also works when
+    the exporter runs on Linux (for example in a Cowork VM).
+    """
+    value = str(path)
+    if WINDOWS_ABSOLUTE.match(value):
+        windows = PureWindowsPath(value)
+        if windows.drive and not windows.drive.startswith('\\\\'):
+            # Match Premiere's own FCP XML export. Bare file:///C:/ was interpreted as
+            # a UNC path; adjacent pilot files masked the fault through auto-relinking.
+            return 'file://localhost/' + quote(windows.as_posix(), safe='/').replace('%3A', '%3a')
+        return windows.as_uri()
+    return PurePosixPath(value).as_uri()
+
+
+def write_output(out, content, force=False):
+    """Write an export without silently replacing an earlier delivery."""
+    out = Path(out)
+    if out.exists() and not force:
+        raise ValueError(f'{out} already exists; choose a new --out or pass --force to replace it')
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(content, encoding='utf-8')
 
 
 def bin_children(parent, name, bin_id):
@@ -78,7 +97,7 @@ def organize_project(root, sources):
             timelines.append(sequence)
 
 
-def build_xml(markers, probes, title='VOD discovery', *, organize=True):
+def build_xml(markers, probes, title='VOD discovery', *, organize=True, path_map=()):
     root = ET.Element('xmeml', version='5')
     project = element(root, 'project')
     element(project, 'name', title)
@@ -110,7 +129,9 @@ def build_xml(markers, probes, title='VOD discovery', *, organize=True):
         element(clip, 'out', -1)
         file = ET.Element('file', id=fileid)
         element(file, 'name', name)
-        element(file, 'pathurl', media_url(path))
+        # Map the authored absolute path (as written in events.json), not a
+        # resolved form, so prefixes match what the user and agent see.
+        element(file, 'pathurl', media_url(map_path(source['path'], path_map) if path_map else path))
         rate(file, base, ntsc)
         element(file, 'duration', duration)
         filemedia = element(file, 'media')
@@ -192,12 +213,19 @@ def build_xml(markers, probes, title='VOD discovery', *, organize=True):
     return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE xmeml>\n' + ET.tostring(root, encoding='unicode')
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--events', required=True)
     parser.add_argument('--out', required=True)
     parser.add_argument('--title', default='VOD discovery')
-    args = parser.parse_args()
+    parser.add_argument('--path-map', action='append', metavar='LOCAL=HOST',
+                        help='Write host paths for Premiere when media is probed through another mount, '
+                             'e.g. a Cowork VM folder=D:/VODs (repeatable)')
+    parser.add_argument('--force', action='store_true', help='Replace an existing --out file')
+    args = parser.parse_args(argv)
+    path_map = parse_path_map(args.path_map)
+    if Path(args.out).exists() and not args.force:
+        raise ValueError(f'{args.out} already exists; choose a new --out or pass --force to replace it')
     markers = export_events(read(args.events))
     probes = {}
     for source in markers['sources']:
@@ -205,13 +233,11 @@ def main():
         if abs(duration - source['duration_sec']) > .1:
             raise ValueError('Source duration changed; review source mapping before export')
         probes[source['id']] = metadata
-    result = build_xml(markers, probes, args.title)
-    out = Path(args.out)
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(result, encoding='utf-8')
-    print(f"Wrote {out}: {len(markers['sources'])} source clips, "
+    result = build_xml(markers, probes, args.title, path_map=path_map)
+    write_output(args.out, result, args.force)
+    print(f"Wrote {args.out}: {len(markers['sources'])} source clips, "
           f"{sum(len(s['markers']) for s in markers['sources'])} markers")
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

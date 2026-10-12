@@ -1,6 +1,6 @@
 # Joined evidence and cross-POV search
 
-Use these during discovery to retrieve candidate ranges and read their visual/speech context. They use CRV 0.10.7 locally and do not alter Premiere XML, original media, raw transcripts, or packet review decisions.
+Use these during discovery to retrieve candidate ranges and read their visual/speech context. They use claude-real-video (CRV) 0.10.7 locally and do not alter Premiere XML, original media, raw transcripts, or packet review decisions.
 
 For one investigation across available speech, keyword ranking, meaning and visible text, build the existing literal index below, then use [unified-search.md](unified-search.md). The unified helper indexes explicitly supplied, frame-map-validated OCR reports and can include the existing local semantic model. It labels evidence types and exposes missing channels and coverage. The original `vod.py search` remains a literal-only phrase check.
 
@@ -8,8 +8,8 @@ For one investigation across available speech, keyword ranking, meaning and visi
 
 `prepare` now writes `evidence.json` and `evidence.md` inside each completed attempt. Resuming an existing preparation refreshes these files without extracting/transcribing completed packets again. To enrich only already-completed packets:
 
-```powershell
-python <skill>/scripts/vod.py evidence --prepared work/vods/alice
+```sh
+"$PY" <skill>/scripts/vod.py evidence --prepared work/vods/alice
 ```
 
 CRV joins frames to speech independently for each audio stream. The adapter converts packet-local join clocks back to source seconds and keeps all sampled frames. Frames outside a speech interval that CRV attaches to the closest span are explicitly marked `nearby`; they do not prove an action occurred during that quotation. A span without recognized speech can still contain music, reactions, effects or meaningful visual activity.
@@ -18,10 +18,10 @@ Invalid transcript intervals are retained under `invalid_segments` with their ra
 
 ## Index the project's prepared POVs
 
-```powershell
-python <skill>/scripts/vod.py index --prepared work/vods/alice work/vods/bob --out work/vods/search
-python <skill>/scripts/vod.py search --index work/vods/search --query "the fog is coming"
-python <skill>/scripts/vod.py search --index work/vods/search --query "truce" --limit 50
+```sh
+"$PY" <skill>/scripts/vod.py index --prepared work/vods/alice work/vods/bob --out work/vods/search
+"$PY" <skill>/scripts/vod.py search --index work/vods/search --query "the fog is coming"
+"$PY" <skill>/scripts/vod.py search --index work/vods/search --query "truce" --limit 50
 ```
 
 Run with the project's compatible Python environment. Pass all prepared POV folders that belong in this search index, including partly prepared sources. Indexing enriches their completed packets as needed. No video decoding or speech transcription is performed. All files stay under the explicitly selected output folder; this does not use CRV's global library database.

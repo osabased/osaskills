@@ -10,7 +10,7 @@ import uuid
 
 from evidence import completed_packets, input_signature
 from semantic import SearchSession as SemanticSession, snapshot
-from vod import number, read, text
+from vod import number, read, run_cli, text
 
 SCHEMA = 'vod-unified-search/v1'
 POLICY = {'version': 1, 'fusion': 'reciprocal-rank', 'rrf_constant': 60,
@@ -510,4 +510,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

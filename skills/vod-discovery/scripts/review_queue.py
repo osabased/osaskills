@@ -19,7 +19,7 @@ from urllib.parse import parse_qs, urlsplit
 import uuid
 import webbrowser
 
-from vod import export_events, number, probe, read
+from vod import export_events, number, parse_path_map, probe, read, run_cli
 from review_timeline import build_review
 from premiere_xml import frame_rate
 from review_navigation import NavigationAssets, related_groups
@@ -77,7 +77,7 @@ def identity(source):
     return dict(path=str(path), size=stat.st_size, mtime_ns=stat.st_mtime_ns)
 
 
-def selected_xml(data, plan, probes, decisions, mode='keep'):
+def selected_xml(data, plan, probes, decisions, mode='keep', path_map=()):
     if mode not in ('keep', 'all'):
         raise ValueError('Unknown export mode')
     selected = {e['id'] for e in data['events']
@@ -101,7 +101,7 @@ def selected_xml(data, plan, probes, decisions, mode='keep'):
         '\nFull main chronology retained. Selected main moments have boundary cuts and Mango labels; '
         'surrounding footage uses the default label. Review choices select these moments, source markers '
         'and alternate excerpts; no main footage is removed.')
-    return build_review(markers, probes, filtered), sorted(selected)
+    return build_review(markers, probes, filtered, path_map), sorted(selected)
 
 
 def cards_for(data, plan, padding):
@@ -587,8 +587,10 @@ class ContextPreviews:
 
 
 class Store:
-    def __init__(self, folder, allow_stale=False):
+    def __init__(self, folder, allow_stale=False, path_map=()):
         self.folder = Path(folder).resolve(strict=True)
+        # Export-only path rewriting for media probed through a VM/remote mount.
+        self.path_map = path_map
         self.queue = read(self.folder / 'queue.json')
         if self.queue['schema'] != SCHEMA:
             raise ValueError('Unknown queue schema')
@@ -761,7 +763,8 @@ class Store:
             self.validate_inputs()
             mode = patch.get('mode', 'keep')
             xml, selected = selected_xml(read(self.folder / 'events.json'), read(self.folder / 'plan.json'),
-                                        read(self.folder / 'probes.json'), state['decisions'], mode)
+                                        read(self.folder / 'probes.json'), state['decisions'], mode,
+                                        self.path_map)
             name = f'review-r{state["revision"]}-{uuid.uuid4().hex[:8]}'
             folder = self.folder / 'exports' / name
             folder.mkdir(parents=True)
@@ -995,7 +998,7 @@ def make_server(store, port=0, preferences=None):
     return LoopbackServer(('127.0.0.1', port), Handler)
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     init = sub.add_parser('init')
@@ -1023,7 +1026,14 @@ def main():
     serve.add_argument('--port', type=int, default=8765)
     serve.add_argument('--open', action='store_true')
     serve.add_argument('--preferences', help='Override the shared keyboard-profile path (for isolated testing)')
-    args = parser.parse_args()
+    path_help = 'Write host media paths into exported XML, e.g. a Cowork VM folder=D:/VODs (repeatable)'
+    serve.add_argument('--path-map', action='append', metavar='LOCAL=HOST', help=path_help)
+    export = sub.add_parser('export', help='Export the saved choices to Premiere XML without the browser')
+    export.add_argument('--queue', required=True)
+    export.add_argument('--mode', choices=['keep', 'all'], default='keep',
+                        help='keep: Keep decisions only (default); all: every discovered moment')
+    export.add_argument('--path-map', action='append', metavar='LOCAL=HOST', help=path_help)
+    args = parser.parse_args(argv)
     if args.command == 'init':
         print(initialize(args.events, args.plan, args.out, args.padding, args.jobs, args.resume))
         return
@@ -1032,6 +1042,15 @@ def main():
                            args.jobs, args.resume, args.event_map))
         return
     folder = Path(args.queue).resolve(strict=True)
+    if args.command == 'export':
+        with build_lock(folder, '.server.lock', 'Stop this queue server first, or use its Export buttons.'):
+            store = Store(folder, path_map=parse_path_map(args.path_map))
+            try:
+                print(json.dumps(store.export(dict(revision=store.state()['revision'], mode=args.mode)), indent=2))
+            finally:
+                store.context.close()
+                store.navigation.close()
+        return
     if args.command == 'transcripts':
         with build_lock(folder, '.server.lock', 'Stop this queue server before attaching transcript evidence.'):
             store = Store(folder)
@@ -1055,7 +1074,7 @@ def main():
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError:
             raise SystemExit('This queue is already open in another server. Use its URL.')
-        store = Store(folder)
+        store = Store(folder, path_map=parse_path_map(args.path_map))
         with make_server(store, args.port, Preferences(args.preferences)) as server:
             url = f'http://127.0.0.1:{server.server_port}'
             print(url, flush=True)
@@ -1068,4 +1087,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)
