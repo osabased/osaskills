@@ -1,0 +1,28 @@
+{
+ "id": "q-entry-with-1-v2",
+ "task": "q-entry",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Put the entrypoint in `src/client/`, but fix the project config first, because the existing client entrypoint doesn't run today.**\n\n**What I found**\n- `default.project.json` maps `src/client` to `ReplicatedStorage.Client`. It doesn't set `emitLegacyScripts`, so Rojo 7 uses the default (`true`).\n- `src/client/init.client.luau` currently contains only `print(\"client\")`. With that default, Rojo builds it as a `LocalScript`. A `LocalScript` in `ReplicatedStorage` never runs, so that print never fires.\n- `src/server/init.server.luau` is a `Script` under `ServerScriptService`, so the server side starts fine.\n- `src/shared/init.luau` is an empty `ModuleScript` that returns `{}`.\n- There is no `CLAUDE.md` or `.claude/roblox/` project guide, and no `StarterPlayer` mapping. I didn't check which Rojo version is pinned. If it's older than 7, the suffix behavior differs.\n\n**Recommendation**\n- **Script type:** a `Script` with `RunContext = Client`, which is Roblox's current recommendation for client entrypoints in `ReplicatedStorage`.\n- **Config:** add `\"emitLegacyScripts\": false` at the top level of `default.project.json`. Then `*.client.luau` builds a `Script` with `RunContext = Client` and `*.server.luau` builds one with `RunContext = Server`.\n- **Entrypoint file:** keep using `src/client/init.client.luau`, which becomes `ReplicatedStorage.Client`. Put the input controller in a sibling ModuleScript such as `src/client/InputController.luau`. The entrypoint requires it and starts it, so there is one startup owner for the client.\n\n**Alternative:** map `src/client` to `StarterPlayer.StarterPlayerScripts` and keep the default `LocalScript`. That needs no config change, but it moves the client code out of `ReplicatedStorage` and changes the project layout.\n\n**Caution:** don't combine a Client-RunContext `Script` with a Starter container. It runs twice, once as the original and once as the clone.\n\n**Shared code:** only constants and types that both server and client need, such as action names, belong in `src/shared`. The controller itself is client-only.\n\nI haven't made any edits. I can make the `emitLegacyScripts` change and add the controller module if you want.",
+ "cost": 0.09416560000000002,
+ "turns": 9,
+ "seconds": 20.3,
+ "rc": 0,
+ "written": {}
+}

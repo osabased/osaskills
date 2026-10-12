@@ -1,0 +1,18 @@
+{
+ "id": "t-explicit-thenwhat",
+ "prompt": "/then-what The audit found the cache index is 10x faster, Redis is untested, and mobile wasn't load tested.",
+ "expect": "then-what",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Grep"
+ ],
+ "result": "\ud83e\udded **Recommendation:** Adopt the cache index and leave Redis and mobile out of this change.\n\n**Why:** The audit measured the index at about 10x faster, and that is the only result with evidence behind it. \"Untested\" for Redis and \"not load tested\" for mobile mean unknown, not broken. They give no reason to hold the index back, and no reason to add Redis. I searched the project and found no application source, only skill files and `wally.toml`. So I can't see the caller that would use the index, or confirm that it returns the same results as the current path.\n\n\u27a1\ufe0f **Next (User):** Tell me which file or repo holds the code that calls the cache lookup. I'll wire in the index there and run an equivalence check against the old path.\n\n**Done when:** The index and the old path return identical results on the same inputs, and the measured speedup holds.\n\n**Risks:**\n- **Redis:** Skip it unless the index leaves a latency or sharing problem you can measure. Adding it now would be untested complexity.\n- **Mobile:** If mobile is a real share of your traffic, run a load test before you announce the speedup. Until then, treat mobile performance as unknown.",
+ "cost": 0.058656,
+ "turns": 2,
+ "seconds": 10.9,
+ "rc": 0,
+ "written": {}
+}

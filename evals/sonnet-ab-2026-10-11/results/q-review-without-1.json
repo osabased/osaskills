@@ -1,0 +1,18 @@
+{
+ "id": "q-review-without-1",
+ "task": "q-review",
+ "cond": "without",
+ "rep": 1,
+ "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "**Verdict: it doesn't hold up.** The flow can charge a customer without creating an order, and it can charge them more than once. Both problems come from the same ordering.\n\n**1. Charge, then insert, with retries, gives double charges.**\n- The server charges the card, and the insert then fails on the unique-constraint race. The server returns 500, and the client retries.\n- The retry charges the card again, because nothing ties the two requests together.\n- A timeout does the same thing. The charge succeeds, the response is slow or lost, and the client retries into a second charge.\n- With 3 retries, a customer can be charged up to 4 times for one order.\n\n**2. A failed insert leaves a charge with no order.**\n- If every attempt fails, or the client gives up, the customer has paid and no order exists.\n- Nothing in the flow refunds or voids the charge, and nothing reconciles charges against orders.\n\n**3. The unique-constraint failure is being treated as an error when it's a signal.**\n- The constraint is probably catching a duplicate request: two concurrent POSTs, or a retry that overlaps the original. It is doing its job, but the server has already charged by the time it fires.\n- The check has to happen before the charge. At the moment, the constraint only tells you after the money has moved.\n- If the constraint is on something other than a request or order key, I'd want to know what it is. That would be a separate bug.\n\n**4. Retrying on 5xx and timeout isn't safe for a non-idempotent POST.**\n- The client can't tell \"failed before charging\" from \"charged, then failed\". The retry policy treats them the same.\n\n**Fixes, in priority order**\n1. **Add an idempotency key.**\n   - The client generates one UUID per checkout attempt and sends it on every retry, as an `Idempotency-Key` header.\n   - The server stores the key in a table with a unique constraint, and keeps the order ID and response against it.\n   - A repeated key returns the stored result and does not charge again.\n2. **Pass the same key to the payment provider.** Stripe and most others support this. It makes the charge itself idempotent even if your own server crashes midway.\n3. **Reorder, or make the order a state machine.**\n   - Insert the order first as `pending`. The unique constraint then rejects duplicates before any money moves.\n   - Charge next, then mark the order `paid`.\n   - If you'd rather authorize first, use auth, then insert, then capture. Void the auth if the insert fails.\n4. **Handle the race explicitly.** Catch the unique violation, load the existing row, and return it as a success if it's the same logical order.\n5. **Add reconciliation.** A periodic job should find provider charges with no matching order and refund them or complete the order. It covers crashes between charge and insert.\n6. **Client side:** keep the retries, but add backoff with jitter. They are only safe once the key is in place.\n\nI reviewed the flow as you described it and didn't look at any code. If you share the handler and the schema, I can check the constraint and the transaction boundaries.",
+ "cost": 0.0396229,
+ "turns": 1,
+ "seconds": 12.4,
+ "rc": 0,
+ "written": {}
+}

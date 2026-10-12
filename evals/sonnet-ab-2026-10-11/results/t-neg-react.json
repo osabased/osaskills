@@ -1,0 +1,21 @@
+{
+ "id": "t-neg-react",
+ "prompt": "add a date picker package to my React web app",
+ "expect": null,
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Glob",
+  "Bash"
+ ],
+ "result": null,
+ "cost": 0.0641128,
+ "turns": 4,
+ "seconds": 6.2,
+ "rc": 1,
+ "written": {}
+}

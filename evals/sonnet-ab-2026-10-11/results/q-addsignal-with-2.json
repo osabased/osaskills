@@ -1,0 +1,43 @@
+{
+ "id": "q-addsignal-with-2",
+ "task": "q-addsignal",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/adoption-policy.md",
+  "read:roblox-resource-acquisition/references/project-adoption.md",
+  "read:roblox-lemonsignal/SKILL.md",
+  "read:roblox-lemonsignal/references/setup.md",
+  "read:roblox-lemonsignal/resource.yaml"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Bash",
+  "Read",
+  "Read",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "I made no file edits, because the project already has a signal library: `wally.toml:9` declares `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`. The Rojo mapping in `default.project.json` already points `ReplicatedStorage.Packages` at `Packages/`, which is where Wally installs it. Adding a second library or editing the manifests would only duplicate that. I couldn't run any commands here, so none of this has been installed or run.\n\n**What's missing**\n- **Install:** there is no `Packages/` folder and no `wally.lock` yet. Run `wally install` to create them. Some projects use `pesde install` instead, but `pesde.toml` here lists only `vide` and `blink`, so I'd stay with Wally.\n- **Check:** after installing, confirm that `Packages/LemonSignal.lua` exists and that `require(ReplicatedStorage.Packages.LemonSignal)` works in Studio or via `rojo sourcemap`.\n\n**Using it so a module exposes events**\n```luau\n-- src/shared/Health.luau\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Health = {}\nHealth.Damaged = LemonSignal.new() -- Signal<number, Player?>\n\nfunction Health.damage(amount: number, attacker: Player?)\n\tHealth.Damaged:Fire(amount, attacker)\nend\n\nreturn Health\n```\nOther modules subscribe with `Health.Damaged:Connect(function(amount, attacker) ... end)`. Keep the returned connection and call `:Disconnect()` on it when you're done. `Fire` stays inside one runtime. It does not send anything between client and server, so use a RemoteEvent or Blink for that.\n\n**What I left alone**\n- The project's `CLAUDE.md`, the `.claude/roblox/resources/records/lemonsignal.yaml` record and the \"adopted\" status are unchanged. The skill's rules require a passing install and import check before recording an adoption, and I can't run one.\n- Once you've run `wally install`, I can write the record and the `CLAUDE.md` entry.\n- I also didn't add a wrapper module around LemonSignal. The library is used directly.",
+ "cost": 0.20804219999999998,
+ "turns": 19,
+ "seconds": 38.5,
+ "rc": 0,
+ "written": {}
+}

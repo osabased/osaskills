@@ -1,0 +1,42 @@
+[
+ {
+  "id": "q-entry-with-1-v2",
+  "task": "q-entry",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-entry-with-2-v2",
+  "task": "q-entry",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-with-1-v2",
+  "task": "q-addsignal",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-with-2-v2",
+  "task": "q-addsignal",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ }
+]

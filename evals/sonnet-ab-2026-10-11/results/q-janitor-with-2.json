@@ -1,0 +1,24 @@
+{
+ "id": "q-janitor-with-2",
+ "task": "q-janitor",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-janitor",
+  "roblox-lemonsignal"
+ ],
+ "tools": [
+  "Skill",
+  "Skill"
+ ],
+ "result": "Here is the class. I didn't open `wally.toml`, so I haven't confirmed the pins.\n\n```luau\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal RunService = game:GetService(\"RunService\")\n\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Owned = {}\nOwned.__index = Owned\n\nfunction Owned.new(owner: Instance, source, onCleanup: () -> ())\n\tlocal self = setmetatable({}, Owned)\n\tself._disposed = false\n\tself._janitor = Janitor.new()\n\n\t-- Part: not a function/thread/connection, so the default method is \"Destroy\"\n\tlocal part = self._janitor:Add(Instance.new(\"Part\"))\n\tpart.Anchored = true\n\tpart.Parent = workspace\n\tself.Part = part\n\n\t-- LemonSignal connection: a table, so the default would be \"Destroy\" and it\n\t-- would be silently skipped. Name the method.\n\tself._janitor:Add(source:Connect(function(value)\n\t\tpart.Position = Vector3.new(0, value, 0)\n\tend), \"Disconnect\")\n\n\t-- Heartbeat: RBXScriptConnection, defaults to \"Disconnect\"\n\tself._janitor:Add(RunService.Heartbeat:Connect(function(dt)\n\t\tpart.CFrame *= CFrame.Angles(0, dt, 0)\n\tend))\n\n\t-- Cleanup callback: a function, so it is called on cleanup\n\tself._janitor:Add(onCleanup)\n\n\t-- Tie everything to the owner's lifetime. The Janitor's Cleanup runs on owner.Destroying.\n\tself._janitor:LinkToInstance(owner)\n\n\treturn self\nend\n\nfunction Owned.Destroy(self)\n\tif self._disposed then\n\t\treturn\n\tend\n\tself._disposed = true\n\tself._janitor:Destroy() -- single-use, hence the flag\nend\n\nreturn Owned\n```\n\nYou'd use it like this:\n\n```luau\nlocal sig = LemonSignal.new()\nlocal obj = Owned.new(character, sig, function() print(\"bye\") end)\ncharacter:Destroy() -- Part destroyed, both connections disconnected, \"bye\" printed\n```\n\n## What happens if a cleanup callback throws\n\nThis follows Janitor 1.18.3's behavior as described in its skill notes. I haven't run it or read the source myself.\n\n1. **The rest of the cleanup is skipped.** Janitor walks its entries in `next()` order, which is unspecified, and doesn't `pcall` them. The error aborts the loop. Any entries not yet reached stay alive. Depending on the order, that could be the Part, the Heartbeat connection, the LemonSignal connection, or all three. A skipped Heartbeat connection keeps running against a Part that may still exist.\n2. **The Janitor gets stuck.** It stays marked as \"cleaning\", so every later `Cleanup()` or `Destroy()` call silently does nothing. Calling `Owned:Destroy()` afterwards won't retry the skipped entries and won't raise an error. They leak until the Janitor itself is garbage collected, and even then the connections stay live.\n3. **The error goes to the output, not to your code.** Through `LinkToInstance`, cleanup runs inside the `Destroying` handler. The error is reported in the output and doesn't propagate to whoever called `owner:Destroy()`. The instance is destroyed regardless. If you call `Owned:Destroy()` directly, the error does propagate to you, but the Janitor is already stuck by then.\n4. **Which entries survive is nondeterministic.** If the thrower happens to run last, nothing is lost, which can hide the bug in testing.\n\n**Mitigation:** wrap risky user callbacks so they can't throw, for example:\n\n```luau\nself._janitor:Add(function()\n\tlocal ok, err = pcall(onCleanup)\n\tif not ok then\n\t\twarn(\"Owned cleanup callback failed:\", err)\n\tend\nend)\n```\n\nIf cleanup order matters (stop producers, then destroy consumers), use separate Janitors or explicit steps. One Janitor won't guarantee order.",
+ "cost": 0.087141,
+ "turns": 5,
+ "seconds": 23.3,
+ "rc": 0,
+ "written": {}
+}

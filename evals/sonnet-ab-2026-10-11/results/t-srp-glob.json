@@ -1,0 +1,25 @@
+{
+ "id": "t-srp-glob",
+ "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+ "expect": "structure-roblox-projects",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "read:structure-roblox-projects/references/workflows/rojo.md"
+ ],
+ "tools": [
+  "Grep",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read",
+  "Glob"
+ ],
+ "result": null,
+ "cost": 0.0693918,
+ "turns": 4,
+ "seconds": 11.1,
+ "rc": 1,
+ "written": {}
+}

@@ -1,0 +1,25 @@
+{
+ "id": "q-entry-without-1",
+ "task": "q-entry",
+ "cond": "without",
+ "rep": 1,
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Bash",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Put the entrypoint at `src/client/init.client.luau` and make it a LocalScript.** That file already exists, but it won't run as the project is wired today.\n\n**How the project is wired**\n- `default.project.json` is a Rojo project named `arena`. It has three source folders: `src/shared`, `src/server` and `src/client`.\n- `src/server/init.server.luau` becomes a `Script` in `ServerScriptService.Server`. It only prints \"server\".\n- `src/shared/init.luau` becomes a `ModuleScript` in `ReplicatedStorage.Shared`. It returns `{}`.\n- `src/client/init.client.luau` becomes a `LocalScript` in `ReplicatedStorage.Client`. It only prints \"client\".\n- `wally.toml` and `pesde.toml` both exist, and `Packages` is mapped under `ReplicatedStorage`.\n\n**The problem**\nA LocalScript only runs in client-side containers such as `StarterPlayer.StarterPlayerScripts`, `StarterGui` or `StarterPack`. It doesn't run when it sits in `ReplicatedStorage`, so the current client entrypoint never executes. The input controller would hit the same problem unless the mapping changes.\n\n**Recommendation**\n1. Change the `src/client` mapping in `default.project.json` to put it under `StarterPlayer`. For example, add `\"StarterPlayer\": { \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } } }`, and remove the `Client` entry from `ReplicatedStorage`.\n2. Keep `init.client.luau` as the single bootstrap LocalScript. It should only `require` modules and start them.\n3. Write the input controller as a ModuleScript, for example `src/client/InputController.luau`, that returns a table with `Start()` or `Init()`. The entrypoint requires it and calls it.\n4. Put any input action names or types that the server also needs in `src/shared`.\n\nMake the bootstrap a LocalScript, not a ModuleScript or a `Script` with `RunContext = Client`. It matches how the project is already set up, and it needs no extra configuration. Only the mapping needs to change.",
+ "cost": 0.057716,
+ "turns": 7,
+ "seconds": 17.7,
+ "rc": 0,
+ "written": {}
+}

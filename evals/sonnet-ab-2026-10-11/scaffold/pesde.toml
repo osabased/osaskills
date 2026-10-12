@@ -1,0 +1,11 @@
+name = "dev/arena"
+version = "0.1.0"
+
+[target]
+environment = "roblox"
+
+[dependencies]
+vide = { repo = "https://github.com/centau/vide", rev = "5ed4c01940e6bd578fb83253cfbeda0a6c05177c" }
+
+[dev_dependencies]
+blink = { name = "1axen/blink", version = "=0.18.9", target = "lune" }

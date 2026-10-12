@@ -1,0 +1,282 @@
+[
+ {
+  "id": "q-vide-with-1",
+  "task": "q-vide",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-vide-with-2",
+  "task": "q-vide",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-vide-without-1",
+  "task": "q-vide",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-vide-without-2",
+  "task": "q-vide",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-blink-with-1",
+  "task": "q-blink",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-blink-with-2",
+  "task": "q-blink",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-blink-without-1",
+  "task": "q-blink",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-blink-without-2",
+  "task": "q-blink",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-janitor-with-1",
+  "task": "q-janitor",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-janitor-with-2",
+  "task": "q-janitor",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-janitor-without-1",
+  "task": "q-janitor",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-janitor-without-2",
+  "task": "q-janitor",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "Using Janitor 1.18.3 and LemonSignal 2.0.0 (both in wally.toml), write a small Luau class that owns a Part, a LemonSignal connection, a RunService.Heartbeat connection and a cleanup callback, all tied to a given Instance's lifetime. Then explain exactly what happens if one of the cleanup callbacks throws. Reply in chat only; don't create files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-glob-with-1",
+  "task": "q-glob",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-glob-with-2",
+  "task": "q-glob",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-glob-without-1",
+  "task": "q-glob",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-glob-without-2",
+  "task": "q-glob",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-entry-with-1",
+  "task": "q-entry",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-entry-with-2",
+  "task": "q-entry",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-entry-without-1",
+  "task": "q-entry",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-entry-without-2",
+  "task": "q-entry",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-review-with-1",
+  "task": "q-review",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-review-with-2",
+  "task": "q-review",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-review-without-1",
+  "task": "q-review",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-review-without-2",
+  "task": "q-review",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-with-1",
+  "task": "q-addsignal",
+  "cond": "with",
+  "rep": 1,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-with-2",
+  "task": "q-addsignal",
+  "cond": "with",
+  "rep": 2,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": true,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-without-1",
+  "task": "q-addsignal",
+  "cond": "without",
+  "rep": 1,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ },
+ {
+  "id": "q-addsignal-without-2",
+  "task": "q-addsignal",
+  "cond": "without",
+  "rep": 2,
+  "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+  "with_skills": false,
+  "max_turns": 15,
+  "kind": "quality"
+ }
+]

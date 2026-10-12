@@ -1,0 +1,23 @@
+{
+ "id": "t-srp-entry",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "expect": "structure-roblox-projects",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "tools": [
+  "Glob",
+  "Skill",
+  "Read",
+  "Read"
+ ],
+ "result": "Your client entrypoint already has a place: `src/client/init.client.luau`. It's currently just `print(\"client\")`. Put your startup code there instead of adding a new script.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns `init.client.luau` into the script that is the `Client` folder itself, with any sibling modules in `src/client` as its children.\n\nWhether it runs depends on what class Rojo emits for it:\n- **Script with `RunContext = Client`:** it runs from `ReplicatedStorage`. This is Roblox's current recommendation.\n- **LocalScript:** it will never run in `ReplicatedStorage`. If your Rojo version or `emitLegacyScripts` setting produces a LocalScript, either set `emitLegacyScripts` to `false` in the project file, or map the client folder into `StarterPlayer.StarterPlayerScripts` instead.\n\nI haven't run `rojo build`. To confirm the class, run `rojo build -o /tmp/x.rbxl` and inspect it, or check the script in Studio after `rojo serve`.\n\nKeep the entrypoint thin. It should `require` modules from `ReplicatedStorage.Shared` and sibling client modules, and anything server-only stays under `src/server`. Don't map the client folder into a Starter container as well as `ReplicatedStorage`, or it will run twice.",
+ "cost": 0.0743358,
+ "turns": 6,
+ "seconds": 18.7,
+ "rc": 0,
+ "written": {}
+}

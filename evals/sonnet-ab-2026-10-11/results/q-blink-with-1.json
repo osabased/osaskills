@@ -1,0 +1,22 @@
+{
+ "id": "q-blink-with-1",
+ "task": "q-blink",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "We use Blink 0.18.9 (see pesde.toml). Write network/main.blink for: a reliable server-to-client DamageNumber event carrying a position (vector) and an amount (u16); an unreliable client-to-server AimDirection event carrying a vector; and a function the client calls to get its loadout, returning up to 6 item id strings. Then show server and client usage of the generated modules. Reply in chat only; don't create files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-blink"
+ ],
+ "tools": [
+  "Skill"
+ ],
+ "result": "```blink\n-- network/main.blink\noption ServerOutput = \"../src/server/Network/Server.luau\"\noption ClientOutput = \"../src/client/Network/Client.luau\"\noption TypesOutput  = \"../src/shared/Network/Types.luau\"\noption RemoteScope  = \"MyGame\"\n\nstruct DamageInfo {\n\tPosition: vector,\n\tAmount: u16,\n}\n\nevent DamageNumber {\n\tFrom: Server,\n\tType: Reliable,\n\tCall: ManyAsync,\n\tData: DamageInfo,\n}\n\nevent AimDirection {\n\tFrom: Client,\n\tType: Unreliable,\n\tCall: SingleAsync,\n\tData: vector,\n}\n\nfunction GetLoadout {\n\tYield: Coroutine,\n\tReturn: string(1..32)[0..6],\n}\n```\n\nCompile it with `pesde run blink -- network/main`. This writes the three outputs at the paths in the options. Paths are relative to the schema file, so `network/` is the base here. Adjust them to your Rojo layout.\n\n**Server** (`ServerScriptService`)\n```luau\nlocal ServerScriptService = game:GetService(\"ServerScriptService\")\nlocal Net = require(ServerScriptService.Network.Server)\n\n-- Client -> server, unreliable. The type only guarantees a vector, so check it.\nlocal aim: { [Player]: vector } = {}\nNet.AimDirection.On(function(player, direction)\n\tif direction.Magnitude < 0.5 or direction.Magnitude > 1.5 then return end -- must be ~unit length\n\taim[player] = direction.Unit\nend)\n\n-- Client-invoked function. Return at most 6 ids, from server-owned data.\nNet.GetLoadout.On(function(player)\n\tlocal ids = getLoadoutFor(player) -- your own lookup\n\treturn table.move(ids, 1, math.min(#ids, 6), 1, {})\nend)\n\n-- Server -> client damage popup\nlocal function showDamage(player: Player, position: vector, amount: number)\n\tNet.DamageNumber.Fire(player, { Position = position, Amount = math.clamp(amount, 0, 65535) })\nend\n-- Also available: Net.DamageNumber.FireAll(info), FireList(players, info), FireExcept(player, info)\n```\n\n**Client** (`StarterPlayerScripts`)\n```luau\nlocal Net = require(script.Parent.Network.Client)\n\nNet.DamageNumber.On(function(info)\n\tspawnDamageNumber(info.Position, info.Amount)\nend)\n\n-- Throttle unreliable sends, e.g. once per frame at most\ngame:GetService(\"RunService\").RenderStepped:Connect(function()\n\tlocal look = workspace.CurrentCamera.CFrame.LookVector\n\tNet.AimDirection.Fire(look)\nend)\n\n-- Yields until the server replies\nlocal loadout = Net.GetLoadout.Invoke() -- { string }\n```\n\nNotes:\n- **Receive-side DoS:** 0.18.9 parses the whole incoming buffer before any handler runs (issue #45). `AimDirection` is untrusted client-to-server input, so the schema bounds and handler checks don't protect the parser. Add a tested pre-decode byte and rate budget before shipping it. Don't silently patch the generated code.\n- **Item id bounds:** `string(1..32)` and `[0..6]` are my choices for the 6-item limit. Change them if your ids differ. Because the limit is in the schema, the generated code should reject longer arrays when serializing.\n- **Requiring starts networking:** requiring a generated module immediately creates the remotes on the server and makes the client wait for them. Require them only when you want networking live.\n- **Call modes:** I used the `Async` modes, so handlers may yield.\n- **Unverified:** I haven't compiled this schema, so the `[0..6]` array bound syntax is untested against 0.18.9. If the compiler rejects it, check `references/schema.md`.",
+ "cost": 0.0727315,
+ "turns": 3,
+ "seconds": 21.2,
+ "rc": 0,
+ "written": {}
+}

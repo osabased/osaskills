@@ -1,0 +1,30 @@
+{
+ "id": "q-entry-with-2",
+ "task": "q-entry",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "structure-roblox-projects"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Read",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Put it in `src/client/` as a ModuleScript, and have the existing client entrypoint require it. Don't add a second entrypoint.**\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. The folder already contains `src/client/init.client.luau`. Rojo turns that file into a `Script` named `Client` with `RunContext = Client`, which is the currently recommended client entrypoint for a `ReplicatedStorage` location. It is a placeholder (`print(\"client\")`), and nothing else in the project starts client code.\n\n- **Controller:** create `src/client/InputController.luau` (no `.client` suffix). Rojo will make it a `ModuleScript` at `ReplicatedStorage.Client.InputController`. It should return a table with something like `init`/`start` or `new`/`Destroy`.\n- **Startup:** edit `src/client/init.client.luau` to `require` it with `script.InputController` and call its start function. That Script is the single client startup owner. The server side already follows the same pattern with `src/server/init.server.luau`.\n- **Not a `LocalScript`, and not a second `.client.luau`:** a `LocalScript` in `ReplicatedStorage` never runs. A second RunContext-Client `Script` would split startup ownership for no benefit.\n- **Not in `src/shared`:** the controller is client-only, and `src/shared` is `ReplicatedStorage.Shared`. Only put input action names, types or constants there if the server also needs them. The server should still validate anything the client sends.\n- **Dependencies:** `wally.toml` and `pesde.toml` both exist, and `Packages` is mapped under `ReplicatedStorage`. I didn't check which one is actually in use. If you want a loader or scheduler such as Bootstrapper, confirm that first. For one controller, a plain `require` from `init.client.luau` is enough.\n\nI haven't edited anything.",
+ "cost": 0.10502910000000001,
+ "turns": 11,
+ "seconds": 24.4,
+ "rc": 0,
+ "written": {}
+}

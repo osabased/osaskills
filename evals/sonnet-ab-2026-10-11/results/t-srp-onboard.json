@@ -1,0 +1,33 @@
+{
+ "id": "t-srp-onboard",
+ "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+ "expect": "structure-roblox-projects",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "structure-roblox-projects",
+  "read:structure-roblox-projects/references/conventions/project-guide.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob"
+ ],
+ "result": null,
+ "cost": 0.10777629999999999,
+ "turns": 4,
+ "seconds": 12.9,
+ "rc": 1,
+ "written": {}
+}

@@ -1,0 +1,26 @@
+{
+ "id": "q-addsignal-without-1",
+ "task": "q-addsignal",
+ "cond": "without",
+ "rep": 1,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Grep"
+ ],
+ "result": "I didn't change any files, because the project already has a signal library.\n\n`wally.toml` lists `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`. `default.project.json` maps `Packages` into `ReplicatedStorage`, which is where Wally installs its packages. After `wally install`, modules can require it and expose events like this:\n\n```lua\nlocal Signal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Module = {}\nModule.Damaged = Signal.new()\n\n-- elsewhere\nModule.Damaged:Connect(function(amount) end)\nModule.Damaged:Fire(10)\n```\n\nNothing in `src/` uses it yet. All three source files are empty.\n\nI left `pesde.toml` alone. It has no signal library, but the project file doesn't map pesde's install folder (`roblox_packages`), so a library added there wouldn't be reachable. Adding a second signal library would only duplicate LemonSignal.\n\nDo you want me to add a different library? I can also write a small shared module that wraps `LemonSignal`, or move the signal dependency to pesde and update `default.project.json` to match.",
+ "cost": 0.0629942,
+ "turns": 8,
+ "seconds": 18.6,
+ "rc": 0,
+ "written": {}
+}

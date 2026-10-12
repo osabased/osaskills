@@ -1,0 +1,26 @@
+{
+ "id": "t-rra-bump-vide",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "expect": "roblox-resource-acquisition",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/project-adoption.md",
+  "read:roblox-vide/resource.yaml"
+ ],
+ "tools": [
+  "Skill",
+  "Grep",
+  "Read",
+  "Glob",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.1019371,
+ "turns": 4,
+ "seconds": 12.9,
+ "rc": 1,
+ "written": {}
+}

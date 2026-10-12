@@ -1,0 +1,23 @@
+{
+ "id": "t-rra-hitbox",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "expect": "roblox-resource-acquisition",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/evaluation-rubric.md"
+ ],
+ "tools": [
+  "Skill",
+  "Read",
+  "Glob"
+ ],
+ "result": "Short answer: for most games, write it yourself with Roblox's built-in spatial queries. A module only pays off for one specific style of hitbox. This is from what I know, not checked against current repos, so check maintenance and open issues before adopting anything. Nothing in your project (`wally.toml`, `pesde.toml`, `src/`) or the bundled library skills covers hitboxes.\n\n**Pick by hitbox type**\n\n| Your hitbox | Use | Module needed? |\n|---|---|---|\n| Instant AoE, a melee \"cone\", projectile impact, a trigger zone | `workspace:GetPartBoundsInBox`, `GetPartBoundsInRadius` or `GetPartsInPart`, with `OverlapParams` | No. It's a few lines. |\n| Hitscan gun | One `workspace:Raycast` | No. |\n| Fast projectile | Raycast from last position to current position each step, or `Spherecast` / `Blockcast` | No. About 30 lines. |\n| Swinging weapon that must hit along the blade for the whole animation | Per-frame raycasts from attachments on the weapon, each frame's origin being the previous frame's position | Maybe. This is where a module helps. |\n\n**The module for that last case**\n\n- **RaycastHitboxV4 (Swordphin123)** is the long-standing community option. You put attachments on the weapon and it casts between their previous and current positions each frame. It handles per-target debouncing and visualizing the rays.\n- Alternatives exist, such as ClientCast-style modules and other forks.\n- Be cautious because the popular ones are community-maintained and have had gaps in upkeep. Adoption would need an actual pinned version, a license and source check, and a test in your project.\n\n**Why rolling your own is usually fine**\n\n- The core is about 40 lines: store each attachment's last world position, raycast from there to the current position every `Heartbeat`, and keep a `hit[humanoid]` set per swing.\n- Without the previous-position sweep, fast swings tunnel through thin targets. That is the one thing a naive version gets wrong.\n- You control the filtering, the debouncing and the network model.\n- A module that does its own `Heartbeat` loop and per-swing state is more surface area than a plain query for AoE or projectiles.\n\n**Server authority**\n\nWhichever you pick, run the authoritative hit check on the server. If you run it on the client for responsiveness, the client should only send \"I hit X\". The server then re-checks range, line of sight and swing cooldown before applying damage.\n\n**My recommendation**\n\n- If you have AoE, projectiles or guns, use the built-in queries.\n- If you have melee weapons that sweep, write the sweep yourself first. Reach for RaycastHitboxV4 only if you want attachment-based setup and don't want to maintain the code.\n- If you tell me which of these you're building, I can sketch the swept-raycast code for it.\n- I can also evaluate a specific module properly: pin a version, read its source, and test it in your project.",
+ "cost": 0.0918099,
+ "turns": 5,
+ "seconds": 26.0,
+ "rc": 0,
+ "written": {}
+}

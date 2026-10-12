@@ -1,0 +1,31 @@
+{
+ "id": "t-rra-add-signal",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "expect": "roblox-resource-acquisition",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/adoption-policy.md",
+  "read:roblox-lemonsignal/SKILL.md",
+  "read:roblox-lemonsignal/references/setup.md",
+  "read:roblox-lemonsignal/resource.yaml"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.0882437,
+ "turns": 4,
+ "seconds": 15.8,
+ "rc": 1,
+ "written": {}
+}

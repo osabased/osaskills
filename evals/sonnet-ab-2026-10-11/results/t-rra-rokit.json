@@ -1,0 +1,27 @@
+{
+ "id": "t-rra-rokit",
+ "prompt": "add StyLua and Selene to the project's rokit toolchain",
+ "expect": "roblox-resource-acquisition",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/curated-registry.md",
+  "read:roblox-resource-acquisition/references/adoption-policy.md",
+  "read:roblox-resource-acquisition/references/project-adoption.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.06964980000000001,
+ "turns": 4,
+ "seconds": 13.2,
+ "rc": 1,
+ "written": {}
+}

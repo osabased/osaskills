@@ -1,0 +1,18 @@
+{
+ "id": "q-glob-without-1",
+ "task": "q-glob",
+ "cond": "without",
+ "rep": 1,
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "Rojo's project file has a top-level `globIgnorePaths` field for this. Add it next to `name` and `tree`:\n\n```json\n{\n  \"name\": \"MyProject\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"src/client/Shop/Preview\"\n  ],\n  \"tree\": {\n    \"...\": \"...\"\n  }\n}\n```\n\n- **Story files:** `**/*.story.luau` matches every story file at any depth.\n- **Preview folder:** list the directory itself (`src/client/Shop/Preview`), not `Preview/**` or just `init.luau`. If you only ignore the contents or the init file, Rojo still turns the directory into an empty `Folder` instance. Ignoring the directory path skips it entirely.\n- **All Preview folders:** to cover every one in the project, use `**/Preview` instead.\n- **Path base:** patterns are relative to the folder containing the project file.\n- **Serve as well as build:** the ignore applies to `rojo serve` too, so stories and previews won't sync into Studio either. If you want them during development, keep a second project file (e.g. `dev.project.json`) without the ignore list. Build with `rojo build default.project.json` for release and `rojo serve dev.project.json` for development.\n\nI haven't looked at your project, so check the result with `rojo build -o test.rbxl` and confirm nothing from Preview or the stories ends up in it.",
+ "cost": 0.0429768,
+ "turns": 1,
+ "seconds": 14.0,
+ "rc": 0,
+ "written": {}
+}

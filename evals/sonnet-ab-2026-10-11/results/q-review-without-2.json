@@ -1,0 +1,18 @@
+{
+ "id": "q-review-without-2",
+ "task": "q-review",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "Review this flow end to end and tell me if it holds up: the client calls POST /checkout; the server charges the card via the payment provider, then inserts the order row, then returns 200. The client retries the POST up to 3 times on timeout or 5xx. The order insert sometimes fails on a unique-constraint race. Reply in chat only.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "**Verdict: it doesn't hold up.** The core problem is that a non-idempotent side effect (the charge) runs before a fallible step (the insert), and the client retries with no way for the server to recognize a repeat.\n\n**Failure modes**\n\n1. **Double charges on retry.** Any timeout or 5xx after the charge succeeds makes the client re-POST, and the server charges again. This happens when:\n   - the insert fails (the unique-constraint race), so the server returns 500 after the money has moved;\n   - the server or DB is slow and the client times out even though the charge went through;\n   - the process crashes between charge and insert.\n\n2. **The unique-constraint race is a symptom.** If two requests race on the insert, then two requests also raced through the charge. The unique violation is the only thing that caught the duplicate, and it caught it after the customer was billed. The 500 it produces then triggers a retry, which charges a third time.\n\n3. **Charged with no order.** If the charge succeeds and the insert fails permanently (a DB outage, say), the customer has paid and nothing is recorded. The card was charged but there is no order row to reconcile against.\n\n4. **Timeouts are ambiguous.** The client can't tell \"never processed\" from \"processed, response lost.\" Retrying blindly on timeout is only safe if the endpoint is idempotent, and this one isn't.\n\n5. **Retries without backoff or jitter.** Three immediate retries during an incident multiply load and widen the race window.\n\n**Fixes, in priority order**\n\n1. **Idempotency key.** The client generates a UUID per checkout attempt and sends it as `Idempotency-Key`, reused across retries. The server stores `(key \u2192 request hash, status, response)` with a unique index on the key.\n   - A repeat with the same key and body returns the stored result.\n   - A repeat with the same key and a different body returns 422.\n   - A repeat while the first is in flight returns 409 or waits.\n\n2. **Pass the same key to the payment provider.** Stripe, Adyen and most others support this. It makes the charge itself idempotent even if your own store fails.\n\n3. **Reorder and persist intent first.** Insert the order as `pending` (this is where the unique constraint should fire, before any money moves). Then charge, then mark the order `paid`. If the insert hits a unique violation, treat it as \"already exists\" and return the existing order, not a 500.\n\n4. **Reconciliation.** Run a job or webhook handler that finds charges with no `paid` order, and `pending` orders with no charge. Either complete or refund them. Rely on the provider's webhooks as the source of truth for charge status.\n\n5. **Retry policy.** Retry only with the idempotency key. Use exponential backoff with jitter. Don't retry 4xx. Consider not retrying non-timeout 5xx without a stable key.\n\n6. **Error semantics.** Map the unique-constraint violation to a deterministic response (200 with the existing order, or 409), not a generic 500.\n\nWith 1\u20133 in place, retries become safe, the race becomes harmless, and a paid customer always has an order record.",
+ "cost": 0.039853900000000005,
+ "turns": 1,
+ "seconds": 13.0,
+ "rc": 0,
+ "written": {}
+}

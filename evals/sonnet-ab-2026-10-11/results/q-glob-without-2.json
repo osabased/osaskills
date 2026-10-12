@@ -1,0 +1,18 @@
+{
+ "id": "q-glob-without-2",
+ "task": "q-glob",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "Add a top-level `globIgnorePaths` array to `default.project.json`. It's available in Rojo 7.7.\n\n```json\n{\n  \"name\": \"MyProject\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"src/client/Shop/Preview\"\n  ],\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    ...\n  }\n}\n```\n\n- **Path base:** patterns are relative to the project file's directory.\n- **Directory match:** Rojo skips an ignored directory before it descends into it. So `src/client/Shop/Preview` removes the whole folder, including its `init.luau`.\n- **Several Preview folders:** use a wildcard such as `\"**/Preview\"`. It will match any folder or file with that name, so use `\"src/client/**/Preview\"` if the name appears elsewhere and you want to keep those.\n- **Other extensions:** if some stories use `.story.lua` or `.story.tsx`, add `\"**/*.story.*\"` instead of the narrower pattern.\n\n**Scope:** `globIgnorePaths` applies to every Rojo operation, including `rojo serve`, not just `rojo build`. If you want Preview folders and stories to sync into Studio during development but be left out of builds, keep `default.project.json` unchanged. Make a second file, for example `build.project.json`, with the same tree plus `globIgnorePaths`, and run `rojo build build.project.json -o out.rbxl`.\n\nI haven't run this against your project, so test it with `rojo build` and check that the output no longer contains the Preview and story instances.",
+ "cost": 0.0402988,
+ "turns": 1,
+ "seconds": 11.8,
+ "rc": 0,
+ "written": {}
+}

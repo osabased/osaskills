@@ -1,0 +1,23 @@
+{
+ "id": "q-vide-without-2",
+ "task": "q-vide",
+ "cond": "without",
+ "rep": 2,
+ "prompt": "We use Vide (pinned in pesde.toml at commit 5ed4c01, v0.4.1). Write a Vide component for a shop panel: a TextButton that toggles a Frame listing item names from a source table, mounted into the local player's PlayerGui, with correct teardown when the shop closes for good. Show the code in your reply; don't create files.",
+ "with_skills": false,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [
+  "Glob",
+  "Read",
+  "Glob",
+  "Read"
+ ],
+ "result": "Vide isn't installed in this repo (only `pesde.toml` and a stub client file), so I couldn't check this against the v0.4.1 source. I wrote it from my knowledge of Vide's API. Before you commit, check that `mount`, `create`, `source`, `values` and the event-by-name props (`Activated`) match what your pinned rev exports.\n\n```luau\n--!strict\nlocal Players = game:GetService(\"Players\")\nlocal vide = require(path.to.vide)\n\nlocal create = vide.create\nlocal source = vide.source\nlocal values = vide.values\nlocal mount = vide.mount\n\ntype Source<T> = typeof(source((nil :: any) :: T))\n\nlocal function ShopPanel(props: { items: Source<{ string }> })\n\tlocal open = source(false)\n\n\treturn create \"ScreenGui\" {\n\t\tName = \"ShopPanel\",\n\t\tResetOnSpawn = false, -- survive respawns; teardown is explicit\n\n\t\tcreate \"TextButton\" {\n\t\t\tName = \"Toggle\",\n\t\t\tSize = UDim2.fromOffset(120, 36),\n\t\t\tPosition = UDim2.fromOffset(16, 16),\n\t\t\tText = function()\n\t\t\t\treturn if open() then \"Close Shop\" else \"Open Shop\"\n\t\t\tend,\n\t\t\tActivated = function()\n\t\t\t\topen(not open())\n\t\t\tend,\n\t\t},\n\n\t\tcreate \"Frame\" {\n\t\t\tName = \"ItemList\",\n\t\t\tSize = UDim2.fromOffset(240, 300),\n\t\t\tPosition = UDim2.fromOffset(16, 60),\n\t\t\tVisible = open, -- sources are accepted as reactive props\n\n\t\t\tcreate \"UIListLayout\" {\n\t\t\t\tSortOrder = Enum.SortOrder.LayoutOrder,\n\t\t\t\tPadding = UDim.new(0, 4),\n\t\t\t},\n\n\t\t\t-- keyed by value: rows are created/destroyed as names are added/removed\n\t\t\tvalues(props.items, function(name: string, index: () -> number)\n\t\t\t\treturn create \"TextLabel\" {\n\t\t\t\t\tName = name,\n\t\t\t\t\tSize = UDim2.new(1, 0, 0, 28),\n\t\t\t\t\tLayoutOrder = index,\n\t\t\t\t\tText = name,\n\t\t\t\t}\n\t\t\tend),\n\t\t},\n\t}\nend\n\n-- Usage\nlocal items = source({ \"Sword\", \"Shield\", \"Potion\" })\nlocal playerGui = Players.LocalPlayer:WaitForChild(\"PlayerGui\")\n\nlocal destroyShop = mount(function()\n\treturn ShopPanel({ items = items })\nend, playerGui)\n\n-- Shop closes for good (not just hidden):\ndestroyShop()\n\n-- Updating the list while open:\n-- items({ \"Sword\", \"Shield\", \"Potion\", \"Bow\" })\n```\n\n**How it works**\n- **Toggle:** `open` is a source. The button's `Text` is a function that reads it, so it re-evaluates when `open` changes. `Visible = open` binds the frame directly. `Activated` flips the value.\n- **Item list:** `values` is keyed by value, so each name gets one `TextLabel`. Replacing the `items` table only adds or removes the rows that changed. `index` is a function, so `LayoutOrder = index` stays reactive. If duplicate names are possible, use `vide.indexes` instead.\n- **Mounting:** `mount(component, target)` runs the component in a root scope and parents the returned `ScreenGui` into `PlayerGui`. It returns a destructor.\n- **Teardown:** Call `destroyShop()` once when the shop closes for good. It stops the effects, runs any `vide.cleanup` callbacks, and destroys the instances. Don't call `:Destroy()` on the `ScreenGui` yourself. Hiding the shop temporarily is the `open` toggle, not a teardown.\n\nIf you also create connections or tasks inside the component, register them with `vide.cleanup(...)` so the destructor handles them too.",
+ "cost": 0.0733121,
+ "turns": 5,
+ "seconds": 28.5,
+ "rc": 0,
+ "written": {}
+}

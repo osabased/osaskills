@@ -1,0 +1,19 @@
+{
+ "id": "t-user-vod",
+ "prompt": "find the highlights in my 4 hour twitch VOD at /videos/stream.mp4",
+ "expect": "-none (user-only vod-discovery)",
+ "with_skills": true,
+ "max_turns": 3,
+ "kind": "trigger",
+ "skills": [],
+ "tools": [
+  "Bash",
+  "Glob"
+ ],
+ "result": "I can't find highlights in your VOD yet, because this session can't reach the file.\n\n- **No shell.** Bash is disabled here, so I can't run `ffmpeg`, `ffprobe` or a transcription tool on the video.\n- **No read access to `/videos`.** My attempt to list the folder was denied, and I can't read an mp4 directly anyway.\n\nYou have two ways forward:\n\n1. **Fix the session.** Enable Bash and grant read access to `/videos`. I'd then run this pipeline:\n   - Extract the audio and transcribe it with Whisper.\n   - Measure loudness spikes, which usually mark hype moments.\n   - Detect scene and motion changes.\n   - If you have the chat log, count bursts of messages and emotes.\n   - Combine those signals into a ranked list of timestamps with short descriptions, plus optional `ffmpeg` commands to cut each clip.\n2. **Give me the data yourself.** Paste or point me to the chat log (a Twitch chat JSON or text export) or a transcript. I can rank highlights from those without touching the video, though the picks will be less accurate.\n\nWhich do you prefer? If you enable Bash and the `/videos` access, tell me and I'll start.",
+ "cost": 0.055656599999999994,
+ "turns": 3,
+ "seconds": 10.7,
+ "rc": 0,
+ "written": {}
+}

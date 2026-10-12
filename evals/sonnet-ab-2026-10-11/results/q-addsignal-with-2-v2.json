@@ -1,0 +1,34 @@
+{
+ "id": "q-addsignal-with-2-v2",
+ "task": "q-addsignal",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-lemonsignal/references/setup.md",
+  "read:roblox-lemonsignal/SKILL.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read"
+ ],
+ "result": "I didn't edit any files, because the project already declares a signal library. `wally.toml:9` has `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`, which matches the version the bundled `roblox-lemonsignal` skill is written for. I haven't verified that the package installs, because I can't run commands.\n\n`default.project.json` already maps `Packages` into `ReplicatedStorage.Packages`, and the manifest has `realm = \"shared\"`. Once the package is installed, modules can require it from `ReplicatedStorage.Packages.LemonSignal`.\n\nThere is no `Packages/` folder or `wally.lock` yet, so you need to run the install yourself. Run `wally install`, or `pesde install` if you manage packages with pesde. Then check that `Packages` is generated and matches the Rojo mapping.\n\nA module can expose an event like this:\n\n```luau\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Health = {}\nHealth.Damaged = LemonSignal.new() -- Signal<number, Player?>\n\nfunction Health.apply(amount: number, attacker: Player?)\n\tHealth.Damaged:Fire(amount, attacker)\nend\n\nreturn Health\n```\n\nConsumers call `Health.Damaged:Connect(fn)`. Two things to know:\n- `Fire` stays within one runtime, either server or client, and doesn't cross the network.\n- Listeners fire newest first.\n\nI left out a shared wrapper module for typed re-exports (`src/shared/Signal.luau`) because you didn't ask for one. I can add it if you want.",
+ "cost": 0.12771140000000003,
+ "turns": 13,
+ "seconds": 23.4,
+ "rc": 0,
+ "written": {}
+}

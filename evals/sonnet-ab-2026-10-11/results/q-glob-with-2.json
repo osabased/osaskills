@@ -1,0 +1,18 @@
+{
+ "id": "q-glob-with-2",
+ "task": "q-glob",
+ "cond": "with",
+ "rep": 2,
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [],
+ "tools": [],
+ "result": "Use `globIgnorePaths`, a top-level field in the project file. It takes glob patterns relative to the project file's directory.\n\n```json\n{\n  \"name\": \"MyGame\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"**/Preview\",\n    \"**/Preview/**\"\n  ],\n  \"tree\": {\n    \"$className\": \"DataModel\"\n    // ...your existing tree\n  }\n}\n```\n\n- **`**/*.story.luau`** matches every story file at any depth.\n- **`**/Preview`** and **`**/Preview/**`** exclude the whole directory, not just the `init.luau` inside it. If you ignored only `**/Preview/init.luau`, Rojo would still turn the folder into a plain `Folder` holding whatever else is in it. The first pattern covers the directory itself and the second covers everything under it.\n- **Narrower option:** if only `Shop` should lose its Preview, use `src/client/Shop/Preview` and `src/client/Shop/Preview/**`.\n\nCaveats:\n- **Serve is affected too.** `globIgnorePaths` applies to `rojo serve` and `rojo syncback`, not only `rojo build`. If you want stories synced into Studio during development but left out of release builds, keep the default project file with the ignores for builds. Use a second file such as `dev.project.json` without them, and run `rojo serve dev.project.json`.\n- **Nested projects don't inherit it.** If a subfolder has its own `*.project.json`, it needs its own `globIgnorePaths`.\n- **Not tested here.** I haven't run it against your project, since you asked for chat only. After adding it, run `rojo build -o /tmp/test.rbxl` and check that the Preview folders and stories are gone. The `Preview` directory patterns are the part I'd confirm.",
+ "cost": 0.0511453,
+ "turns": 1,
+ "seconds": 13.3,
+ "rc": 0,
+ "written": {}
+}

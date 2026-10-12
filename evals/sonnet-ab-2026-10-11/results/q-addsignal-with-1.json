@@ -1,0 +1,41 @@
+{
+ "id": "q-addsignal-with-1",
+ "task": "q-addsignal",
+ "cond": "with",
+ "rep": 1,
+ "prompt": "Add a signal library to this project so modules can expose custom events. Make whatever project file edits are needed (you can't run commands).",
+ "with_skills": true,
+ "max_turns": 15,
+ "kind": "quality",
+ "skills": [
+  "roblox-resource-acquisition",
+  "read:roblox-resource-acquisition/references/adoption-policy.md",
+  "read:roblox-resource-acquisition/references/project-adoption.md",
+  "read:roblox-lemonsignal/SKILL.md",
+  "read:roblox-lemonsignal/references/setup.md"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Bash",
+  "Glob",
+  "SendUserMessage",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "I made no edits, because LemonSignal is already set up in this project.\n\n- **Dependency:** `wally.toml:9` already declares `LemonSignal = \"data-oriented-house/lemonsignal@2.0.0\"`. That's the current release, and the same version the project's `roblox-lemonsignal` skill is written for.\n- **Require path:** `default.project.json` maps `Packages` into `ReplicatedStorage`. After `wally install`, modules can use `require(ReplicatedStorage.Packages.LemonSignal)`.\n- **Why I didn't also add it to `pesde.toml`:** that file only lists `vide` and `blink`. Declaring LemonSignal in both managers could install it twice into the same `Packages` folder.\n- **Other files:** `src/shared`, `src/server` and `src/client` are stubs, so I didn't write a wrapper or example module nobody asked for.\n- **Not checked:** I can't run commands here, so I haven't confirmed `wally install` works or that `Packages/` exists on disk. I also haven't written a resource record or a `CLAUDE.md` entry, because the install and import checks that would back them couldn't run.\n\nA module exposes events like this:\n\n```luau\nlocal LemonSignal = require(ReplicatedStorage.Packages.LemonSignal)\n\nlocal Health = {}\nHealth.Changed = LemonSignal.new() -- consumers call Health.Changed:Connect(fn)\n\nfunction Health.set(value: number)\n\tHealth.Changed:Fire(value)\nend\n\nreturn Health\n```\n\nIn Janitor, add connections with `\"Disconnect\"` and signals you created with `\"Destroy\"`. `Fire` only works within one runtime, so it can't send events between client and server.\n\nIf you meant for `pesde.toml` to be the only manager, tell me. I'd move the three `wally.toml` dependencies there and use the pesde form from the skill's setup notes: `LemonSignal = { wally = \"data-oriented-house/lemonsignal\", version = \"=2.0.0\" }`.",
+ "cost": 0.18815459999999998,
+ "turns": 18,
+ "seconds": 33.4,
+ "rc": 0,
+ "written": {}
+}
