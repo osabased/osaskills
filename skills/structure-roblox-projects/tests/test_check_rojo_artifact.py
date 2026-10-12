@@ -211,6 +211,7 @@ class ArtifactCheckerTests(unittest.TestCase):
             (client / "Runtime.luau").write_text("return {}\n", encoding="utf-8")
             (client / "Button.story.luau").write_text("return {}\n", encoding="utf-8")
             (preview / "init.luau").write_text("return {}\n", encoding="utf-8")
+            (preview / "Child.luau").write_text("return {}\n", encoding="utf-8")
 
             common_project = {
                 "name": "Fixture",
@@ -231,7 +232,6 @@ class ArtifactCheckerTests(unittest.TestCase):
                 "globIgnorePaths": [
                     "**/*.story.luau",
                     "**/Preview",
-                    "**/Preview/**",
                 ],
                 "tree": {"$path": "common.project.json"},
             }
@@ -278,6 +278,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                     required_paths=[
                         "ReplicatedStorage/Client/Runtime",
                         "ReplicatedStorage/Client/Preview",
+                        "ReplicatedStorage/Client/Preview/Child",
                         "ReplicatedStorage/Client/Button.story",
                     ],
                     singleton_classes=["ReplicatedStorage"],
@@ -297,6 +298,50 @@ class ArtifactCheckerTests(unittest.TestCase):
                     singleton_classes=["ReplicatedStorage"],
                 ),
             )
+
+    @unittest.skipUnless(shutil.which("rojo"), "Rojo is not installed")
+    def test_rojo_service_beside_root_path_duplicates_only_in_the_place_build(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            client = root / "src" / "client"
+            client.mkdir(parents=True)
+            (client / "Runtime.luau").write_text("return {}\n", encoding="utf-8")
+            common_project = {
+                "name": "Fixture",
+                "tree": {
+                    "$className": "DataModel",
+                    "ReplicatedStorage": {
+                        "$className": "ReplicatedStorage",
+                        "Client": {"$path": "src/client"},
+                    },
+                },
+            }
+            wrapper_project = {
+                "name": "Fixture Wrapper",
+                "tree": {
+                    "$path": "common.project.json",
+                    "ReplicatedStorage": {"$className": "ReplicatedStorage"},
+                },
+            }
+            (root / "common.project.json").write_text(json.dumps(common_project), encoding="utf-8")
+            (root / "wrapper.project.json").write_text(json.dumps(wrapper_project), encoding="utf-8")
+            sourcemap_path = root / "wrapper.sourcemap.json"
+            place_path = root / "wrapper.rbxlx"
+            for command in (
+                ["rojo", "sourcemap", "wrapper.project.json", "-o", str(sourcemap_path)],
+                ["rojo", "build", "wrapper.project.json", "-o", str(place_path)],
+            ):
+                result = subprocess.run(command, cwd=root, check=False, capture_output=True, text=True)
+                self.assertEqual(0, result.returncode, result.stderr)
+
+            failures = CHECKER.check_artifacts(
+                {
+                    "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                    "place": CHECKER.read_rbxlx(place_path),
+                },
+                singleton_classes=["ReplicatedStorage"],
+            )
+            self.assertEqual(["place: expected exactly one ReplicatedStorage, found 2"], failures)
 
 
 if __name__ == "__main__":

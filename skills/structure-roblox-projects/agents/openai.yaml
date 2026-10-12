@@ -1,4 +1,0 @@
-interface:
-  display_name: "Structure Roblox Projects"
-  short_description: "Resolve Roblox source, startup, and authoring ownership"
-  default_prompt: "Use $structure-roblox-projects to identify the Roblox source and integration boundaries needed for my task, preserve established conventions, and complete the requested work. For requested onboarding or a new setup, prepare the relevant overview or proposal for review."

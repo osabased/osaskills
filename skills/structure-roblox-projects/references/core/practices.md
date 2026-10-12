@@ -1,26 +1,24 @@
 # Roblox organization practices
 
-Use this reference when choosing an unresolved layout, placement, entrypoint, grouping, module-style, or source-of-truth decision, or when an architecture Review needs ordinary Roblox placement/runtime/entrypoint/source-of-truth rules to judge an existing structure. Preserve a coherent established structure instead of normalizing it toward these defaults during ordinary implementation.
+Use this reference to choose an unresolved layout, placement, entrypoint, grouping, module style, or source of truth, or to judge an existing structure in a review. During ordinary implementation, keep a coherent established structure instead of normalizing it toward these defaults.
 
-When canonical SSA is selected or recognized, [`ssa.md`](../ssa/ssa.md) owns its feature placement, discovery, and lifecycle contract. Use this file only for ordinary choices that contract does not resolve.
+When the project uses the ModuleLoader SSA contract, [`ssa.md`](../ssa/ssa.md) owns feature placement, discovery, and lifecycle. Use this file only for choices that contract leaves open.
 
-Modification authority comes from [`SKILL.md`](../../SKILL.md). For explicit restrictions, ambiguous ownership, or broad/generated writes that may exceed the task, use [`modification-scope.md`](modification-scope.md).
-
-For plugins, packages/models, compiler pipelines, multi-place experiences, and custom/mixed workflows, establish the actual host/consumer, source/generated boundaries, and topology through [project orientation](../workflows/project-orientation.md). The game layouts below are examples, not a classifier for all Roblox projects. Use [evidence and freshness](evidence-and-freshness.md) before relying on current platform/tool or practice claims.
+The game layouts below are examples. Plugins, packages/models, compiler pipelines, multi-place experiences, and custom workflows keep their own host and consumer contracts; map them with the [project guide](../conventions/project-guide.md).
 
 ## Source of truth
 
+This is the one place this skill compares the authoring workflows. Other references link here.
+
 | Choice | Meaning | Good fit |
 | --- | --- | --- |
-| Preserve detected workflow | Keep the project's working authoring and sync boundaries. | Established projects. |
-| Studio-native | Keep the DataModel, including script source, in Studio. | Projects that want one native editor and no filesystem build workflow. |
-| Script Sync | Synchronize scripts in the DataModel with text files on local disk; changes made in Studio or on disk propagate to the other side. | Using a preferred external text editor or checking code into version control while using Studio for everything else. |
-| Rojo | Use a filesystem-first workflow that synchronizes local files with the Studio DataModel. | Checking the entire project, not just code, into version control or using the filesystem as the project's source of truth. |
-| Custom / other established workflow | Use another authoring or synchronization model and state its durable rules explicitly. | Established or constrained projects whose workflow is not accurately represented by Studio-native, Script Sync, or Rojo. |
+| Keep the detected workflow | Keep the project's working authoring and sync boundaries. | Established projects. |
+| Studio-native | The DataModel, including script source, lives in Studio. | One native editor, no filesystem build. |
+| Script Sync | Studio syncs `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances with local files in both directions; everything else stays in Studio. | An external editor or Git for code while Studio owns everything else. |
+| Rojo | Filesystem-first: local files and project files define the DataModel and sync into Studio. | The whole project, not only code, in version control, or the filesystem as source of truth. |
+| Custom or other established workflow | Another authoring or sync model with its own explicit rules. | Projects that none of the above describes accurately. |
 
-If the requirement is only external script editing or code version control while Studio remains the tool for everything else, Script Sync is a good fit. If the requirement is to put the entire project into version control or use the filesystem as the source of truth, Roblox identifies third-party tools such as Rojo as the better choice.
-
-Script Sync applies changes in both directions between Studio and disk. When starting or resuming sync with differences between them, Studio presents a conflict-resolution dialog with **Keep Studio** and **Keep Disk** choices. Roblox describes Rojo as a **file system-first** approach that synchronizes local files with the Studio DataModel.
+Roblox recommends Script Sync for external editing and code version control, and third-party tools such as Rojo when the whole project or the filesystem should be the source of truth. Don't enable two sync systems on the same content.
 
 ## Placement model
 
@@ -30,28 +28,25 @@ Use the dimensions that can change the decision:
 | --- | --- | --- |
 | Runtime / consumer | Server, client, both | Which Luau environments execute or consume it? |
 | Replication | Server-only, client-visible | Can clients receive and inspect it? |
-| Authoring | Studio-owned, Script Sync-managed, Rojo-mapped, other established workflow | Which workflow owns this instance? |
+| Authoring | Studio, Script Sync, Rojo, other | Which workflow owns this instance? |
 
-A shared ModuleScript is normally both-runtime and client-visible. A server asset can be server-only without being executable. Map modification authority separately from these dimensions.
+A shared ModuleScript is normally both-runtime and client-visible. A server asset can be server-only without being executable. Decide edit permission separately from these dimensions.
 
-Simulation and capability boundaries are specialist cases. Follow the routing in `../../SKILL.md` when the affected structure uses Server Authority prediction/rollback or Script Capabilities.
+Server Authority prediction/rollback and Script Capabilities sandboxes are specialist cases; see the routing table in [`SKILL.md`](../../SKILL.md#boundary-references).
 
-## Current foundation
+## Runtime rules
 
-Treat platform-specific statements as architectural guidance rather than frozen guarantees. Re-open current official documentation when a task depends on Studio support, runtime behavior, security semantics, release status, or version-sensitive workflow behavior.
-
-- Put server-only code in server containers, client-only code in supported client locations, and code intentionally executed or consumed on both sides in a client-visible shared container such as `ReplicatedStorage`.
-- A `Script` with `RunContext = Client` can run from `ReplicatedStorage`; a `LocalScript` cannot run there.
-- Use `LocalScript` for client entrypoints in `StarterPlayerScripts` or `StarterCharacterScripts`. A Client-RunContext `Script` there can run both the original and its runtime clone, causing duplicate startup.
-- A ModuleScript executes independently in each Luau environment that requires it. Do not treat mutable module return state as shared across client/server or across `Actor` boundaries.
+- Put server-only code in server containers, client-only code in supported client locations, and code that both sides run in a client-visible shared container such as `ReplicatedStorage`.
+- Prefer a `Script` with `RunContext = Client` in `ReplicatedStorage` for client entrypoints (Roblox's current recommendation). If an entrypoint must live in `StarterPlayerScripts` or `StarterCharacterScripts`, use a `LocalScript` there. A Client-RunContext `Script` in those containers runs both the original and its clone, causing duplicate startup. A `LocalScript` in `ReplicatedStorage` does not run.
+- A ModuleScript executes separately in each Luau environment that requires it. Don't treat mutable module state as shared across client/server or across `Actor` boundaries.
 - Treat replicated code and data as visible to clients. Keep privileged authority and validation on the server.
-- Avoid restricted requires from a desynchronized parallel phase.
+- Don't call `require()` in a desynchronized parallel phase; require modules first in serial context.
 
 ## Entrypoints
 
 ### Single client/server pair
 
-Use one server bootstrap and one client bootstrap when controlled initialization or explicit dependency assembly is useful.
+Use one server bootstrap and one client bootstrap when controlled initialization or explicit dependency assembly helps.
 
 ```text
 ReplicatedStorage/
@@ -68,7 +63,7 @@ ReplicatedFirst/
   LoadingClient              only when early loading behavior is required
 ```
 
-This is a useful general option, not a universal recommendation. Preserve a coherent established startup topology. For the selected canonical SSA form of this topology, follow [`ssa.md`](../ssa/ssa.md) rather than deriving discovery or lifecycle behavior here.
+This is an option, not a universal recommendation. For the SSA form of this topology, follow [`ssa.md`](../ssa/ssa.md).
 
 ### Multiple entrypoints
 
@@ -85,27 +80,25 @@ Workspace/Door/
   DoorServer
 ```
 
-Their execution order is nondeterministic unless the project adds an explicit coordination mechanism.
-
-When a design has more than one entrypoint in the same runtime, name one startup owner or explicitly define their independence, ordering, readiness, and failure coordination. Do not present two scripts that both appear to own the same feature startup without resolving that relationship.
+Their execution order is nondeterministic unless the project adds explicit coordination. When one runtime has several entrypoints, name one startup owner or state how they stay independent. Don't propose two scripts that both appear to start the same feature.
 
 ### Entrypoint rules
 
-- In projects without canonical SSA or another reliable lifecycle loader, require feature roots explicitly.
+- Without SSA or another reliable lifecycle loader, require feature roots explicitly.
 - Treat shared entrypoints and discovery loaders as integration boundaries.
-- In projects without an established lifecycle contract, add separate `Init` / `Start` phases only when ordering or cross-system readiness is observable.
-- Point dependencies toward stable domain/shared modules rather than back toward entrypoints.
-- Split modules by cohesive responsibility rather than arbitrary line count.
+- Without an established lifecycle contract, add separate `Init` / `Start` phases only when ordering or cross-system readiness actually matters.
+- Point dependencies toward stable domain/shared modules, not back toward entrypoints.
+- Split modules by cohesive responsibility, not line count.
 
-Every proposed executable entrypoint must form a consistent execution contract: exact DataModel path, filesystem path when mapped, Roblox class or `RunContext`, startup owner/caller, direct dependency roots, and a validation step that can observe startup. `LocalScript` is valid only in containers where Roblox executes it; for an entrypoint placed in `ReplicatedStorage`, use a `Script` with `RunContext = Client` or move the `LocalScript` to a supported client location such as `StarterPlayerScripts`. A shared ModuleScript in `ReplicatedStorage` is a dependency, not an independently executing client entrypoint.
+When a design proposes a new executable entrypoint, give its exact DataModel path, filesystem path when mapped, class or `RunContext`, who starts it, its direct dependencies, and a check that can observe it starting. A shared ModuleScript in `ReplicatedStorage` is a dependency, not a client entrypoint.
 
-For every Remote contract, name the instance path and class, direction, caller and handler owners, payload shape, server-side validation and authority rule, and a focused test for accepted and rejected input. A folder name alone is not an integration contract.
+When a design proposes a new Remote, give its instance path and class, direction, caller and handler, payload shape, the server-side validation rule, and a test for accepted and rejected input. A folder name alone is not a contract.
 
 ## Module grouping
 
 ### Feature-first
 
-Use for growing projects where work is usually performed by gameplay capability.
+For growing projects where work usually happens by gameplay capability.
 
 ```text
 Server/Combat/
@@ -120,7 +113,7 @@ Shared/Combat/
 
 ### Runtime layers
 
-Use a shallow list per execution side when feature folders would add more navigation than clarity.
+A shallow list per execution side, when feature folders would add more navigation than clarity.
 
 ```text
 Server/
@@ -136,7 +129,7 @@ Shared/
 
 ### Service/controller
 
-Use when the project already uses this vocabulary or systems naturally form long-lived server APIs and client orchestration.
+When the project already uses this vocabulary, or systems naturally form long-lived server APIs and client orchestration.
 
 ```text
 Server/Services/
@@ -149,7 +142,7 @@ Client/Controllers/
 
 ### Components or ECS
 
-Use when repeated behavior/data is naturally expressed as components processed by systems.
+When repeated behavior and data are naturally components processed by systems.
 
 ```text
 Components/
@@ -159,37 +152,37 @@ Systems/
   DamageSystem
 ```
 
-Architectures can combine. Prefer the smallest organization that makes runtime ownership, navigation, and dependencies clear. Preserve adjacent established groups unless redesign or migration is part of the request.
+These can combine. Prefer the smallest organization that makes runtime ownership, navigation, and dependencies clear.
 
 ## Module style
 
 | Choice | Meaning | Good fit |
 | --- | --- | --- |
 | Plain Luau | Focused ModuleScripts with explicit dependencies and lifecycle only where needed. | Greenfield work without framework requirements. |
-| Preserve existing framework | Keep established discovery, naming, and lifecycle. | Working framework-based projects. |
-| Named framework or custom lifecycle | Define framework/discovery/lifecycle rules deliberately. | Projects with requirements that justify team-wide lifecycle machinery. |
+| Existing framework | Keep its discovery, naming, and lifecycle. | Working framework-based projects. |
+| Named framework or custom lifecycle | Define framework, discovery, and lifecycle rules deliberately. | Requirements that justify team-wide lifecycle machinery. |
 
 ## Naming
 
-Preserve coherent existing names and casing. For a new project with no stronger convention, use PascalCase for folders, scripts, and module tables; camelCase for functions and locals; and UPPER_SNAKE_CASE for constants.
+Keep coherent existing names and casing. For a new project with no convention, use PascalCase for folders, scripts, and module tables; camelCase for functions and locals; UPPER_SNAKE_CASE for constants.
 
 ## Common placement
 
 | Content | Typical home |
 | --- | --- |
-| Authoritative rules/state, secrets, data stores, receipts, validation | Server-only code container |
+| Authoritative rules/state, secrets, DataStores, receipts, validation | Server-only code container |
 | Client input, camera, local UI behavior | Client-only code container |
-| Types, constants, pure utilities used on both sides | Client-visible shared container such as `ReplicatedStorage/Shared` |
-| RemoteEvents, UnreliableRemoteEvents, RemoteFunctions | Client-visible container such as `ReplicatedStorage/Remotes` |
+| Types, constants, pure utilities used on both sides | `ReplicatedStorage/Shared` or similar |
+| RemoteEvents, UnreliableRemoteEvents, RemoteFunctions | `ReplicatedStorage/Remotes` or similar |
 | Server-only models and templates | `ServerStorage` |
-| Assets required by both server and client before cloning | `ReplicatedStorage` |
+| Assets both sides need before cloning | `ReplicatedStorage` |
 | Earliest loading-screen subset | `ReplicatedFirst` |
 
-These are defaults for unresolved choices and review criteria for ordinary Roblox structural compatibility, not reasons to migrate a working project without a material finding.
+These are defaults for open choices and review criteria, not reasons to migrate a working project.
 
 ## Sources
 
 - Roblox architecture: [Script types and locations](https://create.roblox.com/docs/scripting/locations), [Plant reference project](https://create.roblox.com/docs/resources/plant-reference-project), [Data model](https://create.roblox.com/docs/projects/data-model)
-- Roblox modules: [ModuleScript](https://create.roblox.com/docs/reference/engine/classes/ModuleScript), [Reuse code](https://create.roblox.com/docs/scripting/module)
+- Roblox modules: [ModuleScript](https://create.roblox.com/docs/reference/engine/classes/ModuleScript), [Reuse code](https://create.roblox.com/docs/scripting/module), [Parallel Luau](https://create.roblox.com/docs/scripting/multithreading)
 - Roblox runtime/security: [Client-server runtime](https://create.roblox.com/docs/projects/client-server), [Client-server boundary](https://create.roblox.com/docs/scripting/security/client-server-boundary), [Access control and confidentiality](https://create.roblox.com/docs/scripting/security/access-control)
 - Roblox workflows: [Script Sync](https://create.roblox.com/docs/scripting/sync), [Studio testing modes](https://create.roblox.com/docs/studio/testing-modes), [Third-party tools](https://create.roblox.com/docs/projects/external-tools)

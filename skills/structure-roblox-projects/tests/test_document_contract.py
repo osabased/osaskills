@@ -42,8 +42,9 @@ def _anchors(path: Path) -> set[str]:
 def test_frontmatter_is_valid():
     data = _frontmatter()
     assert data["name"] == ROOT.name
+    assert re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", data["name"]) and len(data["name"]) <= 64
     assert isinstance(data["description"], str)
-    assert 0 < len(data["description"]) <= 360
+    assert 0 < len(data["description"]) <= 1024
 
 
 def test_relative_markdown_links_and_anchors_resolve():
@@ -78,3 +79,29 @@ def test_all_references_are_reachable_from_the_entrypoint():
                 pending.append(destination)
     expected = {p.resolve() for p in (ROOT / "references").rglob("*.md")}
     assert expected <= visited, f"Unreachable references: {expected - visited}"
+
+
+# Sibling skills may be absent (standalone install), and their internal files can move.
+# Links outside this skill may only target these stable entry points.
+ALLOWED_EXTERNAL_TARGETS = {
+    "roblox-resource-acquisition/SKILL.md",
+    "roblox-resource-acquisition/references/child-usage.md",
+}
+
+
+def test_links_outside_the_skill_only_target_stable_sibling_entrypoints():
+    files = [PARENT_PATH, *(ROOT / "references").rglob("*.md")]
+    link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    skills_dir = ROOT.parent.resolve()
+    for source in files:
+        for target in link_re.findall(source.read_text(encoding="utf-8")):
+            if "://" in target or target.startswith("mailto:"):
+                continue
+            path_part = target.partition("#")[0]
+            if not path_part:
+                continue
+            destination = (source.parent / path_part).resolve()
+            if destination.is_relative_to(ROOT.resolve()):
+                continue
+            relative = destination.relative_to(skills_dir).as_posix()
+            assert relative in ALLOWED_EXTERNAL_TARGETS, f"{source}: unstable sibling link {target}"
