@@ -1,0 +1,13 @@
+{
+ "id": "neg-thenwhat-1",
+ "expect": "!then-what",
+ "prompt": "Here's what the audit agent found: 1) N+1 query in the orders list, 2) missing index on orders.user_id, 3) payment webhook retries without an idempotency key, 4) stale README. I don't know what matters here. What should I do next?",
+ "loaded": [],
+ "tools": [],
+ "cost": 0.0514284,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "Fix #3 first, then #2, then #1. Leave #4 for later.\n\n1. **Webhook retries without an idempotency key (fix now).** A retried payment webhook can charge, fulfill, or record the same payment twice. That means real money and data corruption. Store the provider's event ID with a unique constraint, and skip events you've already processed. Record the ID in the same transaction as the side effects.\n\n2. **Missing index on `orders.user_id` (fix this week).** It's a one-line migration, so it's cheap and low-risk. Every \"orders for user X\" query is a full table scan, and it gets slower as the table grows. Create it concurrently if you're on Postgres, so it doesn't lock the table.\n\n3. **N+1 query in the orders list (fix after the index).** This is a performance problem, not a correctness one. Eager-load or join the related records. The index will ease some of the pain, so measure before and after to see how much of the N+1 is still worth fixing.\n\n4. **Stale README (backlog).** Update it when you next touch onboarding or setup.\n\nI can start on #3 if you point me at the webhook handler. The working directory has no git repo, so I'd need the path to the code.",
+ "stderr": "",
+ "verdict": "PASS"
+}

@@ -1,0 +1,16 @@
+{
+ "id": "exp-motion",
+ "expect": "motion-studies",
+ "markers": [
+  "named constant"
+ ],
+ "prompt": "/osaskills:motion-studies How should the shop button press feel in my Roblox game? Don't build anything yet; tell me the first step.",
+ "loaded": [],
+ "tools": [],
+ "cost": 0.056462399999999996,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "The first step is to build a small, replayable preview of one press interpretation. I haven't built anything yet, as you asked.\n\n**Motion choice to judge:** how the button responds while it's held and how it settles on release.\n\n**Proposed first interpretation:**\n- **Press:** it scales to about 0.94 in about 60 ms, with a slight darkening.\n- **Release:** it springs back with a small overshoot, settling in about 200 ms.\n- **Constants:** all timing and scale values sit in named constants so they're easy to change.\n- **Preview:** a UI Labs story with a replay control, so you can watch the press, hold, release and settle.\n\n**Two questions that change the preview:**\n1. Is it a 2D GUI button (ScreenGui) or a 3D in-world button?\n2. Should it feel snappy and arcade-like, or soft and bouncy?\n\nIf you don't have a preference, I'll assume a 2D GUI button with the snappy feel above and build that.",
+ "stderr": "",
+ "verdict": "PASS"
+}

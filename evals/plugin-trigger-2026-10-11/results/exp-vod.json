@@ -1,0 +1,16 @@
+{
+ "id": "exp-vod",
+ "expect": "vod-discovery",
+ "markers": [
+  "vod.py doctor"
+ ],
+ "prompt": "/osaskills:vod-discovery I have a 2 hour VOD at D:/vods/a.mkv. Don't run anything; tell me the first step.",
+ "loaded": [],
+ "tools": [],
+ "cost": 0.0619984,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "**First step: scope.** Before any processing, I need a few answers from you:\n\n1. **POVs:** Is `a.mkv` a single POV, or are there other recordings of the same session? If there are others, I need their paths and order.\n2. **Languages:** What language(s) are spoken? This decides the speech model.\n3. **Delivery:** Do you want markers on new Premiere clips, markers on clips already in a project, or a layered review timeline? A layered timeline also needs a main POV.\n4. **Time budget:** How long can processing take?\n\nI'd also check for existing project notes in `.claude/vod/project-context.md` or `.agents/vod/project-context.md`, plus any `events.json`.\n\nAfter that, step 2 is `vod.py doctor` to check the environment. Then a pilot run, `prepare --limit-packets 1`, to time it and inspect the first packet before preparing the full 2 hours.\n\nOne thing to check now: if `a.mkv` has more than one audio track (for example OBS game, mic and voice-chat), the XML export routes won't work. You would import the original in Premiere and add markers with the UXP panel instead.",
+ "stderr": "",
+ "verdict": "PASS"
+}

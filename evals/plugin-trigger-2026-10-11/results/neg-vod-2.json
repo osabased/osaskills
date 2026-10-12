@@ -1,0 +1,15 @@
+{
+ "id": "neg-vod-2",
+ "expect": "!vod-discovery",
+ "prompt": "What happened around the boss fight in my 3 hour OBS recording at C:/rec/session.mp4? I want to clip the best moments.",
+ "loaded": [],
+ "tools": [
+  "Glob"
+ ],
+ "cost": 0.05634259999999999,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "I can't tell you what happened around the boss fight yet. Read access to `C:\\rec` was denied, so I haven't opened the file. Even with access, I can't watch video. I could only work from things like a transcript, chat log, or sampled frames.\n\nIf you grant read access to `C:\\rec`, I can check whether `ffmpeg` is installed. Then I could do any of these:\n- **Find candidate moments:** scan the audio for loud spikes (screams, hype), or detect scene changes and a boss health bar or \"victory\" screen.\n- **Transcribe:** run Whisper on the audio for timestamped speech, so you can search for \"boss\", \"let's go\", and so on.\n- **Cut the clips:** extract the segments you choose with `ffmpeg`, without re-encoding.\n\nIf you already know roughly when the fight happened, give me a timestamp range and I'll narrow it down from there.",
+ "stderr": "",
+ "verdict": "PASS"
+}

@@ -1,0 +1,23 @@
+{
+ "id": "pos-rra",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "loaded": [
+  "tool:osaskills:roblox-resource-acquisition"
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "cost": 0.07722099999999998,
+ "rc": 1,
+ "init_skills": 14,
+ "result": null,
+ "stderr": "",
+ "verdict": "PASS"
+}

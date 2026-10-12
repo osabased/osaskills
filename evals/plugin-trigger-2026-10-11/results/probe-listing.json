@@ -1,0 +1,13 @@
+{
+ "id": "probe-listing",
+ "expect": null,
+ "prompt": "Do not use any tools. List verbatim every skill name in your available-skills listing whose name contains 'osaskills', one per line. If none, reply NONE.",
+ "loaded": [],
+ "tools": [],
+ "cost": 0.0489724,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "osaskills:roblox-blink\nosaskills:roblox-bootstrapper\nosaskills:roblox-charm\nosaskills:roblox-janitor\nosaskills:roblox-lemonsignal\nosaskills:roblox-nevermore-ui\nosaskills:roblox-resource-acquisition\nosaskills:roblox-ui-labs\nosaskills:roblox-vide\nosaskills:structure-roblox-projects\nosaskills:system-review",
+ "stderr": "",
+ "verdict": "INFO"
+}

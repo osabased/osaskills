@@ -1,0 +1,16 @@
+{
+ "id": "neg-thenwhat-2",
+ "expect": "!then-what",
+ "prompt": "My agent left me with three options for the auth refactor: A) keep server sessions, B) move to JWT, C) hybrid. I don't understand the tradeoffs. Which one, and what's the next step?",
+ "loaded": [],
+ "tools": [
+  "Glob",
+  "Grep"
+ ],
+ "cost": 0.06511499999999999,
+ "rc": 0,
+ "init_skills": 14,
+ "result": "I can't pick one yet. I can't see your agent's write-up, and nothing in this directory touches auth. It's a Roblox project (Rojo/Wally/pesde) with only stub `init` files, and a search for session, JWT, token and auth found no matches. Roblox also handles player identity itself, so I need to know which system you're refactoring.\n\nThe tradeoffs, in general terms:\n\n- **A) Server sessions:** The server stores session state and the client holds only an opaque ID. You can revoke a session instantly and the design is simple. The cost is a shared session store once you run more than one server, and a lookup on every request.\n- **B) JWT:** The token carries the claims and is verified without a lookup, so it scales statelessly across services. The cost is that you can't revoke a token before it expires without adding a denylist, which brings back state. Key rotation and token storage also become your problem.\n- **C) Hybrid:** This usually means short-lived JWT access tokens plus a server-stored refresh token. You get stateless verification and revocation, at the price of the most moving parts.\n\nWithout more context, I'd lean toward A. It's the safest default for a single app or a small number of servers. I'd pick B or C only if you have several independent services, or third-party clients that need to verify identity without calling your backend.\n\nTo get you a real recommendation, send me the agent's write-up, or tell me:\n1. Where the auth code lives. It isn't in this directory.\n2. How many services or servers need to verify identity.\n3. Whether you need instant logout or revocation.\n\nOnce I have those, the next step is to read the current auth code and list what the migration would touch.",
+ "stderr": "",
+ "verdict": "PASS"
+}
