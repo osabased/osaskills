@@ -15,11 +15,59 @@ PARENT_CONTRACT_VERSION = 1
 PARENT_NAME = "roblox-resource-acquisition"
 CORE_ROLES = {"routing", "common-use", "ownership", "security", "verification", "maintenance"}
 ALL_ROLES = CORE_ROLES | {"setup", "troubleshooting", "recipes", "lifecycle", "api"}
-PROFILES = {"pesde-wally", "pesde-registry", "pesde-git", "npm", "asset", "custom"}
+PROFILES = {"wally", "pesde-wally", "pesde-registry", "pesde-git", "npm", "asset", "custom"}
+WALLY_SECTIONS = {"dependencies", "server-dependencies", "dev-dependencies"}
 HEX256 = re.compile(r"^[0-9a-f]{64}$")
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 NPM_PACKAGE = re.compile(r"(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*")
 EXACT_RELEASE = re.compile(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?")
+
+
+# Project resource data lives under AGENT_DIR/roblox/resources/. Descriptor paths are
+# relative to AGENT_DIR (roblox/resources/...); explicit .claude/ or .agents/ paths are
+# project-relative and kept for older children.
+AGENT_DIRS = (".claude", ".agents")
+EXPLICIT_AGENT_PREFIXES = tuple(name + "/roblox/resources/" for name in AGENT_DIRS)
+LEGACY_USER_STORE = "~/.roblox-resources/"
+USER_STORE_PREFIXES = tuple("~/" + name + "/roblox/resources/" for name in AGENT_DIRS) + (LEGACY_USER_STORE,)
+
+
+def agent_dir(base: Path, *, create: bool = False) -> Path:
+    """AGENT_DIR rule: .claude/ if it exists, else .agents/ if it exists, else .claude/.
+
+    When both exist, use the one that already contains roblox/; if neither or both do, .claude/.
+    """
+    claude, agents = base / ".claude", base / ".agents"
+    if claude.is_dir() and agents.is_dir():
+        chosen = agents if (agents / "roblox").is_dir() and not (claude / "roblox").is_dir() else claude
+    elif agents.is_dir():
+        chosen = agents
+    else:
+        chosen = claude
+    if create:
+        chosen.mkdir(parents=True, exist_ok=True)
+    return chosen
+
+
+def resolve_agent_path(base: Path, value: str) -> Path:
+    """Resolve a descriptor/record path against a project (or home) directory."""
+    if value.startswith(EXPLICIT_AGENT_PREFIXES):
+        return base / value
+    return agent_dir(base) / value
+
+
+def resolve_user_store_path(value: str) -> tuple[Path, str]:
+    """Resolve a user-scope ~/... store path; fall back to a legacy ~/.roblox-resources/ copy."""
+    home = Path.home()
+    if value.startswith(LEGACY_USER_STORE):
+        rest = value.removeprefix(LEGACY_USER_STORE)
+    else:
+        rest = value.removeprefix("~/").split("/roblox/resources/", 1)[-1]
+    current = agent_dir(home) / "roblox" / "resources" / rest
+    legacy = home / ".roblox-resources" / rest
+    if not current.exists() and legacy.exists():
+        return legacy, "read legacy ~/.roblox-resources/; suggest moving it to ~/.claude/roblox/resources/"
+    return current, ""
 
 
 def url_identity(value: str) -> tuple[str, str, int | None, str, str]:
@@ -133,6 +181,26 @@ def validate_npm_package(value: dict, registry: str, label: str) -> None:
     validate_integrity(value.get("integrity"), label + ".integrity")
 
 
+def validate_companions(companions: Any, package_id: str) -> None:
+    if not isinstance(companions, list):
+        raise ValueError("installation.companions must be a list")
+    packages = {package_id}
+    fields = {"package_id", "version", "registry", "integrity", "parent_package", "edge_alias"}
+    for companion in companions:
+        companion = mapping(companion, fields, fields, "installation.companions[]")
+        for field in ("package_id", "version", "parent_package", "edge_alias"):
+            string(companion[field], "installation.companions[]." + field)
+        if companion["package_id"] in packages:
+            raise ValueError("companion package identity is duplicated")
+        if companion["parent_package"] not in packages:
+            raise ValueError("companions must follow their declared material parent dependency")
+        if not EXACT_RELEASE.fullmatch(companion["version"]):
+            raise ValueError("companion version must be an exact release")
+        packages.add(companion["package_id"])
+        url_identity(companion["registry"])
+        validate_integrity(companion["integrity"], "installation.companions[].integrity")
+
+
 def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]:
     path = root / "resource.yaml"
     if not path.is_file():
@@ -216,17 +284,21 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
     choice(reconciliation["policy"], {"required", "conditional", "not-applicable"}, "reconciliation.policy")
     string(reconciliation["reason"], "reconciliation.reason")
     for field in ("record", "learnings"):
-        within(root, string(reconciliation[field], "reconciliation." + field))
+        value = string(reconciliation[field], "reconciliation." + field)
+        within(root, value)
+        if not value.startswith(("roblox/resources/",) + EXPLICIT_AGENT_PREFIXES):
+            raise ValueError(f"reconciliation.{field} must be relative to AGENT_DIR (roblox/resources/...) or an explicit .claude/ or .agents/ roblox/resources/ path")
     if data["scope"] == "project" and any(field in reconciliation for field in ("no_project_record", "no_project_learnings")):
         raise ValueError("project-scoped children cannot fall back to global records/learnings")
     if data["scope"] == "user":
         for field in ("no_project_record", "no_project_learnings"):
             value = string(reconciliation.get(field), "reconciliation." + field)
-            if not value.startswith("~/.roblox-resources/") or ".." in Path(value).parts:
-                raise ValueError("user-scope no-project evidence must resolve under ~/.roblox-resources")
+            if not value.startswith(USER_STORE_PREFIXES) or ".." in Path(value).parts:
+                raise ValueError("user-scope no-project evidence must resolve under ~/.claude/roblox/resources/ (or ~/.agents/roblox/resources/)")
     install = mapping(data["installation"], {"profile", "dependency_section", "registry", "target", "new_structure", "integrity", "companions", "asset_sha256", "custom_checker", "archive_url", "archive_integrity"}, {"profile"}, "installation")
     profile = choice(install["profile"], PROFILES, "installation.profile")
     fields = {
+        "wally": {"dependency_section", "registry", "integrity", "companions"},
         "pesde-wally": {"dependency_section", "registry", "target", "integrity", "companions"},
         "pesde-registry": {"dependency_section", "registry", "target", "integrity"},
         "pesde-git": {"dependency_section", "target", "new_structure", "integrity"},
@@ -236,7 +308,16 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
     }[profile] | {"profile"}
     if set(install) - fields:
         raise ValueError(f"installation contains fields unsupported by {profile}: {sorted(set(install) - fields)}")
-    if profile.startswith("pesde-"):
+    if profile == "wally":
+        if resource["package_id"] is None or not re.fullmatch(r"[a-z0-9_-]+/[a-z0-9_-]+", resource["package_id"].lower()):
+            raise ValueError("wally profile requires a scope/name package_id")
+        choice(install.get("dependency_section"), WALLY_SECTIONS, "installation.dependency_section")
+        url_identity(string(install.get("registry"), "installation.registry"))
+        if selector["kind"] != "version":
+            raise ValueError("registry package profiles require an exact version selector")
+        validate_integrity(install.get("integrity"), "installation.integrity")
+        validate_companions(install.get("companions", []), resource["package_id"])
+    elif profile.startswith("pesde-"):
         if resource["package_id"] is None:
             raise ValueError("pesde profiles require package_id, dependency_section and target")
         choice(install.get("dependency_section"), {"dependencies", "dev_dependencies"}, "installation.dependency_section")
@@ -250,23 +331,7 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
         if "new_structure" in install and type(install["new_structure"]) is not bool:
             raise ValueError("installation.new_structure must be boolean")
         validate_integrity(install.get("integrity"), "installation.integrity")
-        companions = install.get("companions", [])
-        if not isinstance(companions, list):
-            raise ValueError("installation.companions must be a list")
-        packages = {resource["package_id"]}
-        for companion in companions:
-            companion = mapping(companion, {"package_id", "version", "registry", "integrity", "parent_package", "edge_alias"}, {"package_id", "version", "registry", "integrity", "parent_package", "edge_alias"}, "installation.companions[]")
-            for field in ("package_id", "version", "parent_package", "edge_alias"):
-                string(companion[field], "installation.companions[]." + field)
-            if companion["package_id"] in packages:
-                raise ValueError("companion package identity is duplicated")
-            if companion["parent_package"] not in packages:
-                raise ValueError("companions must follow their declared material parent dependency")
-            if not re.fullmatch(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?", companion["version"]):
-                raise ValueError("companion version must be an exact release")
-            packages.add(companion["package_id"])
-            url_identity(companion["registry"])
-            validate_integrity(companion["integrity"], "installation.companions[].integrity")
+        validate_companions(install.get("companions", []), resource["package_id"])
     elif profile == "npm":
         if selector["kind"] != "version":
             raise ValueError("npm profiles require an exact version selector")

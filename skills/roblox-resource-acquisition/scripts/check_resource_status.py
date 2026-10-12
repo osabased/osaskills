@@ -5,6 +5,11 @@ The command intentionally reads the static child resource contract and only the 
 record's schema, identity, version, block, reconciliation, verification, and
 matching-host status fields. It never executes evidence commands or performs
 full lifecycle reconciliation.
+
+Statuses: HEALTHY and NO-RECORD (no project record; advisory use) exit 0;
+BLOCKED and MISMATCH (an observed block or identity/version mismatch: stop) exit 1;
+UNKNOWN (the record could not be read or is incomplete: continue in advisory mode
+and report it) exits 2.
 """
 from __future__ import annotations
 
@@ -24,32 +29,42 @@ from validate_resource_bundle import (
 )
 from validate_resource_record import load_record, nonempty_string
 from guard_skill_update import marker_path
+from _resource_contract import load_contract, resolve_agent_path, resolve_user_store_path
 
 RECONCILIATION_STATES = {"matched", "mismatched", "blocked", "unknown", "not-applicable"}
 VERIFICATION_STATES = {"unverified", "unavailable", "verified", "failed"}
 HOST_STATES = {"installed", "operational", "blocked", "disabled", "removed", "unavailable", "failed"}
 
 
-def _host_adoption_matches_child(adoption: dict[str, Any], child_name: str, skill_root: Path, record_path: Path) -> bool:
+RECORD_DIRS = ([".claude", "roblox", "resources", "records"], [".agents", "roblox", "resources", "records"])
+
+
+def _host_adoption_match(adoption: dict[str, Any], child_name: str, skill_root: Path, record_path: Path) -> str | None:
+    """Return "exact" when the entry's location is this child, "name" when only the skill name matches."""
     location = adoption.get("location")
     if not isinstance(location, str) or not location.strip():
-        return False
+        return None
     location_path = Path(location)
     candidates = [location_path]
-    record_parts = [part.lower() for part in record_path.parts]
-    if len(record_path.parents) >= 5 and record_parts[-5:-1] == [".agents", "roblox", "resources", "records"]:
-        candidates.append(record_path.parents[4] / location_path)
+    record_parts = [part.lower() for part in record_path.parent.parts]
+    for record_dir in RECORD_DIRS:
+        if record_parts[-len(record_dir):] == record_dir and len(record_path.parents) > len(record_dir):
+            candidates.append(record_path.parents[len(record_dir)] / location_path)
     for candidate in candidates:
         try:
             resolved = candidate.resolve()
         except OSError:
             continue
         if resolved == skill_root or resolved == skill_root / "SKILL.md":
-            return True
+            return "exact"
     normalized = location.replace("\\", "/").rstrip("/").lower()
-    return normalized.endswith(f"/{child_name.lower()}") or normalized.endswith(
-        f"/{child_name.lower()}/skill.md"
-    )
+    if normalized.endswith(f"/{child_name.lower()}") or normalized.endswith(f"/{child_name.lower()}/skill.md"):
+        return "name"
+    return None
+
+
+def _host_adoption_matches_child(adoption: dict[str, Any], child_name: str, skill_root: Path, record_path: Path) -> bool:
+    return _host_adoption_match(adoption, child_name, skill_root, record_path) is not None
 
 
 def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
@@ -67,8 +82,12 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
             return result
         if not (skill_root / "SKILL.md").is_file():
             raise ValueError("generated skill directory does not contain SKILL.md")
+        if not record_path.exists():
+            result["status"] = "no-record"
+            result["reason"] = "no project record; use the child as advice and report that record checks were skipped"
+            return result
         if not record_path.is_file() or record_path.suffix.lower() not in {".yaml", ".yml"}:
-            raise ValueError("resource record is missing or is not YAML")
+            raise ValueError("resource record is not a YAML file")
         metadata, child = _child_provenance(skill_root)
         record = load_record(record_path)
     except (OSError, UnicodeError, ValueError, TypeError, KeyError) as exc:
@@ -84,11 +103,12 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         result["reason"] = "child frontmatter name is missing"
         return result
     if not isinstance(record.get("generated_skill"), str) or record.get("generated_skill") != child_name.strip():
-        result["reason"] = "record generated_skill does not match child name"
+        result["reason"] = "record generated_skill does not match child name (update the record after a rename)"
         return result
 
     child_slug = child.get("slug")
     if not child_slug or not isinstance(record.get("slug"), str) or record.get("slug") != child_slug.strip():
+        result["status"] = "mismatch"
         result["reason"] = "record slug does not match child resource contract"
         return result
 
@@ -98,6 +118,7 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         result["reason"] = "canonical identity is missing"
         return result
     if not _same_url(record_canonical.strip(), child_canonical):
+        result["status"] = "mismatch"
         result["reason"] = "record canonical identity does not match child resource contract"
         return result
 
@@ -105,9 +126,11 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
     record_package = record.get("package_id")
     if child_package is None:
         if nonempty_string(record_package):
+            result["status"] = "mismatch"
             result["reason"] = "record package identity conflicts with child resource contract"
             return result
     elif not child_package or not nonempty_string(record_package) or record_package.strip() != child_package.strip():
+        result["status"] = "mismatch"
         result["reason"] = "record package identity does not match child resource contract"
         return result
 
@@ -119,6 +142,7 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
     record_version = verification.get("version_or_commit") if isinstance(verification, dict) else None
     child_version = child.get("version")
     if not child_version or not nonempty_string(record_version) or record_version.strip() != child_version.strip():
+        result["status"] = "mismatch"
         result["reason"] = "record version/state does not match child resource contract"
         return result
 
@@ -152,33 +176,45 @@ def query_pair(skill_root: Path, record_path: Path) -> dict[str, Any]:
         if not isinstance(host_status, str) or host_status not in HOST_STATES:
             result["reason"] = f"host_adoptions[{index}].status is malformed"
             return result
-        if host_status == "blocked" and _host_adoption_matches_child(
-            adoption, child_name.strip(), skill_root, record_path
-        ):
+        match = _host_adoption_match(adoption, child_name.strip(), skill_root, record_path)
+        host = adoption.get("host") if isinstance(adoption.get("host"), str) else "unknown host"
+        # A content block follows the skill to every host copy; host-local states apply only to that copy.
+        if host_status == "blocked" and match is not None:
             result["status"] = "blocked"
             adoption_result = adoption.get("result")
-            result["reason"] = (
-                adoption_result.strip()
-                if isinstance(adoption_result, str) and adoption_result.strip()
-                else "matching host adoption is blocked"
-            )
+            detail = adoption_result.strip() if isinstance(adoption_result, str) and adoption_result.strip() else "no reason recorded"
+            result["reason"] = f"host adoption for {host} at {location.strip()} is blocked: {detail}"
             return result
-        if host_status in {"disabled", "removed", "failed", "unavailable"} and _host_adoption_matches_child(
-            adoption, child_name.strip(), skill_root, record_path
-        ):
-            result["reason"] = f"matching host adoption is {host_status}"
+        if host_status in {"disabled", "removed", "failed", "unavailable"} and match == "exact":
+            result["reason"] = f"host adoption for {host} at {location.strip()} is {host_status}"
             return result
 
-    if reconciliation_status in {"mismatched", "unknown"}:
-        result["reason"] = f"matching record reports {reconciliation_status} reconciliation state"
+    if reconciliation_status == "mismatched":
+        result["status"] = "mismatch"
+        result["reason"] = "matching record reports mismatched installed state"
+        return result
+    if reconciliation_status == "unknown":
+        result["reason"] = "matching record reports unknown reconciliation state"
         return result
     if verification_status == "failed":
-        result["reason"] = "matching record reports failed verification without a usable block description"
+        result["status"] = "failed"
+        result["reason"] = "matching record reports failed verification"
         return result
 
     result["status"] = "healthy"
     result["reason"] = "matching schema-v3 identity/version has no recorded current block"
     return result
+
+
+def resolve_record(skill_root: Path, project: Path | None) -> tuple[Path | None, str]:
+    """Find the child's record from its descriptor: AGENT_DIR/roblox/resources/records/<slug>.yaml."""
+    contract = load_contract(skill_root, check_documents=False)
+    reconciliation = contract["reconciliation"]
+    if project is not None:
+        return resolve_agent_path(project.resolve(), reconciliation["record"]), ""
+    if contract["scope"] == "user":
+        return resolve_user_store_path(reconciliation["no_project_record"])
+    return None, "project-scoped child needs --project; record checks skipped"
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -189,26 +225,53 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--pair",
         action="append",
         nargs=2,
+        default=[],
         metavar=("SKILL_DIR", "RECORD_YAML"),
-        required=True,
-        help="generated child directory and its matching portable resource record; repeat for a batch",
+        help="child directory and an explicit record path (a missing file reports NO-RECORD); repeat for a batch",
     )
+    parser.add_argument(
+        "--child",
+        action="append",
+        default=[],
+        metavar="SKILL_DIR",
+        help="child directory whose record is found from its resource.yaml under the project's AGENT_DIR "
+             "(.claude/ or .agents/); repeat for a batch",
+    )
+    parser.add_argument("--project", type=Path, help="project root used to resolve AGENT_DIR for --child")
     parser.add_argument("--json", action="store_true", help="emit one JSON array instead of line output")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if not args.pair and not args.child:
+        parser.error("supply --pair SKILL_DIR RECORD_YAML or --child SKILL_DIR [--project PROJECT]")
+    return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     results = [query_pair(Path(skill).resolve(), Path(record).resolve()) for skill, record in args.pair]
+    for skill in args.child:
+        skill_root = Path(skill).resolve()
+        try:
+            record, note = resolve_record(skill_root, args.project)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            results.append({"skill": str(skill_root), "record": "", "status": "unknown", "reason": str(exc)})
+            continue
+        if record is None:
+            results.append({"skill": str(skill_root), "record": "", "status": "unknown", "reason": note})
+            continue
+        result = query_pair(skill_root, record.resolve())
+        if note:
+            result["note"] = note
+        results.append(result)
     if args.json:
         print(json.dumps(results, indent=2, sort_keys=True))
     else:
         for result in results:
-            print(f"{result['status'].upper()}: {result['skill']} :: {result['reason']}")
+            suffix = f" ({result['note']})" if result.get("note") else ""
+            print(f"{result['status'].upper()}: {result['skill']} :: {result['reason']}{suffix}")
+    if any(result["status"] in {"blocked", "mismatch", "failed"} for result in results):
+        return 1
     if any(result["status"] == "unknown" for result in results):
         return 2
-    if any(result["status"] == "blocked" for result in results):
-        return 1
     return 0
 
 

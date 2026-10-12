@@ -1,17 +1,19 @@
 # Resource qualification workflow
 
-Use this reference for resource targeting, discovery, trust qualification, understanding, and upstream verification. The parent [SKILL.md](../SKILL.md) decides the operating mode before loading this workflow.
+Use this reference for resource targeting, discovery, trust qualification, understanding, and upstream verification. The parent SKILL.md decides the operating mode before loading this workflow.
+
+Contents: [0. Decide whether acquisition is warranted](#0-decide-whether-acquisition-is-warranted) · [1. Curated registry, then discovery](#1-consult-the-external-trusted-curated-registry-then-discover-if-needed) · [2. Qualify by trust](#2-qualify-candidates-according-to-actual-trust) · [3. Understand](#3-understand-the-selected-resource) · [4. Verify](#4-verify-the-resource-when-required)
 
 ## 0. Decide whether acquisition is warranted
 
-For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. Default adoption includes a reusable project-scoped child and host adoption; explicit evaluation-only, narrower, or user/global-scope requests still control.
+For a capability-directed request, first use the task's constraints and relevant supplied project facts to decide whether built-ins, an adequate authorized capability, or small local code suffice. If so, stop acquisition and complete the local task; no rubric, discovery or child lifecycle is needed. Preserve positive resource targets and any relevant owner decision or known block. When external evaluation/adoption remains warranted, apply [adoption-policy.md](adoption-policy.md) to derive scope and priorities. A child skill is opt-in; explicit evaluation-only, narrower, or user-wide requests still control.
 
 Before selecting, derive a compact acquisition brief from the request, relevant project evidence, and prior answers:
 
 - actual intended purpose and capability needed, beyond API names alone;
 - relevant behavior/lifecycle and deciding priorities;
 - each named resource's intended role and selector, if any;
-- requested lifecycle scope: evaluation/comparison, current-task use, project acquisition/adoption, reusable child guidance, or host adoption;
+- requested lifecycle scope: evaluation/comparison, current-task use, project acquisition/adoption, or (on request) a reusable child skill;
 - project/runtime constraints;
 - client/server boundary involved;
 - performance or scale requirements that materially matter;
@@ -35,7 +37,7 @@ Search is a means, not the goal.
 
 Stop evaluation when the decision criteria are satisfied, remaining uncertainty is unlikely to change the decision, and additional research has lower value than making a reversible choice and validating it. Avoid both premature adoption and indefinite comparison.
 
-For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly and apply [community-evidence.md](community-evidence.md) for meaningful comparisons. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration, child generation, or host adoption.
+For a comparison, load [evaluation-rubric.md](evaluation-rubric.md) directly and apply [community evidence](search-playbook.md#community-evidence) for meaningful comparisons. Apply its hard gates before comparing survivors against the same acquisition brief, established priorities, and evidence standard. Keep unknown facts explicit. Popularity, search rank, and community activity may aid discovery or maintenance assessment but cannot override a failed fit, inspectability, security, license, or other hard gate. A comparison result ends with evidence and a decision; it does not authorize integration or child generation.
 
 Once the brief is sufficient, ground a recommendation in current canonical behavior sources and relevant maintained practice evidence. Apply the rubric rather than inventing a second ranking scheme. State the decisive tradeoff, material uncertainty, and what would change the recommendation; an options list alone does not complete selection. Make supported choices locally; surface the specific missing evidence or owner preference when it prevents a recommendation. Missing evidence does not establish a winner or developer consensus.
 
@@ -52,10 +54,10 @@ When the user positively targets one or more resources, preserve the role, order
 For each positive target:
 
 1. Resolve its canonical identity only as far as the decision needs. Preserve a material version, tag, commit, release, package coordinate, or other selector. Do not transfer identity, trust, verification, or guidance to a same-named fork, mirror, re-upload, modified vendored copy, or different selector.
-2. Inspect the targeted resource directly. Identity-resolution research answers which resource the user meant; it does not become alternative discovery. For new adoption, apply the focused exact-target community review in [community-evidence.md](community-evidence.md), preserving the assigned target and scope.
+2. Inspect the targeted resource directly. Identity-resolution research answers which resource the user meant; it does not become alternative discovery. For new adoption, apply the focused exact-target community review in [community evidence](search-playbook.md#community-evidence), preserving the assigned target and scope.
 3. Inspect relevant project/installed state only when use, integration, adoption, reconciliation, compatibility, or another requested decision depends on it. Pure source evaluation does not trigger project reconnaissance merely because a project is open. When the same canonical resource is already present, reconcile material identity/version/operational state instead of reacquiring it.
-4. Preserve the narrowest authority actually granted. Evaluation or comparison selects candidates but grants no trust or mutation authority. A clear direction to use/adopt an established canonical identity may supply the existing `explicit-user` trust basis, but authorizes no lifecycle action beyond what that assigned use/adoption scope entails and never bypasses project/runtime/security policy. A request for reusable child guidance places generation in scope but does not independently prove or trust the upstream resource; host adoption remains separate.
-5. Continue through only the understanding, qualification, verification, generation, validation, and adoption stages required by that resource's assigned scope.
+4. Preserve the narrowest authority actually granted. Evaluation or comparison selects candidates but grants no trust or mutation authority. A clear direction to use/adopt an established canonical identity may supply the existing `explicit-user` trust basis, but authorizes no lifecycle action beyond what that assigned use/adoption scope entails and never bypasses project/runtime/security policy. A request for a reusable child places generation in scope but does not independently prove or trust the upstream resource.
+5. Continue through only the stages that resource's assigned scope requires.
 
 Skip registry lookup and broad discovery merely to rediscover, compete with, or substitute for a positive target. Seek alternatives only when requested or when current evidence establishes a material fit, compatibility, safety, availability, or policy problem and the task calls for another solution. Surface such a conflict before substitution. An explicit replacement target is not defeated merely because the old resource is already present.
 
@@ -73,26 +75,15 @@ Prefer an adequate authorized project dependency or first-party capability. If s
 
 Enter this section for a capability-directed request only when built-ins and relevant project capabilities do not resolve the need under applicable policy, or when the targeted-resource path independently justifies alternatives. A positive target otherwise proceeds directly to qualification and understanding.
 
-Curated resource state is **user/project-owned data and must live outside this skill package**. Follow [curated-registry.md](curated-registry.md) for registry discovery, precedence, and mutation rules. The skill ships only the registry contract and `../templates/curated-resource.yaml`; it must not ship the user's actual resource choices.
+Curated resources are user/project-owned data outside this package. Follow [curated-registry.md](curated-registry.md) for where registries live, validation, consumption and ownership. In short: a valid entry means trusted by policy for its exact `slug` and canonical identity; prefer the best-fitting curated resource without broad discovery to second-guess it; search outside the registry only when nothing curated fits, a material incompatibility/deprecation/security concern appears, or the user asks for alternatives; never add, remove or rewrite entries without explicit direction. Trust is not verification: re-check volatile facts (version, API, installation, deprecation) before relying on them, and record verification separately.
 
-A **valid** catalog entry means **trusted by policy**. Validate/parse curated entries according to [curated-registry.md](curated-registry.md); malformed entries do not grant trust. Do not require a valid curated resource to re-earn trust through the acquisition proof gates before it can be selected. Trust binds to the entry's stable `slug` and canonical identity (`canonical_url`, plus `package_id` when present), not merely to its display name. However, trust is not a claim that every current version, API, installation path, or integration detail has been independently verified. Re-check volatile facts such as version, maintenance, API, installation, deprecation, and canonical source before relying on them.
+Load relevant learnings alongside the registry per [learnings-store.md](learnings-store.md#consumption). They retire dead query shapes and point at the cheapest fact to re-check; they never reorder curated preference, suppress a curated resource or decide anything alone.
 
-Load the external learnings store alongside the registry per [learnings-store.md](learnings-store.md). During discovery, failed-query learnings retire known-dead query shapes without narrowing the requirement itself. A rejection learning deprioritizes its candidate only while its recorded version context still matches current upstream and its reconsider condition has not triggered; once upstream moves past the rejected state, the rejection is stale and the candidate re-enters normally. Learnings never reorder curated preference and never silently suppress a curated resource — an adverse learning about a curated resource routes through the [qualification contradiction path](#2-qualify-candidates-according-to-actual-trust), not around it.
-
-Do not add, remove, replace, or silently rewrite the identity of curated resources merely because this workflow discovers or prefers something. Registry membership and identity are controlled by the user/project. Mutate them only when explicitly directed by the user or an explicit project policy.
-
-If one or more curated resources match the acquisition brief:
-
-- prefer the best-fitting curated resource without broad discovery merely to second-guess the user's trust decision;
-- compare multiple curated matches when their task fit differs materially;
-- search outside the registry only when no curated resource fits, a material current incompatibility/deprecation/security concern is discovered, or the user explicitly asks for alternatives/comparison;
-- record that trust came from curation and separately record any verification actually performed.
-
-For a selected curated new adoption, apply the focused current-risk review in [community-evidence.md](community-evidence.md). Community lists and recommendations are discovery evidence, distinct from this user/project-owned trusted registry.
+For a selected curated new adoption, apply the focused current-risk review in [community evidence](search-playbook.md#community-evidence).
 
 If no curated resource credibly matches, proceed to broad discovery.
 
-When broad discovery is required, start with the Roblox Developer Forum **Community Resources** category for Roblox libraries/modules. For development tools, also search the canonical tool ecosystem, repositories and package sources appropriate to the capability; the absence of a DevForum topic is not a rejection reason. Use [search-playbook.md](search-playbook.md) for query expansion, thread inspection, alternative discovery, and adversarial follow-up. Apply [community-evidence.md](community-evidence.md) for topic-level developer experience before finalizing the shortlist; cover relevant comparative discussions and OSS sources beyond resource announcements. Follow promising threads to their linked canonical documentation, repository, package, model, or release source.
+When broad discovery is required, start with the Roblox Developer Forum **Community Resources** category for Roblox libraries/modules. For development tools, also search the canonical tool ecosystem, repositories and package sources appropriate to the capability; the absence of a DevForum topic is not a rejection reason. Use [search-playbook.md](search-playbook.md) for query expansion, thread inspection, alternative discovery, and adversarial follow-up. Apply [community evidence](search-playbook.md#community-evidence) for topic-level developer experience before finalizing the shortlist; cover relevant comparative discussions and OSS sources beyond resource announcements. Follow promising threads to their linked canonical documentation, repository, package, model, or release source.
 
 Do not treat search snippets, titles, view counts, likes, or reply counts as proof of quality.
 
@@ -117,7 +108,7 @@ Use [evaluation-rubric.md](evaluation-rubric.md) to compare **newly discovered**
 
 ## 2. Qualify candidates according to actual trust
 
-Apply the untrusted or trusted path according to the resource's actual trust basis, regardless of how it entered consideration. Project presence and positive targeting alone grant no trust. Explicit project approval may supply `project` trust; a user direction that actually authorizes use/adoption may supply `explicit-user` trust after canonical identity is established. Evaluation, comparison, and reusable-child scope alone do not. Resolve conflicts with applicable project policy through its existing authority rules; no trust basis bypasses unrelated installation, runtime, security, or host-adoption constraints.
+Apply the untrusted or trusted path according to the resource's actual trust basis, regardless of how it entered consideration. Project presence and positive targeting alone grant no trust. Explicit project approval may supply `project` trust; a user direction that actually authorizes use/adoption may supply `explicit-user` trust after canonical identity is established. Evaluation, comparison, and reusable-child scope alone do not. Resolve conflicts with applicable project policy through its existing authority rules; no trust basis bypasses unrelated installation, runtime or security constraints.
 
 For **untrusted** candidates, whether discovered, project-present, or directly targeted, reject a candidate that fails an applicable hard gate. Evaluate other demonstrated weaknesses against the brief's criteria. Relevant evidence includes:
 
@@ -136,7 +127,7 @@ Absence of evidence is not positive evidence. Mark uncertain facts as unknown an
 
 For a **trusted** resource, first confirm that the source/package being considered matches the identity and scope to which that trust applies. A same-named fork, mirror, re-upload, modified vendored copy, alternate package, or different material selector does not inherit trust automatically. After identity matches, qualification checks become contradiction checks rather than a requirement to earn trust from zero. Trust does not require repeated proof, but direct evidence of task-specific incompatibility, deprecation, unsafe behavior, or a broken current API must not be ignored. Preserve the declared trust basis while reporting and blocking the affected use/version under its applicable policy; do not silently retarget or substitute the resource.
 
-Resource-bound learnings pre-load qualification: a recorded integration gotcha or version-drift note names the cheapest fact to falsify first against the current version. The learning directs where to look; only the current check decides. Match learnings by `slug` plus canonical identity, never by display name.
+Resource-bound learnings name the cheapest fact to falsify first against the current version ([learnings-store.md](learnings-store.md#consumption)); only the current check decides.
 
 Prefer the best justified fit, not the most popular resource and not necessarily the most feature-rich resource.
 

@@ -44,13 +44,13 @@ Required when the resource touches remotes, HTTP, credentials, persistence, arbi
 
 ## Test I - Operational reconciliation
 
-For `required`, use a project whose installed resource state is independently mutable. Pass if every version-sensitive use detects the installed identity/version, compares it with its reviewed state, consults matching parent-maintained records/learnings, and stops on an unknown, mismatch, or current block.
+For `required`, use a project whose installed resource state is independently mutable. Pass if every version-sensitive use detects the installed identity/version, compares it with its reviewed state, consults matching parent-maintained records/learnings, stops on an observed mismatch or current block, and reports an unknown installed state as advisory rather than claiming a match.
 
 For `conditional`, run both branches:
 
 - Healthy ordinary use: make the declared pin and named lock/header match and supply a compatible unblocked schema-v3 record. Pass only if the narrow `check_resource_status.py` query returns `HEALTHY`, the agent avoids package internals/full record evidence/learnings, and it retains the exact integrity gate for completion.
-- Block query: separately test a matching free-text block, missing/malformed record, identity/version mismatch, adverse or unknown reconciliation/verification/matching-host state, and compatible legacy record. Pass only if the blocked case produces `BLOCKED`; every missing, malformed, mismatched, unknown, or adverse case produces `UNKNOWN`; the compatible unblocked legacy record has a known usable reconciliation state and no adverse verification or matching-host state and is `HEALTHY`; and no evidence command is executed.
-- State escalation: separately introduce a missing/mismatched pin or lock/header, verifier failure or drift, adoption/upgrade, an authorized repair, a hard correctness/security/identity/version defect, and an already-known block. Pass only if each applicable trigger stops version-sensitive use, loads the deterministic parent record/learnings route, and invokes `roblox-resource-acquisition` in `repair/reconcile` mode.
+- Block query: separately test a matching free-text block, a missing record, a malformed record, an identity/version mismatch, adverse or unknown reconciliation/verification/host state, and a compatible legacy record. Pass only if the block produces `BLOCKED`; the missing record produces `NO-RECORD` and the agent continues as advice while saying record checks were skipped; the identity/version mismatch produces `MISMATCH` and stops use; malformed or unknown states produce `UNKNOWN` and the agent continues in advisory mode and reports it; the compatible unblocked legacy record is `HEALTHY`; and no evidence command is executed.
+- State escalation: separately introduce a mismatched pin or lock/header, verifier failure or drift, adoption/upgrade, an authorized repair, a hard correctness/security/identity/version defect, and an already-known block. Pass only if each applicable trigger stops version-sensitive use, loads the deterministic parent record/learnings route, and invokes `roblox-resource-acquisition` in `repair/reconcile` mode.
 
 For `not-applicable`, pass only when the child gives a concrete immutable-install or version-insensitivity reason.
 
@@ -58,12 +58,12 @@ For a conditional repair, also run the economy test against the prior always-rec
 
 ## Test J - Catalog routing
 
-Inspect the target host's visible skill activation surfaces whenever a generated child is added, refreshed, repaired, or adopted. Run this behavioral test when either (a) the target host set contains two or more generated children, or (b) any generated child has a plausible activation competitor among non-generated host-visible skills. First run `scripts/validate_skill_catalog.py` over the generated-child set and add each material non-generated competitor with `--routing-competitor <path>`; retain the resulting fingerprint. Non-generated competitors are routing inputs only and do not need to satisfy the generated resource-skill contract. For every reported overlap cluster, give independent agents:
+Inspect the target host's visible skill activation surfaces whenever a generated child is added, refreshed, repaired, or adopted. Run this behavioral test when either (a) the target host set contains two or more generated children, or (b) any generated child has a plausible activation competitor among non-generated host-visible skills. First run `scripts/validate_skill_catalog.py` over the generated-child set and add each material non-generated competitor with `--routing-competitor <path>`; retain the resulting fingerprint. Non-generated competitors are routing inputs only and do not need to satisfy the generated resource-skill contract. For every reported overlap cluster, give fresh subagents or fresh sessions:
 
 - one task specific to each generated child in the cluster;
 - one task specific to each competing host-visible skill needed to exercise the boundary;
 - one simpler task that should select neither;
-- one explicit-invocation smoke task per generated child.
+- one explicit `/<child-name>` invocation per generated child.
 
 Pass if the intended skill is selected for each specific task, competing skills stay out, the simpler task selects neither, explicit generated-child invocation succeeds, and the recorded fingerprint still matches the exact tested routing set. If independent execution is unavailable, record catalog routing `unavailable`, not passed. Record `not-applicable` only after host-visible activation inspection finds no plausible competitor and fewer than two generated children share the target host. Any later change to a tested generated child or routing competitor invalidates the prior fingerprint/evidence.
 

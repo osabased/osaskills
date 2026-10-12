@@ -28,6 +28,64 @@ def write(path, value):
     temp.replace(path)
 
 
+def run_cli(main):
+    """Run a CLI entry point and print a one-line error instead of a traceback.
+
+    Set VOD_DEBUG=1 to see the full traceback.
+    """
+    try:
+        result = main()
+    except KeyboardInterrupt:
+        print("Interrupted", file=sys.stderr)
+        sys.exit(130)
+    except SystemExit:
+        raise
+    except Exception as error:
+        if os.environ.get("VOD_DEBUG"):
+            raise
+        if isinstance(error, KeyError):
+            message = f"missing field {error}"
+        else:
+            message = str(error) or type(error).__name__
+        print(f"ERROR: {message}", file=sys.stderr)
+        sys.exit(1)
+    sys.exit(result or 0)
+
+
+WINDOWS_ABSOLUTE = re.compile(r"^(?:[A-Za-z]:[\\/]|\\\\|//)")
+
+
+def parse_path_map(values):
+    """Parse LOCAL_PREFIX=HOST_PREFIX pairs; the longest local prefix wins."""
+    pairs = []
+    for value in values or []:
+        local, sep, host = value.partition("=")
+        local, host = local.strip(), host.strip()
+        if not sep or not local or not host:
+            raise ValueError(f"--path-map needs LOCAL_PREFIX=HOST_PREFIX, got {value!r}")
+        if not (host.startswith("/") or WINDOWS_ABSOLUTE.match(host)):
+            raise ValueError(f"--path-map host prefix must be absolute: {host!r}")
+        pairs.append((local.replace("\\", "/").rstrip("/"), host.replace("\\", "/").rstrip("/")))
+    return sorted(pairs, key=lambda pair: len(pair[0]), reverse=True)
+
+
+def map_path(path, path_map):
+    """Translate a local media path (for example a Cowork VM mount) to the editor's host path.
+
+    Probing always uses the local path; only the path written for Premiere changes.
+    With a map, every source must match one prefix so no file silently keeps a VM path.
+    """
+    value = str(path).replace("\\", "/")
+    if not path_map:
+        return str(path)
+    for local, host in path_map:
+        windows = bool(WINDOWS_ABSOLUTE.match(local))
+        probe_value, probe_local = (value.casefold(), local.casefold()) if windows else (value, local)
+        if probe_value == probe_local or probe_value.startswith(probe_local + "/"):
+            return host + value[len(local):]
+    raise ValueError(f"No --path-map prefix matches {path}; map every source or omit --path-map")
+
+
 def number(value, name, minimum=0):
     if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value < minimum:
         raise ValueError(f"Invalid {name}: {value!r}")
@@ -294,7 +352,11 @@ def prepare_locked(args, cleanup):
             packet_evidence(attempt)
             guard_source()
             if not (folder / 'review.json').exists():
-                write(folder / "review.json", {"status": "unreviewed", "inspected_sheets": [], "event_ids": []})
+                # Ledger schema: references/packet-review.md. Reviewers fill it in.
+                write(folder / "review.json", {"schema": "vod-packet-review/v1", "status": "unreviewed",
+                                               "attempt": attempt.name, "inspected_sheets": [],
+                                               "inspected_frames": [], "transcript_status": "unread",
+                                               "event_ids": [], "notes": [], "questions": []})
             write(folder / "complete.json", {"attempt": attempt.name})
         except Exception as exc:
             write(attempt / "error.json", {"error": str(exc)})
@@ -453,6 +515,26 @@ def export_events(data):
     return {"schema": "vod-source-markers/v1", "sources": [s for s in sources.values() if s["markers"]]}
 
 
+def doctor():
+    result = {k: shutil.which(k) for k in ("ffmpeg", "ffprobe")}
+    for k in ("claude-real-video", "faster-whisper"):
+        try: result[k] = importlib.metadata.version(k)
+        except importlib.metadata.PackageNotFoundError: result[k] = None
+    result["python"] = sys.version.split()[0]
+    problems = [f"{k} not found" for k, v in result.items() if not v]
+    if sys.version_info < (3, 11):
+        problems.append("Python 3.11 or newer is required (3.13 is tested)")
+    notes = []
+    if result["ffmpeg"]:
+        encoders = subprocess.run([result["ffmpeg"], "-hide_banner", "-encoders"],
+                                  capture_output=True, encoding="utf-8", errors="replace").stdout
+        if "libx264" not in encoders:
+            notes.append("ffmpeg has no libx264 encoder; review_queue.py previews will fail")
+    result["problems"], result["notes"] = problems, notes
+    print(json.dumps(result, indent=2))
+    return 1 if problems else 0
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -474,19 +556,21 @@ def main():
         else:
             p.add_argument("--start", type=float, required=True); p.add_argument("--end", type=float, required=True)
     p = sub.add_parser("export"); p.add_argument("--events", required=True); p.add_argument("--out", required=True)
+    p.add_argument("--path-map", action="append", metavar="LOCAL=HOST",
+                   help="Rewrite source paths for the editor's machine, e.g. a VM mount to D:/VODs (repeatable)")
     p = sub.add_parser("evidence"); p.add_argument("--prepared", required=True)
     p = sub.add_parser("index"); p.add_argument("--prepared", nargs='+', required=True); p.add_argument("--out", required=True)
     p = sub.add_parser("search"); p.add_argument("--index", required=True); p.add_argument("--query", required=True)
     p.add_argument("--limit", type=int, default=20)
     args = parser.parse_args()
     if args.command == "doctor":
-        result = {k: shutil.which(k) for k in ("ffmpeg", "ffprobe")}
-        for k in ("claude-real-video", "faster-whisper"):
-            try: result[k] = importlib.metadata.version(k)
-            except importlib.metadata.PackageNotFoundError: result[k] = None
-        print(json.dumps(result, indent=2)); return 0 if all(result.values()) else 1
+        return doctor()
     if args.command == "export":
-        write(args.out, export_events(read(args.events))); print(f"Wrote {args.out}"); return 0
+        markers = export_events(read(args.events))
+        path_map = parse_path_map(args.path_map)
+        for source in markers["sources"]:
+            source["path"] = map_path(source["path"], path_map)
+        write(args.out, markers); print(f"Wrote {args.out}"); return 0
     if args.command in ('evidence', 'index', 'search'):
         from evidence import enrich, build_index, search_index
         if args.command == 'evidence': result = enrich(args.prepared)
@@ -503,8 +587,4 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
-        sys.exit(main())
-    except (ValueError, RuntimeError, KeyError, subprocess.CalledProcessError) as error:
-        print(f"ERROR: {error}", file=sys.stderr)
-        sys.exit(1)
+    run_cli(main)

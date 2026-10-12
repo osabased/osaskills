@@ -1,0 +1,14 @@
+{
+  "name": "osaskills",
+  "description": "osabased's skills for Roblox development, VOD discovery, and review workflows.",
+  "owner": {
+    "name": "osabased"
+  },
+  "plugins": [
+    {
+      "name": "osaskills",
+      "source": "./",
+      "description": "All osaskills skills: Roblox structure and resources, VOD discovery, system review, motion studies, then-what."
+    }
+  ]
+}

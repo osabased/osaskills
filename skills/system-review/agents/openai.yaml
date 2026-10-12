@@ -1,4 +1,0 @@
-interface:
-  display_name: "System Review"
-  short_description: "Review cross-part behavior and failure paths"
-  default_prompt: "Use $system-review to trace the required outcome across interactions, establish supported findings and closure evidence, and return a concise scoped verdict."

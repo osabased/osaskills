@@ -1,0 +1,69 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: blink
+  name: Blink 0.18.9
+  canonical_url: https://github.com/1Axen/blink
+  package_id: 1axen/blink
+  selector:
+    kind: version
+    value: 0.18.9
+  source_review_date: '2026-10-03'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing or debugging Blink 0.18.9 schemas, CLI runs, generated module placement or generated
+    Fire/On/Invoke usage in a project that pins this version.
+  avoid_when:
+  - Choosing or replacing a networking library, or in-process UI events.
+  - The project pins a different Blink target (including 1.0.0 pre-releases); keep that pin and find
+    matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/schema.md
+    roles:
+    - api
+    - recipes
+    when: writing or changing .blink schema declarations, options or types
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    when: using generated server/client APIs, polling, functions, placement or runtime activation
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing or restoring the pesde CLI
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: compiler errors, missing outputs, client hangs, packet drops or the receive-side security boundary
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: roblox/resources/records/blink.yaml
+  learnings: roblox/resources/learnings/
+installation:
+  profile: pesde-registry
+  dependency_section: dev_dependencies
+  registry: https://github.com/pesde-pkg/index
+  target: lune
+  integrity:
+    files:
+      release/blink_pesde.luau: aea36deb0fbaf177fba4b48e5c88c9cb820abf5d077e4e237b98dcf96631343f

@@ -47,8 +47,8 @@ guidance:
 reconciliation:
   policy: required
   reason: Project source/tool installation can change independently.
-  record: .agents/roblox/resources/records/stravant-goodsignal.yaml
-  learnings: .agents/roblox/resources/learnings/
+  record: roblox/resources/records/stravant-goodsignal.yaml
+  learnings: roblox/resources/learnings/
 installation:
   profile: custom
   custom_checker: scripts/smoke_signal.luau

@@ -27,3 +27,7 @@ For a non-Git local skill, capture the exact baseline/candidate file fingerprint
 ## Maintenance and ordinary-use cases
 
 [maintenance-cases.json](maintenance-cases.json) preserves the behavioral requirements behind the parent router's former exact-prose tests: target-bound refresh, hard/soft/harmless repair, healthy conditional use, required plugin integrity and unresolved project scope. Use the same isolated-session and hidden-grading protocol. Static tests check reference reachability and fixture structure; they do not establish that an agent followed a repair route or performed a check. Use the comparison/adoption/community cases alongside them to check neighboring boundaries.
+
+## Triggering cases
+
+[trigger-cases.json](trigger-cases.json) lists realistic queries that should and should not select this skill. Use them to tune the `description` (for example with a description-optimization loop) and re-run them after any description change. A near-miss that should not trigger matters as much as a positive case.

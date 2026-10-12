@@ -1,6 +1,7 @@
 """Packaging/navigation checks. Behavioral outcomes live in evals, not prose assertions."""
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -28,24 +29,31 @@ def _links(text: str) -> set[str]:
     return set(re.findall(r"\[[^\]]+\]\(([^)]+)\)", text))
 
 
-def _anchor(text: str) -> str:
-    text = re.sub(r"[`*_~]", "", text.strip().lower())
-    text = re.sub(r"[^\w\s-]", "", text)
-    return re.sub(r"[\s-]+", "-", text).strip("-")
-
-
 def _anchors(path: Path) -> set[str]:
+    """GitHub-style heading anchors (the same rule validate_skill.py uses)."""
     anchors: set[str] = set()
     counts: dict[str, int] = {}
+    in_fence = False
     for line in path.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^#{1,6}\s+(.+?)\s*$", line)
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        match = None if in_fence else re.match(r"^#{1,6}\s+(.+?)\s*$", line)
         if not match:
             continue
-        base = _anchor(match.group(1))
+        base = re.sub(r"[^\w\s-]", "", re.sub(r"\[([^]]+)\]\([^)]*\)", r"\1", match.group(1)).lower())
+        base = re.sub(r"\s", "-", base)
         count = counts.get(base, 0)
         counts[base] = count + 1
         anchors.add(base if count == 0 else f"{base}-{count}")
     return anchors
+
+
+def test_parent_frontmatter_is_valid_for_claude():
+    meta = yaml.safe_load(PARENT.split("---", 2)[1])
+    assert meta["name"] == ROOT.name
+    assert 0 < len(meta["description"]) <= 1024
+    assert "<" not in meta["description"] and ">" not in meta["description"]
 
 
 def test_relative_markdown_links_and_anchors_resolve():
@@ -53,30 +61,47 @@ def test_relative_markdown_links_and_anchors_resolve():
         ROOT / "SKILL.md",
         *(ROOT / "references").glob("*.md"),
         *(ROOT / "templates").glob("*.md"),
+        *(ROOT / "examples").rglob("*.md"),
+        ROOT / "evals" / "README.md",
     ]
-    link_re = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+    link_re = re.compile(r"\[[^\]]+\]\(([^)\s]+)\)")
     for source in files:
-        for target in link_re.findall(source.read_text(encoding="utf-8")):
+        text = re.sub(r"```.*?```", "", source.read_text(encoding="utf-8"), flags=re.S)
+        for target in link_re.findall(text):
             if "://" in target or target.startswith("mailto:"):
                 continue
             path_part, _, anchor = target.partition("#")
-            target_path = source if not path_part else (source.parent / path_part).resolve()
-            assert target_path.is_file(), f"{source}: missing link target {target}"
+            if source.parent.name == "templates" and path_part.startswith("references/"):
+                continue  # scaffold link in the child template
+            if path_part.startswith("../roblox-resource-acquisition/"):
+                path_part = path_part.removeprefix("../roblox-resource-acquisition/")
+                target_path = (ROOT / path_part).resolve()
+            else:
+                target_path = source if not path_part else (source.parent / path_part).resolve()
+            if path_part.endswith(".example.yaml") or target_path.name == "resource.yaml":
+                continue  # examples rename their descriptor when materialized
+            assert target_path.exists(), f"{source}: missing link target {target}"
             if anchor:
                 assert anchor in _anchors(target_path), f"{source}: missing anchor {target}"
 
 
+def test_every_reference_is_linked_from_skill_md_or_another_reference():
+    linked = set()
+    for text in (PARENT, *REFERENCES.values()):
+        for target in _links(text):
+            linked.add(Path(target.partition("#")[0]).name)
+    orphans = sorted(name for name in REFERENCES if name not in linked)
+    assert orphans == [], f"unreferenced files: {orphans}"
+
+
 def test_evaluate_compare_routes_only_decision_and_state_references():
-    # Scope behavior is covered by explicit-evaluation-only/fixed-target cases.
     assert _links(_mode("evaluate/compare")) == {
         "references/qualification-workflow.md",
         "references/evaluation-rubric.md",
-        "references/state-policy.md",
     }
 
 
-def test_acquire_adopt_reaches_each_in_scope_lifecycle_contract():
-    # Adoption scenarios test scope, status separation and completion behavior.
+def test_acquire_adopt_reaches_each_in_scope_contract():
     assert {
         "references/adoption-policy.md",
         "references/qualification-workflow.md",
@@ -87,109 +112,49 @@ def test_acquire_adopt_reaches_each_in_scope_lifecycle_contract():
     } <= _links(_mode("acquire/adopt"))
 
 
-def test_portable_record_location_has_one_canonical_owner():
+def test_refresh_and_repair_reach_their_contracts():
+    for mode in ("refresh", "repair/reconcile"):
+        assert {
+            "references/qualification-workflow.md",
+            "references/project-adoption.md",
+            "references/generation-validation.md",
+            "references/repair-loop.md",
+        } <= _links(_mode(mode)), mode
+
+
+def test_record_location_has_one_canonical_owner():
     state = REFERENCES["state-policy.md"]
-    operational = REFERENCES["operational-lifecycle.md"]
-
-    explicit = "an explicit record path supplied by the user, project, or environment"
-    project = "`<project-root>/.agents/roblox/resources/records/<slug>.yaml`"
-    user = "`~/.roblox-resources/records/<slug>.yaml`"
-    positions = [state.index(explicit), state.index(project), state.index(user)]
-    assert positions == sorted(positions)
-
-    assert (
-        "[portable resource-record location](state-policy.md#portable-resource-record-location)"
-        in operational
-    )
-    assert project not in operational
-    assert user not in operational
+    project = "`<project-root>/AGENT_DIR/roblox/resources/records/<slug>.yaml`"
+    user = "`~/.claude/roblox/resources/records/<slug>.yaml`"
+    assert state.index(project) < state.index(user)
+    assert "state-policy.md#portable-resource-record-location" in REFERENCES["operational-lifecycle.md"]
 
 
-def test_refresh_routes_changed_input_validation_surfaces():
-    assert {
-        "references/qualification-workflow.md",
-        "references/project-adoption.md",
-        "references/generation-validation.md",
-        "references/operational-lifecycle.md",
-        "references/repair-loop.md",
-        "references/state-policy.md",
-    } <= _links(_mode("refresh"))
+def test_no_codex_host_paths_or_invocation_syntax_remain():
+    texts = {"SKILL.md": PARENT, **REFERENCES}
+    texts.update({str(p.relative_to(ROOT)): p.read_text(encoding="utf-8") for p in (ROOT / "templates").glob("*")})
+    for name, text in texts.items():
+        assert ".agents/skills" not in text, name
+        assert ".codex" not in text, name
+        assert "$roblox-" not in text and "$skill-name" not in text, name
+        for line in text.splitlines():
+            if ".roblox-resources" in line:
+                assert "legacy `~/.roblox-resources/" in line, f"{name}: project data belongs under AGENT_DIR/roblox/resources/: {line}"
+    assert not (ROOT / "agents").exists()
 
 
-def test_repair_reconcile_reaches_each_affected_surface_contract():
-    assert {
-        "references/qualification-workflow.md",
-        "references/project-adoption.md",
-        "references/generation-validation.md",
-        "references/operational-lifecycle.md",
-        "references/repair-loop.md",
-        "references/state-policy.md",
-    } <= _links(_mode("repair/reconcile"))
-
-
-def test_repair_scenarios_cover_hard_soft_and_harmless_boundaries():
-    import json
-
-    cases = json.loads((ROOT / "evals" / "maintenance-cases.json").read_text(encoding="utf-8"))
-    assert {"hard-identity-mismatch", "soft-recurring-guidance", "harmless-local-adjustment"} <= {
-        case["id"] for case in cases
-    }
-
-
-def test_lifecycle_reporting_has_one_reachable_contract():
-    assert "references/state-policy.md" in _links(PARENT)
-    # Runtime record/bundle validators test actual target/state binding; this
-    # assertion checks navigation, not whether a model reports the right facts.
-    assert "scripts/validate_resource_record.py" in REFERENCES["state-policy.md"]
-    assert "scripts/validate_resource_bundle.py" in REFERENCES["state-policy.md"]
-
-
-def test_post_adoption_defect_classifies_before_host_state_change():
-    operational = REFERENCES["operational-lifecycle.md"]
-    repair = REFERENCES["repair-loop.md"]
-    assert "classify the defect before changing lifecycle state" in operational
-    assert "**Hard:** Mark matching operational entries `blocked`" in operational
-    assert "**Soft, authorized child repair:** Keep the host truthfully `installed`" in operational
-    assert "operational-lifecycle.md#post-adoption-defects" in repair
-
-
-def test_repair_interrupt_anchor_remains_reachable_from_compatibility_router():
-    assert "repair-interrupt" in _anchors(ROOT / "SKILL.md")
-    assert "../SKILL.md#repair-interrupt" in _links(REFERENCES["repair-reconcile-workflow.md"])
-
-
-def test_self_package_repair_honors_existing_authorization_and_blocks_ungranted_edits():
-    state = REFERENCES["state-policy.md"]
-    assert "current request already authorizes modifying this package" in state
-    assert "do not add a redundant per-diff confirmation" in state
-    assert "When package edits are not already authorized" in state
-    assert "wait for explicit user authorization in chat" in state
-    assert "expands beyond the existing authorized scope requires new authorization" in state
-
-
-def test_generated_child_description_carries_preload_routing_boundary():
-    contract = REFERENCES["resource-skill-contract.md"]
-    template = (ROOT / "templates" / "resource-skill-template.md").read_text(
-        encoding="utf-8"
-    )
-    assert "pre-load routing contract" in contract
-    assert "material exclusion" in contract
-    assert "incorrect implicit activation" in contract
-    assert "USE-TRIGGER-IN-ONE-SENTENCE" in template
-    assert "ADD-MATERIAL-ROUTING-EXCLUSION-WHEN-NEEDED" in template
-
-
-def test_conditional_reconciliation_contract_preserves_existing_policies():
-    spec = yaml.safe_load((ROOT / 'templates/resource-skill-template.yaml').read_text(encoding='utf-8'))
-    assert spec['reconciliation']['policy'] == 'conditional'
-    usage = REFERENCES['child-usage.md']
-    policies = set(re.findall(r'\*\*([a-z-]+):\*\*', usage))
-    assert policies == {'required', 'conditional', 'not-applicable'}
-    assert 'check_resource_install.py' in usage
-    assert 'check_resource_status.py' in usage
-    assert 'For `conditional`, run both branches' in REFERENCES['testing-protocol.md']
-    assert 'do not load records or learnings' in REFERENCES['learnings-store.md']
-
+def test_templates_match_the_contract():
+    spec = yaml.safe_load((ROOT / "templates/resource-skill-template.yaml").read_text(encoding="utf-8"))
+    assert spec["scope"] == "project"
+    assert spec["reconciliation"]["record"] == "roblox/resources/records/RESOURCE-SLUG.yaml"
+    assert spec["reconciliation"]["learnings"] == "roblox/resources/learnings/"
+    assert spec["guidance"]["shared_usage"] == "references/child-usage.md"
+    template = (ROOT / "templates/resource-skill-template.md").read_text(encoding="utf-8")
+    for heading in ("## Check the pin", "## Core API", "## Gotchas", "## Read further"):
+        assert heading in template
+    assert "../roblox-resource-acquisition/references/child-usage.md" in template
+    record = yaml.safe_load((ROOT / "templates/resource-record.yaml").read_text(encoding="utf-8"))
+    assert record["schema_version"] == 3 and "project_use" in record
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():
@@ -198,34 +163,16 @@ def test_reference_file_pointers_are_links_not_bare_code_paths():
         assert not bare_reference.search(text), f"{name}: use a Markdown link for internal reference navigation"
 
 
-def test_openai_skill_metadata_is_parseable_and_matches_parent_modes():
-    data = yaml.safe_load((ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8"))
-    interface = data["interface"]
-    assert interface["display_name"] == "Roblox Resource Acquisition"
-    assert interface["short_description"].strip()
-    prompt = interface["default_prompt"]
-    assert "$roblox-resource-acquisition" in prompt
-    for mode in ("evaluate/compare", "acquire/adopt", "refresh", "repair/reconcile"):
-        assert mode in prompt
-
-
-def test_first_use_route_does_not_require_loading_the_repair_transaction():
-    assert "first-use-check.md" in _links(REFERENCES["child-usage.md"])
-    assert "on-demand-maintenance.md#first-use-freshness-check" not in _links(REFERENCES["child-usage.md"])
-    assert "first-use-freshness-check" in _anchors(ROOT / "references/on-demand-maintenance.md")
-    assert "first-use-check.md" in _links(REFERENCES["on-demand-maintenance.md"])
-    assert "first-use-check.md#source-observations" in _links(REFERENCES["on-demand-maintenance.md"])
-
-
-def test_maintenance_case_definitions_are_well_formed():
-    import json
-
-    cases = json.loads((ROOT / "evals/maintenance-cases.json").read_text(encoding="utf-8"))
-    ids = set()
-    for case in cases:
-        assert case["id"] not in ids
-        ids.add(case["id"])
-        assert isinstance(case["prompt"], str) and case["prompt"].strip()
-        for field in ("accept", "reject"):
-            assert case[field] and all(isinstance(item, str) and item.strip() for item in case[field])
-    assert {"refresh-unchanged-runtime", "healthy-conditional", "required-plugin-drift", "unknown-project"} <= ids
+def test_eval_case_files_are_well_formed():
+    for path in (ROOT / "evals").glob("*.json"):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        cases = data["cases"] if isinstance(data, dict) else data
+        ids = [case["id"] for case in cases]
+        assert len(ids) == len(set(ids)), path
+        for case in cases:
+            if "should_trigger" in case:
+                assert isinstance(case["should_trigger"], bool) and case["query"].strip()
+                continue
+            assert isinstance(case["prompt"], str) and case["prompt"].strip(), path
+            for field in ("accept", "reject"):
+                assert case[field] and all(isinstance(item, str) and item.strip() for item in case[field]), path

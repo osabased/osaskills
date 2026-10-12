@@ -1,28 +1,40 @@
-# Layered discovery timeline
+# Editing defaults and the layered review timeline
 
-Use the same factual events/source markers plus a separate, evidence-authored placement plan. Full main sources remain chronological; alternates are trimmed suggestions on upper video tracks, with one corresponding audio track per actual stream. Both alternate video and audio clips start disabled.
+## Editing defaults
 
-Take `main_sources`, part order, identities and coverage from the current project. If no main POV is designated and that choice matters, resolve it before building this layout; source-marker discovery does not require one. The format example below is illustrative, not a default source mapping or a claim about reviewed footage. Alternate references must use the current event/source IDs and reviewed anchors.
+Apply these on every project unless the current request overrides them. Keep project-specific exceptions in the project's notes; source identities, main POV, chronology and hardware always come from the current project.
 
-## Moment cuts and clip colors
+- The editor discovers and assembles together. Make useful footage easy to select and edit immediately, and reduce repeated viewing, context reconstruction and decision switching. The review queue stays optional; do not require a separate selection pass before assembly.
+- There is no fixed final runtime. The video is as long as its material earns. The complete review timeline is source material, not a recommendation for the final edit's length.
+- With an established main POV, the default Premiere delivery is the complete review timeline below plus source clip markers with POV links in comments. Source markers alone remain available on request or while the main POV is unresolved.
+- Import one timeline audio clip per actual audio stream. Keep genuine stereo grouped with both channels; do not duplicate or split it because A1/A2 are enabled or targeted. Probe the real stream count. The current XML exporters accept at most one mono or stereo stream per source; for more, see [premiere](premiere.md#supported-media).
+- Preserve source markers and organized media and POV bins.
 
-Every included main-source moment adds an edit at its start and end in both video and linked audio. Its timeline sections use the **Mango** clip label; surrounding footage keeps its normal/default label. Alternate excerpts also use Mango and remain disabled. For a moment at 1:48–1:59, the main becomes `[0:00–1:48 default] [1:48–1:59 Mango] [1:59–end default]`. Nothing is removed or moved. Preview padding and added browser context do not change these cuts.
+## Layout
 
-Cuts use the same validated, frame-quantized source marker boundaries. Overlapping and nested moments retain every distinct boundary, without overlapping or duplicating main footage. Adjacent moments keep their shared edit even though both are Mango. Whole-source moments need no empty edge clips; unmarked main parts remain complete clips with no label override. Source markers retain individual names and explanations for overlapping moments. Independent secondary-only moments remain source markers unless a reviewed local anchor supports placement.
+The exporter builds a complete chronological review timeline, not an automatic selects assembly. Its inputs are the same `events.json` plus a separate placement plan authored from reviewed evidence; no POV is hardcoded.
 
-Both the direct timeline command and queue exports use this behavior. **Export kept** includes only Keep moments' cuts/colors, markers and alternate excerpts; **Export all** includes every discovered moment. Skipped, deferred and unreviewed main footage still remains in place. The source-marker-only exporter does not create or cut a sequence.
+- The plan's `main_sources` stay complete and in plan order on the base video track, with their audio below. Take `main_sources`, part order and identities from the current project. Resolve the main POV before building this layout; source-marker discovery does not need one.
+- Main video and linked audio are cut at each included moment's start and end. Moment sections get the **Mango** clip label; surrounding footage gets no label element, so Premiere shows its normal default. Every frame appears exactly once, including unmarked footage. Overlapping and nested moments keep every distinct boundary without duplicating footage; adjacent moments keep their shared edit.
+- For a moment at 1:48–1:59 the main becomes `[0:00–1:48 default] [1:48–1:59 Mango] [1:59–end default]`. Nothing is removed or moved.
+- Relevant alternate excerpts sit on upper video tracks, one layer per alternate source, with their audio on separate higher tracks. **Main picture and audio play by default; alternate video and audio start disabled.** Alternates also use Mango.
+- Labels are visual locators, not confidence ratings, and do not mean surrounding footage is uninteresting.
+- Secondary-only moments stay as source markers unless a reviewed local anchor supports placing them.
+- Earlier setup and later reactions keep their true time relationship; never stack them as simultaneous because they are editorially related.
 
-Mango labels are written on moment video/audio clip instances as `labels/label2`, not on the shared source master. Surrounding footage has no `labels` element, so the exporter does not force a replacement for Premiere's normal/default label. Color is a visual locator, not confidence or proof that surrounding footage is uninteresting. Exact swatches depend on Premiere's label preferences; confirm the contrast after import. The format supports [clip labels](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/FinalCutPro_XML/Elements/Elements.html), and Premiere permits [custom label colors and names](https://helpx.adobe.com/premiere/desktop/get-started/preferences-and-settings/labels-preferences.html). Do not claim host color validation from XML parsing alone.
+If the editor asks for a different assembly, settle it explicitly instead of treating this review layout as the requested edit.
 
-The XML places source items in `01 Media/<POV>` and the timeline in `02 Sequences`. All main parts share their POV bin through the source `pov` field. Bins change project organization only: the sequence keeps references to the same source masters, including when input order interleaves multiple POVs. After import, show the Project panel with Shift+1, expand `02 Sequences`, and open the review timeline.
+## Build
 
-```powershell
-python <skill>/scripts/review_timeline.py --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/discovery-timeline.xml
+```sh
+"$PY" <skill>/scripts/review_timeline.py --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/discovery-timeline.xml
 ```
 
-Import into a new Premiere review project. If an alternate has a different resolution, select its timeline clips and use Premiere’s **Fit to frame** command before delivery, then verify at an overlapping moment. The XML preserves native media dimensions and does not yet write scaling effects; a 720p alternate otherwise appears smaller over a 1080p main. Keep the fitted alternate clips disabled and save the verified `.prproj`. Importing again can create duplicate items; this is not an update operation. Preserve the editor's existing project and sequences.
+Add `--path-map LOCAL=HOST` when the media is mounted at a different path than on the editor's machine, and `--force` to replace an existing `--out`. Import into a new Premiere review project, then follow the import checks in [premiere](premiere.md#after-import) and open the sequence in `02 Sequences`.
 
-Plan format:
+If an alternate has a different resolution, the editor selects its timeline clips and uses Premiere's **Fit to frame** before delivery, then checks an overlapping moment. The XML keeps native dimensions and writes no scaling effects, so a 720p alternate otherwise appears smaller over a 1080p main. Keep fitted alternates disabled and save the verified `.prproj`.
+
+## Plan format
 
 ```json
 {
@@ -44,21 +56,24 @@ Plan format:
 }
 ```
 
-All times are local playback seconds. Main part offsets are accumulated from their full nominal frame durations. Alternate placement uses the difference between the two local anchor times; its duration stays unchanged. Main parts must share a nominal rate. Each alternate source gets its own upper layer. Overlapping excerpts on the same layer are rejected: merge or trim reviewed windows explicitly, without dropping events. Unmarked main parts remain in the timeline but are not claimed as reviewed.
+This example is illustrative, not a default mapping. All times are local playback seconds. Main part offsets accumulate from full nominal frame durations, and main parts must share a nominal rate. An alternate is placed by the difference between its two local anchor times; its duration never changes. Overlapping excerpts on one layer are rejected: merge or trim the reviewed windows explicitly without dropping events. `event_id` is required for review-queue use.
 
-Do not generate anchors from broad marker range starts. Use matching evidence, record uncertainty from both views, and inspect the local span for discontinuities. Keep earlier/later editorial connections in source marker links rather than relocating footage to fabricate simultaneity. The sample aligns a local event only, never a whole drifting VOD.
+Derive anchors from matching evidence per [cross-POV linking](cross-pov.md), never from broad marker range starts. Record uncertainty from both views and check the local span for discontinuities. Keep earlier/later connections as source-marker links rather than moving footage to fake simultaneity.
 
-## Import details that affect correctness
+## XML details that affect correctness
 
-- A stereo stream is two FCP channel records but **one Premiere stereo group**. The XML uses exploded-track metadata and linked audio `groupindex` values. Removing the second channel record would lose right-channel audio. Source patching/track targeting is not a substitute for correct channel mapping.
-- The current XML adapter supports one mono/stereo audio stream per source. It fails on multiple streams so none are silently lost. For real multi-stream sources, retain native stream mappings or extend and host-test the exporter before claiming support.
-- Sequence clipitem In/Out values use **sequence-rate frames**, even with 30 fps alternate media in a 60 fps sequence. The master/file declaration retains native frame rate. Source-rate In/Out incorrectly imported half the intended source seconds in Premiere 2026.
-- On Windows use Premiere's own `file://localhost/C%3a/...` path encoding. Verify all resolved source paths; automatic relinking can mask malformed URLs.
+- Labels are written as `labels/label2` on moment clip instances, not on the shared source master. Exact swatches depend on the editor's [label preferences](https://helpx.adobe.com/premiere/desktop/get-started/preferences-and-settings/labels-preferences.html); XML parsing cannot confirm displayed colors.
+- A stereo stream is two FCP channel records but **one Premiere stereo group**, using exploded-track metadata and linked audio `groupindex`. Removing the second record loses the right channel. Track targeting is not a substitute for correct channel mapping.
+- Sequence clip In/Out values use **sequence-rate frames**, even for 30 fps alternates in a 60 fps sequence; the master keeps its native rate. Source-rate In/Out imported half the intended seconds in Premiere 2026.
 
 ## Verify the saved result
 
-Check actual source paths, marker names/comments/times, full main-part order and duration, every alternate source In/Out and timeline position, and that only genuine audio streams have timeline clips. Verify cuts and contrasting labels around included moments, with matching video/audio boundaries and no gaps, duplicate frames or extra audio tracks. Verify both stereo channels in each group. Confirm alternate video and audio are disabled and main clips enabled. Check an overlapping moment in Program Monitor; audition an alternate and return it to disabled before saving. Saved-project XML may be inspected read-only to corroborate the host state; do not author or patch `.prproj` internals.
+The editor (or you, with access to Premiere) checks:
 
-Source marker names use the same short-label rules as the marker-only XML; see [events.md](events.md). Judge their first 10–15 characters at timeline scale. Detailed descriptions, POV links, checks and stable references stay in marker comments. Alternate clip names describe excerpts and are separate from source marker names.
+- source paths, marker names, comments and times;
+- main part order and duration, and every alternate's In/Out and position;
+- cuts and contrasting labels around included moments, with matching video and audio boundaries, no gaps, no duplicate frames and no extra audio tracks;
+- both channels in each stereo group;
+- alternates disabled and mains enabled; audition an alternate at an overlapping moment, then disable it again before saving.
 
-State coverage separately from timeline length. A full-length timeline with five-minute suggestions is not a completed full-VOD discovery pass.
+Source marker names follow [events](events.md); alternate clip names describe the excerpt and are separate. Report coverage separately from timeline length: a full-length timeline with five minutes of suggestions is not a full-VOD discovery pass. Keep a requested fast test bounded to its agreed scope.

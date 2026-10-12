@@ -1,12 +1,12 @@
 # Generated-Skill Repair Loop
 
-Use this reference for iterative repair of a **generated resource skill or affected resource/child validation evidence**. For installed/host reconciliation and post-adoption blocking/restoration semantics, also use [operational-lifecycle.md](operational-lifecycle.md). It never authorizes editing the `roblox-resource-acquisition` package itself; evidence that this package's own guidance is defective follows the self-growth boundaries in [state-policy.md](state-policy.md).
+Use this reference for iterative repair of a **generated resource skill or affected resource/child validation evidence**. For installed/host reconciliation and post-adoption blocking/restoration semantics, also use [operational-lifecycle.md](operational-lifecycle.md). Edits to the `roblox-resource-acquisition` package itself follow the same authorization rule as child edits: the current task or the user's standing permission ([state-policy.md](state-policy.md#self-growth-boundaries)); otherwise propose the diff.
 
 ## Repair-interrupt entry
 
 When ordinary use exposes reusable friction, invoke repair diagnosis even if a safe workaround succeeds. Capture the reproduction and workaround, then classify it:
 
-- a hard correctness, security, identity, version, or verification defect stops dependent work and follows [operational-lifecycle.md](operational-lifecycle.md#post-adoption-defects) for blocking and reconciliation;
+- a hard correctness, security, identity, version, or verification defect stops dependent work and follows [operational-lifecycle.md](operational-lifecycle.md#defects-after-installation) for blocking and reconciliation;
 - a soft guidance defect may let safe reversible immediate work continue, but its durable correction must be surfaced before completion;
 - a harmless task-local adjustment with no reusable defect exits the interrupt without opening a repair cycle.
 
@@ -98,7 +98,7 @@ A cycle converged when its target check now passes **and** no previously passing
 - a check exhausts its three-cycle budget;
 - oscillation: a patch reverts an earlier cycle's patch, or two checks alternate failing across cycles — the defect model is wrong and further patching will not fix it;
 - the evidence shows fundamental mismatch between resource and need: follow class 1 or class 2 instead of lowering the bar;
-- the only remaining fix would edit this acquisition skill's own package: the self-growth boundaries in [state-policy.md](state-policy.md) take over.
+- the only remaining fix would edit this acquisition skill's own package without authorization: propose the diff per [state-policy.md](state-policy.md#self-growth-boundaries).
 
 ## Escalation report
 
@@ -117,7 +117,7 @@ No repair activity upgrades any status implicitly:
 - structural skill validation moves only when `scripts/validate_skill.py` re-runs and passes;
 - affected behavioral skill validation moves only when its independent behavioral execution re-runs and passes;
 - catalog routing moves only when the current catalog fingerprint's independent routing tests re-run and pass;
-- host adoption returns to `operational` only after authorized host update and explicit activation re-run;
+- an installed child returns to `operational` only after an authorized update and a fresh explicit `/<name>` invocation;
 - a patch moves affected behavioral status **down** until reruns restore it.
 
 ## Learning emission

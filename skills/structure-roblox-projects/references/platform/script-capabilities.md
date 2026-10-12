@@ -19,7 +19,7 @@ When the Workspace setting is unavailable but affected project data configures s
 
 Do not recommend adopting Script Capabilities merely because they are available.
 
-Re-open current Roblox documentation when the task depends on beta status, enforcement behavior, or API semantics.
+As of 2026-10, Roblox documents Script Capabilities as experimental and available as a client beta. Re-open the documentation when the task depends on its status, enforcement, or API semantics.
 
 ## Source
 

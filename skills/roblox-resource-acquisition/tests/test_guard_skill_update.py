@@ -253,12 +253,17 @@ def test_corrupt_guard_blocks_query_without_reading_or_executing_contents(repair
     assert status_mod.query_pair(live, record)["status"] == "blocked"
 
 
-def test_candidate_and_recovery_must_be_outside_discovery(repair, tmp_path):
+@pytest.mark.parametrize("discovery", [(".claude", "skills"), (".agents", "skills")])
+def test_candidate_and_recovery_must_be_outside_discovery(repair, tmp_path, discovery):
     live, candidate, _, _, _ = repair
     with pytest.raises(ValueError, match="disjoint"):
         guard.begin(live, candidate, live / "transaction")
     with pytest.raises(ValueError, match="outside skill discovery"):
-        guard.begin(live, candidate, tmp_path / ".agents" / "skills" / "transaction")
+        guard.begin(live, candidate, tmp_path.joinpath(*discovery) / "transaction")
+    staged = tmp_path.joinpath(*discovery) / "candidate"
+    shutil.copytree(candidate, staged)
+    with pytest.raises(ValueError, match="outside skill discovery"):
+        guard.begin(live, staged, tmp_path / "recovery")
 
 
 def test_snapshot_corruption_never_reports_an_applied_repair(repair):

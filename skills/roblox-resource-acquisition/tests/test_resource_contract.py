@@ -83,8 +83,8 @@ def test_live_verification_field_rejected_and_record_state_can_change(child, bun
 
 def test_project_scope_cannot_use_user_fallback(child):
     data = read(child)
-    data['reconciliation']['no_project_record'] = '~/.roblox-resources/records/widget-resource.yaml'
-    data['reconciliation']['no_project_learnings'] = '~/.roblox-resources/learnings/'
+    data['reconciliation']['no_project_record'] = '~/.claude/roblox/resources/records/widget-resource.yaml'
+    data['reconciliation']['no_project_learnings'] = '~/.claude/roblox/resources/learnings/'
     write(child, data)
     with pytest.raises(ValueError, match='cannot fall back'):
         contract.load_contract(child)
@@ -196,6 +196,8 @@ def package_profile(child, tmp_path):
 def test_canonical_pin_accepts_different_alias_and_explicit_source_root(package_profile, monkeypatch):
     child, source, project, data, manifest, lock = package_profile
     assert install.declared(data['resource'], data['installation'], manifest, lock, None) == 'RenamedWidget'
+    (project / 'pesde.toml').write_text('', encoding='utf-8')
+    (project / 'pesde.lock').write_text('', encoding='utf-8')
     monkeypatch.setattr(install, 'toml', lambda p: manifest if p.name == 'pesde.toml' else lock)
     result = install.check(child, project, package_dir=source)
     assert result['lane'] == 'installed-integrity'
@@ -249,6 +251,8 @@ def test_asset_filename_is_project_binding_and_hash_is_identity(child, tmp_path)
     asset.write_bytes(b'unreviewed replacement')
     with pytest.raises(ValueError, match='mismatched'):
         install.check(child, tmp_path, asset=asset)
+    with pytest.raises(install.Unavailable, match='not supplied'):
+        install.check(child, tmp_path)
 
 
 def test_parent_contract_input_detects_changed_shared_guidance(record_mod, child, monkeypatch, tmp_path):

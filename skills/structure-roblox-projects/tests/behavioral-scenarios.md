@@ -8,7 +8,7 @@ Fixture: a workspace containing a nested roblox-ts project with multiple Rojo pl
 
 Request: "Change the inventory capacity from 20 to 30 in the Harbor project. Use structure-roblox-projects as needed."
 
-Assess: identifies the actual project and authored source, traces both targets where they consume the changed capacity, distinguishes generated code from source and unrelated tooling, and completes the authorized source edit with focused checks. Reuses reliable documentation and investigates the stale startup advice only where it affects this task. Does not produce an unrequested broad overview or assessment, create a guide, impose SSA, or upgrade tools. Labels unrun compiler/Studio checks and consequential gaps.
+Assess: identifies the actual project and authored source, traces both targets where they consume the changed capacity, distinguishes generated code from source and unrelated tooling, and completes the authorized source edit with focused checks. Reuses reliable documentation and investigates the stale startup advice only where it affects this task. Does not produce an unrequested broad overview or assessment, create a guide, impose SSA, or upgrade tools. Does no freshness research for already-pinned tools. Labels unrun compiler/Studio checks and consequential gaps.
 
 ## Studio/Script Sync plugin with limited evidence
 

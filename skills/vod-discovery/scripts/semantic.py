@@ -11,7 +11,7 @@ import urllib.request
 import uuid
 
 from evidence import input_signature
-from vod import number, read, text, write
+from vod import number, read, run_cli, text, write
 
 MODEL = 'BAAI/bge-small-en-v1.5'
 REPO = 'Qdrant/bge-small-en-v1.5-onnx-Q'
@@ -389,4 +389,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

@@ -2,17 +2,17 @@
 
 Use when the request, project evidence, and instructions leave a consequential choice open. New foundations follow [needs-led setup](../workflows/onboarding.md).
 
-Preserve coherent implemented conventions and dependency targets during ordinary work. Apply their actual scope: a feature exception does not redefine the whole project. Resolve authoring mappings before judging an apparent layout conflict. Choose compatible minor details locally; ask no preference questions when the task already settles the decision.
+Keep coherent implemented conventions and dependency targets during ordinary work, at their actual scope: a feature exception does not redefine the whole project. Resolve authoring mappings before judging an apparent layout conflict. Decide compatible minor details yourself; ask no preference questions when the task already settles the decision.
 
-For an unresolved material choice:
+For an open material choice:
 
-1. State the choice and evidence already available. Inspect what the project can answer before asking the user.
-2. Compare the few plausible options by project fit, ownership, maintenance cost, and material uncertainty. [Evidence and freshness](../core/evidence-and-freshness.md) covers current claims. Demonstrated incompatibility is a finding; viable styles are alternatives.
-3. Recommend the supported fit and its decisive tradeoff. Ask only for a consequential preference that evidence cannot resolve, batching independent questions and honoring prior choices.
-4. Carry the decision into one coherent design with clear owners and checks. Save conventions through [project guidance](project-profile.md) and its review preference, not as an incidental implementation step.
+1. State the choice and the evidence you already have. Inspect what the project can answer before asking the user.
+2. Compare the few plausible options by project fit, ownership, maintenance cost, and uncertainty. Use [evidence and freshness](../core/evidence-and-freshness.md) for current claims. A demonstrated incompatibility is a finding; viable styles are alternatives.
+3. Recommend the supported fit and its deciding tradeoff. Ask only about a consequential preference that evidence can't resolve, batching independent questions and honoring earlier answers.
+4. Carry the decision into one coherent design with clear owners and checks. Save it as a project convention only through the [project guide](project-guide.md#save-it) workflow, not as a side effect of implementation.
 
-Authoring, language/compiler, startup/lifecycle, grouping, assets, dependencies, tests, and release workflows are possible dimensions, not a mandatory questionnaire. [Tooling defaults](../workflows/default-tooling.md) apply only to needed roles. A new lifecycle/framework must resolve ownership rather than duplicate an existing owner.
+Authoring, language/compiler, startup/lifecycle, grouping, assets, dependencies, tests, and release workflow are possible dimensions, not a questionnaire. [Default tooling](../workflows/default-tooling.md) applies only to needed roles. A new lifecycle or framework must not duplicate an existing owner.
 
-The [documented ModuleLoader SSA contract](../ssa/ssa-bootstrap.md) is an exact compatibility option for a deliberately adopted target, not the default for new projects or a currentness claim. Use [practices](../core/practices.md) for other technical contracts.
+The [ModuleLoader SSA contract](../ssa/ssa-bootstrap.md) is a fixed compatibility option for projects that deliberately adopt it, not the default for new projects. Use [practices](../core/practices.md) for other technical choices.
 
-Stop when the material decision is selected or the exact missing user input is identified. Routine authorized implementation continues without another approval round; setup and guidance saving retain their recorded review preferences.
+Stop when the decision is made or the exact missing user input is identified. Routine authorized implementation continues without another approval round.

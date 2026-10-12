@@ -1,0 +1,66 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: charm
+  name: Charm 0.11.1
+  canonical_url: https://github.com/littensy/charm
+  package_id: littensy/charm
+  selector:
+    kind: version
+    value: 0.11.1
+    release_commit: af4eb5262d640cf89c56217ab7feb403e939cbd2
+  source_review_date: '2026-10-03'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing or debugging Charm 0.11.1 signals, computed values, effects, listen/subscribe, batches and
+    effect scopes, or bridging Charm state into Vide, in a project that pins this version.
+  avoid_when:
+  - Discrete custom events (use a signal library), networking or Charm Sync, or UI rendering itself.
+  - The project pins a different Charm target; keep that pin and find matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: using trigger/observe/mapped, flags, scope ownership, the Vide bridge or teardown recipes
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring or mapping the package
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: a value or UI does not update, a Studio-only error, or an effect survives teardown
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: roblox/resources/records/charm.yaml
+  learnings: roblox/resources/learnings/
+installation:
+  profile: pesde-wally
+  dependency_section: dependencies
+  registry: https://github.com/UpliftGames/wally-index
+  target: roblox
+  integrity:
+    files:
+      src/init.luau: ad8d276b54ee32787f9e3a6e165c80ee44aea808294a45a5070bcabddf0bef39
+      src/system.luau: f15e7d4b41729135d5fd12ccd93fe581ebd136598f36dcc908e8ffbe2c174d94

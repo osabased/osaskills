@@ -1,113 +1,87 @@
-# Operational Child Lifecycle
+# Installing children and reconciling their state
 
-Use this reference when adopting a generated child, reconciling state before use, repairing a hard post-adoption defect or an authorized child artifact, or validating a multi-child catalog. Soft repair diagnosis alone does not require this lifecycle branch.
+Use this when installing a generated child, reconciling a child's state before use, repairing a hard defect after installation, or validating several children together. Diagnosing a soft defect does not need this file.
 
 ## States
 
 Keep these claims separate:
 
-- **Artifact:** the generated child exists and has its recorded structural and behavioral validation.
-- **Installed:** the child occupies a host-recognized location, but operational checks are incomplete.
-- **Operational:** every host-applicable installation, registration, discovery, and enablement check is confirmed, and explicit activation passed.
-- **Blocked:** the child remains installed, but current evidence prohibits the affected use until repair and regression checks pass.
+- **Artifact:** the child exists and has passed its recorded structural and behavioral validation.
+- **Installed:** the child sits in a folder the host discovers, but discovery or explicit invocation has not been observed.
+- **Operational:** the child was seen in the host's skill list and an explicit invocation worked in a fresh session.
+- **Blocked:** the child stays installed, but current evidence forbids the affected use until repair and regression checks pass.
 
-An empty `host_adoptions` list means artifact only. Placement in a host discovery path establishes at most `installed`; it never establishes `operational` by itself. A record with no `generated_skill` cannot carry host adoption entries or completed/unavailable/failed catalog-routing evidence because there is no child for that lifecycle state to describe.
+An empty `host_adoptions` list in a record means artifact only. Copying files into a skill folder establishes at most `installed`. A record without `generated_skill` cannot carry host entries or catalog-routing evidence.
 
-## Portable resource records
+## Records
 
-Resolve matching resource records using the canonical [portable resource-record location](state-policy.md#portable-resource-record-location) policy.
-
-Bind records and learnings by `slug` plus `canonical_url`, and by `package_id` when present. A same-named fork, mirror, or package does not inherit state.
-
-Use only schema-version 3 records. A record that does not satisfy the current contract must enter `repair/reconcile`; do not invent missing lifecycle or project-use evidence.
+Find records with the [record location rules](state-policy.md#portable-resource-record-location). Bind records and learnings by `slug` plus `canonical_url`, and by `package_id` when present. A same-named fork, mirror or package inherits nothing. Use only schema-version 3 records; a record that does not satisfy the current contract goes to `repair/reconcile`. Never invent missing evidence.
 
 ## Pre-use reconciliation
 
-Every generated child declares its reconciliation policy:
+[Child usage](child-usage.md) owns the commands and how to act on each result. This section covers the full sequence that a `required` policy, or an escalation from `conditional`, runs:
 
-- **required:** every version-sensitive use must reconcile independently drifting installed state with parent lifecycle evidence before proceeding;
-- **conditional:** ordinary use can cheaply confirm the declared pin plus its lock/header counterpart, while a canonical verifier provides the deferred installed-integrity gate before completion;
-- **not-applicable:** the installation mechanism fixes an immutable reviewed state, or the documented behavior is demonstrably insensitive to independently drifting state. Record the concrete reason.
+1. Run the child's installed-state check.
+2. Compare the observed identity and version/commit/source state with the child's `resource.yaml`.
+3. Load the matching record and the resource's learnings, if they exist.
+4. Re-check adverse learnings against current evidence; a learning points at what to check but never decides alone.
+5. Stop the affected use and enter `repair/reconcile` when the installed identity differs, a current block applies, a material adverse observation is confirmed, or a hard defect makes correctness, security, identity, version or verification unreliable.
 
-When reconciliation is required:
+Record `matched` only after these checks complete. Use `mismatched`, `blocked` or `unknown` truthfully otherwise.
 
-1. Run the child's resource-specific installed-state check.
-2. Compare the observed canonical identity and version/commit/source state with the child's structured identity.
-3. Load matching schema-version 3 resource records and resource-bound learnings.
-4. Re-check adverse learnings against current evidence; a learning directs the check but never decides it alone.
-5. Stop the affected use and invoke `roblox-resource-acquisition` in `repair/reconcile` mode when the installed identity differs, installed state is unknown or mismatched, a current block applies, a material adverse observation remains unresolved, or an instruction defect is hard because correctness, security, identity, version, or verification is unreliable.
+Escalate a `conditional` child to this sequence when the status query returns `BLOCKED` or `MISMATCH`, the pin or lock is missing or mismatched, the task is an adoption, upgrade or authorized repair, the integrity check fails, or diagnosis finds a hard defect. A soft defect alone does not trigger it.
 
-Record `matched` only after applicable installed-state and parent-state checks complete. Use `mismatched`, `blocked`, or `unknown` truthfully when they do not.
+`HEALTHY` requires the exact identity and version, a usable reconciliation state (`matched` or justified `not-applicable`), no recorded block, no failed verification, and no adverse host entry for this copy. A `blocked` host entry for the same skill name blocks every copy, because the defect is in the content. `disabled`, `removed`, `failed` and `unavailable` apply only to the copy at that location. A nonempty legacy `blocked_use_or_version` is treated as `BLOCKED`. Use repeated `--pair` arguments to check a batch.
 
-When reconciliation is conditional:
+## Install a child
 
-1. Follow the child's ordinary-use workflow and confirm only its declared project pin plus the named lockfile or generated-version header.
-2. If they match, run `scripts/check_resource_status.py --pair <child-skill-directory> <matching-record.yaml>`. This read-only hot path reads the child's static resource contract and only the record fields needed for schema, exact slug/canonical/package identity, reviewed version/state, block, reconciliation, verification, and matching-host status. It does not inspect skill-validation/resource-proof evidence, load learnings, or execute recorded commands. Proceed only on `HEALTHY`, then run the child's named integrity gate before task completion and require its documented pass condition.
-3. Escalate to the full required-policy sequence above when the query returns `BLOCKED` or `UNKNOWN`; the declaration or lock/header is missing or mismatched; the task is adoption, upgrade, or an authorized repair that invalidates evidence; the verifier fails or reports drift; or repair diagnosis classifies a defect as hard.
-4. On escalation, stop version-sensitive work until the full sequence resolves or truthfully records the mismatch/block.
+Installing changes the host, so it is separate from validating the artifact.
 
-A soft instruction defect still activates the parent repair interrupt, but it does not automatically activate this full state sequence. Diagnose and surface its reproduction, safe workaround, and durable correction first; enter reconciliation only if diagnosis finds a hard/state trigger or an authorized edit invalidates lifecycle evidence.
+1. Resolve the project root first. An unknown project leaves installation pending; never fall back to a user-wide folder silently.
+2. Child generation and installation are opt-in under [adoption policy](adoption-policy.md#scope-and-autonomy). Once the user has asked for a child, installing it in the project's skill folder needs no second confirmation. A user-wide install needs an explicit request.
+3. Before writing, inspect any existing folder at the destination. If it is the same managed child, update it through the guarded flow. If it is unrelated or ambiguous, stop and report the collision; never overwrite, merge or rename someone else's skill.
+4. Record each piece of host evidence you actually observed.
+5. Mark the child `operational` only after you see it listed and an explicit invocation works.
+6. Run `scripts/validate_skill_catalog.py --host claude` over the children visible to that host before finishing. Add materially overlapping non-generated skills with `--routing-competitor`.
+7. When the catalog reports an overlap cluster, run independent routing tasks before calling catalog routing `verified`.
 
-The query accepts only a matching schema-version 3 record. `HEALTHY` requires exact current identity/version, a known usable reconciliation state (`matched` or justified `not-applicable`), no nonempty block, no failed verification, and no blocked, disabled, removed, failed, or unavailable adoption that matches the child location. Missing/malformed records, identity/version mismatches, and `unknown`/`mismatched` reconciliation are `UNKNOWN`, never healthy. A nonempty legacy `blocked_use_or_version` is conservatively `BLOCKED`; do not infer a narrower or cleared scope from its prose. Full record evidence and learnings remain reconciliation inputs rather than ambient prerequisites for a healthy conditional task. Use repeated `--pair` arguments for a project verification batch; the command exits nonzero if any pair is blocked or unknown.
+If the host cannot show enough evidence, keep the strongest truthful state, such as `installed` or `unavailable`.
 
-## Adoption gate
+## Host locations
 
-Host mutation is a separate gate after artifact validation.
+| Host | Project install | User install | Instructions file it loads | Explicit invocation |
+| --- | --- | --- | --- | --- |
+| Claude Code | `<project>/.claude/skills/<name>/` | `~/.claude/skills/<name>/` | `CLAUDE.md` (and files it imports with `@path`) | `/<name>` |
+| Claude Code plugin | the plugin's `skills/<name>/` (this repository's marketplace) | — | — | `/osaskills:<name>` |
+| Cowork / claude.ai | upload the skill folder as a zip, or install the plugin | — | — | ask for the skill by name |
 
-1. Detect the host and its supported skill locations, registration mechanism, enablement control, discovery surface, and explicit invocation mechanism.
-2. For default project-scoped children, read [project-adoption.md](project-adoption.md) and resolve the project root and intended repository skill scope before selecting the host path. Unknown scope leaves installation pending; do not silently choose a global path.
-3. Apply [adoption-policy.md](adoption-policy.md#scope-and-autonomy): full adoption already includes project-scoped child installation. User/global installation requires an explicit scope request. Present the exact target and mutation only when host adoption is outside the authorized scope.
-4. Install, update, enable, disable, or remove only after explicit user authorization or an explicit project policy.
-5. Record each available evidence facet rather than inferring unsupported host behavior.
-6. Mark the child `operational` only when all host-applicable facets are confirmed and an explicit activation smoke test passes.
-7. Run catalog validation against the target host's generated-child set before completing adoption. Inspect the host-visible activation surfaces for plausible non-generated competitors; include each material competitor with `--routing-competitor` so it participates in overlap checks and the routing fingerprint without being subjected to the generated-child contract.
-8. When an overlap cluster exists — including generated-child versus non-generated-host-skill overlap — require independent multi-skill routing tests before catalog routing becomes `verified`.
+- Claude Code discovers project skills from `.claude/skills/` in the working directory, and from nested `.claude/skills/` folders when it works with files below them. Check current Claude Code documentation when the exact discovery rule matters.
+- Skills installed through the Skills CLI (`npx skills add … --agent claude-code`) may be symlinks to a canonical copy; edit and guard the real folder.
+- To stop a skill from loading automatically, set `disable-model-invocation: true` in its frontmatter; it can still be invoked with `/<name>`.
+- Cowork and claude.ai run scripts in a sandbox or Linux VM. Python, `uv`, PyYAML, the parent skill, the project files or network access may all be missing. Children must then run in advisory mode (see [child usage](child-usage.md)), and an install there can be at most `installed` unless you observe the skill being listed and invoked.
 
-If a host cannot expose enough evidence, retain the strongest truthful non-operational state such as `installed` or `unavailable`.
+Confirm the install by checking that the skill appears in `/skills` (or the host's skill list) in a fresh session and that `/<name>` loads it. Automatic selection from the description is separate catalog evidence.
 
-## Codex adapter
+## One editable copy per scope
 
-Current official Codex guidance establishes these checks:
+Stage a new or repaired child outside any skill folder, for example `AGENT_DIR/roblox/resources/artifacts/skills/<name>/` in the project, then move it into `<project>/.claude/skills/<name>/`. Do not leave two editable copies in the same scope. Record the installed location in `host_adoptions`.
 
-- Repository skills are discovered from `.agents/skills` directories from the working directory through the repository root.
-- A nested project's `.agents/skills` directory is therefore visible only when it lies on that upward search path; do not assume Codex searches downward from a repository-root session into nested projects.
-- User skills are discovered from `$HOME/.agents/skills`.
-- Admin skills may be discovered from `/etc/codex/skills`; system skills are bundled by Codex. Include either as routing competitors when their host-visible activation scope materially overlaps the generated child.
-- Same-named skills are not merged, so a separately visible skill with the same name remains a distinct routing/conflict surface.
-- Codex normally detects skill changes automatically; restart only when the change does not appear.
-- `[[skills.config]]` entries in `~/.codex/config.toml` can disable a skill by `SKILL.md` path.
-- In Codex CLI or the IDE extension, explicit invocation uses `/skills` or `$skill-name`; implicit invocation depends on the frontmatter description.
-- Large skill catalogs can cause descriptions to be shortened or skills to be omitted from the initial list.
+An explicit user-wide request may stage at `~/.claude/roblox/resources/artifacts/skills/<name>/` and install at `~/.claude/skills/<name>/`. Reuse that child across projects in that scope; being visible everywhere does not adopt the resource in any project. Leave existing installs where they are unless moving them is separately authorized.
 
-For Codex adoption, resolve the intended fresh-agent working scope first, then confirm the installed path, absence of an applicable disable entry, visibility in that skill surface, and a successful explicit `$skill-name` smoke task. Treat implicit-routing behavior as separate catalog evidence.
+A later repair edits the installed child in place through [guarded correction](on-demand-maintenance.md#guarded-correction-and-recovery). A copy installed elsewhere (another project or the user folder) is updated separately and only when authorized.
 
-User-wide/repository discovery and invocation policy rechecked 2026-09-30: [OpenAI Codex skill docs](https://learn.chatgpt.com/docs/build-skills)
+## Defects after installation
 
-## Canonical child location
+Capture the task, host, project, installed identity and version, expected and observed behavior, smallest reproduction, workaround and proposed fix, then classify the defect before changing state.
 
-For the default project-scoped generated child, resolve project and repository scope through [project-adoption.md](project-adoption.md#place-generated-project-skills). Artifact staging and host installation are different locations with different meaning:
+- **Hard:** mark the matching host entries `blocked`, invalidate the affected behavioral and routing evidence, and enter the [repair loop](repair-loop.md) plus reconciliation.
+- **Soft, diagnosis only:** safe reversible work may continue. Report the defect before finishing; do not invalidate unrelated evidence.
+- **Soft, authorized repair:** keep the host entry `installed` while the child is repaired, invalidate only the evidence the edit affects, and restore `operational` only after fresh validation and a fresh explicit invocation.
 
-- staged artifact: `<project-root>/.agents/roblox/resources/artifacts/skills/<skill-name>/`;
-- adopted Codex repository skill: `<skill-scope-root>/.agents/skills/<skill-name>/`.
-
-Maintain one canonical editable child per project/resolved skill scope. Do not leave both as independently editable canonical children after adoption. Transition the validated artifact into the adopted location and record that host location. Portable content may seed another project's own validated child without transferring trust, integration proof, or host state. Unknown project/repository scope does not authorize a global fallback.
-
-An explicit user/global-scope request may instead stage at `~/.roblox-resources/artifacts/skills/<skill-name>/` and install at `~/.agents/skills/<skill-name>/` for Codex. Reuse one matching canonical child across projects in that explicitly selected scope, preserving exact-target version variants; user-wide visibility is not project adoption or runtime proof. Existing installations retain their scope unless migration is separately authorized.
-
-A later repair edits the canonical adopted child when that host copy is the managed project artifact; if a separate host outside the project contains another installed copy, follow the ordinary authorized host-update rule below.
-
-## Post-adoption defects
-
-Capture the task, host, project, installed identity/version, expected behavior, observed behavior, smallest reproduction, workaround, and proposed durable correction, then classify the defect before changing lifecycle state.
-
-- **Hard:** Mark matching operational entries `blocked`, invalidate affected behavioral and catalog-routing passes, and enter the repair loop plus applicable state reconciliation.
-- **Soft, diagnosis only:** Safe reversible immediate work may continue. Surface the defect before completion; do not invalidate unrelated lifecycle evidence or force provenance reconciliation when no artifact changes are authorized.
-- **Soft, authorized child repair:** Keep the host truthfully `installed` while the canonical child is being repaired, invalidate structural, behavioral, catalog-routing, and explicit-activation evidence affected by the edit, and restore `operational` only after fresh validation and explicit activation.
-
-A repaired artifact does not update a separate installed host copy automatically. Obtain authorization for that host mutation, update it, rerun all invalidated regression checks, rerun catalog validation, and repeat explicit host activation before restoring `operational`. For a managed project-local child whose canonical copy is already the adopted `.agents/skills/<skill-name>/` directory, retain that canonical location. Prepare an isolated candidate outside discovery and promote it to the canonical copy through the [guarded correction and recovery](on-demand-maintenance.md#guarded-correction-and-recovery) transaction; the candidate is not a second editable canonical child. The persistent guard blocks ordinary use through promotion and its authorized completion gates. Full operational completion requires fresh host activation. A user-authorized local-only update may finish at installed status with unavailable host discovery/activation recorded; it cannot claim operational. The status query honors it even while host status is truthfully `installed`. An interrupted or failed update remains guarded until safely recovered or completed.
+A repaired copy does not update other installed copies automatically. A local-only update the user authorized may finish as `installed` with discovery and invocation recorded as unavailable; it cannot claim `operational`. An interrupted or failed update stays guarded until recovered or completed.
 
 ## Catalog coherence
 
-Run `scripts/validate_skill_catalog.py` whenever a child is added, refreshed, repaired, or adopted. The ordinary positional paths are generated children and receive full generated-skill validation. Add materially overlapping host-visible non-generated skills with `--routing-competitor <path>`; they contribute only activation metadata to overlap detection and the order-independent routing fingerprint. Store that fingerprint with routing evidence. A change to any member of the tested routing set invalidates the old fingerprint/evidence.
+Run `scripts/validate_skill_catalog.py` whenever a child is added, refreshed, repaired or installed. Positional paths are generated children and get full validation. `--routing-competitor <path>` adds a non-generated skill (for example `structure-roblox-projects`) for overlap detection only. Store the printed fingerprint with routing evidence; changing any member of the tested set invalidates it.
 
-Static validation detects structural conflicts and overlap risk; it does not prove host selection. Verify reported overlap clusters with independent tasks that exercise each generated child's positive boundary, the competing skill's boundary, and a simpler task that should select neither. A host with one generated child still requires Test J when a plausible non-generated routing competitor exists.
+Static validation finds overlap risk; it does not prove which skill the host selects. For each overlap cluster, test one task per child, one per competing skill, and one simpler task that should select neither (Test J in the [testing protocol](testing-protocol.md)).

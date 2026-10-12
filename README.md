@@ -1,98 +1,93 @@
 # osaskills
 
-Skills for engineering, Roblox development, and VOD discovery.
+Skills for Claude covering Roblox development, VOD discovery, and review workflows. They work in Claude Code and in Cowork / claude.ai.
 
 ## Install
 
-```sh
-npx skills@latest add osabased/osaskills
+### Claude Code plugin (recommended)
+
+```text
+/plugin marketplace add osabased/osaskills
+/plugin install osaskills@osaskills
 ```
 
-Use Node.js 22.20+ with npm/npx and Git. The [Skills CLI](https://github.com/vercel-labs/skills#readme) lets you select skills, agent hosts, and project or global scope. Run it from your project's root for a project installation.
+Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The plugin installs every skill side by side, so the Roblox library skills always find `roblox-resource-acquisition`. Plugin skills are namespaced, for example `/osaskills:then-what`.
 
-List the available skills without installing:
+### Cowork / Claude desktop
 
-```sh
-npx skills@latest add osabased/osaskills --list
-```
+Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `motion-studies` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
 
-Install selected skills for Codex:
+### Skills CLI or manual copy
 
 ```sh
-npx skills@latest add osabased/osaskills --skill then-what system-review --agent codex
+npx skills@latest add osabased/osaskills --agent claude-code
+npx skills@latest add osabased/osaskills --skill roblox-resource-acquisition roblox-vide --agent claude-code
 ```
 
-Add `--global` for availability across projects. On Windows, `--copy` selects copies when symlinks are unsuitable. Use the terminal of the environment running your agent; Windows and WSL installations are separate.
+Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact, and put Roblox library skills next to `roblox-resource-acquisition`.
 
-The CLI installs each selected skill's supporting files and records its source for updates:
-
-```sh
-npx skills@latest list
-npx skills@latest update
-```
-
-Review local customizations before updating. Confirm availability in your agent's skill list; file placement and a sensible response alone do not prove that the host loaded the skill.
+Check that Claude actually loaded a skill: it should appear under `/skills`, and `/<name>` should run it.
 
 ## Skill catalogue
 
-| Problem | Owning skill |
-|---|---|
-| My agent left me with unfamiliar findings or open-ended choices, and I need a clear explanation and next step | [**then-what**](./skills/then-what/) |
-| My agent is having trouble finding failures that emerge across interacting parts of a system | [**system-review**](./skills/system-review/) |
-| My agent needs feedback on uncertain motion before costly production work | [**motion-studies**](./skills/motion-studies/) |
-| My agent needs to understand an existing Roblox project or help set up a new one | [**structure-roblox-projects**](./skills/structure-roblox-projects/) |
-| My agent needs to evaluate, adopt, or maintain Roblox libraries/modules and development tools | [**roblox-resource-acquisition**](./skills/roblox-resource-acquisition/) |
-| I need to find useful moments across long VODs and prepare concise Premiere markers with relevant alternate POVs | [**vod-discovery**](./skills/vod-discovery/) |
+| Problem | Skill | Invocation |
+|---|---|---|
+| An agent left you with findings or open-ended choices, and you need a clear recommendation and next step | [then-what](./skills/then-what/) | `/then-what` only |
+| A failure or risk depends on how parts of a system interact (retries, partial failures, ordering, handoffs) | [system-review](./skills/system-review/) | automatic or `/system-review` |
+| You want to preview an uncertain animation before production work | [motion-studies](./skills/motion-studies/) | `/motion-studies` only |
+| You need to understand an existing Roblox project, place code correctly, set up Rojo or Script Sync, or start a new project | [structure-roblox-projects](./skills/structure-roblox-projects/) | automatic |
+| You want to choose, add, compare, or upgrade a Roblox library or development tool | [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) | automatic |
+| You need to find moments across long VODs and prepare Premiere markers or a review timeline with alternate POVs | [vod-discovery](./skills/vod-discovery/) | `/vod-discovery` only |
 
-Install `roblox-resource-acquisition` alongside `structure-roblox-projects` for the shared acquisition and maintenance workflow. The CLI does not infer this dependency.
+With the plugin, prefix the name: `/osaskills:then-what`.
 
-## Bundled Roblox resource guidance
+### Pinned Roblox library guides
 
-The [eight pinned resource skills](./skills/roblox-resource-acquisition/references/bundled-skills.md) live under [skills/roblox-resources/](./skills/roblox-resources/): Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink, and Nevermore's Blend/Rx/Brio guidance. Each is separately selectable in the installer.
+Each library skill is an API guide for one pinned version: core API table, example, and version-specific gotchas. `resource.yaml` in each folder holds the exact identity.
 
-Choose the child matching your project's adopted target and include its required parent, `roblox-resource-acquisition`. For example, from the project root:
+| Skill | Library | Pin |
+|---|---|---|
+| [roblox-vide](./skills/roblox-vide/) | Vide (reactive UI) | 0.4.1 |
+| [roblox-charm](./skills/roblox-charm/) | Charm (reactive state) | 0.11.1 |
+| [roblox-ui-labs](./skills/roblox-ui-labs/) | UI Labs (story previews) | 1.6.1 |
+| [roblox-bootstrapper](./skills/roblox-bootstrapper/) | Bootstrapper (startup lifecycle) | 1.2.2 |
+| [roblox-janitor](./skills/roblox-janitor/) | Janitor (cleanup) | 1.18.3 |
+| [roblox-lemonsignal](./skills/roblox-lemonsignal/) | LemonSignal (signals) | 2.0.0 |
+| [roblox-blink](./skills/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
+| [roblox-nevermore-ui](./skills/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2 |
+
+Use the guide only when your project pins the same version. Installing a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
+
+Agent-facing project files live in the project's agent directory: `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. Roblox resource records go in `<agent dir>/roblox/resources/`, the Roblox project guide in `<agent dir>/roblox/project.md`, and VOD project notes in `<agent dir>/vod/project-context.md`. The user-wide store is `~/.claude/roblox/resources/`; if you have an older `~/.roblox-resources/`, the skills read it and suggest moving it.
+
+## Scripts
+
+Instruction-only skills need no setup. The Roblox resource checkers need Python 3.11+ and PyYAML. With [uv](https://docs.astral.sh/uv/) you don't need to install anything first:
 
 ```sh
-npx skills@latest add osabased/osaskills --skill roblox-resource-acquisition roblox-vide-0-4-1 --agent codex
+uv run --no-project --python ">=3.11" --with pyyaml python .claude/skills/roblox-resource-acquisition/scripts/check_resource_install.py --help
 ```
 
-Installing the parent alone leaves the children uninstalled. Resource children use [resource-child contract 1](./skills/roblox-resource-acquisition/references/resource-skill-contract.md): a compact entrypoint, static `resource.yaml`, and conditional references. The parent supplies shared usage rules and installation checkers; project records own current verification and adoption state. Installing guidance does not install Roblox packages, change project pins, or complete runtime/host verification. See the bundled catalog for the applicable selection and adoption steps.
+Adjust the path to where the skill is installed. `vod-discovery` has its own environment; see its [setup guide](./skills/vod-discovery/references/setup.md).
 
-## Manual installation
-
-For an agent host outside the CLI's supported set, clone this repository outside its skill-discovery directories and copy the complete selected skill folder into that host's documented skill location. Resource children are separate folders under `skills/roblox-resources/`; include their parent in an accessible skill scope. Preserve support files and avoid duplicate installations of the same skill.
-
-## Scripts and repository checks
-
-Instruction-only skills need no Python setup. Resource checker scripts additionally require Python 3.11+ and PyYAML. For a Codex project installation, install their [runtime dependencies](./skills/roblox-resource-acquisition/requirements.txt) with:
-
-```sh
-uv venv --python 3.11
-uv pip install -r .agents/skills/roblox-resource-acquisition/requirements.txt
-```
-
-Use the actual installed parent path for a different scope or host.
-
-For repository development, clone the checkout, install the [test dependencies](./skills/roblox-resource-acquisition/requirements-dev.txt), and run the suites separately:
+## Repository checks
 
 ```sh
 git clone https://github.com/osabased/osaskills.git
 cd osaskills
-uv venv --python 3.11
-uv pip install -r skills/roblox-resource-acquisition/requirements-dev.txt
+uv venv --python 3.13
+uv pip install -r skills/roblox-resource-acquisition/requirements-dev.txt -r skills/vod-discovery/requirements.txt
+
+# Roblox skills
 uv run python -m pytest -q -ra skills/roblox-resource-acquisition/tests
 uv run python -m pytest -q -ra skills/structure-roblox-projects/tests
+
+# VOD discovery (no footage, model downloads, or Premiere needed; ffmpeg must be on PATH)
+uv run python -B -m unittest discover -s skills/vod-discovery/tests -p "test_*.py"
+for t in skills/vod-discovery/tests/test_*.js; do node "$t"; done
+
+# Plugin manifests
+claude plugin validate .
 ```
 
-The real-Rojo artifact test skips when `rojo` is not on `PATH`; the summary reports the reason. A skipped test is not real-build coverage. These Python checks do not test interactive skill loading or measure agent performance. Run behavioral comparisons separately using the [resource-comparison evaluation guide](./skills/roblox-resource-acquisition/evals/README.md).
-
-The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) records the original/revised/no-skill advisory responses, validation results, and limits of that comparison.
-
-The VOD discovery adapters and panel mock can be checked without footage, model downloads, or Premiere:
-
-```sh
-python -m unittest discover -s skills/vod-discovery/tests -p "test_*.py" -v
-node skills/vod-discovery/tests/test_panel.js
-```
-
-See [VOD discovery setup](./skills/vod-discovery/references/setup.md) for media-processing dependencies and [validation notes](./skills/vod-discovery/references/validation.md) for the limits of the Premiere pilot.
+The real-Rojo tests skip when `rojo` is not on `PATH`, and a skipped test is not real-build coverage. CI runs the test suites above, with Rojo 7.7.0 installed. None of these checks measure how well a skill triggers or how an agent performs with it; for that, see [`evals/`](./evals/) and the [resource-comparison guide](./skills/roblox-resource-acquisition/evals/README.md). The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) is a historical snapshot that predates the Claude port and uses the old skill names.

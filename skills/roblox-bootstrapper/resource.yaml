@@ -1,0 +1,72 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: bootstrapper
+  name: Bootstrapper 1.2.2
+  canonical_url: https://github.com/LDGerrits/Bootstrapper
+  package_id: ldgerrits/bootstrapper
+  selector:
+    kind: commit
+    value: ff6700d32875dde5ef9e3625a159436ebd4dc3e9
+    tree: 4f94dfb887d0d0f81faaf00849d8670e5e8ed7de
+  source_review_date: '2026-10-02'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing or debugging Bootstrapper 1.2.2 module loading, init/start phases, and RunService or signal
+    bindings in a project pinned to this commit.
+  avoid_when:
+  - A direct require solves the task, or the question is general project folder layout.
+  - The project pins a different Bootstrapper target; keep that pin and find matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: binding cleanup, ordering rules, error keys or full dispatch semantics
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring or mapping the package, or the wrapper-casing workaround
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: modules not starting, phase failures, hangs or work after teardown
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: roblox/resources/records/bootstrapper.yaml
+  learnings: roblox/resources/learnings/
+installation:
+  profile: pesde-git
+  dependency_section: dependencies
+  target: roblox
+  new_structure: false
+  integrity:
+    files:
+      src/init.luau: dd7f94d7a0a10de13b838e65549c9de3b540c568c7c44cf89f0b3ace2b1725fc
+    version_header:
+      path: src/init.luau
+      contains: --v1.2.2
+    manifest:
+      path: wally.toml
+      name: ldgerrits/bootstrapper
+      version: 1.2.2

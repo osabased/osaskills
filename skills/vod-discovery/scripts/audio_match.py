@@ -9,7 +9,7 @@ import math
 from pathlib import Path
 import subprocess
 
-from vod import number, probe, write
+from vod import number, probe, run_cli, write
 
 
 def peak_summary(result):
@@ -128,4 +128,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_cli(main)

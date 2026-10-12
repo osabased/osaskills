@@ -1,0 +1,65 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: lemonsignal
+  name: LemonSignal 2.0.0
+  canonical_url: https://github.com/Data-Oriented-House/LemonSignal
+  package_id: data-oriented-house/lemonsignal
+  selector:
+    kind: version
+    value: 2.0.0
+  source_review_date: '2026-10-03'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing or debugging LemonSignal 2.0.0 custom events, wrapped engine signals, Wait, Reconnect and
+    subscription ownership in a project that pins this version.
+  avoid_when:
+  - Networking or cross-runtime delivery, continuous state (use a state library), or connecting directly
+    to an existing Roblox event.
+  - The project pins a different LemonSignal target; keep that pin and find matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: cancellable waits, wrapping engine signals, ownership and teardown, or thread-pool behavior
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring or mapping the package
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: unexpected arguments, a stuck Wait, leaks or events that keep firing
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: roblox/resources/records/lemonsignal.yaml
+  learnings: roblox/resources/learnings/
+installation:
+  profile: pesde-wally
+  dependency_section: dependencies
+  registry: https://github.com/UpliftGames/wally-index
+  target: roblox
+  integrity:
+    files:
+      src/LemonSignal.lua: 944fdda27e5e97bd2c44f3a4d7850d1838fba461391fb8a79b0ebffa04933ef2

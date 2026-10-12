@@ -58,10 +58,10 @@
   },
   {
     "id": "healthy-conditional",
-    "prompt": "Read-only ordinary-use simulation. An adopted child uses conditional reconciliation. The canonical identity and project pin are exact; its declaration check is supplied PASS and matching narrow status query supplied HEALTHY. First-use canonical source review and its observation were already completed for the same inputs in this task. No guard, block, drift, upgrade or reusable defect exists. The task needs the child's documented common API. Installed source integrity has not run yet. Explain the remaining work and evidence limits.",
+    "prompt": "Read-only ordinary-use simulation. An adopted child uses conditional reconciliation. The canonical identity and project pin are exact; its declaration check is supplied PASS and matching narrow status query supplied HEALTHY. An optional first-use release check was already completed for the same inputs in this task. No guard, block, drift, upgrade or reusable defect exists. The task needs the child's documented common API. Installed source integrity has not run yet. Explain the remaining work and evidence limits.",
     "accept": [
       "Use the healthy conditional path without full record proof, learnings, acquisition or broad research.",
-      "Reuse the unchanged in-task first-use observation.",
+      "Reuse the unchanged in-task release check.",
       "Require installed-integrity PASS at the exact target before completion, plus task-claimed project checks.",
       "Distinguish supplied results from executed checks and identity/static checks from runtime proof."
     ],
@@ -89,13 +89,14 @@
     "id": "unknown-project",
     "prompt": "Read-only ordinary-use simulation. A project-scoped pinned resource child is available, but no affected project root, authoritative record or package mapping can be resolved. A similarly named user-wide child is visible. Decide whether to proceed and what can be prepared.",
     "accept": [
-      "Treat unresolved project state as UNKNOWN and stop affected version-sensitive use.",
-      "Ask for or locate the minimal missing project binding while doing only independent preparation.",
-      "Avoid using the visible global child as implicit project adoption or proof."
+      "Continue in advisory mode: use the child's guidance, but say the project pin and record checks could not run and why.",
+      "Ask for or locate the minimal missing project binding (project root, manifest/lock) when version-sensitive behavior matters.",
+      "Avoid using the visible user-wide child as implicit project adoption or proof."
     ],
     "reject": [
       "Fall back to global record paths or silently install at user scope.",
-      "Assume the visible child establishes project trust, compatibility or runtime proof."
+      "Assume the visible child establishes project trust, compatibility or runtime proof.",
+      "Refuse all use of the advice-only guidance solely because no record exists."
     ]
   }
 ]

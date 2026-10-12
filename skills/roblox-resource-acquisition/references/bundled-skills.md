@@ -1,40 +1,32 @@
 # Bundled Roblox resource skills
 
-The distribution checkout keeps portable, pinned resource guidance under `skills/roblox-resources/`, separate from the parent skill directory. These folders are distribution artifacts collected from the two Roblox UI projects. Their presence in this repository does not install a dependency, adopt it for another project, or establish runtime or host verification in that project.
+This repository ships pinned child skills beside this one, each in its own folder under `skills/`. Having a child available does not install the library in a project, adopt it, or prove it works there.
 
-| Resource role | Bundled package |
-| --- | --- |
-| Vide 0.4.1 reactive UI and scope cleanup | [roblox-vide-0-4-1](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-vide-0-4-1/SKILL.md) |
-| Charm 0.11.1 reactive application state | [roblox-charm-0-11-1](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-charm-0-11-1/SKILL.md) |
-| UI Labs 1.6.1 story previews | [roblox-ui-labs-1-6-1](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-ui-labs-1-6-1/SKILL.md) |
-| Bootstrapper 1.2.2 startup lifecycle | [roblox-bootstrapper-1-2-2](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-bootstrapper-1-2-2/SKILL.md) |
-| Janitor 1.18.3 resource cleanup | [roblox-janitor-1-18-3](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-janitor-1-18-3/SKILL.md) |
-| LemonSignal 2.0.0 custom events | [roblox-lemonsignal-2-0-0](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-lemonsignal-2-0-0/SKILL.md) |
-| Blink 0.18.9 schema compilation | [roblox-blink-0-18-9](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-blink-0-18-9/SKILL.md) |
-| Nevermore UI with Blend 12.50.1, Rx 13.34.1 and Brio 14.37.1 | [roblox-nevermore-ui](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-nevermore-ui/SKILL.md) |
+| Library and role | Child skill | Pin |
+| --- | --- | --- |
+| Vide: reactive UI and scope cleanup | [roblox-vide](../../roblox-vide/SKILL.md) | 0.4.1 (commit `5ed4c01`) |
+| Charm: reactive application state | [roblox-charm](../../roblox-charm/SKILL.md) | 0.11.1 |
+| UI Labs: story previews (Studio plugin) | [roblox-ui-labs](../../roblox-ui-labs/SKILL.md) | 1.6.1 |
+| Bootstrapper: startup lifecycle | [roblox-bootstrapper](../../roblox-bootstrapper/SKILL.md) | 1.2.2 (commit `ff6700d`) |
+| Janitor: resource cleanup | [roblox-janitor](../../roblox-janitor/SKILL.md) | 1.18.3 |
+| LemonSignal: custom events | [roblox-lemonsignal](../../roblox-lemonsignal/SKILL.md) | 2.0.0 |
+| Blink: networking schema compiler | [roblox-blink](../../roblox-blink/SKILL.md) | 0.18.9 |
+| Nevermore UI: Blend, Rx and Brio | [roblox-nevermore-ui](../../roblox-nevermore-ui/SKILL.md) | Blend 12.50.1, Rx 13.34.1, Brio 14.37.1, loader 10.11.2 |
 
-All eight packages use resource-child contract 1. Nevermore retains focused [Blend](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-nevermore-ui/references/blend.md), [Rx](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-nevermore-ui/references/rx.md) and [Brio](https://github.com/osabased/osaskills/blob/main/skills/roblox-resources/roblox-nevermore-ui/references/brio.md) references, plus conditional setup and troubleshooting. Its npm profile binds Blend 12.50.1 and direct material companions Rx 13.34.1, Brio 14.37.1 and loader 10.11.2. Read each package's advice-only or executable verification boundary before relying on it.
+The links work in this repository and in installs where the children sit beside this skill. All eight use [resource child contract 1](resource-skill-contract.md). Each child's `resource.yaml` holds the exact identity, profile and integrity hashes. Read each child's advice-only or executable boundary before relying on it.
 
-`structure-roblox-projects` remains a separate project-structure parent under `skills/structure-roblox-projects/`; it is already distributed by this repository and is not a resource child.
+`structure-roblox-projects` is a separate project-structure skill, not a resource child.
 
-## Select and install a child
+## Pick and install a child
 
-1. Resolve the active project and its declared dependency pins. Choose only guidance that matches the canonical resource and reviewed target. For another target, use the parent workflow to validate an appropriate variant; do not silently upgrade the project to match a bundle.
-2. Follow [project adoption](project-adoption.md#place-generated-project-skills) to resolve `<skill-scope-root>` and check destination ownership. Stage outside discovery when review or validation is still pending.
-3. After applicable validation and installation authorization, run `npx skills` from the resolved `<skill-scope-root>`. Select `roblox-resource-acquisition` together with only the matching child; every child needs the installed parent's shared usage contract and verification helpers. For a project already using the bundled Vide target, install the pair for Codex with:
+1. Find the project's declared pin (`wally.toml`, `pesde.toml` or `package.json` and its lock). Use a child only when its pin matches. For another version, follow the parent's `acquire/adopt` or `refresh` mode; never change the project's pin to fit a bundled child.
+2. Install the child together with `roblox-resource-acquisition`, which supplies the shared checkers. A child installed alone still works as advice and says which checks it skipped.
+   - **Claude Code plugin:** `/plugin marketplace add osabased/osaskills`, then `/plugin install osaskills@osaskills`. The plugin installs every skill side by side, so children always find this parent.
+   - **Skills CLI:** from the project root, `npx skills@latest add osabased/osaskills --skill roblox-resource-acquisition roblox-vide --agent claude-code`. Add `--global` for `~/.claude/skills/`.
+   - **Manual:** copy the whole child folder and the `roblox-resource-acquisition` folder into `<project>/.claude/skills/` (or `~/.claude/skills/` for every project). Keep references and scripts.
+   - **Cowork / claude.ai:** upload each skill folder as a zip, or install the plugin. Scripts may not run there; children fall back to advisory mode.
+3. Do not overwrite an unrelated existing skill with the same name; stop and report the collision.
+4. Keep records, manifests, locks and fixtures in the project. The children carry no project state.
+5. Installing files establishes placement only. To call a child installed and working, see [installing children](operational-lifecycle.md).
 
-   ```sh
-   npx skills@latest add osabased/osaskills --skill roblox-resource-acquisition roblox-vide-0-4-1 --agent codex
-   ```
-
-   Refuse to overwrite an unrelated or ambiguous existing skill. The command installs instructions in the selected project scope; it does not install the Roblox dependency or complete adoption.
-4. Resolve `<child-skill-directory>` and `<parent-skill-directory>` from the actual package locations when running child verification commands. Keep resource records, manifest/lock files, integration fixtures and their evidence in the active project. Bundled historical claims do not establish that project's current record or host state.
-5. Complete the applicable [generation validation](generation-validation.md) and [host adoption](operational-lifecycle.md) checks before presenting the child as operational. Installing files establishes placement only.
-
-For manual installation, copy the complete chosen folder from the distribution checkout's `skills/roblox-resources/<skill-name>/` into `<skill-scope-root>/.agents/skills/<skill-name>/`, and install the parent separately if needed. Preserve each package's references and scripts.
-
-The parent and resource children are separate installable packages. Installing the parent alone includes no child packages; select each matching child explicitly. Keep the distribution checkout outside discovery. The parent does not need the bundle for ordinary acquisition, generation or maintenance work.
-
-Global/user installation is available only when explicitly requested for that scope. An unknown project root is not permission to fall back to a user-global child. Keep one canonical editable child per resolved scope and retain version-qualified names when projects adopt different targets.
-
-Codex's supported local scopes and current-directory discovery are described in [official OpenAI skill documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills). Actual host activation remains a separate proof step.
+Older installs may use versioned names such as `roblox-vide-0-4-1` and records whose `generated_skill` names them. Rename the record's `generated_skill` when you switch to the unversioned child; the status query reports the old name as unknown, not as a mismatch.

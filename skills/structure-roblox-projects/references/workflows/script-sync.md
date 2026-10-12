@@ -1,41 +1,33 @@
 # Script Sync safeguards
 
-Use this reference when reviewing, designing, planning, enabling, disabling, or changing Script Sync behavior or boundaries; resuming or resolving sync conflicts; or moving/renaming content into, out of, or within Script Sync management where sync representation, attributes/tags, child shape, packages, or conflict behavior can matter. A routine source edit inside a stable sync boundary does not require this reference.
+Use when reviewing, designing, enabling, disabling, or changing Script Sync behavior or boundaries; resuming or resolving sync conflicts; or moving or renaming content into, out of, or within Script Sync management where representation, attributes/tags, child shape, packages, or conflicts can matter. A routine source edit inside a stable sync boundary doesn't need this reference. For when to choose Script Sync over Rojo, see [source of truth](../core/practices.md#source-of-truth).
 
-Script Sync synchronizes `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances between Studio and local disk. Changes made to Luau files on disk are applied to scripts in Studio, and changes made in Studio are applied to disk. Other instances inside a synced folder are ignored by Script Sync.
+Script Sync syncs `Script`, `LocalScript`, `ModuleScript`, and `Folder` instances between Studio and local disk in both directions. Other instances inside a synced folder are ignored.
 
-Use Script Sync when the project should use an external text editor or code version control while continuing to use Studio for everything else. If the entire project, not just code, should be checked into version control or the filesystem should be the source of truth, Roblox identifies third-party tools such as Rojo as the better choice.
-
-Roblox highly recommends syncing folders rather than individual scripts. Folder sync automatically includes child folders and scripts and synchronizes create, rename, move, and delete operations on managed children. Avoid syncing folders that contain scripts alongside other instance types because Script Sync ignores those other instances.
+Roblox highly recommends syncing folders rather than individual scripts: a synced folder automatically includes child folders and scripts and syncs create, rename, move, and delete operations. Avoid syncing folders that mix scripts with other instance types, because those other instances are ignored.
 
 ## Before changing the boundary or managed topology
 
-1. When Studio settings are accessible, inspect the relevant Script Sync behavior: **Auto resume sync on place open**, **Resume conflicted sync on place open**, **Keep local files/directories after sync**, and **File extension**. Treat unavailable reopen/resume behavior as an unverified risk when it matters to the operation.
-2. Inventory affected scripts and folders, including script names, script type or RunContext, attributes, tags, children, package status, and modification scope.
-3. When the proposed boundary or topology could approach platform scale limits, verify the planned shape stays within current Script Sync limits. Roblox currently documents up to **10,000 scripts per top-level synced instance** and up to **128 top-level synced instances**; re-open current documentation before relying on exact limits for version-sensitive planning.
-4. Narrow the boundary to authorized work when it contains protected content. Use [`modification-scope.md`](../core/modification-scope.md) when a required script, folder, attribute/tag preservation step, or consumer update crosses that boundary.
-5. Check duplicate or filesystem-incompatible names. Preserve Script Sync's documented on-disk type conventions: `name.luau` represents a `ModuleScript`; `name.server.luau`, `name.client.luau`, `name.local.luau`, `name.legacy.luau`, and `name.plugin.luau` represent the corresponding documented script types and RunContext values; `name/init.*.luau` represents a script instance with children. Verify that the intended script type, RunContext, and parent/child shape survive synchronization.
-6. If removing or replacing a top-level synced root, follow Studio's documented Stop Sync/root-deletion workflow rather than treating the root like an ordinary disk child.
-   Deletion is selective: managed scripts/supported sync content are removed, while unmanaged files and non-script assets can remain. Inspect both sides after deletion instead of assuming the entire mixed-content subtree disappeared.
-7. Identify affected scripts with attributes or tags. Script Sync ignores attributes and tags, and Roblox warns this can lead to data loss when scripts are created/deleted or when syncing starts with older disk files. Require an explicit preservation strategy before changing those scripts through the sync boundary.
-8. With Team Create, avoid workflows where multiple people sync the same script and edit the files at the same time because Roblox documents that collaborators can overwrite each other's changes. Packages can be synced, but `PackageLink` itself is not written to disk.
-9. When starting or resuming sync with differences between Studio and disk, inspect the conflict-resolution dialog and its planned adds, modifications, and deletions before choosing **Keep Studio** or **Keep Disk**. If **Resume conflicted sync on place open** is configured to prefer Studio or disk, account for that configured behavior.
+1. When Studio settings are accessible, check **Auto resume sync on place open**, **Resume conflicted sync on place open**, **Keep local files/directories after sync**, and **File extension**. If you can't see them and reopen/resume behavior matters, treat it as an unverified risk.
+2. List affected scripts and folders: names, script type or RunContext, attributes, tags, children, package status, and edit permission.
+3. If the boundary could approach platform limits, check it. Roblox documents up to **10,000 scripts per top-level synced instance** and **128 top-level synced instances**; re-check the current page before relying on exact limits.
+4. Narrow the boundary to authorized work when it contains protected content. Use [`modification-scope.md`](../core/modification-scope.md) when a required script, folder, attribute/tag step, or consumer update crosses that boundary.
+5. Check for duplicate or filesystem-incompatible names. Keep the on-disk type conventions: `name.luau` is a `ModuleScript`; `name.server.luau`, `name.client.luau`, `name.local.luau`, `name.legacy.luau`, and `name.plugin.luau` are the corresponding script types and RunContexts; `name/init.*.luau` is a script with children. Confirm the intended type, RunContext, and parent/child shape survive syncing.
+6. To remove or replace a top-level synced root, use Studio's Stop Sync and delete workflow; don't delete the root on disk like an ordinary child. Script Sync deletes only the files it manages: unmanaged files and non-script assets remain. Inspect both sides afterwards.
+7. Find affected scripts with attributes or tags. Script Sync ignores them, and Roblox warns this can lose data when scripts are created or deleted or when syncing starts from older disk files. Have an explicit preservation plan before changing those scripts through sync.
+8. With Team Create, avoid several people syncing and editing the same script at once; collaborators can overwrite each other. Packages can be synced, but `PackageLink` itself is not written to disk.
+9. When starting or resuming sync with differences between Studio and disk, inspect the conflict dialog's planned adds, modifications, and deletions before choosing **Keep Studio** or **Keep Disk**. Account for any configured **Resume conflicted sync on place open** preference.
 
-Proceed with a topology change only when every affected attribute/tag-bearing script has a preservation strategy, every planned content or metadata write is authorized, and any material platform scale limits are satisfied.
+Proceed with a topology change only when every affected attribute/tag-bearing script has a preservation plan, every planned write is authorized, and limits are respected.
 
 ## Review
 
-For a read-only Script Sync review, apply the representation, attributes/tags, package, naming, scale-limit, and conflict checks that are material to the review question, but do not require a mutation plan when no change is proposed. Report unavailable Studio settings or conflict behavior only when they can affect the conclusion.
+For a read-only review, apply the representation, attributes/tags, package, naming, limit, and conflict checks the question needs. No mutation plan is needed when no change is proposed. Mention unavailable Studio settings only when they could change the conclusion.
 
 ## Validation
 
-After a change, verify affected script types, RunContext values, attributes, tags, children, package behavior including `PackageLink` where relevant, source boundaries, and the absence of unintended writes in Studio and on disk. When boundary scale was material to the change, verify the resulting script and top-level synced-instance counts remain within the current documented limits.
+After a change, check affected script types, RunContexts, attributes, tags, children, package behavior (including `PackageLink` where relevant), source boundaries, and that nothing unintended was written in Studio or on disk. If limits mattered, confirm the resulting counts.
 
-Re-open current Roblox Script Sync documentation before version- or workflow-sensitive destructive operations.
+## Source
 
-## Official evidence
-
-All platform-specific claims in this reference are grounded in Roblox Creator Hub:
-
-- [Script Sync](https://create.roblox.com/docs/scripting/sync): synchronization direction, recommended use cases, folder sync, limits, conflict resolution, Team Create behavior, supported instance types, package behavior, attributes/tags, filesystem naming requirements, root deletion, on-disk naming rules, and settings.
-- [Third-party tools](https://create.roblox.com/docs/projects/external-tools): Script Sync for external editing/code version control and Rojo's file system-first workflow.
+- [Script Sync](https://create.roblox.com/docs/scripting/sync): sync direction, use cases, folder sync, limits, conflict resolution, Team Create, supported instance types, packages, attributes/tags, naming rules, root deletion, settings.

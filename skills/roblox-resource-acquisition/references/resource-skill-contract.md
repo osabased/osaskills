@@ -1,48 +1,74 @@
-# Generated resource-child contract 1
+# Resource child contract 1
 
-A child is a resource-specific implementation interface: a compact `SKILL.md`, a static `resource.yaml`, optional conditional references, and custom helpers only when the shared profiles cannot express the actual check. This contract replaces the inline-section format. Unsupported schema/shared-contract versions require regeneration; there is no Markdown-provenance fallback.
+A child is a per-library skill: a short `SKILL.md`, a static `resource.yaml`, optional references, and custom checkers only when the shared profiles cannot express the check. Children live flat beside this skill (for example `skills/roblox-janitor/` next to `skills/roblox-resource-acquisition/`), so the shared contract is reachable at `../roblox-resource-acquisition/references/child-usage.md`. A child must still work as advice when that sibling is missing.
 
-## Entrypoint and routing
+Contents: [SKILL.md](#skillmd) · [resource.yaml](#resourceyaml) · [Installation profiles](#installation-profiles) · [Validation](#validation)
 
-The frontmatter description is the pre-load routing contract. State the positive trigger and material exclusion needed to prevent incorrect implicit activation; preserve exact project targets. Names/descriptions remain normal Agent Skills metadata. Do not expand activation merely to fill a template.
+## SKILL.md
 
-Keep reviewed target, the shared-usage route, ordinary workflow, essential API semantics, activation/cleanup ownership, immediate security constraints and completion proof limits in `SKILL.md`. An agent should reach useful resource behavior without loading installation or full repair administration. Retain concrete details such as disposer idempotence, cleanup error/order behavior, async cancellation limits and compiler-versus-runtime activation boundaries when they affect ordinary use.
+Start from [the template](../templates/resource-skill-template.md). Name the child `roblox-<library>` without a version; the pin lives in the body and in `resource.yaml`.
 
-Link the child's descriptor and route once per task to the installed parent's [shared child usage contract](child-usage.md). Resolve that installed location from available skills, without embedding a particular user's home or assuming a global parent location. The shared contract owns guard, first-use freshness, status-query, repair and authority rules.
+```
+---
+name: roblox-<lib>
+description: <Library> (<owner/repo>) for Roblox Luau, pinned <version>. Use when ... Not for ...
+---
 
-## Static descriptor
+# <Library> <version>
 
-Use [resource-schema.md](resource-schema.md) and [resource-skill-template.yaml](../templates/resource-skill-template.yaml). `resource.yaml` contains:
+Pinned target: `<selector value>` (source reviewed <date>). [resource.yaml](resource.yaml) holds the exact identity.
 
-- schema/shared-contract version and explicit project or user scope;
-- resource slug/name, canonical HTTPS source, package identity or null, immutable reviewed selector, review date and exact DevForum topic or null;
-- positive/negative routing facts and advice-only versus executable-integration claim boundary;
-- a conditional document map: path, role and when to read;
-- reconciliation policy, reason and deterministic project-relative record/learnings route; user scope alone may declare a no-project fallback;
-- a declarative installation/integrity profile with source hashes and material companion identities.
+## Check the pin
+## Core API
+## Example
+## Gotchas
+## Read further
+```
 
-These are specifications. Trust, project-use authority, current blocks, current verification, validation results, host adoption and source observations belong in the authoritative schema-v3 project/user records. Never make static child metadata a second live lifecycle registry.
+- **Description:** concrete and specific: library and repo names, key API names, file names (`wally.toml`, `default.project.json`), and phrases a user would type. Say what and when, plus one short exclusion. At most 1024 characters.
+- **Check the pin:** one short paragraph. If the project pins this library, confirm it matches the target. If `roblox-resource-acquisition` is installed beside the child, run its checks per [child usage](child-usage.md). If the parent, Python or a project record is unavailable, read the project's manifest/lock directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
+- **Core API:** a table of `call | returns | notes`, grounded in the reviewed source. Never invent APIs from names or other libraries.
+- **Example:** 8–15 lines of Luau (or the tool's real command line) derived from the reviewed source or the maintained fixture.
+- **Gotchas:** 3–6 pin-specific bullets: cleanup order, cancellation limits, idempotence, client/server boundary, security.
+- **Read further:** links to `references/*.md`, each with "read when …".
 
-## Composed guidance
+`## Check the pin`, `## Core API`, `## Gotchas` and `## Read further` are required; `## Example` is recommended. Other headings are allowed. Put long setup, recipes and symptom diagnosis in references; a small library may need none.
 
-Declare every Markdown guidance document and make it reachable through explicit links from `SKILL.md`. Each route explains when to read it. A small child can cover everything in its entrypoint; create no empty reference folders or placeholder sections. Useful references include setup/restoration, substantial recipes, detailed lifecycle/companion integration, and symptom-specific troubleshooting.
+Frontmatter may use the Agent Skills fields (`name`, `description`, `license`, `compatibility`, `allowed-tools`, `metadata`) and the Claude Code fields `disable-model-invocation`, `user-invocable`, `argument-hint` and `model`. Other keys produce a warning.
 
-Only these responsibilities must remain in the entrypoint: routing, common use, ownership, security, verification and maintenance routing. Setup and troubleshooting may be inline or referenced. These are coverage roles, not required heading names or minimum word counts. Static role declarations do not establish semantic correctness; forward-testing checks that the agent actually receives the claimed guidance.
+## resource.yaml
 
-Preserve source-grounded public APIs and actual activation ownership. Establish cleanup before fallible acquisition; address rollback and pending work; distinguish feature-owned work from package/process-global work. For a development tool, teach its real command/configuration, inputs, generated outputs and process ownership. Avoid invented Luau APIs or unnecessary engine machinery.
+The descriptor is safe YAML; duplicate keys, unknown fields and unsupported versions fail. Everything in it is a static reviewed fact. Live state (trust, project use, blocks, verification, validation results, install state) belongs in the project's record, never here.
 
-Recipes claiming executable integration derive from a maintained representative fixture against the actual adopted resource/companion pins. Project-specific fixtures and their evidence remain project-owned. Advice-only recipes carry an explicit non-executable claim boundary. Read [integration proof](integration-proof.md) for material executable/ownership claims.
+| Field | Meaning |
+| --- | --- |
+| `schema_version` | Integer `1`. |
+| `parent_contract` | `{name: roblox-resource-acquisition, version: 1}`. |
+| `scope` | `project` by default; `user` only for an explicit user-wide child. |
+| `resource` | `slug`, `name`, canonical HTTPS `canonical_url`, `package_id` or null, `selector`, `source_review_date` (YYYY-MM-DD) and exact DevForum topic URL or null. |
+| `resource.selector` | `kind: version / commit / source-state` and an immutable `value`. Git profiles also need the full `tree`; optional `release_commit` names the release's source commit. |
+| `routing` | Nonempty `use_when` and `avoid_when` lists. The frontmatter description remains what the host routes on. |
+| `guidance` | `claim_scope` (`advice-only` or `executable-integration`), `shared_usage: references/child-usage.md`, `documents` and `executable_fixture` (null for advice-only). |
+| `guidance.documents` | Each Markdown `path` with nonempty `roles` and `when`. `SKILL.md` must carry `routing`, `common-use`, `ownership`, `security`, `verification` and `maintenance`; `setup` and `troubleshooting` must be covered somewhere. Other roles: `recipes`, `lifecycle`, `api`. Every declared reference must be linked from `SKILL.md`. |
+| `reconciliation` | `policy: required / conditional / not-applicable`, a concrete `reason`, and `record` and `learnings` paths relative to AGENT_DIR: `roblox/resources/records/<slug>.yaml` and `roblox/resources/learnings/` (scripts resolve AGENT_DIR as `.claude/` or `.agents/` by the rule in [state policy](state-policy.md#portable-resource-record-location)). Explicit `.claude/roblox/resources/...` or `.agents/roblox/resources/...` project paths are also accepted. User scope also declares `no_project_record` and `no_project_learnings` under `~/.claude/roblox/resources/` (or `~/.agents/roblox/resources/`; legacy `~/.roblox-resources/` is read). |
+| `installation` | One profile below. No shell commands or pass/status fields. |
 
-## Identity and project bindings
+## Installation profiles
 
-Immutable canonical package/repository, selector, source digest and material companions define the reusable resource check. Resolve local aliases, mapped source roots, wrapper paths and managed plugin filenames from project bindings or explicit checker inputs. Generated wrappers/mapping behavior are project-integration checks, not immutable upstream source hashes.
+- `wally`: a Wally package. Supply `dependency_section` (`dependencies`, `server-dependencies` or `dev-dependencies`), canonical `registry`, source `integrity` and optional `companions`. The checker binds the `wally.toml` requirement to the exact `wally.lock` entry (a range requirement is reported as a note) and hashes the package under `Packages/_Index`, `ServerPackages/_Index` or `DevPackages/_Index`.
+- `pesde-wally`: a Wally-index package. Supply `dependency_section` (`dependencies` or `dev_dependencies`), `registry`, `target` and `integrity`. The checker uses `pesde.toml`/`pesde.lock`, and falls back to `wally.toml`/`wally.lock` (searching all three Wally sections) when the project has no `pesde.toml`.
+- `pesde-registry`: like `pesde-wally` for the pesde registry, without companions.
+- `pesde-git`: canonical repository, commit and tree come from `resource`. Supply `dependency_section`, `target`, optional `new_structure` and `integrity`.
+- `npm`: canonical npm package and exact version come from `resource`. Supply `dependency_section` (`dependencies` or `devDependencies`), `registry`, reviewed `archive_url`, SHA512 SRI `archive_integrity`, source `integrity` and any material `companions` (each with its own package, version, section, archive and integrity). The checker binds `package.json` to `package-lock.json` format 2/3 and checks the installed `package.json` and source. It runs no package scripts and does not verify the transitive graph.
+- `asset`: supply `asset_sha256`; the caller passes the installed asset with `--asset`.
+- `custom`: supply a child-relative `custom_checker` under `scripts/`. The shared checker never runs it; the child documents its command and expected result.
 
-Use the shared [installation checker](../scripts/check_resource_install.py) for supported profiles. Custom checkers are reviewed child files, never commands executed from YAML. Unknown/mismatched material identity stops affected use. Preserve server authority and each resource's actual trust boundaries.
+`integrity` supports per-file SHA256 values, a source-directory aggregate (sorted file name plus per-file SHA256; `recursive: true` uses relative POSIX paths), a literal version header, and an installed TOML/JSON manifest name and version. Paths stay inside the package root. Wrapper files and generated project files are project integration checks, not upstream hashes.
 
-## Validation and promotion
+Wally/pesde companions declare `package_id`, exact `version`, `registry`, `parent_package`, `edge_alias` and their own `integrity`, in dependency order. The checker verifies each lock edge.
 
-Run `validate_skill.py` for metadata, descriptor, coverage declarations, reachable references and local links/anchors. Run the record/bundle/catalog gates when their artifacts are in scope. Bind behavioral evidence to the descriptor and shared usage contract where those inputs determine behavior; route-only checks bind only routing metadata. Shared-contract changes invalidate dependent claims, not unrelated immutable resource proof.
+## Validation
 
-Apply [generation and validation](generation-validation.md), [testing protocol](testing-protocol.md) and [operational lifecycle](operational-lifecycle.md). Exercise ordinary use, setup, failure diagnosis, repair routing, blocked/unknown state and a different project binding when relevant. Local fixtures and fresh-agent instruction tasks are useful available proof; neither establishes an unavailable Roblox/MCP host lane.
+Run `scripts/validate_skill.py CHILD` for frontmatter, the required headings, the descriptor, document coverage and reachability, and local links and anchors. The sibling-parent link is checked as a route only, because the parent may be absent. Run the record, bundle and catalog validators when those artifacts are in scope (see [generation and validation](generation-validation.md)). Static checks never establish runtime behavior or host routing.
 
-Stage outside discovery and promote recoverably. Installed files establish `installed`; host discovery/explicit activation establish `operational` only when observed. A user-authorized installation limited to available local checks records unavailable host gates and remains installed. Preserve exact project pins and record truthful current validation state.
+Shared-contract changes invalidate dependent child claims, not unrelated resource proof. Unsupported schema or contract versions require regeneration; there is no fallback reader for older inline-provenance children.

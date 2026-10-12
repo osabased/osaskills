@@ -24,8 +24,8 @@ Track those facts separately as verification evidence.
 Resolve registries in this order:
 
 1. an explicit curated-registry path supplied by the user/project/environment;
-2. `<project-root>/.agents/roblox/resources/curated/` when present;
-3. `~/.roblox-resources/curated/` when present.
+2. `<project-root>/AGENT_DIR/roblox/resources/curated/` when present (AGENT_DIR rule in [state policy](state-policy.md#portable-resource-record-location));
+3. `~/.claude/roblox/resources/curated/` when present (or `~/.agents/roblox/resources/curated/` by the same rule; read a legacy `~/.roblox-resources/curated/` and suggest moving it).
 
 If more than one registry exists, merge entries by required `slug`. A project-local entry overrides a user-global entry with the same slug because the narrower project policy is more specific. An explicitly supplied registry has highest precedence. Do not use filenames as identity or precedence keys.
 

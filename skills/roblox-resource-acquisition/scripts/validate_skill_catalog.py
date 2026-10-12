@@ -26,8 +26,8 @@ from validate_skill import (
 
 from _resource_contract import load_contract
 
-CODEX_METADATA_BUDGET = 8_000
-CODEX_RISK_THRESHOLD = 7_200
+# Rough per-skill description size above which a host listing may shorten it.
+LONG_DESCRIPTION_CHARS = 900
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "do", "does", "for",
     "from", "in", "is", "it", "not", "of", "on", "or", "resource", "roblox",
@@ -214,15 +214,13 @@ def validate_catalog(
                     f"boundary_shared={','.join(sorted(shared_boundaries)) or '-'}"
                 )
 
-    if host == "codex":
-        metadata_chars = sum(
-            len(skill.name) + len(skill.description) + len(str(skill.path)) + 3 for skill in skills
-        )
-        if metadata_chars >= CODEX_RISK_THRESHOLD:
-            warnings.append(
-                f"Codex initial skill metadata is {metadata_chars} characters; this approaches/exceeds "
-                f"the {CODEX_METADATA_BUDGET}-character fallback budget and may cause shortening or omission"
-            )
+    if host == "claude":
+        for skill in skills:
+            if skill.kind == "generated" and len(skill.description) > LONG_DESCRIPTION_CHARS:
+                warnings.append(
+                    f"{skill.name}: description is {len(skill.description)} characters; put the trigger "
+                    "terms first in case the host shortens long descriptions"
+                )
 
     return errors, warnings, overlaps, catalog_fingerprint(skills)
 
@@ -239,7 +237,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=[],
         help="host-visible non-generated skill/root to include in routing overlap checks and fingerprint",
     )
-    parser.add_argument("--host", choices=("portable", "codex"), default="codex")
+    parser.add_argument("--host", choices=("portable", "claude"), default="portable")
     return parser.parse_args(argv)
 
 

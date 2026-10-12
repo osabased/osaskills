@@ -1,0 +1,59 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: ui-labs
+  name: UI Labs Studio plugin 1.6.1
+  canonical_url: https://github.com/PepeElToro41/ui-labs
+  package_id: null
+  selector:
+    kind: version
+    value: 1.6.1
+  source_review_date: '2026-10-02'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing UI Labs story or storybook modules (Vide, generic or function stories, controls) for a project
+    using plugin 1.6.1.
+  - Installing or verifying the UI Labs 1.6.1 plugin file, or diagnosing discovery and preview cleanup.
+  avoid_when:
+  - Gameplay UI component logic with no story or plugin issue; use the UI framework's guidance.
+  - The project uses a different UI Labs plugin release; keep that target and find matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: Vide mounter behavior, generic stories, controls, Environment helpers or story discovery rules
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing or verifying the plugin file
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: a missing story, nil controls, leaks after unmount, duplicate widgets or installer failures
+  executable_fixture: null
+reconciliation:
+  policy: required
+  reason: independently mutable Studio asset
+  record: roblox/resources/records/ui-labs.yaml
+  learnings: roblox/resources/learnings/
+installation:
+  profile: asset
+  asset_sha256: c785b1fc2593d633ad3dba51aeb778cee3026393574b99438fa276ad31d5283b

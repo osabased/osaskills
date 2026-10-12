@@ -92,7 +92,7 @@ def test_legacy_boolean_claim_is_readable_but_not_current(record_mod, tmp_path):
 
 def test_advice_only_claim_needs_instruction_evidence_but_no_runtime_fixture(record_mod, tmp_path):
     child = _write_child(tmp_path)
-    section = record_mod._section_bytes(child / "SKILL.md", "API used by this skill")
+    section = record_mod._section_bytes(child / "SKILL.md", "Core API")
     assert section is not None
     record = fixtures.matching_widget_record()
     record["skill_validation"].update(
@@ -114,7 +114,7 @@ def test_advice_only_claim_needs_instruction_evidence_but_no_runtime_fixture(rec
                         {
                             "role": "api",
                             "path": "SKILL.md",
-                            "section": "API used by this skill",
+                            "section": "Core API",
                             "sha256": _digest(section),
                         }
                     ],
@@ -349,8 +349,10 @@ def test_status_query_healthy_legacy_block_unknown_and_never_executes_evidence(s
     record["blocked_use_or_version"] = ""
     record["verification"]["version_or_commit"] = "9.9.9"
     record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
-    assert status_mod.query_pair(child, record_path)["status"] == "unknown"
-    assert status_mod.query_pair(child, tmp_path / "missing.yaml")["status"] == "unknown"
+    assert status_mod.query_pair(child, record_path)["status"] == "mismatch"
+    assert status_mod.query_pair(child, tmp_path / "missing.yaml")["status"] == "no-record"
+    assert status_mod.main(["--pair", str(child), str(tmp_path / "missing.yaml")]) == 0
+    assert status_mod.main(["--pair", str(child), str(record_path)]) == 1
 
 
 def test_status_query_rejects_malformed_block_unknown_state_failed_verification_and_honors_host_block(status_mod, tmp_path):
@@ -369,7 +371,8 @@ def test_status_query_rejects_malformed_block_unknown_state_failed_verification_
     record["reconciliation"]["status"] = "matched"
     record["verification"]["status"] = "failed"
     record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
-    assert status_mod.query_pair(child, record_path)["status"] == "unknown"
+    assert status_mod.query_pair(child, record_path)["status"] == "failed"
+    assert status_mod.main(["--pair", str(child), str(record_path)]) == 1
 
     record = fixtures.matching_widget_record()
     adoption = fixtures.operational_adoption()
@@ -463,3 +466,36 @@ def test_status_cli_real_process_reports_unknown_and_exit_two(tmp_path, scripts_
     output = json.loads(completed.stdout)
     assert output[0]["status"] == "unknown"
     assert "must be a string" in output[0]["reason"]
+
+
+def test_host_local_states_do_not_leak_to_another_hosts_copy(status_mod, tmp_path):
+    project = tmp_path / "project"
+    child = project / ".claude" / "skills" / "roblox-widget-resource"
+    child.mkdir(parents=True)
+    (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    fixtures.write_contract(child)
+    record_path = project / ".claude" / "roblox" / "resources" / "records" / "widget-resource.yaml"
+    record_path.parent.mkdir(parents=True)
+    record = fixtures.matching_widget_record()
+    record["reconciliation"]["status"] = "matched"
+    other = fixtures.operational_adoption()
+    other.update(host="other-host", location="elsewhere/skills/roblox-widget-resource/SKILL.md", status="disabled")
+    record["host_adoptions"] = [other]
+    record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
+    assert status_mod.query_pair(child, record_path)["status"] == "healthy"
+
+    # A project-relative location resolves against the project root that owns AGENT_DIR/roblox/resources/.
+    own = fixtures.operational_adoption()
+    own.update(location=".claude/skills/roblox-widget-resource/SKILL.md", status="disabled")
+    record["host_adoptions"] = [other, own]
+    record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
+    assert status_mod.query_pair(child, record_path)["status"] == "unknown"
+
+    # A content block follows the skill to every copy and names the host it came from.
+    other["status"] = "blocked"
+    other["result"] = "Cleanup recipe is wrong."
+    record["host_adoptions"] = [other]
+    record_path.write_text(yaml.safe_dump(record, sort_keys=False), encoding="utf-8")
+    result = status_mod.query_pair(child, record_path)
+    assert result["status"] == "blocked"
+    assert "other-host" in result["reason"] and "Cleanup recipe is wrong." in result["reason"]

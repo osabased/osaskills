@@ -14,6 +14,16 @@ from _common import load_yaml
 from _resource_contract import load_contract, within, url_identity
 
 
+PARENT_PREFIX = "../roblox-resource-acquisition/"
+KNOWN_FIELDS = {
+    # Agent Skills fields
+    "name", "description", "license", "compatibility", "allowed-tools", "metadata",
+    # Claude Code fields
+    "disable-model-invocation", "user-invocable", "argument-hint", "model",
+}
+REQUIRED_HEADINGS = ("## Check the pin", "## Core API", "## Gotchas", "## Read further")
+
+
 def parse_frontmatter(text: str) -> tuple[dict[str, Any], str]:
     text = text.removeprefix("\ufeff").replace("\r\n", "\n")
     if not text.startswith("---\n"):
@@ -27,7 +37,7 @@ def parse_frontmatter(text: str) -> tuple[dict[str, Any], str]:
     for key, value in data.items():
         if not isinstance(key, str):
             raise ValueError("frontmatter keys must be strings")
-        if key != "metadata" and isinstance(value, (dict, list)):
+        if key not in {"metadata", "allowed-tools"} and isinstance(value, (dict, list)):
             raise ValueError(f"frontmatter field {key!r} must be a scalar value")
         if isinstance(value, str):
             data[key] = value.strip()
@@ -87,6 +97,10 @@ def local_links(root: Path, source: Path, text: str) -> list[tuple[Path, str]]:
                 raise ValueError(f"unsupported guidance link scheme: {value}")
             continue
         relative = unquote(parsed.path)
+        if source.parent.resolve() == root.resolve() and relative.startswith(PARENT_PREFIX):
+            # The shared parent is a sibling skill that may be absent (standalone upload);
+            # only the route is checked here, never its presence.
+            continue
         target = source if not relative else (source.parent / relative).resolve()
         if not target.is_relative_to(root.resolve()) or target == root.resolve():
             raise ValueError(f"local guidance link escapes package: {value}")
@@ -107,9 +121,8 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         metadata, body = parse_frontmatter(text)
     except (OSError, UnicodeError, ValueError) as exc:
         return [str(exc)], warnings
-    fields = {"name", "description", "license", "compatibility", "allowed-tools", "metadata"}
-    if set(metadata) - fields:
-        errors.append("unsupported frontmatter fields: " + ", ".join(sorted(set(metadata) - fields)))
+    if set(metadata) - KNOWN_FIELDS:
+        warnings.append("unrecognized frontmatter fields (hosts may ignore them): " + ", ".join(sorted(set(metadata) - KNOWN_FIELDS)))
     name = metadata.get("name")
     description = metadata.get("description")
     if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name):
@@ -122,9 +135,14 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         errors.append("frontmatter description must be a nonempty string")
     elif len(description) > 1024:
         errors.append("frontmatter description must be at most 1024 characters")
-    for field in ("license", "allowed-tools"):
+    for field in ("license", "argument-hint", "model"):
         if field in metadata and not isinstance(metadata[field], str):
             errors.append(f"frontmatter {field} must be a string")
+    if "allowed-tools" in metadata and not isinstance(metadata["allowed-tools"], (str, list)):
+        errors.append("frontmatter allowed-tools must be a string or list")
+    for field in ("disable-model-invocation", "user-invocable"):
+        if field in metadata and not isinstance(metadata[field], bool):
+            errors.append(f"frontmatter {field} must be true or false")
     if "compatibility" in metadata and (not isinstance(metadata["compatibility"], str) or not 1 <= len(metadata["compatibility"]) <= 500):
         errors.append("frontmatter compatibility must be 1 to 500 characters")
     optional = metadata.get("metadata")
@@ -132,13 +150,16 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         errors.append("frontmatter metadata keys and values must be strings")
     try:
         contract = load_contract(root)
+        for field in ("record", "learnings"):
+            if str(contract["reconciliation"][field]).startswith((".agents/", ".claude/")):
+                warnings.append(f"reconciliation.{field} names a fixed agent directory; roblox/resources/... (relative to AGENT_DIR) works for both .claude/ and .agents/ projects")
         declared = {within(root, item["path"]) for item in contract["guidance"]["documents"]}
         reachable = {(root / "SKILL.md").resolve()}
         pending = list(reachable)
         while pending:
             source = pending.pop()
             content = source.read_text(encoding="utf-8-sig")
-            if re.search(r"\b(?:TBD|TODO|RESOURCE-SLUG|VERSION/COMMIT/STATE)\b|^\s*[-*]?\s*\.\.\.\s*$", content, re.M):
+            if re.search(r"\b(?:TBD|TODO|RESOURCE-SLUG|VERSION/COMMIT/STATE|SELECTOR-VALUE|SOURCE-GROUNDED-CALL|CONCRETE-TRIGGERS-WITH-API-AND-FILE-NAMES|PIN-SPECIFIC-BEHAVIOR)\b|^\s*[-*]?\s*\.\.\.\s*$", content, re.M):
                 errors.append(f"unfinished scaffold in {source.relative_to(root)}")
             for target, _ in local_links(root, source, content):
                 if target.suffix == ".md":
@@ -152,9 +173,13 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         if "resource.yaml" not in unfenced(body):
             errors.append("entrypoint must route to resource.yaml")
         if "child-usage.md" not in unfenced(body):
-            errors.append("entrypoint must route to the installed parent's child-usage.md once per task")
+            errors.append("entrypoint must route to the parent's references/child-usage.md")
         if not re.search(r"^#\s+\S", unfenced(body), re.M):
             errors.append("missing resource name as a level-1 heading")
+        headings = {line.strip() for line in unfenced(body).splitlines() if line.startswith("## ")}
+        for heading in REQUIRED_HEADINGS:
+            if heading not in headings:
+                errors.append(f"entrypoint is missing the required heading {heading!r}")
     except (OSError, UnicodeError, ValueError, TypeError, KeyError) as exc:
         errors.append(str(exc))
     return errors, warnings

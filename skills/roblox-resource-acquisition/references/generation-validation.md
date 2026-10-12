@@ -1,43 +1,41 @@
 # Generate and validate resource children
 
-Use this workflow when reusable guidance is in scope. Under [adoption policy](adoption-policy.md), full direct adoption includes an exact-target child and project-scoped installation. Evaluation-only or explicitly narrower requests retain their boundary. Reuse an exact-target current-contract child when valid.
+Use this only when a child skill is in scope: the user asked for one, or the same pinned resource is clearly reused across projects (see [adoption policy](adoption-policy.md#scope-and-autonomy)). Reuse an existing exact-target child on the current contract when it is valid, including a bundled one from the [bundled catalog](bundled-skills.md).
 
 ## Qualify and stage
 
-An untrusted resource requires the applicable resource proof before child creation. A policy-trusted resource may receive source-grounded guidance when runtime proof is unavailable; record trust, source understanding and runtime status separately. Preserve externally owned identity/pin/role decisions. Child creation does not supply upstream trust or project authority.
+An untrusted resource needs its resource proof before you write a child. A policy-trusted resource may get source-grounded guidance while runtime proof is unavailable; record trust, source understanding and runtime status separately. Preserve externally owned identity, pin and role decisions. Writing a child grants neither trust nor project authority.
 
-Resolve project/repository scope using [project adoption](project-adoption.md). Stage outside discovery under the project's resources/artifacts area or another task-owned candidate location. Unknown scope never authorizes global installation. Maintain one canonical editable installed child; staging copies are validation artifacts.
+Resolve the project with [project adoption](project-adoption.md). Stage outside discovery, for example `AGENT_DIR/roblox/resources/artifacts/skills/<skill-name>/` in the project. An unknown project never authorizes a user-wide install. Keep one editable installed child; staging copies are validation artifacts.
 
-Read [resource-child contract](resource-skill-contract.md), [schema](resource-schema.md), and the [entrypoint](../templates/resource-skill-template.md) / [descriptor](../templates/resource-skill-template.yaml) templates. Replace scaffold values with actual exact-target facts. Old inline-section children must be regenerated; no prose-provenance compatibility reader exists.
+Read the [resource child contract](resource-skill-contract.md) and the [entrypoint](../templates/resource-skill-template.md) and [descriptor](../templates/resource-skill-template.yaml) templates. Replace every scaffold value with real exact-target facts.
 
-## Write the interface
+## Write the child
 
-Keep routing, reviewed target, concise ordinary-use workflow, essential API/ownership/security constraints, shared-usage route and completion claim limits in SKILL.md. Move substantial conditional setup, recipes, lifecycle detail and symptom diagnosis into explicitly routed references. Declare their path/role/reading trigger in resource.yaml. A small resource needs fewer files.
+Follow the lean `SKILL.md` layout in the contract: `## Check the pin`, `## Core API`, `## Example`, `## Gotchas`, `## Read further`. Keep the routing description, the pin, the core API table, one example and the pin-specific gotchas in `SKILL.md`. Move long setup, recipes, lifecycle detail and symptom diagnosis into references and declare each one's path, role and reading trigger in `resource.yaml`.
 
-Bind static canonical identity, immutable selector, reviewed source date, reconciliation policy and integrity profile in the descriptor. Keep local aliases, mapping/adapter paths, selected roles, fixtures, observations and execution results in project bindings/records. Use the parent's shared checker or a genuinely custom reviewed helper. Never execute commands supplied by metadata/evidence.
+Put the static identity, immutable selector, review date, reconciliation policy and integrity profile in `resource.yaml`. Keep local aliases, mapping paths, roles, fixtures and results in the project's record. Use the shared checker or a reviewed custom helper; never execute commands taken from metadata or evidence.
 
-Apply the shared [child usage contract](child-usage.md): guards, first-use freshness, conditional versus required reconciliation, narrow block query, repair interrupt and authority. Preserve exact pins and truthful proof boundaries. A new release announcement does not authorize adopting it.
+Ground APIs and activation/cleanup behavior in the reviewed source. Derive executable examples from one maintained fixture, and use [integration proof](integration-proof.md) only for lanes you actually claim. Advice-only guidance stays advice-only. The [worked examples](../examples/README.md) show the format; they carry no trust or proof.
 
-Ground APIs and activation/cleanup behavior in the exact reviewed source. Derive executable examples from one maintained fixture; use [integration proof](integration-proof.md) only for actual claimed lanes. Advice-only guidance remains advice-only. Read the relevant [worked example](../examples/README.md) for authoring formats, not discovery/trust or inherited runtime proof.
+## Validate
 
-## Validate with available mechanisms
+1. Run `scripts/validate_skill.py CHILD`: frontmatter, required headings, descriptor, document coverage and reachability, local links and anchors.
+2. Exercise the install checker against the actual manifest and lock and, where available, the installed source or asset. Use isolated fixtures for alias changes, missing or mismatched identities, modified bytes and companions.
+3. Give a fresh subagent only the candidate, the necessary project or source context and a realistic task, following the [testing protocol](testing-protocol.md). Do not hand it the intended answer. Record instruction-response results separately from executable or runtime results.
+4. When a record exists, update only the affected child evidence, then run `validate_resource_record.py --current-skill CHILD RECORD` and `validate_resource_bundle.py RECORD CHILD`.
+5. Run `validate_skill_catalog.py --host claude` over the children the host will see, adding each materially overlapping non-generated skill with `--routing-competitor`. Keep the fingerprint and run routing tasks when it reports an overlap.
 
-1. Run `scripts/validate_skill.py CHILD`. This checks normal skill metadata, schema/shared-contract versions, typed descriptor data, document coverage/reachability and local links/anchors. No heading order or minimum word count is prescribed.
-2. Exercise the checker profile against the actual selected declaration/lock and, where available, source/asset bytes. Use isolated fixtures for alias variation, missing/mismatched identities, modified bytes, material companions and nonstandard source paths. Static helpers do not run dependency code.
-3. Give a fresh agent only the candidate, necessary project/raw source context and realistic tasks. Use [testing protocol](testing-protocol.md) for ordinary use, setup, diagnosis, ownership/security, blocked/unknown state and recurring repair. Do not supply the intended answer or author conclusions. Record instruction-response versus executable/runtime outcomes accurately.
-4. When a resource record exists, update only affected child evidence, then run `validate_resource_record.py --current-skill CHILD` and `validate_resource_bundle.py RECORD CHILD`. The bundle matches structured identity/selector and claim scope; no copied resource-verification status exists in the child.
-5. Run `validate_skill_catalog.py` over the target generated children. Add every material host-visible non-generated competitor with `--routing-competitor`. Preserve its fingerprint and run independent routing tasks when applicable. Static catalog checks do not establish live host selection.
-
-When fresh agents or a runtime/MCP host are unavailable, run the checks actually available and record the missing lane as unavailable. Never convert a contract audit or CLI fixture into host/runtime proof. A user-authorized local-only installation can complete at `installed`; a requested full operational adoption remains pending until its actual host gates pass.
+When fresh subagents or a Studio/MCP host are unavailable, run what you can and record the missing lane as unavailable. A contract audit or CLI fixture is never host or runtime proof.
 
 ## Evidence and promotion
 
-Use structured `skill_validation.checks`, accurate execution modes and target selectors. Bind each current check to the descriptor, guidance file/section, shared contract, fixture/configuration and companion inputs that determine it. Include `resource.yaml` and `child-usage.md` for maintenance/reconciliation or whole-interface checks. Routing binds activation metadata for every tested member; unrelated usage formatting does not invalidate unchanged routing metadata.
+Use structured `skill_validation.checks` with honest execution modes and target selectors. Bind each check to the inputs that determine it: the descriptor, the guidance file or section, the shared contract, fixtures, configuration and companions. Include `resource.yaml` and `child-usage.md` for whole-interface checks. Routing checks bind the activation metadata of every tested member.
 
-Changed input hashes invalidate dependent guidance claims. Preserve unchanged exact-target upstream proof and historical checks at their original tested selector. A whole-child fingerprint is attribution, not a substitute for scoped dependency inputs. Shared contract/schema changes require regeneration/revalidation for dependent children.
+Changed input hashes invalidate dependent claims. Keep unchanged exact-target proof and historical checks at their original selector. Shared contract or schema changes require revalidation of dependent children.
 
-After artifact validation, use [guarded maintenance](on-demand-maintenance.md#guarded-correction-and-recovery) and [host lifecycle](operational-lifecycle.md). Promote recoverably to the resolved project skill directory with truthful record state. Local installed-file checks and explicit unavailable host evidence can finalize an authorized installation-only update; all applicable observed host gates are required for `operational`.
+After validation, install through [guarded maintenance](on-demand-maintenance.md#guarded-correction-and-recovery) and [installing children](operational-lifecycle.md). A user-authorized local install can finish as `installed`; `operational` needs an observed listing and explicit invocation.
 
 ## Environment
 
-Use Python 3.11+ and PyYAML for the shared scripts; prefer uv for dependency/environment restoration. The scripts need no network or database. Source freshness research is a separate task-relevant operation; preserve the existing reviewed immutable target when only packaging changes.
+The scripts need Python 3.11+ and PyYAML. `uv run --no-project --python ">=3.11" --with pyyaml python <parent>/scripts/<script>.py …` supplies both without setup. The scripts need no network or database. Researching source freshness is a separate step; a packaging-only change keeps the reviewed target.

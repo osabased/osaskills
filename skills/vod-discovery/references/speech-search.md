@@ -1,6 +1,6 @@
 # Vulkan transcription and semantic retrieval
 
-These are optional local additions. Discover compatible installations on the current host and take runtime/model paths from current project notes or explicit arguments. Examples below are Windows PowerShell commands, not bundled installations. Run a bounded pilot when changing models, drivers, language or inference settings. Source timing and evidence review still govern markers and POV placement.
+These are optional local additions. Discover compatible installations on the current host and take runtime/model paths from current project notes or explicit arguments. Examples use the `$PY` convention from [setup](setup.md); executables and models are not bundled. On Windows the whisper.cpp binaries end in `.exe`. Run a bounded pilot when changing models, drivers, language or inference settings. Source timing and evidence review still govern markers and POV placement.
 
 ## whisper.cpp with Vulkan
 
@@ -8,7 +8,7 @@ The adapter's verified baseline is [whisper.cpp v1.9.4](https://github.com/ggml-
 
 On a new installation, discover existing tools first. A source build needs CMake, a compatible C++ compiler, and Vulkan development files including glslc and SPIRV-Headers. Use official upstream source and the [LunarG SDK](https://vulkan.lunarg.com/sdk/home/). An installed Vulkan driver alone does not supply the build tools. The official Windows release archives inspected during the pilot lacked a Vulkan variant; do not assume a CPU archive can accelerate on AMD.
 
-```powershell
+```sh
 git clone --depth 1 --branch v1.9.4 https://github.com/ggml-org/whisper.cpp.git work/whisper-cpp
 cmake -S work/whisper-cpp -B <short-build-dir> -DGGML_VULKAN=ON -DWHISPER_BUILD_TESTS=OFF -DWHISPER_BUILD_SERVER=OFF
 cmake --build <short-build-dir> --config Release --target whisper-cli -j 4
@@ -18,8 +18,8 @@ Use a short absolute build path on Windows to avoid MSBuild path-length problems
 
 For English footage, one verified option is `ggml-small.en-q5_1.bin` from the [official converted-model repository](https://huggingface.co/ggerganov/whisper.cpp/tree/5359861c739e955e79d9a303bcbc70fb988958b1). Its SHA256 is `bfdff4894dcb76bbf647d56263ea2a96645423f1669176f4844a1bf8e478ad30` (190,098,681 bytes). This is an English-only, quantized model, not a universal default; use and pilot an appropriate multilingual model for other languages. The adapter supports a local GGML model path, not an API endpoint. The following example is specifically for English; replace model/language arguments for other footage.
 
-```powershell
-work/vod-env/Scripts/python.exe <skill>/scripts/vod.py prepare --source 'D:/VODs/alice.mp4' --out work/vods/alice-vulkan --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli.exe --whisper-model work/downloads/ggml-small.en-q5_1.bin --language en --limit-packets 1
+```sh
+"$PY" <skill>/scripts/vod.py prepare --source /media/vods/alice.mp4 --out work/vods/alice-vulkan --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli --whisper-model work/downloads/ggml-small.en-q5_1.bin --language en --limit-packets 1
 ```
 
 Use fresh preparation folders when changing backend/model/settings. Completed older packets and their review decisions are retained; they are not silently retranscribed. Subsequent identical calls resume normally. Add the same `--cache-dir work/vods/stage-cache` to different preparation folders to reuse matching frames/contact sheets and decoded audio. Transcripts are cached per stream with their language and runtime/model identity; a failed stream does not invalidate successful other streams. Binary/DLL/model hashes are part of the recorded settings, so replacing them requires a fresh folder. `--whisper-threads` defaults to 4 and `--whisper-gpu` to 0. `--whisper-device cpu` explicitly runs the same model without GPU acceleration for comparison or fallback.
@@ -38,20 +38,21 @@ The optional semantic helper uses [FastEmbed](https://github.com/qdrant/fastembe
 
 Create or reuse a **separate Python 3.12 environment**, then download the pinned model once:
 
-```powershell
+```sh
 uv venv --python 3.12 work/semantic-env
-uv pip install --python work/semantic-env/Scripts/python.exe -r <skill>/requirements-semantic.txt
-work/semantic-env/Scripts/python.exe <skill>/scripts/semantic.py download-model --out work/semantic-model
+SEMANTIC_PY=work/semantic-env/bin/python   # Windows: work/semantic-env/Scripts/python.exe
+uv pip install --python "$SEMANTIC_PY" -r <skill>/requirements-semantic.txt
+"$SEMANTIC_PY" <skill>/scripts/semantic.py download-model --out work/semantic-model
 ```
 
 The model is `BAAI/bge-small-en-v1.5`, using Qdrant's quantized ONNX conversion at revision `aa8f8b060edb00e03bfdd08813a2949946c8ba55`. Its main file is approximately 67 MB. The download command uses immutable URLs and checks the model checksum; subsequent runs validate every saved model file. After installation, indexing and querying use local files only. The selected model and code have permissive free licenses (MIT and Apache-2.0). There are no media uploads, cloud accounts or usage fees for these helpers. This adapter is tied to that English retrieval model; use literal transcript search for other languages unless a suitable semantic adapter has been implemented and verified. A different folder path alone does not add multilingual support. If `uv` is unavailable, use the environment creation/install fallback in [setup.md](setup.md).
 
 First build/reuse the literal index in the preparation environment, then the semantic index in its own environment:
 
-```powershell
-work/vod-env/Scripts/python.exe <skill>/scripts/vod.py index --prepared work/vods/alice-vulkan work/vods/bob-vulkan --out work/vods/search
-work/semantic-env/Scripts/python.exe <skill>/scripts/semantic.py index --literal-index work/vods/search --model-dir work/semantic-model --out work/vods/semantic
-work/semantic-env/Scripts/python.exe <skill>/scripts/semantic.py search --index work/vods/semantic --model-dir work/semantic-model --query 'someone watching instead of helping me fight' --limit 10 --out work/vods/query.json
+```sh
+"$PY" <skill>/scripts/vod.py index --prepared work/vods/alice-vulkan work/vods/bob-vulkan --out work/vods/search
+"$SEMANTIC_PY" <skill>/scripts/semantic.py index --literal-index work/vods/search --model-dir work/semantic-model --out work/vods/semantic
+"$SEMANTIC_PY" <skill>/scripts/semantic.py search --index work/vods/semantic --model-dir work/semantic-model --query 'someone watching instead of helping me fight' --limit 10 --out work/vods/query.json
 ```
 
 Pass one preparation folder per media source to the literal index: choose the desired transcript version, not both old and new preparations of the same VOD. Search can include partly prepared sources; returned coverage makes those limits visible. Preparation coverage is not completed footage review.
@@ -68,20 +69,20 @@ Similarity is a ranking score, **not a percentage, confidence, editorial priorit
 
 For multiple related searches, use `search-many` with a JSON array of query strings and a fresh output file. It loads the semantic model once and returns the usual complete result for each query:
 
-```powershell
-work/semantic-env/Scripts/python.exe <skill>/scripts/semantic.py search-many --index work/vods/semantic --model-dir work/semantic-model --queries work/vods/queries.json --limit 10 --out work/vods/query-results.json
+```sh
+"$SEMANTIC_PY" <skill>/scripts/semantic.py search-many --index work/vods/semantic --model-dir work/semantic-model --queries work/vods/queries.json --limit 10 --out work/vods/query-results.json
 ```
 
-For an adaptive sequence of searches, `semantic.py worker --index ... --model-dir ...` keeps the model in one process and accepts one JSON object per stdin line: `{"id":"q1","query":"someone watching instead of helping","limit":10}`. Wait for `{"ready":true,"protocol":"vod-semantic-worker/v1"}`. Each reply contains the request ID and either `result` or `error`. EOF stops the worker; close stdin and wait for exit after the investigation. Requests are serial, limited to 16,384 characters. An oversized line stops the worker. Invalid queries return errors without replaying old results. This transport opens no network port.
+`semantic.py worker --index ... --model-dir ...` keeps the model loaded in one process and reads one JSON request per stdin line, for example `{"id":"q1","query":"someone watching instead of helping","limit":10}`. It is meant for a program that holds the process open (it first prints `{"ready":true,"protocol":"vod-semantic-worker/v1"}`; each reply carries the request ID and either `result` or `error`; EOF stops it). Shell tool calls cannot keep stdin open between calls, so use `search-many` from the shell. Requests are serial and limited to 16,384 characters; an oversized line stops the worker. The worker opens no network port.
 
 Every query still verifies raw preparation signatures, model hashes and index artifacts and reads current evidence references. Only the model is retained; a changed model requires restarting the worker. A valid rebuilt index with the same model can be read by the existing worker. Single-query `search` remains available. None of these modes change the retrieval/overlap-grouping rules or write to the indexed evidence.
 
 For multi-packet whisper.cpp preparation, the optional `--whisper-server <path>` flag owns one local server for the duration of `prepare`. It starts lazily on the first uncached transcript and closes on normal completion, exceptions or handled interruption. Fully cached runs do not load a model. The server binds only to 127.0.0.1 on a temporary port, uses a random route and an empty public directory, and accepts the already decoded WAV files. The adapter never requests model changes or runtime format conversion. A request failure closes the worker and leaves the failed stage available for diagnosis/resume; it never silently falls back to another ASR mode.
 
-Use a `whisper-server` built from the same verified whisper.cpp source/build as `whisper-cli`, with matching adjacent runtime libraries. The tested runtime baseline is v1.9.4; verify the selected backend on the current hardware. An existing CMake build can add the server by configuring `WHISPER_BUILD_SERVER=ON` and building target `whisper-server`; no model download or upstream source modification is needed. Keep the helper hidden on Windows. Server/model/runtime hashes and explicit decoding settings are included in transcript cache identity. Preserve the CLI route for single requests and unverified server builds.
+Use a `whisper-server` built from the same verified whisper.cpp source/build as `whisper-cli`, with matching adjacent runtime libraries. The tested runtime baseline is v1.9.4; verify the selected backend on the current hardware. An existing CMake build can add the server by configuring `WHISPER_BUILD_SERVER=ON` and building target `whisper-server`; no model download or upstream source modification is needed. Server/model/runtime hashes and explicit decoding settings are included in transcript cache identity. Preserve the CLI route for single requests and unverified server builds.
 
-```powershell
-python <skill>/scripts/vod.py prepare --source "D:/VODs/alice.mp4" --out work/vods/alice-worker --cache-dir work/vods/stage-cache --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli.exe --whisper-server work/whisper-runtime/whisper-server.exe --whisper-model work/downloads/ggml-small.en-q5_1.bin --whisper-device vulkan --language en
+```sh
+"$PY" <skill>/scripts/vod.py prepare --source /media/vods/alice.mp4 --out work/vods/alice-worker --cache-dir work/vods/stage-cache --asr-backend whisper-cpp --whisper-cli work/whisper-runtime/whisper-cli --whisper-server work/whisper-runtime/whisper-server --whisper-model work/downloads/ggml-small.en-q5_1.bin --whisper-device vulkan --language en
 ```
 
 Switching transport changes preparation/runtime identity: use a fresh output folder with the same cache directory. Frames and audio can be reused; CLI transcripts are not silently relabelled as server results. The worker explicitly matches the tested CLI's beam/best-of, context, temperature and segment-timestamp settings; upstream server defaults differ. Requests retain independent source clocks and streams, with raw server JSON, canonical transcript JSON and worker logs. Timing metadata separates startup from request inference. Verification currently covers bounded English pilot windows, not all languages, hours-long throughput, or recovery after forcibly killing the parent process.

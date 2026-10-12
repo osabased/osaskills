@@ -4,6 +4,8 @@ Use this reference when the current or target structure uses or materially plans
 
 Treat Server Authority as an engine simulation model, not as a synonym for ordinary server-side validation. Confirm the mode from the DataModel or mapped Workspace properties when available. Generic server validation, `SetNetworkOwner(nil)`, or ordinary client/server code does not prove it. When prediction APIs or a complete related configuration are visible but `AuthorityMode` cannot be inspected, mark the mode unresolved and preserve the apparent simulation boundaries.
 
+Server Authority reached full release (opt-in per experience) on 2026-07-09 ([announcement](https://devforum.roblox.com/t/full-release-ship-fair-and-competitive-games-with-server-authority/4727993)). Re-open the docs below when the task depends on API behavior or prerequisites.
+
 ## Structural rules
 
 - When setting `AuthorityMode` to `Server`, inspect the prerequisite settings it changes automatically: next-generation replication, the input action system, deferred signals, fixed simulation, and streaming. Account for those configuration effects in the write set and validation; verify their current properties in the official setup documentation.
@@ -30,8 +32,6 @@ Trace the affected:
 When a change touches prediction, synchronized simulation state, or core simulation input, validate both client and server behavior. Use representative Studio network simulation when available; a zero-latency playtest alone does not establish rollback-sensitive correctness.
 
 Preserve an established conventional networking model unless the request or an independent requirement justifies adopting Server Authority.
-
-Re-open current Roblox documentation whenever the task depends on release state, API behavior, prerequisites, or current platform recommendations.
 
 ## Sources
 

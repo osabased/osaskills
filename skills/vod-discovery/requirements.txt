@@ -1,3 +1,4 @@
+# Core preparation environment: Python 3.11 or newer (3.13 tested). See references/setup.md.
 claude-real-video==0.10.7
 faster-whisper==1.2.1
 # PyAV 19 removed metadata_errors, which faster-whisper 1.2.1 still passes.

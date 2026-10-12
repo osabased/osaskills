@@ -1,46 +1,53 @@
-# Shared resource-child usage contract 1
+# Shared child usage (contract 1)
 
-Read once per task for an activated child. Its `resource.yaml` declares canonical identity, immutable selector, scope, check profile and conditional references. Unsupported contract versions require regeneration; ordinary use stops on unknown material identity.
+Read this once per task when a child skill (for example `roblox-janitor`) is active. The child's `resource.yaml` holds the canonical identity, exact pin, check profile and the project record path.
 
-## Resolve paths and authority
+## Find the parent and the project
 
-Resolve `PARENT` from the installed `roblox-resource-acquisition` skill, `CHILD` from this child directory and `PROJECT` from the affected project's guide/manifest/mapping. Preserve its selected target. `RECORD` is the descriptor's project-relative record, unless an explicitly supplied authoritative record overrides it. Replace these command parameters with actual paths.
+- **Parent:** the `roblox-resource-acquisition` skill directory. Look first for the sibling `../roblox-resource-acquisition/` next to the child, then `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`. In a plugin install, the parent is the sibling folder.
+- **Child:** the active child's own directory.
+- **Project:** the root of the affected Roblox project (where `wally.toml`, `pesde.toml`, `package.json` or `default.project.json` lives).
+- **Record:** `PROJECT/AGENT_DIR/` plus the descriptor's `reconciliation.record` (normally `roblox/resources/records/<slug>.yaml`). `AGENT_DIR` is the project's `.claude/` if it exists; otherwise `.agents/` if it exists; otherwise create `.claude/`. If both exist, use the one that already contains `roblox/`; if neither or both do, use `.claude/`. `check_resource_status.py --child CHILD --project PROJECT` applies this rule for you. An explicitly supplied record path wins (use `--pair CHILD RECORD`).
 
-An unresolved project-scoped child is `UNKNOWN`: stop version-sensitive work and enter parent `repair/reconcile`, without global fallback. Only explicitly user-scoped children may use their declared no-project evidence locations.
+## Run the checks
 
-## Before ordinary use
+Use `uv` when it is available, because it supplies Python 3.11+ and PyYAML without a setup step:
 
-1. Honor child and parent sibling `.skill-maintenance/<skill-name>.json` guards. A pending/interrupted promotion blocks dependent use until recovery/completion; controlled candidate validation is separate. Shared checkers honor these guards.
-2. For this resource's first use, perform the [first-use check](first-use-check.md). It compares relevant canonical source/docs and records the observation. Reuse unchanged checks within the task; release availability does not authorize a pin change.
-3. Apply the descriptor's reconciliation policy:
-
-   - **conditional:** run the commands below; require declaration `PASS` and query `HEALTHY`. A healthy task does not load full record proof, learnings or package internals. Defer installed integrity until completion.
-   - **required:** run installed integrity before version-sensitive use, using the child's concrete asset/custom inputs. Run the status query and reconcile matching records plus resource-bound learnings under [pre-use reconciliation](operational-lifecycle.md#pre-use-reconciliation). Plugin identity can drift independently of a project lock.
-   - **not-applicable:** honor guards/freshness and the descriptor's concrete immutable or version-insensitive reason. Unknown identity never counts as a match.
-
-```text
-python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
-python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "RECORD"
+```sh
+uv run --no-project --python ">=3.11" --with pyyaml python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT" --declared
+uv run --no-project --python ">=3.11" --with pyyaml python "PARENT/scripts/check_resource_status.py" --child "CHILD" --project "PROJECT"
 ```
 
-The checker matches canonical identity rather than assuming an alias and reads source bytes without executing dependency code or commands from records. For ambiguous/custom bindings, supply `--alias`, `--package-dir`, `--companion PACKAGE=DIR` or `--asset` as applicable. Project fixtures own wrapper/mapping validation.
+Otherwise use any `python` 3.11+ with PyYAML installed. Replace `PARENT`, `CHILD` and `PROJECT` with real paths.
 
-## Stop and repair
+`check_resource_install.py` reads `pesde.toml`/`pesde.lock`, `wally.toml`/`wally.lock` (with `Packages/_Index`), or `package.json`/`package-lock.json`, according to the child's profile. For a nonstandard layout pass `--manifest`, `--lock`, `--alias`, `--package-dir`, `--companion PACKAGE=DIR` or `--asset`. It never runs dependency code or commands taken from records.
 
-Stop affected version-sensitive work for `BLOCKED`/`UNKNOWN`, missing/mismatched pin/lock, verifier failure/drift, an existing block, hard correctness/security/identity/version/verification defects, or an authorized repair invalidating evidence. Adoption/upgrades also enter the parent's applicable reconciliation path before use resumes.
+## Act on the result
 
-A recurring instruction workaround activates parent `repair/reconcile` diagnosis. A harmless task-local adjustment does not. For a soft defect, preserve safe reversible progress and report the reproduction, workaround and durable correction before completion; diagnosis alone does not force unrelated lifecycle reads. Carry identity/selector, task, installed/recorded state, expected/observed behavior, reproduction, impact, correction, invalidated evidence and authority. Diagnosis grants no mutation permission beyond the current task or applicable factual-repair grant.
+| Result | Meaning | Do |
+| --- | --- | --- |
+| `PASS`, `HEALTHY` | Pin matches; no recorded block. | Use the child normally. |
+| `NO-RECORD` | The project has no record for this resource. | Use the child as advice; say record checks were skipped. |
+| `UNAVAILABLE`, `UNKNOWN` (exit 2) | The check could not run or the record is inconclusive: no project, unsupported or missing manifest, library not declared, packages not installed, unreadable record, unknown reconciliation, a renamed `generated_skill`, or a host-local problem with this copy. | Continue in **advisory mode**: read the manifest/lock directly if you can, and say which check was skipped and why. |
+| `FAIL` (install check, exit 1) | Observed mismatch (the pin or installed bytes differ from the child's target), a malformed manifest or lock, an ambiguous alias, or an update in progress. | **Stop** version-sensitive work. Report the mismatch; enter the parent's `repair/reconcile` mode. |
+| `MISMATCH`, `BLOCKED`, `FAILED` (status check, exit 1) | The record names another identity/version, records a block, or records failed verification. | **Stop** the affected use and report the reason. |
 
-## Complete with the right claim
+Advisory mode also applies when the parent skill, Python or `uv` is missing (for example a standalone upload or a sandbox without Python): read the manifest and lock yourself, compare the pinned version with the child's target, and report which checks you could not run.
 
-For conditional resources run installed integrity before completion:
+A guard file (`.skill-maintenance/<skill-name>.json` beside the child's or parent's folder) means an update is in progress. The checkers report it as blocked; finish or recover the update first.
 
-```text
-python "PARENT/scripts/check_resource_install.py" "CHILD" --project "PROJECT"
-```
+## Reconciliation policies
 
-Require exit 0, `status: PASS`, the exact selector and `lane: installed-integrity`. Assets add `--asset` and require `lane: asset-integrity`. A custom profile names a reviewed child-owned checker; the shared checker reports unavailable instead of executing it automatically. Reuse unchanged pre-use integrity checks under required policy.
+- **conditional:** run the two checks above before version-sensitive use; run the full installed-integrity check (the first command without `--declared`) before you finish, when the project can be checked.
+- **required:** run the full installed-integrity check before version-sensitive use, because installed state can drift without a lock change (for example a Studio plugin file). If a record exists, also load it and the project's learnings.
+- **not-applicable:** the descriptor names a concrete reason why installed state cannot drift; only guards apply.
 
-Run the project's authored-source/build checks and execution lanes the task claims. Hashes establish installed identity, static checks establish static integration, and project fixtures own runtime/input/rendering/diagnostic proof. Advice-only guidance implies no runtime harness. Trust, project role, runtime verification, child validation and host adoption remain distinct.
+Optionally glance at the resource's releases page when the task depends on version-specific behavior; see [first use](on-demand-maintenance.md#first-use-freshness-check). A newer release is information, not a reason to change the pin.
 
-When updating an installed child, use [guarded maintenance](on-demand-maintenance.md#guarded-correction-and-recovery). An explicitly local-only update may finalize truthfully `installed` with unavailable host discovery/activation recorded; `operational` still requires observed applicable host gates.
+## When guidance is wrong
+
+A repeated workaround, or a guess you had to make, is a defect: report the reproduction, the workaround and the proposed fix before you finish (the parent's "When guidance is wrong" section). A hard defect (correctness, security, identity, version) stops the affected work. A harmless one-off adjustment needs no report. Edit the child only when the current task authorizes it; otherwise propose the exact change. Use [guarded maintenance](on-demand-maintenance.md#guarded-correction-and-recovery) for updates to an installed child.
+
+## Finish with the right claim
+
+Say what was checked: the pin and lock (declaration), the installed bytes (installed-integrity, exit 0 with `lane: installed-integrity`), and any project build or runtime checks you actually ran. Advice-only guidance implies no runtime proof. Trust, project role, runtime verification and child validation are separate claims.

@@ -29,8 +29,6 @@ For the full Migration route:
 
 Express the plan as concrete migration slices, not only phases. For each slice record: current item/path and target item/path; affected callers, `require`s, Remotes, mappings, configuration, and tests; the authoritative source before and after; the exact cutover step that prevents dual ownership; required owner actions; the recovery boundary; and the focused verification that closes the slice. Items that do not move but need reference or topology updates still belong in a slice. If any field is unknown, name the evidence needed rather than replacing it with a generic “update references” step.
 
-When the prompt supplies only artifact names or hierarchy categories, treat those as the planning inventory. Produce one provisional slice per material category (entrypoints, shared/server/client roots, packages, metadata-sensitive children, and mapping/configuration as applicable), use explicit placeholders only for unresolved leaf paths, and attach the relevant reference traces and verification to each slice. Missing contents lower path-level confidence; they do not justify returning only a plan-to-plan.
-
 For an ordinary structural change, apply only the items above that are needed to keep the requested change coherent and safe. Do not inventory an unrelated target architecture or satisfy migration-wide accounting merely because one safeguard applies.
 
 ## Slice and recovery

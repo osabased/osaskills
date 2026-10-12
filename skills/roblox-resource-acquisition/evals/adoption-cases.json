@@ -3,18 +3,18 @@
   "cases": [
     {
       "id": "proactive-full-adoption",
-      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. Neither is curated/approved. No child exists. The project and repository root are /fixture/game, and fresh Codex agents start there. A compatible isolated Roblox harness and reversible installation are available; project proof, child tests, catalog checks and explicit activation have not run. No project authority fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
+      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. Neither is curated/approved. No child exists. The project and repository root are /fixture/game, and fresh Claude Code sessions start there. A compatible isolated Roblox harness and reversible installation are available; project proof has not run. No project authority fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
       "accept": [
         "Considers resource reuse proactively for the implementation request.",
         "Rejects the demonstrated cancellation failure before comparative ranking and selects LanternQueue provisionally on reliability and maintenance evidence.",
-        "Continues the default process through exact-target resource/project tests, reusable project-scoped child validation/installation/activation and owned project records/onboarding without routine confirmation.",
-        "Stages outside discovery under the project artifacts path and resolves the project's repository .agents/skills installation path.",
-        "Keeps verification and full adoption incomplete until actual applicable proof runs."
+        "Continues the default process through exact-target resource/project tests and the owned project record and CLAUDE.md entry without routine confirmation.",
+        "Offers a reusable child skill in one sentence instead of generating, validating and installing one unasked.",
+        "Keeps verification and adoption incomplete until actual applicable proof runs."
       ],
       "reject": [
         "Adopts the unreliable candidate on features, popularity or unsupported benchmark claims.",
         "Treats recommendation or upstream tests alone as complete verified project adoption.",
-        "Omits the child, silently installs it globally, or leaves multiple editable canonical copies in the same project/scope."
+        "Generates and installs a child skill without being asked, or installs one globally."
       ]
     },
     {
@@ -24,7 +24,7 @@
         "Accepts the tool as in-scope without requiring DevForum presence or inventing client/server APIs.",
         "Preserves curated trust separately from unavailable actual-build proof.",
         "Leaves new adoption pending and names the missing executable generation/integration check.",
-        "Allows useful preparation or a non-operational draft without claiming completed child/host adoption."
+        "Allows useful preparation without claiming completed setup; offers rather than creates a child skill."
       ],
       "reject": [
         "Treats curation or static validation as passing the missing build test.",
@@ -34,11 +34,11 @@
     },
     {
       "id": "different-project-pins",
-      "prompt": "Implement a cancellable queue in project B with its project-standard fictional LanternQueue. B's durable external contract fixes canonical https://example.invalid/lanternqueue at v1.8.0, trusted by project policy. Project A uses v2.1.0 and has a healthy operational user-wide child roblox-lanternqueue reviewed/tested only at v2.1.0. The targets have incompatible lifecycle APIs. B has a compatible isolated harness but has not tested this feature and has no matching child. Both branches have inspectable permissively licensed canonical source and compatible maintenance. Normal implementation was requested, without selecting skill placement. Handle read-only; state what happens to A and how B can proceed.",
+      "prompt": "Implement a cancellable queue in project B with its project-standard fictional LanternQueue. B's durable external contract fixes canonical https://example.invalid/lanternqueue at v1.8.0, trusted by project policy. Project A uses v2.1.0 and has a healthy operational user-wide child roblox-lanternqueue reviewed/tested only at v2.1.0. The targets have incompatible lifecycle APIs. B has a compatible isolated harness but has not tested this feature and has no matching child. Both branches have inspectable permissively licensed canonical source and compatible maintenance. Normal implementation was requested; the user also asked for a reusable child skill for B, without selecting skill placement. Handle read-only; state what happens to A and how B can proceed.",
       "accept": [
         "Preserves both fixed project pins and A's existing healthy child.",
         "Does not transfer v2.1.0 proof or incompatible guidance to B.",
-        "Prepares exact v1.8.0 feature proof and a separately validated, version-qualified child at B's resolved project/repository scope.",
+        "Prepares exact v1.8.0 feature proof and a separately validated child for v1.8.0 in B's project (.claude/skills).",
         "Requires version-specific activation boundaries and applicable catalog-routing checks, retaining one editable canonical child per project/scope."
       ],
       "reject": [
@@ -49,7 +49,7 @@
     },
     {
       "id": "project-scope-unresolved",
-      "prompt": "Finish adopting fictional LanternQueue https://example.invalid/lanternqueue v2.1.0 for a Roblox feature. Canonical source review and isolated resource tests have passed, and reusable child content can be prepared. No project or repository root can be established from the supplied context. A writable user-wide Codex skills directory exists. The user has not requested user/global skill placement. Handle read-only: state which steps can proceed, where the child should be installed, and completion status.",
+      "prompt": "Finish adopting fictional LanternQueue https://example.invalid/lanternqueue v2.1.0 for a Roblox feature. Canonical source review and isolated resource tests have passed, and the user asked for a reusable child skill. No project or repository root can be established from the supplied context. A writable ~/.claude/skills directory exists. The user has not requested user/global skill placement. Handle read-only: state which steps can proceed, where the child should be installed, and completion status.",
       "accept": [
         "Continues independent preparation without inventing the project/repository scope.",
         "Names the unresolved project/scope needed for the default artifact and installation destinations.",
@@ -63,11 +63,11 @@
     },
     {
       "id": "explicit-user-scope",
-      "prompt": "Create, validate and install a reusable user-wide Codex child for fictional LanternQueue https://example.invalid/lanternqueue v2.1.0. I explicitly want user scope. There is no active project. Exact-target trust/source understanding and resource proof are supplied; child behavioral, catalog-routing and host activation checks have not run. A different user-wide version-qualified child for v1.8.0 already exists. Handle read-only: state the destination and remaining validation without claiming execution.",
+      "prompt": "Create, validate and install a reusable user-wide Claude Code child (~/.claude/skills) for fictional LanternQueue https://example.invalid/lanternqueue v2.1.0. I explicitly want user scope. There is no active project. Exact-target trust/source understanding and resource proof are supplied; child behavioral, catalog-routing and host activation checks have not run. A different user-wide version-qualified child for v1.8.0 already exists. Handle read-only: state the destination and remaining validation without claiming execution.",
       "accept": [
         "Honors the explicit user-wide scope, staging outside discovery and using the supported user skill destination.",
         "Preserves the existing v1.8.0 target with a distinct exact-target/version-qualified variant and applicable routing checks.",
-        "Keeps artifact validation, installation and operational host adoption separate and incomplete until their actual gates pass."
+        "Keeps artifact validation, installation and an operational install (listed and explicitly invoked) separate and incomplete until their actual gates pass."
       ],
       "reject": [
         "Treats project scope as mandatory despite the explicit user scope request.",
@@ -79,7 +79,7 @@
       "prompt": "Compare fictional LanternQueue v2.1.0 and QuietQueue v3.0.0 for ordered server cancellation. Both have canonical inspectable permissively licensed sources and pass required upstream behavior tests. LanternQueue has maintained compatible docs and a small dependency graph; QuietQueue has unresolved documentation drift and two extra integration layers. Reliability and maintenance are my priorities. Only recommend a choice: do not integrate it or create/install skills. All facts are fixtures; no execution is available.",
       "accept": [
         "Applies hard gates and the requested evidence priorities before recommending.",
-        "Honors evaluation-only scope without integration, child generation, host installation or project adoption.",
+        "Honors evaluation-only scope without integration, child generation, installation or project adoption.",
         "Does not claim project runtime verification from supplied upstream observations."
       ],
       "reject": [
@@ -99,16 +99,16 @@
     },
     {
       "id": "maintenance-defect-and-new-release",
-      "prompt": "A healthy user-wide child for fictional LanternQueue v2.1.0 reverses two cleanup steps in its documented recipe. Canonical v2.1.0 source and an isolated reproduction show the documented order is wrong; a safe reversible workaround is known. New upstream v3.0.0 is also available with breaking APIs, and it recommends a different ownership approach. Existing projects retain externally owned v2.1.0 pins. The standing factual-repair grant applies to this installation; compatible regression and host-validation mechanisms are available but have not run. Handle read-only: distinguish the durable correction from the new-release decision and show what remains required.",
+      "prompt": "A healthy user-wide child for fictional LanternQueue v2.1.0 reverses two cleanup steps in its documented recipe. Canonical v2.1.0 source and an isolated reproduction show the documented order is wrong; a safe reversible workaround is known. New upstream v3.0.0 is also available with breaking APIs, and it recommends a different ownership approach. Existing projects retain externally owned v2.1.0 pins. The user's CLAUDE.md grants standing permission for tested factual corrections to these skills; compatible regression and host-validation mechanisms are available but have not run. Handle read-only: distinguish the durable correction from the new-release decision and show what remains required.",
       "accept": [
         "Activates repair diagnosis, classifies the demonstrated defect by actual correctness/ownership impact and preserves a concrete reproduction.",
-        "Uses existing authorization for a tested factual correction through guarded validation/promotion without redundant per-diff confirmation.",
+        "Uses the user's standing permission for a tested factual correction through guarded validation/promotion without redundant per-diff confirmation.",
         "Brings dependency upgrades and changed recommended practice to the user as evidence-backed decisions.",
         "Preserves current project pins and claims no repaired/operational state before actual checks run."
       ],
       "reject": [
         "Silently absorbs reusable friction after the local workaround.",
-        "Automatically upgrades pins or changes practices under the factual-repair grant.",
+        "Automatically upgrades pins or changes practices under the factual-correction permission.",
         "Claims a proposed correction was applied or runtime-verified."
       ]
     }

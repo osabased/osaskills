@@ -1,6 +1,6 @@
 # Rojo structure work
 
-Use this reference when reviewing, designing, planning, adopting, removing, or changing a Rojo mapping/workflow; changing a Rojo mapping or project/meta/model file; or migrating content into, out of, or within Rojo mapping where path, name, topology, version-sensitive sync behavior, `syncback`, or live `rojo serve` safety can affect the resulting DataModel. A routine source edit inside a clear stable mapping does not require this reference.
+Use when reviewing, designing, adopting, removing, or changing a Rojo mapping or workflow; editing a `*.project.json`, `*.meta.json`, or `*.model.json` file; or moving content into, out of, or within Rojo mapping where path, name, topology, `syncback`, or live `rojo serve` safety can change the resulting DataModel. A routine source edit inside a clear, stable mapping doesn't need this reference.
 
 For a small filesystem-first project, prefer a compact source tree and let the project file define the DataModel mapping:
 
@@ -16,37 +16,36 @@ default.project.json
 
 ## Establish the effective mapping
 
-1. Inspect the repository's Rojo pin and run `rojo --version` when available if version-sensitive behavior matters.
-2. Determine the effective DataModel mapping, not only the visible directory tree. Inspect applicable `*.project.json` / `*.project.jsonc`, nested projects, relevant `*.meta.json` and `*.model.json` files plus version-supported JSONC equivalents, `init.*` conventions, and project instance-description fields such as `$path`, `$className`, `$properties`, and `$ignoreUnknownInstances`.
-3. Inspect version-relevant mapping behavior such as `emitLegacyScripts`, `syncRules`, `globIgnorePaths`, suffix conventions, nested project behavior, compatibility settings, and `syncbackRules` when the task can be affected by them.
-4. For moves or renames inside mapped content, determine whether the path, filename, `init.*` role, suffix, nested project, or metadata changes the resulting DataModel even when no project file is edited.
-5. Trace the full DataModel effect of a mapping or topology change. A filesystem move or project/metadata edit can affect instances outside the source subtree that appears to contain the change.
-6. Keep structural migration separate from Rojo version upgrades. Change pins, manifests, lockfiles, or generated mappings only when those writes belong to the authorized task.
+1. If version-sensitive behavior matters, check the repository's Rojo pin and run `rojo --version` when available.
+2. Determine the effective DataModel mapping, not just the directory tree. Inspect the applicable `*.project.json` / `*.project.jsonc`, nested projects, relevant `*.meta.json` and `*.model.json` files and their JSONC equivalents, `init.*` conventions, and the instance fields `$path`, `$className`, `$properties`, and `$ignoreUnknownInstances`.
+3. When they can affect the task, inspect version-dependent settings: `emitLegacyScripts` (7.4+), `syncRules` (7.5+), `globIgnorePaths`, suffix conventions, nested project behavior, and `syncbackRules` (7.7+). rojo.space lags behind for fields added after 7.4; the [changelog](https://github.com/rojo-rbx/rojo/blob/master/CHANGELOG.md) is more complete.
+4. For moves or renames inside mapped content, check whether the path, filename, `init.*` role, suffix, nested project, or metadata changes the resulting DataModel even when no project file is edited.
+5. Trace the full DataModel effect of a mapping or topology change. A filesystem move or project/metadata edit can affect instances outside the subtree that appears to contain it.
+6. Keep structural changes separate from Rojo version upgrades. Change pins, manifests, lockfiles, or generated mappings only when the task covers those writes.
 
 ## Validate runtime topology
 
-When establishing or changing a setup's mapping/startup verification, parse the generated sourcemap and assert the complete runtime paths, instance classes, source identities, and unique critical entrypoints required by the selected architecture. For each critical entrypoint, check its expected source at the intended path and count that source across the whole tree: a second mapping under a different name or parent is still a duplicate. Check required shared dependencies as well as their bootstraps. A matching name, filename, or serialized JSON fragment anywhere in the tree does not prove its parentage or execution boundary. Apply equivalent path/class checks to the built place when claiming the distributable's topology is verified; source filenames need not survive in the place format.
+When you set up or change mapping/startup verification, parse the generated sourcemap and assert the runtime paths, instance classes, and unique critical entrypoints the architecture needs. For each critical entrypoint, check its source sits at the intended path and appears only once in the whole tree: a second mapping under another name or parent is still a duplicate. Check required shared dependencies as well as the bootstraps. A matching name or JSON fragment somewhere in the tree doesn't prove parentage or execution boundary. To claim the built place's topology is verified, apply the same path/class checks to the built place; source filenames need not survive in the place format.
 
-Qualify the checker with separate negative probes for moving a critical entrypoint to an incompatible service, removing a required dependency, and mapping an existing entrypoint source a second time under another runtime path. Each probe must fail for its intended structural violation; record each result before claiming topology qualification complete. Derive the expected boundaries from the intended architecture independently of the mapping under test; copying the current mapping into expected values can validate the same mistake twice. Integrate the assertions into the project-owned canonical gate. This does not require separate development/release profiles or live Studio proof for a static topology claim.
+Derive expected paths from the intended architecture, not by copying the current mapping, or the check validates the same mistake twice. When it's unclear whether the assertions catch real errors, run them once against a deliberately broken mapping (for example, an entrypoint moved to the wrong service or mapped twice) and confirm they fail. Put the assertions in the project's own canonical check. A static topology check needs no separate dev/release profiles or live Studio proof.
 
 ## Development and release artifacts
 
-Apply this section only when the task creates or changes development-only UI/test content or distinct development/release artifacts. Preserve an established coherent composition unless the request includes changing it.
+Use this section only when the task creates or changes development-only content (stories, previews, test bootstraps) or distinct development and release builds. Keep an established coherent composition unless the request is to change it.
 
-1. Record explicit ship/exclude intent for every authored demo, story, preview, and development bootstrap. A module without a startup entrypoint can still be present in a sourcemap or place file, so startup inspection cannot establish release exclusion.
-2. Preserve the project's existing mapping source of truth. When new profiles are actually needed, choose a composition that derives them without copying runtime mappings or duplicating singleton services. Assert the generated development and release artifacts rather than trusting filenames, directory moves, or ignore configuration alone.
-3. In both the parsed sourcemap and a parsed text place build, require exact paths for the affected runtime entrypoints, feature roots, and their required shared/network dependencies. Surviving entrypoints alone do not prove that their dependencies survived. Likewise, require the development preview's actual implementation and story paths in its development artifact; a similarly named bootstrap cannot establish subtree retention. In release, prove that every development-only sentinel is absent. Count singleton services affected by composition and require exactly one of each.
-4. Keep excluded development source in strict analysis and applicable test discovery. Release exclusion is an artifact boundary, not permission to stop checking the source.
+1. Decide ship or exclude for each demo, story, preview, and development bootstrap. A module with no startup entrypoint still appears in the sourcemap and place, so startup inspection can't prove exclusion.
+2. Keep the project's existing mapping as the source of truth. When new profiles are needed, derive them without copying runtime mappings or duplicating singleton services. Check the generated artifacts rather than trusting filenames, moves, or ignore settings.
+3. In both the parsed sourcemap and a parsed text place build, require exact paths for the affected runtime entrypoints, feature roots, and their shared/network dependencies; surviving entrypoints don't prove their dependencies survived. In the release build, confirm each development-only item is absent. Count affected singleton services and require exactly one of each.
+4. Keep excluded development source in strict analysis and test discovery. Release exclusion is an artifact boundary, not permission to stop checking the source.
 
-For pinned Rojo 7.7, one verified candidate is a shared project containing the complete tree and thin wrappers whose tree is only `{ "$path": "common.project.json" }`. Use this shape only when it fits the established workflow or the authorized setup; it is not a reason to replace another coherent composition. A release wrapper can add project-level ignore paths:
+One verified Rojo 7.7 shape is a shared `common.project.json` holding the full tree, plus thin wrappers whose `tree` is only `{ "$path": "common.project.json" }`. The release wrapper adds `globIgnorePaths`:
 
 ```json
 {
   "name": "Example Release",
   "globIgnorePaths": [
     "**/*.story.luau",
-    "**/Preview",
-    "**/Preview/**"
+    "**/Preview"
   ],
   "tree": {
     "$path": "common.project.json"
@@ -54,46 +53,41 @@ For pinned Rojo 7.7, one verified candidate is a shared project containing the c
 }
 ```
 
-The passing 7.7 probe used both the directory-node and descendant patterns. Its earlier failed pattern was `client/Preview/**`, so the evidence does not isolate path-prefix mismatch from descendant matching. Inspect both generated outputs and ensure the `init`-backed directory node itself is excluded; treat the dual pattern above as a verified example rather than a general claim about every descendant glob. Do not add a second `ReplicatedStorage` or other singleton service beside the root `$path`; that probe produced duplicate service instances. Recheck this behavior against the project's actual Rojo pin and generated outputs before relying on it in another version. Adapt names and paths to the project rather than introducing `common.project.json`, `Preview`, or these profiles as universal conventions.
+Glob patterns match paths relative to the project file's directory, so write `src/client/Preview`, not `client/Preview`. `**/Preview` excludes an `init`-backed directory and everything under it; `**/Preview/**` alone leaves the directory's own ModuleScript in place. Rojo 7.7.0 also supports `!` negation in these patterns.
 
-For repeatable checks, use [`../../scripts/check_rojo_artifact.py`](../../scripts/check_rojo_artifact.py) when its text `.rbxlx` and sourcemap inputs fit the project. Use exact `--require-path` assertions for retained runtime sentinels; required paths are relative to the DataModel and must match a complete instance path. The checker removes a sourcemap's DataModel root name and an optional `.rbxlx` DataModel wrapper. When a sourcemap is rooted below DataModel, its root name remains the first path segment and the checker does not infer absent parent services. Clearly named required/forbidden fragment options remain available for cases such as `.story` suffix filtering. The checker rejects empty invariants and invocations with no invariants. It accepts arbitrary artifact paths and singleton classes. Build the artifacts separately with the project's pinned Rojo; the checker does not install or require Rojo and does not choose project names or mappings.
+Don't add a service such as `ReplicatedStorage` beside the wrapper's root `$path`. In 7.7.0, `rojo build` then emits two of that service, while `rojo sourcemap` shows one and silently drops the wrapper's added children. This is why both artifacts must be checked. Use this shape only when it fits the project, adapt the names, and recheck against the project's pinned Rojo.
 
-When adopting these assertions as a project gate, make the checker a repository-owned, versioned tool (or use an equivalent existing project tool), record its provenance, and declare its runtime in CI. Invoke it from the canonical build/release verification path on the project's supported platforms. A command that reaches into one developer's installed skill directory is suitable for an evaluation probe, not a portable project gate.
+For repeatable checks, use [`../../scripts/check_rojo_artifact.py`](../../scripts/check_rojo_artifact.py) when the project can produce a text `.rbxlx` and a sourcemap. It needs Python 3.11+; build the artifacts separately with the project's pinned Rojo.
 
-Test the project's selected assertions as well as the generic checker: removing an implementation subtree while retaining a similarly named bootstrap, removing a required server/shared dependency while retaining entrypoints, and leaking development content must each fail. Mutate either artifact independently so a clean sourcemap cannot hide a broken place build. Fragment matching is useful for exclusion classes such as `.story`; use exact paths for identity and required-content claims.
+- `--require-path` asserts a complete DataModel-relative instance path in both artifacts. The checker drops a sourcemap's DataModel root name and an `.rbxlx` DataModel wrapper; a sourcemap rooted below DataModel keeps its root name as the first segment.
+- `--require-path-fragment` / `--forbid-path-fragment` are substring matches, useful for exclusion classes such as `.story`. Use exact paths for identity and required content.
+- `--singleton-class` requires exactly one instance of a class in each artifact.
+- It rejects blank invariants and runs with no invariants. It does not check per-path classes, duplicate source mappings, RunContext, or execution; add project-owned assertions for those.
 
-The bundled checker proves only its requested path, fragment, and global class-count invariants. It does not verify per-path classes, source identity/duplicate mappings, RunContext, or execution. Supply project-owned assertions for those parts of the runtime-topology contract above.
+To make these assertions a project gate, copy the checker into the repository (or use an equivalent project tool), note where it came from, declare its runtime in CI, and call it from the canonical build/release check. A command that reaches into one developer's installed skill folder is fine for a probe, not for a project gate. When you add such a gate, confirm it fails if an implementation subtree is removed while a similarly named bootstrap remains, if a required dependency is removed, and if development content leaks, mutating each artifact independently.
 
 ## Observable client previews
 
-Apply this section when a Rojo-backed development workflow is intended to prove rendered client behavior or actual input.
+Use this section only when a Rojo-backed development workflow must prove rendered client UI or real input.
 
-- Supply the preview through the filesystem/Rojo source of truth and an established normal client startup path in the same Studio session exposed to the available input, inspection, console, and screenshot tools. A development-only lifecycle root is valid when it preserves the established loader contract and is excluded from release by the artifact checks above.
-- Preserve active Script Capabilities boundaries and loader semantics. Do not widen capabilities, move scripts between incompatible capability containers, inject code through a privileged tool, or replace the project's startup path merely to make a preview run. Read [`../platform/script-capabilities.md`](../platform/script-capabilities.md) when that branch is active.
-- Before interaction, verify a source fingerprint that covers the exact source bytes being served, including uncommitted edits, plus the effective project configuration and an expected UI marker. A commit hash alone cannot identify dirty content.
-- Use actual pointer and text events for input claims, inspect observable state and console output, and capture the material rendered states. Calling the domain callback directly establishes domain behavior only. Stop only the play/serve session started by the task and preserve user-owned sessions.
-- UI Labs can complement this path for isolated states and variants. Treat any bridge between its host and the available Studio interaction tools as unproved until the same-session workflow succeeds end to end.
+- Serve the preview through the Rojo source of truth and the established client startup path, in the same Studio session your input, inspection, console, and screenshot tools can reach. A development-only lifecycle root is fine if it keeps the loader contract and is excluded from release.
+- Keep active Script Capabilities boundaries and loader semantics. Don't widen capabilities, move scripts between incompatible capability containers, inject code through a privileged tool, or replace the startup path just to make a preview run. See [`../platform/script-capabilities.md`](../platform/script-capabilities.md).
+- Before interacting, make sure Studio is running the bytes you just edited (uncommitted edits included); a commit hash alone doesn't identify dirty content.
+- Use real pointer and text events for input claims, inspect state and console output, and capture the rendered states that matter. Calling the domain callback directly proves domain behavior only. Stop only play/serve sessions you started.
+- UI Labs can complement this for isolated states and variants.
 
-State the planned observable path concretely even when execution is unavailable: the exact client entrypoint and preview/story path, expected UI marker, input event to perform, rendered/state change to observe, and console condition. Artifact inclusion/exclusion checks establish composition only; they do not establish rendering or input wiring. If the same-session client path cannot run, report those claims as unavailable and keep the artifact results separate.
-
-A development-tooling answer is complete only when it names the retained runtime sentinels, excluded development sentinels, singleton services to count exactly once, and the concrete observable-client path above. Do not substitute “document or verify later” for these assertions. Report executed evidence separately from the planned check so unavailable Studio access never becomes a fabricated pass.
-
-If the blocker is whether a third-party preview/test library or integration actually supports the needed runtime, route that bounded evidence question to the available Roblox resource-acquisition workflow. Keep Rojo composition, source-of-truth, and startup topology decisions in this skill.
+Report what you executed separately from what you only planned. Never report an unrun Studio check as passed. If the open question is whether a third-party preview or test library supports the needed runtime, that is a resource question for the `roblox-resource-acquisition` skill if installed; keep Rojo composition and startup decisions here.
 
 ## Review
 
-For a read-only Rojo architecture review, inspect only the mapping and version-sensitive behavior needed to answer the review question. Existing mapping is evidence, not proof of correctness; compare its effective DataModel result against the relevant structural requirements.
-
-## Version-sensitive work
-
-When external documentation is available, re-open the official release notes, applicable changelog entries, and project-format documentation before recommending an upgrade or relying on version-specific mapping, suffix, `syncRules`, `syncback`, or serve-safety behavior. State any material assumption that cannot be verified.
+For a read-only Rojo review, inspect only the mapping and version behavior the question needs. An existing mapping is evidence, not proof of correctness; compare its effective DataModel against the structural requirements.
 
 ## Live sync and syncback
 
-- Prefer `rojo build`, sourcemap generation, or another non-live structural check when it can validate the mapping adequately.
-- Before live `rojo serve`, inspect version-supported place and network safeguards such as `servePlaceIds`, `blockedPlaceIds`, `serveAddress`, and `serveAllowedHosts`. Verify the intended place and binding before connecting Studio.
-- Treat `rojo syncback` as a filesystem-writing migration operation, not a validation command. Read [`modification-scope.md`](../core/modification-scope.md) and [`migration.md`](migration.md) before using it. Account for every potentially written path, preserve pre-existing work, establish recovery, and inspect the resulting diff.
-- Preserve working mappings and versions unless their change is part of the request.
+- Prefer `rojo build`, `rojo sourcemap`, or another non-live check when it validates the mapping well enough.
+- Before live `rojo serve`, check the place and network safeguards your version supports, such as `servePlaceIds`, `blockedPlaceIds`, `serveAddress`, and `serveAllowedHosts`. Confirm the intended place and binding before connecting Studio.
+- Treat `rojo syncback` as a filesystem-writing migration, not a check. Read [`modification-scope.md`](../core/modification-scope.md) and [`migration.md`](migration.md) first, account for every path it may write, keep pre-existing work, have a recovery path, and inspect the diff.
+- Keep working mappings and versions unless changing them is part of the request.
 
 ## Sources
 
