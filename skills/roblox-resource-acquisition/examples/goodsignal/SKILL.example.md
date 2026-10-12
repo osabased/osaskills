@@ -1,55 +1,56 @@
 ---
 name: roblox-goodsignal-connections
-description: Use pinned GoodSignal for feature-owned in-process event callbacks and explicit disconnection; prefer direct calls for a single local recipient.
+description: GoodSignal (stravant/goodsignal) for Roblox Luau, pinned commit 99497c8. Use when a feature needs several local subscribers to an in-process event with explicit Connect/Disconnect ownership. Not for one local recipient (call it directly) or client/server messaging (use RemoteEvents).
 ---
 
-# GoodSignal connections
+# GoodSignal 99497c8
 
-Reviewed target: `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f`, source reviewed 2026-09-30. The [resource contract](resource.example.yaml) owns static identity; project records own current execution evidence. This authoring example carries no executed upstream or host proof.
+Pinned target: `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f` (source reviewed 2026-09-30). [resource.yaml](resource.example.yaml) holds the exact identity. This authoring example carries no executed upstream or host proof.
 
-## Choose the task
+## Check the pin
 
-- An authorized project needs multiple local subscribers with explicit connection ownership.
+If the project vendors or pins GoodSignal, compare its source header and bytes with the pinned commit; a same-named package is not enough. This child uses a custom profile, so the shared checker reports it unavailable and never runs it: follow [setup](references/setup.md) for the exact check. If the `roblox-resource-acquisition` skill is installed beside this one, also run its record query per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent, Python or a project record is unavailable, read the project's source directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
 
-- A direct call suffices, or communication must cross the client/server network boundary.
+## Core API
 
-## Before use
+| Call | Returns | Notes |
+| --- | --- | --- |
+| `Signal.new()` | signal | Inert until something connects. |
+| `signal:Connect(callback)` | connection | Retain it under the feature owner immediately. |
+| `signal:Fire(...)` | nothing | Dispatches through the task scheduler. |
+| `connection:Disconnect()` | nothing | Stops future dispatch only. |
+| `signal:DisconnectAll()` | nothing | Only when the feature owns the whole signal. |
 
-Resolve the affected project, this child and the available installed parent. Read the parent's references/child-usage.md once per task for freshness, guards, reconciliation and repair. Project resolution failure is unknown state with no global fallback. This required custom profile needs its documented exact-target check before version-sensitive use. The shared checker reports custom checks unavailable and never executes metadata-supplied commands.
+There is no `Destroy()` method. Do not infer cancellation from another signal library.
 
-Compare the project source manifest/header and inspected bytes to this exact canonical commit; a same-named package is insufficient. Read [setup](references/setup.md) for the installation and fixture binding.
+## Example
 
-Run `python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/stravant-goodsignal.yaml"`; require HEALTHY. BLOCKED/UNKNOWN or mismatched identity enters parent repair/reconcile before affected use.
-
-## Common use and ownership
-
-Use the maintained `scripts/smoke_signal.luau` fixture as the source for the connection example. It creates one signal, activates a listener with `signal:Connect`, fires a payload and disconnects through an idempotent feature cleanup function. For the active project, preserve the same ownership pattern and use its actual require path. No companion cleanup library is assumed.
+The maintained fixture `scripts/smoke_signal.luau` is the source for this pattern; keep behavior in that file.
 
 ```luau
--- API excerpt from scripts/smoke_signal.luau; keep behavior in that fixture.
 local signal = Signal.new()
+local active = true
+local connection = signal:Connect(function(payload)
+	if not active then return end
+	-- update feature state with payload
+end)
+
+local function cleanup()
+	if not active then return end
+	active = false
+	connection:Disconnect()
+	signal:DisconnectAll()
+end
 ```
 
-A signal owns a linked list of subscriptions. Connect registers a callback; Fire uses the task scheduler to dispatch eligible listeners. Disconnect prevents future dispatch, but it cannot undo an already running or yielded callback.
+## Gotchas
 
-- Initialization: `Signal.new()` allocates an inert signal. Establish the feature owner's cleanup function before `Connect` activates the listener; immediately retain the returned connection under that owner.
-- Reuse: Reuse the signal during the feature lifetime; callbacks check the owner's active flag before changing feature state.
-- Cleanup/destruction: Mark the owner inactive, call `connection:Disconnect()` once, then `signal:DisconnectAll()` when the owner owns the whole signal. The fixture's guard makes repeated cleanup idempotent and rolls back on a failed assertion. It creates no pending waits or spawned feature tasks. For already dispatched/yielding callbacks, use feature invalidation and explicit cancellation for any separately owned task; disconnection alone cannot cancel them.
-- Ownership boundary: Connections and feature callbacks belong to the feature; the module's shared coroutine cache belongs to the package. Do not claim package-global finalization from local teardown. `Wait()` cancellation and yielding callbacks are outside this fixture's proof.
+- `Disconnect` cannot undo a callback that is already running or yielded; check the owner's active flag inside the callback.
+- Create the cleanup function before `Connect` so a failed setup can roll back.
+- The shared coroutine cache belongs to the package; local teardown does not finalize it.
+- GoodSignal is local to one Luau environment. It does not replicate, and a client signal is never authorization; validate network input on the server.
 
-Source-reviewed APIs: `Signal.new()`, `signal:Connect(callback)`, `signal:Fire(payload)`, `connection:Disconnect()` and `signal:DisconnectAll()`. Do not invent a `Destroy()` method or infer cancellation from another signal library.
+## Read further
 
-GoodSignal is local to the current Luau environment; it does not replicate callbacks. A server may use it internally while retaining authority over game state. A client may use it for local presentation; validate network input on the server rather than treating a local signal as authorization.
-
-## Complete and read further
-
-Executable fixture: scripts/smoke_signal.luau
-
-Run: In an isolated Studio test place with the exact source installed, copy `scripts/smoke_signal.luau` into a server Script under ServerScriptService and run Play. Use the project's strict-analysis path for that authored fixture first.
-
-Pass condition: Output contains `goodsignal-ready`; the callback count equals `1` after the first fire and remains `1` after disconnect and a second fire. A failed assertion reports an error after rolling back the connection.
-
-Evidence boundary: Source review and structural validation are separate from this proposed Studio recipe. Record execution against the actual installed commit before claiming runtime proof; a Lune task adapter covers only the observed non-engine scheduler behavior.
-
-- For installation/configuration, read [setup](references/setup.md).
-- For the named failure symptoms and security constraints, read [troubleshooting](references/troubleshooting.md).
+- Installing or changing the project binding, and the Studio fixture run: read [setup](references/setup.md).
+- A matching failure symptom or a security question: read [troubleshooting](references/troubleshooting.md).

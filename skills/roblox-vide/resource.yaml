@@ -1,0 +1,69 @@
+schema_version: 1
+parent_contract:
+  name: roblox-resource-acquisition
+  version: 1
+scope: project
+resource:
+  slug: vide
+  name: Vide 0.4.1
+  canonical_url: https://github.com/centau/vide
+  package_id: centau/vide
+  selector:
+    kind: commit
+    value: 5ed4c01940e6bd578fb83253cfbeda0a6c05177c
+    tree: 8890f5044158a71592249e2d91646715b98ca4aa
+  source_review_date: '2026-10-02'
+  devforum_url: null
+routing:
+  use_when:
+  - Writing or debugging Vide components, sources, derived values, effects, dynamic children and scope
+    cleanup in a project pinned to Vide 0.4.1 at this commit.
+  - Writing a Vide story for UI Labs.
+  avoid_when:
+  - The task uses another UI framework (React, Fusion, Nevermore Blend).
+  - The project pins a different Vide target; keep that pin and find matching guidance.
+guidance:
+  claim_scope: advice-only
+  shared_usage: references/child-usage.md
+  documents:
+  - path: SKILL.md
+    roles:
+    - routing
+    - common-use
+    - ownership
+    - security
+    - verification
+    - maintenance
+    when: every activated use
+  - path: references/api-and-lifecycle.md
+    roles:
+    - api
+    - lifecycle
+    - recipes
+    when: using APIs beyond the core table, scope rules, strict mode, context, spring, actions or teardown
+      recipes
+  - path: references/setup.md
+    roles:
+    - setup
+    when: installing, restoring or mapping the package, or configuring Luau LSP
+  - path: references/troubleshooting.md
+    roles:
+    - troubleshooting
+    when: diagnosing a Vide error message, leaked UI or analyzer error
+  executable_fixture: null
+reconciliation:
+  policy: conditional
+  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
+    to completion
+  record: .roblox-resources/records/vide.yaml
+  learnings: .roblox-resources/learnings/
+installation:
+  profile: pesde-git
+  dependency_section: dependencies
+  target: roblox
+  new_structure: true
+  integrity:
+    aggregate:
+      directory: src
+      suffix: .luau
+      sha256: 73ac80a420cb550e9ae20d3f8115d5684409dbba7c3b11db2c7ee666d87fcf65

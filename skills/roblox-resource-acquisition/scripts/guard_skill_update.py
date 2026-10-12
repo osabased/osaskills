@@ -20,6 +20,12 @@ from pathlib import Path
 IGNORED = {"__pycache__", ".pytest_cache", ".git"}
 
 
+# Skill discovery locations a staged candidate or recovery copy must stay out of.
+# `.agents/skills` is where the Skills CLI keeps its canonical copy before linking it
+# into `.claude/skills`.
+DISCOVERY_DIRS = ((".claude", "skills"), (".agents", "skills"))
+
+
 def marker_path(skill: Path) -> Path:
     return skill.parent / ".skill-maintenance" / (skill.name + ".json")
 
@@ -97,7 +103,7 @@ def begin(skill: Path, candidate: Path, directory: Path, record: Path | None = N
             raise ValueError("live skill, candidate and recovery directory must be disjoint")
     for path in (candidate, directory):
         parts = tuple(part.lower() for part in path.parts)
-        if any(parts[index:index + 2] in ((".agents", "skills"), (".codex", "skills"))
+        if any(parts[index:index + 2] in DISCOVERY_DIRS
                for index in range(len(path.parts) - 1)):
             raise ValueError("candidate and recovery directory must be outside skill discovery")
     if bool(record) != bool(candidate_record):

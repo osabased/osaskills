@@ -79,15 +79,16 @@ skill_validation:
   # optional section (an exact Markdown H2 heading when used), and sha256
   # formatted as sha256:<64 lowercase hex characters> (not bare hex).
 
-# Empty means validated artifact only. Each entry uses:
-# host, scope (repo by default; user only for an explicit user/global request;
-# admin | plugin | other when applicable), location,
+# Empty means validated artifact only (children are opt-in). Each entry uses:
+# host (for example claude-code or cowork), scope (repo for <project>/.claude/skills;
+# user for ~/.claude/skills, only on explicit request; plugin | admin | other when
+# applicable), location (project-relative, e.g. .claude/skills/<name>/SKILL.md),
 # status (installed | operational | blocked | disabled | removed | unavailable | failed),
 # checked_at, result, and an evidence mapping with:
 # installed (present | absent | not-applicable | unknown),
 # registered (present | absent | not-applicable | unknown),
 # discoverable ("yes" | "no" | unknown), enabled ("yes" | "no" | not-applicable | unknown),
-# explicit_activation (passed | failed | not-run | unavailable).
+# explicit_activation (passed | failed | not-run | unavailable): a fresh /<name> invocation.
 host_adoptions: []
 
 limitations: []

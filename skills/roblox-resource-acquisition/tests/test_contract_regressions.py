@@ -86,14 +86,45 @@ def test_optional_frontmatter_types_and_compatibility_limit(skill_mod, tmp_path)
         "description: Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.\n"
         "compatibility: " + ("x" * 501) + "\n"
         "license: 123\n"
-        "allowed-tools: 456\n",
+        "allowed-tools: 456\n"
+        "disable-model-invocation: maybe\n",
     )
     (child / "SKILL.md").write_text(text, encoding="utf-8")
     fixtures.write_contract(child)
     errors, _warnings = skill_mod.validate_skill(child)
     assert "frontmatter compatibility must be 1 to 500 characters" in errors
     assert "frontmatter license must be a string" in errors
-    assert "frontmatter allowed-tools must be a string" in errors
+    assert "frontmatter allowed-tools must be a string or list" in errors
+    assert "frontmatter disable-model-invocation must be true or false" in errors
+
+
+def test_claude_code_frontmatter_is_accepted_and_unknown_keys_only_warn(skill_mod, tmp_path):
+    child = tmp_path / "roblox-widget-resource"
+    child.mkdir()
+    text = fixtures.valid_skill_text().replace(
+        "description: Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.\n",
+        "description: Use Widget Resource for synchronized widget replication with deterministic lifecycle cleanup.\n"
+        "disable-model-invocation: false\n"
+        "user-invocable: true\n"
+        "argument-hint: '[task]'\n"
+        "model: inherit\n"
+        "allowed-tools:\n  - Read\n  - Bash\n"
+        "future-field: x\n",
+    )
+    (child / "SKILL.md").write_text(text, encoding="utf-8")
+    fixtures.write_contract(child)
+    errors, warnings = skill_mod.validate_skill(child)
+    assert errors == []
+    assert any("future-field" in warning for warning in warnings)
+
+
+def test_lean_template_headings_are_required(skill_mod, tmp_path):
+    child = tmp_path / "roblox-widget-resource"
+    child.mkdir()
+    (child / "SKILL.md").write_text(fixtures.valid_skill_text().replace("## Gotchas", "## Notes"), encoding="utf-8")
+    fixtures.write_contract(child)
+    errors, _warnings = skill_mod.validate_skill(child)
+    assert "entrypoint is missing the required heading '## Gotchas'" in errors
 
 
 def test_valid_metadata_mapping_is_supported(skill_mod, tmp_path):
@@ -299,3 +330,16 @@ def test_non_generated_host_skill_can_participate_as_routing_competitor(catalog_
         [generated], host="portable"
     )
     assert with_competitor != generated_only
+
+
+def test_legacy_agents_record_path_still_validates_with_a_warning(skill_mod, tmp_path):
+    import yaml
+    child = tmp_path / "roblox-widget-resource"
+    child.mkdir()
+    (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
+    data = fixtures.write_contract(child)
+    data["reconciliation"]["record"] = ".agents/roblox/resources/records/widget-resource.yaml"
+    (child / "resource.yaml").write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+    errors, warnings = skill_mod.validate_skill(child)
+    assert errors == []
+    assert any(".roblox-resources/" in warning for warning in warnings)

@@ -3,6 +3,10 @@
 
 Profiles are data, never commands. No evidence commands or dependency code run.
 Aliases and source locations are project inputs, not canonical resource identity.
+
+Exit codes: 0 PASS; 1 FAIL (an observed mismatch: stop version-sensitive use);
+2 UNKNOWN/UNAVAILABLE (the check could not run: continue in advisory mode and say
+which check was skipped).
 """
 from __future__ import annotations
 
@@ -15,6 +19,14 @@ import tomllib
 
 from _resource_contract import load_contract, within, url_identity
 from guard_skill_update import marker_path
+
+
+WALLY_SECTIONS = ("dependencies", "server-dependencies", "dev-dependencies")
+WALLY_PACKAGE_DIRS = {"dependencies": "Packages", "server-dependencies": "ServerPackages", "dev-dependencies": "DevPackages"}
+
+
+class Unavailable(ValueError):
+    """The check cannot run here; this is not evidence of a mismatch."""
 
 
 def same_url(left, right):
@@ -104,6 +116,8 @@ def declared(resource: dict, install: dict, manifest: dict, lock: dict, alias: s
         identity = same_url(dependency.get("repo"), resource["canonical_url"]) if profile == "pesde-git" else dependency.get(key) == resource["package_id"]
         if identity:
             matches.append((name, dependency))
+    if not matches:
+        raise Unavailable(f"{resource['package_id']} is not a direct dependency in this manifest; this project does not pin it")
     if len(matches) != 1:
         raise ValueError("expected one canonical direct dependency; supply --alias when multiple bindings exist")
     name, dependency = matches[0]
@@ -159,23 +173,102 @@ def declared(resource: dict, install: dict, manifest: dict, lock: dict, alias: s
     return name
 
 
-def source_root(project: Path, package: str, selector: dict, supplied: Path | None, target: str) -> Path:
+def wally_requirement(value: object) -> tuple[str, str]:
+    if not isinstance(value, str) or "@" not in value:
+        raise ValueError("Wally dependency must be a \"scope/name@requirement\" string")
+    package, _, requirement = value.strip().rpartition("@")
+    return package.lower(), requirement.strip()
+
+
+def wally_declared(resource: dict, install: dict, manifest: dict, lock: dict, alias: str | None) -> tuple[str, str, list[str]]:
+    """Bind wally.toml + wally.lock to the reviewed package/version. Returns alias, section, notes."""
+    package_id = resource["package_id"].lower()
+    version = resource["selector"]["value"]
+    header = manifest.get("package")
+    if not isinstance(header, dict) or not isinstance(header.get("name"), str):
+        raise ValueError("wally.toml requires a [package] name")
+    if "registry" in install and header.get("registry") is not None and not same_url(header.get("registry"), install["registry"]):
+        raise ValueError("wally.toml registry differs from the reviewed registry")
+    sections = (install["dependency_section"],) if install.get("profile") == "wally" else WALLY_SECTIONS
+    matches = []
+    for section in sections:
+        dependencies = manifest.get(section, {})
+        if not isinstance(dependencies, dict):
+            raise ValueError(f"wally.toml [{section}] is not a table")
+        for name, value in dependencies.items():
+            if alias is not None and name != alias:
+                continue
+            if isinstance(value, str) and wally_requirement(value)[0] == package_id:
+                matches.append((name, section, value))
+    if not matches:
+        raise Unavailable(f"{resource['package_id']} is not declared in wally.toml; this project does not pin it")
+    if len(matches) != 1:
+        raise ValueError("expected one direct Wally dependency; supply --alias when multiple bindings exist")
+    name, section, value = matches[0]
+    notes = []
+    requirement = wally_requirement(value)[1]
+    if requirement.startswith("="):
+        if requirement.removeprefix("=").strip() != version:
+            raise ValueError(f"wally.toml pins {requirement}; reviewed target is {version}")
+    else:
+        notes.append(f"wally.toml requirement {requirement!r} is a range; wally.lock decides the installed version")
+    packages = lock.get("package")
+    if not isinstance(packages, list):
+        raise ValueError("wally.lock has no [[package]] entries")
+    entries = {}
+    for entry in packages:
+        if isinstance(entry, dict) and isinstance(entry.get("name"), str):
+            entries.setdefault(entry["name"].lower(), []).append(entry)
+    roots = entries.get(header["name"].lower(), [])
+    if len(roots) != 1:
+        raise ValueError("wally.lock does not contain exactly one entry for the project package")
+    root_dependencies = roots[0].get("dependencies", [])
+    locked = [item for item in root_dependencies if isinstance(item, list) and len(item) == 2 and item[0] == name]
+    if len(locked) != 1:
+        raise ValueError(f"wally.lock has no direct entry for {name}; run wally install")
+    locked_package, _, locked_version = str(locked[0][1]).rpartition("@")
+    if locked_package.lower() != package_id:
+        raise ValueError(f"wally.lock binds {name} to {locked_package}, not {resource['package_id']}")
+    if locked_version != version:
+        raise ValueError(f"wally.lock resolves {resource['package_id']} to {locked_version}; reviewed target is {version}")
+    if not any(entry.get("version") == version for entry in entries.get(package_id, [])):
+        raise ValueError(f"wally.lock has no package entry for {resource['package_id']}@{version}")
+    for companion in install.get("companions", []):
+        companion_id = companion["package_id"].lower()
+        if not any(entry.get("version") == companion["version"] for entry in entries.get(companion_id, [])):
+            raise ValueError("missing or mismatched companion " + companion["package_id"])
+        parents = [entry for entry in entries.get(companion["parent_package"].lower(), [])]
+        edge = [companion["edge_alias"], f"{companion['package_id']}@{companion['version']}"]
+        if not any(any(isinstance(item, list) and [item[0], str(item[1]).lower()] == [edge[0], edge[1].lower()]
+                       for item in parent.get("dependencies", [])) for parent in parents):
+            raise ValueError("material companion dependency edge differs: " + companion["package_id"])
+    return name, section, notes
+
+
+def wally_bases(project: Path, section: str | None) -> list[Path]:
+    sections = (section,) if section else WALLY_SECTIONS
+    return [project / WALLY_PACKAGE_DIRS[item] / "_Index" for item in sections]
+
+
+def source_root(project: Path, package: str, selector: dict, supplied: Path | None, target: str,
+                bases: list[Path] | None = None) -> Path:
     if supplied is not None:
         resolved = supplied.resolve()
         if not resolved.is_dir():
             raise ValueError("explicit package source directory is missing")
         return resolved
     candidates = set()
-    base = project / (target + "_packages") / ".pesde"
-    if base.is_dir():
-        prefixes = {package.replace("/", "_"), package.replace("/", "+")}
-        containers = [item for item in base.iterdir() if item.is_dir() and any(item.name == prefix or item.name.startswith(prefix + "@") for prefix in prefixes)]
+    for base in bases or [project / (target + "_packages") / ".pesde"]:
+        if not base.is_dir():
+            continue
+        prefixes = {package.lower().replace("/", "_"), package.lower().replace("/", "+")}
+        containers = [item for item in base.iterdir() if item.is_dir() and any(item.name.lower() == prefix or item.name.lower().startswith(prefix + "@") for prefix in prefixes)]
         for container in containers:
             for filename in ("wally.toml", "pesde.toml"):
                 for path in container.rglob(filename):
                     data = toml(path)
                     metadata = data.get("package", data)
-                    if metadata.get("name") != package:
+                    if not isinstance(metadata.get("name"), str) or metadata["name"].lower() != package.lower():
                         continue
                     if selector["kind"] == "commit":
                         if selector["tree"] not in path.as_posix():
@@ -183,6 +276,8 @@ def source_root(project: Path, package: str, selector: dict, supplied: Path | No
                     elif metadata.get("version") != selector["value"]:
                         continue
                     candidates.add(path.parent.resolve())
+    if not candidates:
+        raise Unavailable("installed source not found; run the package manager's install, or provide --package-dir from the project's actual mapping")
     if len(candidates) != 1:
         raise ValueError("cannot uniquely resolve installed source; provide --package-dir or --companion PACKAGE=DIR from the project's actual mapping")
     return candidates.pop()
@@ -218,30 +313,39 @@ def integrity(root: Path, spec: dict) -> None:
             raise ValueError("installed source manifest identity/version differs")
 
 
+def require_files(*paths: Path) -> None:
+    missing = [path.name for path in paths if not path.is_file()]
+    if missing:
+        raise Unavailable("unsupported or missing manifest/lock (" + ", ".join(missing) + "); read the project's manifest and lock directly")
+
+
 def check(skill: Path, project: Path | None, *, declared_only=False, manifest_path=None, lock_path=None, alias=None, package_dir=None, companions=None, asset=None) -> dict:
     for directory in (skill.resolve(), Path(__file__).resolve().parent.parent):
         if marker_path(directory).exists() or marker_path(directory).is_symlink():
             raise ValueError("promotion is pending or interrupted; reconcile the maintenance guard")
     contract = load_contract(skill, check_documents=False)
     if project is None and contract["scope"] == "project":
-        raise ValueError("UNKNOWN: project-scoped child requires an explicit resolved project; no global fallback")
+        raise Unavailable("UNKNOWN: project-scoped child requires an explicit resolved project; no global fallback")
     if project is not None:
         project = project.resolve()
         if not project.is_dir():
-            raise ValueError("UNKNOWN: project directory does not exist")
+            raise Unavailable("UNKNOWN: project directory does not exist")
     resource, install = contract["resource"], contract["installation"]
     result = {"status": "PASS", "resource": resource["slug"], "selector": resource["selector"]["value"]}
     if install["profile"] == "custom":
         return {**result, "status": "UNAVAILABLE", "reason": "run the child-owned custom checker as documented; this tool never executes contract-supplied commands"}
     if install["profile"] == "asset":
-        if asset is None or not asset.is_file() or hashlib.sha256(asset.read_bytes()).hexdigest() != install["asset_sha256"]:
-            raise ValueError("missing or mismatched exact installed asset; provide --asset")
+        if asset is None or not asset.is_file():
+            raise Unavailable("installed asset not supplied or not found; pass --asset with the installed file")
+        if hashlib.sha256(asset.read_bytes()).hexdigest() != install["asset_sha256"]:
+            raise ValueError("installed asset is mismatched: its SHA256 differs from the reviewed asset")
         return {**result, "lane": "asset-integrity", "asset": str(asset.resolve())}
     if project is None:
-        raise ValueError("UNKNOWN: package checking needs an explicit project")
+        raise Unavailable("UNKNOWN: package checking needs an explicit project")
     if install["profile"] == "npm":
         manifest_path = manifest_path or project / "package.json"
         lock_path = lock_path or project / "package-lock.json"
+        require_files(manifest_path, lock_path)
         bindings = npm_declared(resource, install, json_object(manifest_path), json_object(lock_path), alias)
         if declared_only:
             return {**result, "lane": "declaration-lock", "alias": bindings[resource["package_id"]]}
@@ -256,8 +360,35 @@ def check(skill: Path, project: Path | None, *, declared_only=False, manifest_pa
             root = companions[package].resolve() if package in companions else within(project / "node_modules", bindings[package])
             npm_source(root, package, companion["version"], companion["integrity"])
         return {**result, "lane": "installed-integrity", "alias": bindings[resource["package_id"]], "package_dir": str(resolved_root)}
+    use_wally = install["profile"] == "wally" or (
+        install["profile"] == "pesde-wally" and (
+            (manifest_path is not None and manifest_path.name == "wally.toml")
+            or (manifest_path is None and not (project / "pesde.toml").is_file() and (project / "wally.toml").is_file())))
+    if use_wally:
+        manifest_path = manifest_path or project / "wally.toml"
+        lock_path = lock_path or manifest_path.with_name("wally.lock")
+        require_files(manifest_path, lock_path)
+        resolved_alias, section, notes = wally_declared(resource, install, toml(manifest_path), toml(lock_path), alias)
+        result = {**result, "manager": "wally"}
+        if notes:
+            result["notes"] = notes
+        if declared_only:
+            return {**result, "lane": "declaration-lock", "alias": resolved_alias}
+        resolved_root = source_root(project, resource["package_id"], resource["selector"], package_dir, "roblox", wally_bases(project, section))
+        integrity(resolved_root, install["integrity"])
+        companions = companions or {}
+        if set(companions) - {item["package_id"] for item in install.get("companions", [])}:
+            raise ValueError("an explicit companion binding is not part of this reviewed resource")
+        for companion in install.get("companions", []):
+            root = source_root(project, companion["package_id"], {"kind": "version", "value": companion["version"]},
+                               companions.get(companion["package_id"]), "roblox", wally_bases(project, None))
+            integrity(root, companion["integrity"])
+        return {**result, "lane": "installed-integrity", "alias": resolved_alias, "package_dir": str(resolved_root)}
+    if install["profile"] == "wally":
+        raise Unavailable("no wally.toml found")
     manifest_path = manifest_path or project / "pesde.toml"
     lock_path = lock_path or project / "pesde.lock"
+    require_files(manifest_path, lock_path)
     resolved_alias = declared(resource, install, toml(manifest_path), toml(lock_path), alias)
     if declared_only:
         return {**result, "lane": "declaration-lock", "alias": resolved_alias}
@@ -295,6 +426,10 @@ def main(argv=None):
         result = check(args.skill, args.project, declared_only=args.declared, manifest_path=args.manifest, lock_path=args.lock, alias=args.alias, package_dir=args.package_dir, companions=companions, asset=args.asset)
     except PermissionError as exc:
         print(json.dumps({"status": "UNAVAILABLE", "reason": f"installed-state read denied: {exc}"}))
+        return 2
+    except Unavailable as exc:
+        reason = str(exc).removeprefix("UNKNOWN: ")
+        print(json.dumps({"status": "UNKNOWN" if str(exc).startswith("UNKNOWN:") else "UNAVAILABLE", "reason": reason, "advisory": True}))
         return 2
     except (OSError, UnicodeError, ValueError, TypeError, KeyError, AttributeError) as exc:
         unknown = str(exc).startswith("UNKNOWN:")

@@ -22,7 +22,7 @@ Learnings decay. They lower the cost of the next check by saying where to look f
 Resolve stores in this order:
 
 1. an explicit learnings-store path supplied by the user/project/environment;
-2. `<project-root>/.agents/roblox/resources/learnings/` when present;
+2. `<project-root>/.roblox-resources/learnings/` when present (older projects may still have `.agents/roblox/resources/learnings/`; move it to `.roblox-resources/`);
 3. `~/.roblox-resources/learnings/` when present.
 
 Unlike the curated registry, entries are not exclusive: **all valid entries from all discovered stores load together**. There is no override-by-slug. When two learnings disagree about the same volatile fact, the fact is uncertain — re-check it from current sources rather than picking a winner. Project-local entries describe that project's context and carry more weight inside it.
@@ -67,7 +67,7 @@ Entries carry no trust and no verification fields; the validator rejects them. K
 
 ## What learnings may never do
 
-- Grant, revoke, or transfer trust — trust lives only in curated registry membership and the verified-acquisition gates.
+- Grant, revoke, or transfer trust — trust comes only from the bases in [state policy](state-policy.md#trust) (curated, verified-acquisition, project, explicit-user).
 - Set or upgrade any resource verification or `skill_validation` status — those move only through executed proof.
 - Remove or suppress a curated resource silently.
 - Substitute for re-checking a volatile fact when the task materially depends on it.

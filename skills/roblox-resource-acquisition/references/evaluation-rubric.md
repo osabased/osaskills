@@ -44,7 +44,7 @@ Recommend the best-supported fit under the established criteria, explaining the 
 
 ## Community experience
 
-For a meaningful comparison, apply [community-evidence.md](community-evidence.md) to the deciding tradeoffs and current limitations. Report the support or disagreement among inspected sources and its effect on the choice. Community advice informs fit and maintenance evidence; it does not establish runtime proof, change trust or override hard gates and fixed targets. Lack of broad consensus alone does not defeat a choice supported by the required source and executable evidence.
+For a meaningful comparison, apply [community evidence](search-playbook.md#community-evidence) to the deciding tradeoffs and current limitations. Report the support or disagreement among inspected sources and its effect on the choice. Community advice informs fit and maintenance evidence; it does not establish runtime proof, change trust or override hard gates and fixed targets. Lack of broad consensus alone does not defeat a choice supported by the required source and executable evidence.
 
 ## Decision ownership
 

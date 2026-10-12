@@ -1,54 +1,46 @@
 ---
 name: roblox-rojo-build-contract
-description: Use pinned Rojo 7.7.0 to build XML places and verify project-owned script contracts; excludes live Studio synchronization and gameplay execution.
+description: Rojo (rojo-rbx/rojo) CLI for Roblox, pinned 7.7.0. Use when a project needs a reproducible `rojo build` of default.project.json into an .rbxlx place and a check that the expected Script/LocalScript/ModuleScript instances are present. Not for live Studio sync (`rojo serve`) or proving gameplay runs.
 ---
 
-# Rojo build contract
+# Rojo 7.7.0 build contract
 
-Reviewed target: `7.7.0`, source reviewed 2026-09-30. The [resource contract](resource.example.yaml) owns static identity; project records own current execution evidence. This authoring example carries no executed upstream or host proof.
+Pinned target: `7.7.0` (source reviewed 2026-09-30). [resource.yaml](resource.example.yaml) holds the exact identity. This authoring example carries no executed upstream or host proof.
 
-## Choose the task
+## Check the pin
 
-- An authorized project needs a reproducible CLI build with an independent script-presence contract.
+The project's tool lock (for example `tool-lock.json`, `rokit.toml` or `aftman.toml`) should pin Rojo 7.7.0. `scripts/check_build.py` checks the executable's identity, version and hash against that lock before it runs anything; the shared checker reports this custom profile unavailable and never runs it. If the `roblox-resource-acquisition` skill is installed beside this one, also run its record query per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent, Python or a project record is unavailable, run `rojo --version` and read the lock directly, and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
 
-- The requested proof needs live Studio synchronization, physics or gameplay execution.
+## Core API
 
-## Before use
+| Command | Produces | Notes |
+| --- | --- | --- |
+| `rojo --version` | version string | Compare with the pinned 7.7.0. |
+| `rojo build PROJECT --output PLACE.rbxlx` | XML place | Exit 0 proves the mapping built, not that it contains the intended scripts. |
+| `scripts/check_build.py … --expected CONTRACT` | report JSON | Builds into a temp dir, checks script classes/sources, then replaces the output. |
+| `scripts/smoke_build.py … --workspace DIR` | report JSON | Generates disposable inputs: one valid mapping, one with the server mapping omitted. |
 
-Resolve the affected project, this child and the available installed parent. Read the parent's references/child-usage.md once per task for freshness, guards, reconciliation and repair. Project resolution failure is unknown state with no global fallback. This required custom profile needs its documented exact-target check before version-sensitive use. The shared checker reports custom checks unavailable and never executes metadata-supplied commands.
+## Example
 
-The child-owned build checker validates canonical tool identity, exact version and executable hash from the project tool lock before invoking the CLI. Read [setup](references/setup.md) for required project-owned inputs.
-
-Run `python "PARENT/scripts/check_resource_status.py" --pair "CHILD" "PROJECT/.agents/roblox/resources/records/rojo-rbx-rojo.yaml"`; require HEALTHY. BLOCKED/UNKNOWN or mismatched identity enters parent repair/reconcile before affected use.
-
-## Common use and ownership
-
-Use `scripts/check_build.py` against the project's actual configuration and independent expected contract. The representative source in `scripts/smoke_build.py` generates disposable inputs outside this child and demonstrates both a valid mapping and an omitted server mapping. Keep project-specific integration fixtures and contracts in the project rather than maintaining a second example here.
-
-```powershell
-python "$Child/scripts/check_build.py" --rojo "$Rojo" --tool-lock "$Project/tool-lock.json" --project "$Project/default.project.json" --expected "$Project/expected-scripts.json" --output "$Project/build/place.rbxlx" --report "$Project/build/report.json"
+```sh
+python "$CHILD/scripts/check_build.py" --rojo "$ROJO" \
+  --tool-lock "$PROJECT/tool-lock.json" \
+  --project "$PROJECT/default.project.json" \
+  --expected "$PROJECT/expected-scripts.json" \
+  --output "$PROJECT/build/place.rbxlx" \
+  --report "$PROJECT/build/report.json"
 ```
 
-Rojo maps authored files into a DataModel. Process success proves it built that mapping; it does not prove the mapping contains the project's intended scripts. An independent contract checks the resulting XML before publishing the last-good output.
+Pass: exit 0 and report status `passed`. An omitted mapping exits 1 and names the missing path (for example `ServerScriptService/Main`); the previous output stays byte-identical.
 
-- Initialization: The invocation owner selects the executable, lock, input project and output paths before starting the build process. Each verifier call owns a temporary build directory and its report.
-- Reuse: Repeated builds reuse project-owned inputs and replace the requested output only after its content checks pass.
-- Cleanup/destruction: TemporaryDirectory removes the temporary build after success or failure. A failed build or contract check leaves the previous output byte-identical. There are no pending waits or spawned gameplay tasks; the helper's subprocess timeout bounds its owned command, and no long-running serve process is started.
-- Ownership boundary: The helper owns only temporary build files, the requested successful output and explicit report. It does not remove project source, tool-manager caches or a developer's Studio process.
+## Gotchas
 
-Rojo exposes no callable API for this workflow. Use `rojo --version` and `rojo build PROJECT --output PLACE.rbxlx` through the helper; these command/configuration behaviors are separate from engine execution.
+- Derive the expected-scripts contract independently of `default.project.json`; a contract copied from a faulty mapping proves nothing.
+- The helper owns only its temporary build, the requested output and the report. It never removes project source, tool caches or a running Studio.
+- No `rojo serve` process is started; live sync is out of scope.
+- Fake-tool tests prove wrapper behavior only. Neither the fake nor the real CLI proves Studio gameplay or strict analysis.
 
-Engine client/server placement is not applicable to the Rojo CLI process. Its project configuration places generated Script, LocalScript and ModuleScript instances; verify their actual classes and sources without claiming that those scripts executed.
+## Read further
 
-## Complete and read further
-
-Executable fixture: scripts/smoke_build.py
-
-Run: Execute `python "$Child/scripts/smoke_build.py" --rojo "$Rojo" --tool-lock "$Project/tool-lock.json" --workspace "$Project/build/qualification" --report "$Project/build/qualification.json"` in an isolated project; choose a fresh fixture workspace. Then run the Common path against the active project's maintained configuration, source and independent expected contract.
-
-Pass condition: The command exits 0 and report status is passed; the happy build has three matching script classes/sources; omission exits 1 identifying `ServerScriptService/Main`; the last-good output remains byte-identical and no `.rojo-build-*` directory remains.
-
-Evidence boundary: Fake-tool tests prove wrapper behavior only. Actual pinned CLI execution proves the observed build behavior; neither establishes Studio gameplay, project strict analysis, independent child usability or operational host activation.
-
-- For installation/configuration, read [setup](references/setup.md).
-- For the named failure symptoms and security constraints, read [troubleshooting](references/troubleshooting.md).
+- Installing Rojo, the tool lock, or the qualification run: read [setup](references/setup.md).
+- A build succeeds but scripts are missing, or another named symptom: read [troubleshooting](references/troubleshooting.md).

@@ -1,0 +1,24 @@
+{
+  "format": "roblox-resource-trigger-evals-v1",
+  "skill": "roblox-resource-acquisition",
+  "cases": [
+    {"id": "add-signal-wally", "should_trigger": true, "query": "add a signal library to my roblox game, we use wally"},
+    {"id": "janitor-vs-trove", "should_trigger": true, "query": "Janitor or Trove for cleaning up connections in my Roblox UI code?"},
+    {"id": "profilestore-or-datastore2", "should_trigger": true, "query": "should I use ProfileStore or just write my own DataStore wrapper for player data"},
+    {"id": "module-for-hitboxes", "should_trigger": true, "query": "is there a good module for hitboxes on roblox or should I raycast myself"},
+    {"id": "pesde-install-blink", "should_trigger": true, "query": "set up Blink for networking in this pesde project"},
+    {"id": "upgrade-pinned-vide", "should_trigger": true, "query": "Vide has a new release, should we bump our pinned version?"},
+    {"id": "devforum-resource", "should_trigger": true, "query": "found this DevForum community resource for pathfinding, is it any good to use?"},
+    {"id": "rokit-stylua", "should_trigger": true, "query": "add StyLua and Selene to the project's rokit toolchain"},
+    {"id": "child-blocked", "should_trigger": true, "query": "the roblox-janitor skill check says MISMATCH for my wally.lock, what now"},
+    {"id": "roblox-ts-package", "should_trigger": true, "query": "which npm package should I use for state management in roblox-ts"},
+    {"id": "use-adopted-janitor", "should_trigger": false, "query": "use our Janitor to clean up this tween when the frame is destroyed"},
+    {"id": "folder-layout", "should_trigger": false, "query": "how should I organize ServerScriptService and ReplicatedStorage for a new game"},
+    {"id": "fix-remote-bug", "should_trigger": false, "query": "my RemoteEvent fires twice on the client, help me debug it"},
+    {"id": "write-tween", "should_trigger": false, "query": "write a TweenService animation that fades this GUI in"},
+    {"id": "npm-react-web", "should_trigger": false, "query": "add a date picker package to my React web app"},
+    {"id": "luau-types", "should_trigger": false, "query": "explain Luau type refinement with typeof checks"},
+    {"id": "rojo-serve-error", "should_trigger": false, "query": "rojo serve says port 34872 is in use"},
+    {"id": "python-deps", "should_trigger": false, "query": "pin my Python dependencies with uv"}
+  ]
+}

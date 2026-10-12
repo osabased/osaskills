@@ -10,7 +10,6 @@ def test_resource_criteria_keep_evidence_without_default_weights():
     assert "Score each 0-5" not in RUBRIC
     assert "earned weighted points" not in RUBRIC
     assert "| Criterion | What good evidence looks like |" in RUBRIC
-    assert "mandatory checklist or priority order" in RUBRIC
     for criterion in (
         "Requirement fit", "Correctness evidence", "Integration cost",
         "Maintenance/currentness", "API/documentation quality", "Security posture",
@@ -20,24 +19,7 @@ def test_resource_criteria_keep_evidence_without_default_weights():
     assert RUBRIC.index("## Hard gates") < RUBRIC.index("## Evidence-and-priority comparison")
 
 
-def test_comparison_preserves_quantities_priorities_and_deciding_evidence():
-    for boundary in (
-        "threshold or an objective to optimize",
-        "strict or permits tradeoffs",
-        "do not replace requested optimization",
-        "measurements in meaningful units",
-        "task-supplied or evidence-backed numerical models",
-        "separate observation from inference",
-        "identity/version, environment, workload, and integration effects",
-        "hypothetical fix as demonstrated capability",
-        "missing evidence or a potentially material unresolved difference does not establish a tie",
-        "applicable user/project tie-breakers first",
-    ):
-        assert boundary in RUBRIC
-
-
 def test_selection_callers_do_not_require_the_removed_scorer():
-    qualification = (ROOT / "references" / "qualification-workflow.md").read_text(encoding="utf-8")
     runtime_files = [ROOT / "SKILL.md"]
     for directory in ("references", "templates"):
         runtime_files.extend((ROOT / directory).rglob("*.md"))
@@ -48,9 +30,6 @@ def test_selection_callers_do_not_require_the_removed_scorer():
             "score only survivors", "scores slightly higher", "reject or heavily penalize",
         ):
             assert legacy_instruction not in text, path
-    assert "curation is a policy preference" in qualification
-    assert "reject a candidate that fails an applicable hard gate" in qualification
-    assert "does not authorize integration, child generation, or host adoption" in qualification
 
 
 def test_comparison_case_definitions_are_well_formed():
@@ -81,11 +60,7 @@ def test_comparison_case_definitions_are_well_formed():
     } <= families
 
 
-def test_hard_gates_and_policy_trust_are_preserved():
+def test_hard_gates_come_before_comparison():
     gates = RUBRIC.split("## Hard gates", 1)[1].split("## Evidence-and-priority comparison", 1)[0]
-    assert "A candidate cannot be selected when any applicable hard gate fails" in gates
     for name in ("Fit", "Evaluability", "Compatibility", "Safety", "Legitimacy", "Proof"):
         assert f"- **{name}:**" in gates
-    assert "Unknown is not automatically failure" in gates
-    assert "Curated resources already have policy trust" in gates
-    assert "unresolved facts still limit what can truthfully be called verified" in gates

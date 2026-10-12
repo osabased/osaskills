@@ -1,24 +1,32 @@
 ---
-name: roblox-RESOURCE-SLUG
-description: USE-TRIGGER-IN-ONE-SENTENCE; ADD-MATERIAL-ROUTING-EXCLUSION-WHEN-NEEDED
+name: roblox-LIBRARY
+description: LIBRARY (OWNER/REPO) for Roblox Luau, pinned VERSION. Use when CONCRETE-TRIGGERS-WITH-API-AND-FILE-NAMES. Not for ONE-SHORT-EXCLUSION.
 ---
 
-# RESOURCE NAME
+# LIBRARY VERSION
 
-Reviewed target: IMMUTABLE SELECTOR, source reviewed YYYY-MM-DD. The child descriptor `resource.yaml` owns canonical identity and integrity profiles. State the actual advice-only or executable-integration boundary; project records own current execution evidence.
+Pinned target: `SELECTOR-VALUE` (source reviewed YYYY-MM-DD). [resource.yaml](resource.yaml) holds the exact identity.
 
-## Before use
+## Check the pin
 
-Resolve the affected project and installed parent. Read its shared usage contract at references/child-usage.md once per task for commands, guards, first-use checks and repair. Unknown project-scoped state stops affected use without a global fallback.
+If the project pins this library, confirm it matches the target. If the `roblox-resource-acquisition` skill is installed beside this one, run its checks per [child usage](../roblox-resource-acquisition/references/child-usage.md). If the parent, Python, or a project record is unavailable, read the project's manifest/lock directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
 
-State the selected policy and immediate pass/stop conditions. Reuse the shared commands; add only resource-specific asset/custom-check inputs. Keep full reconciliation procedures in the parent.
+## Core API
 
-## Common use
+| Call | Returns | Notes |
+| --- | --- | --- |
+| `SOURCE-GROUNDED-CALL` | RESULT | OWNERSHIP-OR-SIDE-NOTE |
 
-Provide the shortest source-grounded resource workflow or recipe. Retain essential activation/cleanup ownership and resource-specific safety constraints here. Choose headings and reference layout to fit the actual resource; no empty sections or fixed word counts.
+## Example
 
-## Complete and read further
+```luau
+-- 8–15 lines derived from the reviewed source or the maintained fixture.
+```
 
-Name the actual applicable integrity/project checks, observable pass condition and evidence boundary. Route to substantial setup, recipes, lifecycle or symptom references only when needed; every route explains when to read and is declared in resource.yaml.
+## Gotchas
 
-Use [the authoring contract](../references/resource-skill-contract.md) and [descriptor template](resource-skill-template.yaml) while authoring; replace all scaffold text before validation.
+- PIN-SPECIFIC-BEHAVIOR (cleanup order, cancellation limits, client/server boundary, security).
+
+## Read further
+
+- READ-WHEN-CONDITION: read [setup](references/setup.md).

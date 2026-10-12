@@ -175,12 +175,12 @@ def invalid_record() -> dict:
 
 def operational_adoption() -> dict:
     return {
-        "host": "codex",
+        "host": "claude-code",
         "scope": "repo",
-        "location": ".agents/skills/roblox-evaera-promise/SKILL.md",
+        "location": ".claude/skills/roblox-evaera-promise/SKILL.md",
         "status": "operational",
         "checked_at": "2026-08-16",
-        "result": "Visible and explicitly invoked in isolated Codex profile",
+        "result": "Listed in /skills and explicitly invoked in a fresh Claude Code session",
         "evidence": {
             "installed": "present",
             "registered": "not-applicable",
@@ -202,36 +202,42 @@ name: {name}
 description: {description}
 ---
 
-# Widget Resource
+# Widget Resource 1.2.3
 
-Reviewed target: 1.2.3. Read [resource contract](resource.yaml) for identity.
+Pinned target: `1.2.3`. [resource.yaml](resource.yaml) holds the exact identity.
 
-## Choose the task
+## Use when
 
 {use_when}
 
 Use a local table when replication is unnecessary.
 
-## Start and stop
+## Check the pin
 
-Resolve the affected project and installed parent. Read its references/child-usage.md
-once per task for freshness, status, guards and repair. Unknown project state enters
-parent reconciliation; it never falls back to global project evidence.
+If the project pins com.example.widget, confirm it is 1.2.3. When the parent skill is
+installed beside this one, run its checks per
+[child usage](../roblox-resource-acquisition/references/child-usage.md). Otherwise read the
+manifest and lock directly and say which checks were skipped. Stop only on an observed
+mismatch or an explicit block.
 
-Install com.example.widget at 1.2.3. The server lifecycle root creates, starts and
-destroys the session. Invalidate pending waits and tasks before teardown. Validate
-client payloads before changing authoritative server state.
-
-## API used by this skill
+## Core API
 
 Use `Widget.new()`, `session:Start()`, and `session:Destroy()` for the documented lifecycle.
 
-## Diagnose and complete
+## Example
+
+The server lifecycle root creates, starts and destroys the session.
+
+## Gotchas
+
+- Invalidate pending waits and tasks before teardown.
+- Validate client payloads before changing authoritative server state.
+
+## Read further
 
 If initialization fails, inspect the manifest and server placement. This synthetic
-resource has no runtime proof. The custom checker is reviewed independently; the
-shared checker reports it as unavailable and never executes it. Record only checks
-actually performed. Recurring workarounds activate parent repair diagnosis.
+resource has no runtime proof; the custom checker is reviewed independently and the
+shared checker never executes it.
 """
 
 
@@ -241,8 +247,8 @@ def write_contract(child, *, use_when=None):
     from _resource_contract import CORE_ROLES
     if use_when is None:
         text = (child / 'SKILL.md').read_text(encoding='utf-8')
-        start = text.index('## Choose the task') + len('## Choose the task')
-        end = text.index('## Start and stop')
+        start = text.index('## Use when') + len('## Use when')
+        end = text.index('## Check the pin')
         use_when = [line[2:] for line in text[start:end].splitlines() if line.startswith('- ')]
     else:
         use_when = [use_when.removeprefix('- ')]
@@ -259,8 +265,8 @@ def write_contract(child, *, use_when=None):
             'documents': [{'path': 'SKILL.md', 'roles': sorted(CORE_ROLES | {'setup', 'troubleshooting', 'api'}),
                 'when': 'every activated use'}], 'executable_fixture': None},
         'reconciliation': {'policy': 'required', 'reason': 'Material installed state can differ.',
-            'record': '.agents/roblox/resources/records/widget-resource.yaml',
-            'learnings': '.agents/roblox/resources/learnings/'},
+            'record': '.roblox-resources/records/widget-resource.yaml',
+            'learnings': '.roblox-resources/learnings/'},
         'installation': {'profile': 'custom', 'custom_checker': 'scripts/check_widget.py'},
     }
     (child / 'scripts').mkdir(exist_ok=True)

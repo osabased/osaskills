@@ -244,3 +244,16 @@ def test_catalog_accepts_non_generated_routing_competitor_cli(scripts_dir, tmp_p
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "ROUTING_COMPETITORS: 1" in proc.stdout
     assert "OVERLAP:" in proc.stdout
+
+
+def test_catalog_defaults_to_portable_and_claude_host_warns_on_long_descriptions(scripts_dir, tmp_path):
+    skill = write_skill(tmp_path / "short")
+    proc = run_cli(scripts_dir, "validate_skill_catalog.py", skill)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "WARN" not in proc.stdout
+    long_skill = write_skill(tmp_path / "long", description="Use Widget Resource " + "for widget replication " * 41)
+    proc = run_cli(scripts_dir, "validate_skill_catalog.py", "--host", "claude", long_skill)
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "put the trigger terms first" in proc.stdout
+    proc = run_cli(scripts_dir, "validate_skill_catalog.py", "--host", "codex", skill)
+    assert proc.returncode == 2
