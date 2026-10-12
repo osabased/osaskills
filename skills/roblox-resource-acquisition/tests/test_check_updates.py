@@ -105,10 +105,10 @@ def test_bundled_children_match_their_descriptors():
     tracked: dict[str, list[dict]] = {}
     for item in manifest(ROOT / "versions.json")["items"]:
         tracked.setdefault(item["files"][0], []).append(item)
-    children = sorted(path.parent for path in SKILLS.glob("roblox-*/resource.yaml"))
+    children = sorted(path.parent for path in (ROOT / "libraries").glob("roblox-*/resource.yaml"))
     assert children, "bundled children not found"
     for child in children:
-        key = f"../{child.name}/"
+        key = f"libraries/{child.name}/"
         assert key in tracked, f"{child.name} is not tracked in versions.json"
         resource = yaml.safe_load((child / "resource.yaml").read_text(encoding="utf-8"))["resource"]
         # The primary package is the one the descriptor names; companions are checked below.
@@ -116,7 +116,7 @@ def test_bundled_children_match_their_descriptors():
         assert item["reviewed_on"] == str(resource["source_review_date"]), child.name
         if resource["selector"]["kind"] == "version":
             assert item["reviewed"] == resource["selector"]["value"], child.name
-    companions = yaml.safe_load((SKILLS / "roblox-nevermore-ui" / "resource.yaml").read_text(encoding="utf-8"))
+    companions = yaml.safe_load((ROOT / "libraries" / "roblox-nevermore-ui" / "resource.yaml").read_text(encoding="utf-8"))
     pins = {c["package_id"]: c["version"] for c in companions["installation"]["companions"]}
     npm = {item["source"]["npm"]: item["reviewed"] for item in manifest(ROOT / "versions.json")["items"] if "npm" in item["source"]}
     for package, version in pins.items():
@@ -149,4 +149,7 @@ def test_plugin_version_follows_commits():
     if not plugin.exists():
         pytest.skip("not running from the plugin repository")
     # A pinned version would hold installed copies on old skill content until someone bumps it.
-    assert "version" not in json.loads(plugin.read_text(encoding="utf-8"))
+    data = json.loads(plugin.read_text(encoding="utf-8"))
+    assert "version" not in data
+    # The library skills are nested, so the plugin must list their folder.
+    assert data["skills"] == ["./skills/roblox-resource-acquisition/libraries/"]

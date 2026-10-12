@@ -28,7 +28,9 @@ def make_project(case):
     if case["with_skills"]:
         dst = d / ".claude" / "skills"
         dst.mkdir(parents=True)
-        for s in skills_dir(case.get("skills", "new")).iterdir():
+        src = skills_dir(case.get("skills", "new"))
+        # Library skills are nested in roblox-resource-acquisition/libraries/; install them flat.
+        for s in [*src.iterdir(), *(src / "roblox-resource-acquisition" / "libraries").glob("*")]:
             if (s / "SKILL.md").exists():
                 shutil.copytree(s, dst / s.name, ignore=shutil.ignore_patterns("tests", "__pycache__"))
     return d

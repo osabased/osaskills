@@ -41,7 +41,7 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
    - Any affected `references/*.md`.
    - The pin in [bundled skills](bundled-skills.md) and the repository `README.md` table.
 5. **Verify.**
-   - Run `scripts/validate_skill.py ../roblox-<lib>`.
+   - Run `scripts/validate_skill.py libraries/roblox-<lib>`.
    - Run this skill's tests (`python -m pytest -q` in this folder).
    - Run the install checker against a project fixture that pins the new version. The fixture is in the temporary directory; for Wally packages, use `wally install`.
    - When the API or behavior changed, give a fresh subagent a realistic task with the updated skill and check that it uses the new API correctly.

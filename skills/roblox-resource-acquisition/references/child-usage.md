@@ -8,7 +8,7 @@ Read this once per task when a child skill (for example `roblox-janitor`) is act
 
 Find the paths:
 
-- **Parent:** this skill's folder. Look for the sibling `../roblox-resource-acquisition/` next to the child, then `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`.
+- **Parent:** this skill's folder. Look two folders up (`../../`) when the child sits in `roblox-resource-acquisition/libraries/`, then a sibling `../roblox-resource-acquisition/` next to the child, then `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`.
 - **Child:** the active child's own folder.
 - **Project:** the Roblox project root (where `wally.toml`, `pesde.toml`, `package.json` or `default.project.json` lives).
 
