@@ -4,7 +4,7 @@ Everything below was checked against `packages/charm/src/init.luau` at tag `char
 
 ## Mental model
 
-Signals hold values. Computed getters derive values lazily. Effects subscribe to whatever they read while running, and re-run synchronously when it changes. Charm models *state*. Use a signal library (e.g. LemonSignal) for one-off events and a renderer (e.g. Vide) for views.
+Signals hold values. Computed getters derive values lazily. Effects subscribe to whatever they read while running, and re-run synchronously when it changes. Charm models *state*. Use a signal library for one-off events and a renderer (e.g. Vide) for views.
 
 ## More API
 
