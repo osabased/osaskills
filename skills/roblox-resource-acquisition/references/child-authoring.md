@@ -1,8 +1,8 @@
 # Writing a child skill (contract 1)
 
-Use this only when the user asks for a child skill, or the same pinned resource is clearly reused across projects. First check the [bundled catalog](bundled-skills.md): reuse a bundled or existing child for the same exact pin instead of writing a duplicate.
+Use this only when the user asks for a child skill, or the same pinned resource is clearly reused across projects. First check the [catalog](bundled-skills.md): clone a catalog child, or reuse an existing one, for the same exact pin instead of writing a duplicate.
 
-A child is a per-library skill: a short `SKILL.md`, a static `resource.yaml`, optional `references/`, and a `scripts/` checker only when the shared profiles can't express the check. Children live in this skill's `libraries/` folder (for example `libraries/roblox-janitor/`), so the shared contract is at `../../references/child-usage.md`. Some installs place a child beside this skill instead, so a child names both locations and must still work as advice when the parent is missing.
+A child is a per-library skill: a short `SKILL.md`, a static `resource.yaml`, optional `references/`, and a `scripts/` checker only when the shared profiles can't express the check. Catalog children live in this skill's `libraries/` folder (for example `libraries/roblox-janitor/`) and run from clones in a project's `.claude/skills/`, where no relative path reaches this skill. So a child names the parent skill and its shared contract in prose instead of linking them, and must still work as advice when the parent is missing.
 
 Contents: [Before writing](#before-writing) · [SKILL.md](#skillmd) · [resource.yaml](#resourceyaml) · [Install profiles](#install-profiles) · [Validate](#validate) · [Executable claims](#executable-claims) · [Install](#install)
 
@@ -15,7 +15,7 @@ Understand the exact pinned resource from its canonical source: the problem it s
 Start from [the template](../templates/resource-skill-template.md). Name the child `roblox-<library>` without a version; the pin goes in the body and `resource.yaml`.
 
 - **Description** (at most 1024 characters): library and repo names, key API names, file names (`wally.toml`, `default.project.json`) and phrases a user would type; say what and when, plus one short exclusion.
-- **`## Check the pin`:** one short paragraph. If the project pins this library, confirm it matches. If the parent is installed beside the child, run its check per [child usage](child-usage.md); otherwise read the manifest and lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user, keep the project's pin, and use only API confirmed at the project's version.
+- **`## Check the pin`:** one short paragraph. If the project pins this library, confirm it matches. If the parent skill is available, load it and run the checks its [child usage](child-usage.md) describes, worded as in the template; otherwise read the manifest and lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user, keep the project's pin, and use only API confirmed at the project's version.
 - **`## Core API`:** a `call | returns | notes` table grounded in the reviewed source. Never invent APIs from names or from other libraries.
 - **`## Example`** (recommended): 8–15 lines of Luau, or the tool's real command line, taken from the reviewed source or the maintained fixture.
 - **`## Gotchas`:** 3–6 pin-specific bullets: cleanup order, cancellation limits, idempotence, client/server boundary, security.
@@ -83,4 +83,4 @@ A component cleans only what it created. Package-global schedulers may live for 
 
 ## Install
 
-Install a child only where the user wants it: `<project>/.claude/skills/<name>/` by default, or `~/.claude/skills/<name>/` on an explicit user-wide request. Before writing, look at any existing folder at that path; if it belongs to a different skill, stop and report the collision instead of overwriting it. Keep one editable copy per scope. A new skill may only appear in a new session; confirm it is listed and that `/<name>` invokes it before calling it working.
+Write a child into `<project>/.claude/skills/<name>/` by default, or `~/.claude/skills/<name>/` on an explicit user-wide request. When other projects will use the same pin, also propose it for the catalog at `libraries/<name>/` in `osabased/osaskills` (with push access, as a pull request like those in [keeping current](keeping-current.md#update)); once merged, projects [clone it](bundled-skills.md#clone-a-child-into-a-project). Before writing, look at any existing folder at that path; if it belongs to a different skill, stop and report the collision instead of overwriting it. Keep one editable copy per scope. A new skill may only appear in a new session; confirm it is listed and that `/<name>` invokes it before calling it working.

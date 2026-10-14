@@ -14,8 +14,6 @@ from _common import load_yaml
 from _resource_contract import load_contract, within
 
 
-# Routes from a child to the shared parent: nested in its libraries/ folder, or installed beside it.
-PARENT_ROUTES = ("../../references/", "../roblox-resource-acquisition/")
 KNOWN_FIELDS = {
     # Agent Skills fields
     "name", "description", "license", "compatibility", "allowed-tools", "metadata",
@@ -86,10 +84,6 @@ def local_links(root: Path, source: Path, text: str) -> list[tuple[Path, str]]:
                 raise ValueError(f"unsupported guidance link scheme: {value}")
             continue
         relative = unquote(parsed.path)
-        if source.parent.resolve() == root.resolve() and relative.startswith(PARENT_ROUTES):
-            # The shared parent may be absent (standalone install or upload);
-            # only the route is checked here, never its presence.
-            continue
         target = source if not relative else (source.parent / relative).resolve()
         if not target.is_relative_to(root.resolve()) or target == root.resolve():
             raise ValueError(f"local guidance link escapes package: {value}")

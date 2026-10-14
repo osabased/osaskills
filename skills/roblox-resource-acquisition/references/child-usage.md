@@ -8,7 +8,7 @@ Read this once per task when a child skill (for example `roblox-janitor`) is act
 
 Find the paths:
 
-- **Parent:** this skill's folder. Look two folders up (`../../`) when the child sits in `roblox-resource-acquisition/libraries/`, then a sibling `../roblox-resource-acquisition/` next to the child, then `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`.
+- **Parent:** the base directory shown when `roblox-resource-acquisition` loads. Without it, look for `.claude/skills/roblox-resource-acquisition/` in the project, then `~/.claude/skills/roblox-resource-acquisition/`.
 - **Child:** the active child's own folder.
 - **Project:** the Roblox project root (where `wally.toml`, `pesde.toml`, `package.json` or `default.project.json` lives).
 
@@ -40,7 +40,7 @@ A newer upstream release is information, not a reason to change the pin.
 
 ## When guidance is wrong
 
-A repeated workaround, or a guess you had to make, is a defect. Report the reproduction, the workaround and the proposed fix before you finish (see the parent's "When a child's guidance is wrong"). A hard defect (correctness, security, identity, version) stops the affected work. A harmless one-off adjustment needs no report. Edit the child only when the current task authorizes it; otherwise propose the exact change.
+A repeated workaround, or a guess you had to make, is a defect. Report the reproduction, the workaround and the proposed fix before you finish (see the parent's "When a child's guidance is wrong"). A hard defect (correctness, security, identity, version) stops the affected work. A harmless one-off adjustment needs no report. Edit the child only when the current task authorizes it; otherwise propose the exact change. A cloned child's fix belongs in the parent's catalog, because a refresh overwrites local edits to the clone.
 
 ## Finish with the right claim
 

@@ -9,7 +9,7 @@ Pinned target: plugin release `v1.6.1` (source reviewed 2026-10-02). [resource.y
 
 ## Check the pin
 
-The installed plugin file can change without any project lock changing, so check it before relying on version-specific behavior. If the `roblox-resource-acquisition` skill is available (two folders up when this skill sits in its `libraries/` folder, otherwise beside this one), run its asset check per [child usage](../../references/child-usage.md), passing the installed plugin file with `--asset`. If the parent, Python, or the plugin file is unavailable, compare what you can (the toolbar name, the installed file's hash) and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+The installed plugin file can change without any project lock changing, so check it before relying on version-specific behavior. If the `roblox-resource-acquisition` skill is available, load it and run the asset check its `references/child-usage.md` describes, passing the installed plugin file with `--asset`. If the parent, Python, or the plugin file is unavailable, compare what you can (the toolbar name, the installed file's hash) and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
 
 ## Core API
 

@@ -21,10 +21,11 @@ def test_bundled_child_is_a_complete_composed_package(skill_mod, child):
 
 
 @pytest.mark.parametrize('child', BUNDLES, ids=lambda path: path.name)
-def test_bundled_child_routes_to_nesting_parent(child):
+def test_bundled_child_names_the_parent_without_a_path(child):
+    # A clone in a project's .claude/skills/ has no parent folder at any fixed relative path.
     text = (child / 'SKILL.md').read_text(encoding='utf-8')
-    assert '../../references/child-usage.md' in text
-    assert (child / '../../references/child-usage.md').resolve().is_file()
+    assert '`roblox-resource-acquisition`' in text and '`references/child-usage.md`' in text
+    assert '](../' not in text
 
 
 @pytest.mark.skipif(not BUNDLES, reason='No bundled children in libraries/ (standalone install)')
