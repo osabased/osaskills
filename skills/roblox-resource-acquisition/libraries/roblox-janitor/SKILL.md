@@ -49,7 +49,7 @@ janitor:Destroy() -- final: no method works after this
 
 ## Gotchas
 
-- Name the method for custom objects. A LemonSignal or other custom connection is a table, so it defaults to `"Destroy"`. `Add` only warns ("doesn't have method"), and cleanup then **silently skips it**. Use `janitor:Add(conn, "Disconnect")`.
+- Name the method for custom objects. A custom connection, such as one from a signal library, is a table, so it defaults to `"Destroy"`. Without a `Destroy` method, `Add` only warns ("doesn't have method"), and cleanup then **silently skips it**. Use `janitor:Add(conn, "Disconnect")`.
 - Cleanup order is unspecified (`next()` order). If one entry throws, the rest are skipped, and the Janitor stays marked as cleaning: every later `Cleanup()` and `Destroy()` call silently does nothing. Keep callbacks nonthrowing, and `pcall` risky ones.
 - When order matters (stop producers, then destroy consumers), use separate Janitors or explicit steps rather than one Janitor.
 - `Destroy()` is single-use; after it, any method call errors. Guard your own teardown with a `disposed` flag if it can run twice.

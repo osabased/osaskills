@@ -67,5 +67,5 @@ end
 
 - Vide scopes clean up their own effects. Add a Vide mount disposer to a Janitor only as an idempotent callback.
 - Charm disposers are plain functions: `janitor:Add(dispose, true)`.
-- LemonSignal connections: `janitor:Add(conn, "Disconnect")`. A signal your feature created: `janitor:Add(signal, "Destroy")`.
+- Signal-library connections: `janitor:Add(conn, "Disconnect")`. A signal your feature created: `janitor:Add(signal, "Destroy")`.
 - A Janitor only cleans up in its own runtime. A server Janitor cannot clean client UI.
