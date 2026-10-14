@@ -53,7 +53,8 @@ heartbeat:Destroy() -- drops listeners and the native connection
 - `Destroy` is not a close. It disconnects current listeners, but `Connect`, `Fire` and `Reconnect` keep working afterwards. Drop your references, and don't `Reconnect` old handles after teardown.
 - `Destroy` does not resume a thread blocked in `Wait()`: it stays suspended forever. Cancel the waiting thread yourself, or use a `Connect` handle you can disconnect.
 - Disconnecting doesn't stop a callback that is already running (for example one that yielded). Check a `disposed` flag before applying late results.
-- In Janitor, add connections with `"Disconnect"` and signals you created with `"Destroy"`. A connection added with the default method silently leaks.
+- `DisconnectAll` or `Destroy` called from a listener doesn't stop the listeners after it in that `Fire`, because `Fire` follows each connection's next link without checking `Connected`. The same holds after a listener disconnects itself and then the next one. Later fires see the change. A listener that must not run after teardown checks a `disposed` flag first.
+- In Janitor, add connections with `"Disconnect"` and signals you created with `"Destroy"`. With the default method a connection is never disconnected: `Add` warns that the object "doesn't have method Destroy", and cleanup skips it.
 - `Fire` stays within one runtime. It is not networking, and client-fired events are not trusted facts on the server.
 
 ## Read further
