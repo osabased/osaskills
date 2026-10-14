@@ -9,7 +9,7 @@ Pinned target: commit `5ed4c01940e6bd578fb83253cfbeda0a6c05177c` (tag 0.4.1, sou
 
 ## Check the pin
 
-If the project pins Vide, confirm it matches the target. If the `roblox-resource-acquisition` skill is available (two folders up when this skill sits in its `libraries/` folder, otherwise beside this one), run its checks per [child usage](../../references/child-usage.md). If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+If the project pins Vide, confirm it matches the target. If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
 
 ## Core API
 

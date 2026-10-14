@@ -9,7 +9,7 @@ Pinned target: `0.11.1` (release commit `af4eb5262d640cf89c56217ab7feb403e939cbd
 
 ## Check the pin
 
-If the project pins Charm, confirm it matches the target. If the `roblox-resource-acquisition` skill is available (two folders up when this skill sits in its `libraries/` folder, otherwise beside this one), run its checks per [child usage](../../references/child-usage.md). If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+If the project pins Charm, confirm it matches the target. If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
 
 ## Core API
 

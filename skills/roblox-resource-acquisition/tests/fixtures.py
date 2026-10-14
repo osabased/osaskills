@@ -25,8 +25,7 @@ Use a local table when replication is unnecessary.
 ## Check the pin
 
 If the project pins com.example.widget, confirm it is 1.2.3. When the parent skill is
-available, run its checks per
-[child usage](../../references/child-usage.md). Otherwise read the
+available, run the checks its `references/child-usage.md` describes. Otherwise read the
 manifest and lock directly and say which checks were skipped. Stop only on an observed
 mismatch or an explicit block.
 

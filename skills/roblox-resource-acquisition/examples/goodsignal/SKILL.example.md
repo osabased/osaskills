@@ -9,7 +9,7 @@ Pinned target: `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f` (source reviewed 2026-
 
 ## Check the pin
 
-If the project vendors or pins GoodSignal, compare its source header and bytes with the pinned commit; a same-named package is not enough. This child uses a custom profile, so the shared checker reports it unavailable and never runs it: follow [setup](references/setup.md) for the exact check. If the `roblox-resource-acquisition` skill is available (two folders up when this skill sits in its `libraries/` folder, otherwise beside this one), also run its record query per [child usage](../../references/child-usage.md). If the parent, Python or a project record is unavailable, read the project's source directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
+If the project vendors or pins GoodSignal, compare its source header and bytes with the pinned commit; a same-named package is not enough. This child uses a custom profile, so the shared checker reports it unavailable and never runs it: follow [setup](references/setup.md) for the exact check. If the `roblox-resource-acquisition` skill is available, load it and also run the record query its `references/child-usage.md` describes. If the parent, Python or a project record is unavailable, read the project's source directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
 
 ## Core API
 

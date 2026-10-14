@@ -11,7 +11,7 @@ Skills for Claude covering Roblox development, VOD discovery, and review workflo
 /plugin install osaskills@osaskills
 ```
 
-Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The Roblox library skills live in `skills/roblox-resource-acquisition/libraries/`; the plugin loads them from there, so they always find `roblox-resource-acquisition`. Plugin skills are namespaced, for example `/osaskills:then-what`.
+Recent Claude Code versions also accept `/plugin install osaskills --marketplace osabased/osaskills` as a single step. The Roblox library skills live in a catalog at `skills/roblox-resource-acquisition/libraries/`. The plugin doesn't load them; when a project needs one, the agent clones it into that project's `.claude/skills/`, and a session-start hook points out declared libraries that have no current clone. Plugin skills are namespaced, for example `/osaskills:then-what`.
 
 Claude Code leaves auto-update off for third-party marketplaces. To get new versions automatically, open `/plugin` → **Marketplaces** → `osaskills` → **Enable auto-update**, or add `"autoUpdate": true` to the `osaskills` entry under `extraKnownMarketplaces` in `~/.claude/settings.json`. To update by hand, run `claude plugin update osaskills@osaskills`.
 
@@ -23,10 +23,10 @@ Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osas
 
 ```sh
 npx skills@latest add osabased/osaskills --agent claude-code
-npx skills@latest add osabased/osaskills --full-depth --skill roblox-resource-acquisition roblox-vide --agent claude-code
+npx skills@latest add osabased/osaskills --full-depth --skill roblox-vide --agent claude-code
 ```
 
-Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact, and put Roblox library skills next to `roblox-resource-acquisition`.
+Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact. The second command adds one Roblox library skill to a project; by hand, copy its folder from `skills/roblox-resource-acquisition/libraries/` into the project's `.claude/skills/`.
 
 Check that Claude actually loaded a skill: it should appear under `/skills`, and `/<name>` should run it.
 
@@ -44,7 +44,7 @@ With the plugin, prefix the name: `/osaskills:then-what`.
 
 ### Pinned Roblox library guides
 
-Each library skill is an API guide for one pinned version: core API table, example, and version-specific gotchas. `resource.yaml` in each folder holds the exact identity.
+Each library skill is an API guide for one pinned version: core API table, example, and version-specific gotchas. `resource.yaml` in each folder holds the exact identity. A project clones the ones it uses into its `.claude/skills/`.
 
 | Skill | Library | Pin |
 |---|---|---|
@@ -57,7 +57,7 @@ Each library skill is an API guide for one pinned version: core API table, examp
 | [roblox-blink](./skills/roblox-resource-acquisition/libraries/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
 | [roblox-nevermore-ui](./skills/roblox-resource-acquisition/libraries/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
-Use the guide only when your project pins the same version. Installing a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
+Use the guide only when your project pins the same version. Cloning a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
 
 Agent-facing project files live in the project's agent directory: `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. The Roblox project guide goes in `<agent dir>/roblox/project.md` and VOD project notes in `<agent dir>/vod/project-context.md`. Adopted Roblox resources are listed in a marked block in the project's `CLAUDE.md`; their pins stay in the project's manifests and locks.
 

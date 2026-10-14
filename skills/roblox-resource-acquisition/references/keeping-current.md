@@ -1,6 +1,6 @@
 # Keeping this skill current
 
-This skill and its bundled library skills track the latest stable release of every library they pin. [`versions.json`](../versions.json) lists each one: its source, the version the guidance was last reviewed against (`reviewed`), and the files that depend on it. This is about the skills' own content. A user's project keeps its pins unless the user asks to upgrade (see [adopting](adopting.md#upgrade-replace-or-remove)).
+This skill and its catalog of library skills track the latest stable release of every library they pin. [`versions.json`](../versions.json) lists each one: its source, the version the guidance was last reviewed against (`reviewed`), and the files that depend on it. This is about the skills' own content. A user's project keeps its pins unless the user asks to upgrade (see [adopting](adopting.md#upgrade-replace-or-remove)).
 
 ## Check
 
@@ -55,4 +55,4 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
 
 If the release breaks the guidance in ways you can't resolve with confidence, or a check fails, open the PR as a draft and list the open questions instead of guessing. A new major version always gets a fresh source review, not just a version bump.
 
-Remove the temporary worktree or clone when done. Once merged, installed plugin copies pick the change up on their next plugin update; the plugin version follows the repository's commits, so no version bump is needed.
+Remove the temporary worktree or clone when done. Once merged, installed plugin copies pick the change up on their next plugin update; the plugin version follows the repository's commits, so no version bump is needed. A project's clone of the child picks it up only when re-cloned: after the plugin update, `--status` reports the clone as `stale` and the session hook names it (see [cloning a child](bundled-skills.md#clone-a-child-into-a-project)).

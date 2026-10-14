@@ -151,5 +151,5 @@ def test_plugin_version_follows_commits():
     # A pinned version would hold installed copies on old skill content until someone bumps it.
     data = json.loads(plugin.read_text(encoding="utf-8"))
     assert "version" not in data
-    # The library skills are nested, so the plugin must list their folder.
-    assert data["skills"] == ["./skills/roblox-resource-acquisition/libraries/"]
+    # Library skills are cloned into each project that uses them, never loaded for every project.
+    assert "skills" not in data

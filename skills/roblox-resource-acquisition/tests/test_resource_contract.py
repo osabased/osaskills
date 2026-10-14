@@ -138,6 +138,13 @@ def test_conditional_reference_is_reachable_and_anchor_checked(skill_mod, child)
     assert any('missing local guidance anchor' in error for error in skill_mod.validate_skill(child)[0])
 
 
+def test_link_into_the_parent_skill_escapes_the_package(skill_mod, child):
+    # A child cloned into a project has no parent at any fixed relative path.
+    core = child / 'SKILL.md'
+    core.write_text(core.read_text() + '\n[child usage](../../references/child-usage.md)\n', encoding='utf-8')
+    assert any('escapes package' in error for error in skill_mod.validate_skill(child)[0])
+
+
 def test_missing_core_coverage_and_undeclared_markdown_fail(skill_mod, child):
     data = read(child)
     data['guidance']['documents'][0]['roles'].remove('ownership')

@@ -5,8 +5,5 @@
     "name": "osabased"
   },
   "repository": "https://github.com/osabased/osaskills",
-  "license": "MIT",
-  "skills": [
-    "./skills/roblox-resource-acquisition/libraries/"
-  ]
+  "license": "MIT"
 }

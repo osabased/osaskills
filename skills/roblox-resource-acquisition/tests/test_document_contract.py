@@ -73,10 +73,7 @@ def test_relative_markdown_links_and_anchors_resolve():
             path_part, _, anchor = target.partition("#")
             if source.parent.name == "templates" and path_part.startswith("references/"):
                 continue  # scaffold link in the child template
-            if source.parent.name == "templates" and path_part.startswith("../../references/"):
-                target_path = (ROOT / path_part.removeprefix("../../")).resolve()  # route from libraries/<child>/
-            else:
-                target_path = source if not path_part else (source.parent / path_part).resolve()
+            target_path = source if not path_part else (source.parent / path_part).resolve()
             if path_part.endswith(".example.yaml") or target_path.name == "resource.yaml":
                 continue  # examples rename their descriptor when materialized
             assert target_path.exists(), f"{source}: missing link target {target}"
@@ -135,7 +132,7 @@ def test_templates_match_the_contract():
     template = (ROOT / "templates/resource-skill-template.md").read_text(encoding="utf-8")
     for heading in ("## Check the pin", "## Core API", "## Gotchas", "## Read further"):
         assert heading in template
-    assert "../../references/child-usage.md" in template
+    assert "`references/child-usage.md`" in template and "](../" not in template
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():
