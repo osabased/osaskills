@@ -1,0 +1,69 @@
+{
+ "id": "t-remote",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6070
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "The project already points to Blink for this. `pesde.toml` has `blink` pinned at `=0.18.9`, and `default.project.json` maps `src/server` to `ServerScriptService/Server`, `src/client` to `ReplicatedStorage/Client` and `src/shared` to `ReplicatedStorage/Shared`. I didn't find a `.blink` file yet, and `src/server`, `src/client` and `src/shared` are still stubs. I haven't opened the `roblox-blink` skill, so check the option names below against it.\n\n## Where the RemoteEvents go\n\nDon't hand-place `RemoteEvent` instances. Declare them in a Blink schema and let Blink generate the code and create the remotes at runtime.\n\n- **Schema:** `src/shared/Shop.blink`, or a single `network.blink` if you want one schema for the whole game.\n- **Server output:** `src/server/Network/Shop.luau`, set with `ServerOutput`. It stays in `ServerScriptService`.\n- **Client output:** `src/client/Network/Shop.luau`, set with `ClientOutput`.\n- **Types output:** shared, so both sides can use the payload types.\n- **Remote instances:** Blink creates them in `ReplicatedStorage` itself, so you don't add a `Remotes` folder to the project file.\n\nPut the server-only validation and purchase logic in `src/server/Shop/`, away from the generated network module.\n\nI'd keep the schema to a small set of events:\n- **Client to server:** `RequestPurchase`, with `itemId` and `quantity` if you need it.\n- **Server to client:** `PurchaseResult`, which says whether it succeeded and sends back the new balance or a reason code.\n- **Server to client:** a `ShopStateChanged` event, only if the client can't read inventory some other way.\n\nIf the client needs a response to its request, use a Blink `function`. Otherwise a pair of events is simpler.\n\n## How the server should validate purchases\n\nTreat the client's request as only an intent to buy. The server decides everything else, and each check below applies to every request.\n\n1. **Payload shape:** Blink's typed fields reject wrong types. Still bound `itemId` and `quantity` yourself, for example `quantity` as an integer from 1 to a small cap. Blink doesn't check ranges for you.\n2. **Item exists:** look `itemId` up in a server-owned catalog in `ServerStorage` or a server module. Reject unknown IDs.\n3. **Price comes from the server:** the client never sends a price or currency amount.\n4. **Eligibility:**\n   - Does the player have enough currency?\n   - Do they meet any level or unlock requirement?\n   - Are they under the ownership or stack limit?\n   - Is the item currently in stock?\n5. **Rate limiting:** keep a per-player cooldown, and ignore a new request while one is still in flight for that player.\n6. **Atomic apply:** deduct currency and grant the item in one step, with no `task.wait` or yield between the check and the write. Otherwise two rapid requests can both pass the balance check.\n7. **Persist:** save through your data layer, and roll back or retry if the save fails. Don't tell the client \"success\" before the server state has changed.\n8. **Reply:** send `PurchaseResult` with a reason code (`NotEnoughFunds`, `InvalidItem`, `RateLimited`, and so on). The client uses it only to update the UI, and the UI doesn't change inventory by itself.\n\nFor real-money purchases (Developer Products or game passes), use `MarketplaceService.ProcessReceipt` on the server. It must be idempotent, so record each `PurchaseId` and grant the item only once, and it should return `NotProcessedYet` if the grant fails. Don't use a client remote to tell the server that a Robux purchase happened.\n\nI'd also add tests with accepted and rejected inputs for the purchase handler: unknown item, negative or fractional quantity, insufficient funds, and a double-fire.\n\n## Decisions for you\n\nI haven't changed anything. Before I scaffold it, these are the choices I'd want from you, with my recommendation first:\n\n1. **Schema layout:** one `src/shared/Shop.blink`, versus a single game-wide schema, versus per-side files.\n2. **Purchase type:** soft-currency purchases only, versus also Robux receipts through `ProcessReceipt`.\n3. **Request shape:** a Blink `function`, which returns the result directly, versus an event pair, which is more flexible but more wiring.\n4. **Project guide:** whether to add a short `CLAUDE.md` that records this networking layout.",
+ "cost": 0.0889093,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14711,
+  "cache_read_input_tokens": 47133,
+  "output_tokens": 2534,
+  "output_tokens_details": {
+   "thinking_tokens": 375
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14711,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1823,
+    "cache_read_input_tokens": 20563,
+    "cache_creation_input_tokens": 3315,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3315
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-typo",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "fix the typo 'recieve' in the comments under src/server",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Grep",
+  "Glob",
+  "Grep"
+ ],
+ "result": "I didn't change anything. 'recieve' (case-insensitive) doesn't appear anywhere in the working directory, including under `src/server`, and no files or directories match `**/server*`.\n\nIs the `src/server` directory somewhere else, or is the typo spelled differently, for example 'recieved' or 'recieving'? Those would have matched my search too. If the files are in another location, give me the path and I'll fix it there.",
+ "cost": 0.043681199999999996,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8680,
+  "cache_read_input_tokens": 44192,
+  "output_tokens": 453,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8680,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 137,
+    "cache_read_input_tokens": 17614,
+    "cache_creation_input_tokens": 233,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 233
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

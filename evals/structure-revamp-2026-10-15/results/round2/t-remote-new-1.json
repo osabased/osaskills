@@ -1,0 +1,68 @@
+{
+ "id": "t-remote",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6070
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Where to put them**\n\nThe project is nearly empty: `src/server/init.server.luau` just prints, and `src/shared` returns `{}`. So nothing constrains the layout yet. I'd use:\n\n- **Remotes:** put them in `ReplicatedStorage/Shared/Remotes`, which is `src/shared/Remotes` on disk. Both sides can reach `Shared`, since your Rojo project maps it into `ReplicatedStorage`. The `Remotes` folder holds only the Remote instances. Declare each one, with its payload shape, in one module. Don't create them ad hoc from scattered scripts. If you adopt Blink, it generates the Remotes and the Client/Server modules for you, so you wouldn't make this folder by hand.\n- **Server handler:** put it in `src/server/Shop/` (`ServerScriptService/Server/Shop`), required explicitly from `init.server.luau`.\n- **Prices and catalog:** put the item definitions (id, price, any server-side requirements) in a server-only module such as `src/server/Shop/Catalog.luau`. If the client UI needs to display prices, put a display-only copy in `Shared`. The server must never read prices from the client.\n\n**How the server should validate purchases**\n\nTreat every client-to-server Remote as attack surface. The client sends only an intent, such as `PurchaseItem(itemId)`. It never sends a price, a currency amount, or a \"success\" flag. In the handler, the server should:\n\n1. **Check the payload type.** `itemId` must be a string (or whatever id type you use). Reject anything else, including extra arguments and `nil`.\n2. **Look the id up in the server catalog.** If it isn't there, reject it. Take the price only from the catalog.\n3. **Check ownership and eligibility.** The player must not already own a one-time item. They must meet any level, stock or other requirement.\n4. **Check the balance server-side.** Read it from the server's own player data, not from anything the client reports.\n5. **Apply the purchase in one step.** Deduct the currency and grant the item together, with no yield between the check and the change. A yield there lets two rapid requests both pass the check. If you save through a DataStore or ProfileStore, update the in-memory profile and let the normal save persist it.\n6. **Rate-limit per player.** Debounce so spamming can't cause duplicate processing or load.\n7. **Return a result and let the client update from it.** Send back only an accept or reject (with a reason code) so the UI can respond. The server's state is the truth, so the client should not predict the purchase.\n\nFor Robux purchases, don't trust a client \"I bought it\" message. Use `MarketplaceService.ProcessReceipt` on the server and make it idempotent by recording the receipt id. Grant the item only when that callback fires.\n\nPer the placement guidance, each Remote should also have a test with accepted and rejected input. The rejected cases are a wrong type, an unknown id, too little currency, an item already owned, and rapid repeats.\n\n**Separate problem I noticed**\n\n`default.project.json` maps `src/client` into `ReplicatedStorage`, and the entrypoint there is `init.client.luau`. With Rojo's default settings that builds a `LocalScript`, and a `LocalScript` in `ReplicatedStorage` never runs. Your client code won't start, so any shop UI would never connect to the Remotes. The fix is to set `\"emitLegacyScripts\": false` in the project file. That makes it a `Script` with `RunContext = Client`. Alternatively, move the entrypoint into a `StarterPlayerScripts` mapping.\n\n**Decisions for you**\n\nMy recommended option comes first for each:\n\n1. **Remote declaration:** hand-written Remote instances in one `Remotes` module, or Blink? Blink gives you typed payloads and generated validation, but it adds a codegen step to the project.\n2. **Client entrypoint:** switch to `emitLegacyScripts: false`, or move the entrypoint to `StarterPlayerScripts`?\n3. **Currency:** is it in-game currency only, or does it include Robux purchases through `ProcessReceipt`? This changes what the handler needs.\n\nI haven't edited any files. Tell me your choices and I'll set up the folder, the Remote declarations and the handler skeleton.",
+ "cost": 0.082889,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14182,
+  "cache_read_input_tokens": 46890,
+  "output_tokens": 2146,
+  "output_tokens_details": {
+   "thinking_tokens": 188
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14182,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1546,
+    "cache_read_input_tokens": 20309,
+    "cache_creation_input_tokens": 3040,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3040
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

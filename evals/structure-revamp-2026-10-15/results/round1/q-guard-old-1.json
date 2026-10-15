@@ -1,0 +1,64 @@
+{
+ "id": "q-guard",
+ "kind": "quality",
+ "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Edit"
+ ],
+ "result": "I added a guard to `scripts/check.sh` that fails the check if `src/server/PlayerData.luau` no longer contains `GetDataStore(\"PlayerData_v3\")`. I haven't run it.\n\nIt runs before `rokit install`, so a rename fails right away. It prints the file and the expected name to stderr and exits 1.\n\nIf you do mean to change the name, say for a `_v4` migration, update the string in `check.sh` in the same commit.\n\nThe guard only looks at that one file. A second `GetDataStore` call elsewhere in `src/` wouldn't be caught.",
+ "cost": 0.092953,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 17740,
+  "cache_read_input_tokens": 102830,
+  "output_tokens": 1169,
+  "output_tokens_details": {
+   "thinking_tokens": 160
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17740,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 190,
+    "cache_read_input_tokens": 26931,
+    "cache_creation_input_tokens": 560,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 560
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\n# Renaming the store orphans every saved player's data.\nif ! grep -qF 'GetDataStore(\"PlayerData_v3\")' src/server/PlayerData.luau; then\n\techo 'src/server/PlayerData.luau: DataStore name must be \"PlayerData_v3\"' >&2\n\texit 1\nfi\n\nrokit install\nwally install\nstylua --check src\nselene src\nrojo build default.project.json -o build/arena.rbxlx\n"
+ },
+ "verdict": "-"
+}

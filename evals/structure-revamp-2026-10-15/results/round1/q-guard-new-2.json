@@ -1,0 +1,65 @@
+{
+ "id": "q-guard",
+ "kind": "quality",
+ "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Glob",
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Edit",
+  "Grep"
+ ],
+ "result": "I added a DataStore name guard to `scripts/check.sh`. I haven't run the script, so the guard is untested. I did confirm that `src` has exactly one `GetDataStore(...)` call, `GetDataStore(\"PlayerData_v3\")` in `src/server/PlayerData.luau`, which is what the guard expects.\n\nIt runs before `rokit install`, so it fails fast. It collects every `GetDataStore(...)` call under `src` and fails with a message listing what it found unless there is exactly one and it is `GetDataStore(\"PlayerData_v3\")`. That also catches a second store being added, or the call being removed.\n\nTo rename the store on purpose, change `EXPECTED_DATASTORE` in `scripts/check.sh` in the same commit. The comment above it says a rename needs a data migration, since players' saved coins live under the old name.\n\nThe guard only matches string-literal names. If the name ever moves into a constant or a variable, it will report \"found: `GetDataStore(NAME)`\" and need adjusting.",
+ "cost": 0.0916624,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 16499,
+  "cache_read_input_tokens": 98864,
+  "output_tokens": 1576,
+  "output_tokens_details": {
+   "thinking_tokens": 146
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16499,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 336,
+    "cache_read_input_tokens": 25380,
+    "cache_creation_input_tokens": 870,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 870
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\n# Renaming the store orphans every player's saved data; update this together with a migration.\nEXPECTED_DATASTORE='GetDataStore(\"PlayerData_v3\")'\ndatastore_calls=$(grep -rhoE 'GetDataStore\\([^)]*\\)' src || true)\nif [ \"$datastore_calls\" != \"$EXPECTED_DATASTORE\" ]; then\n\techo \"DataStore guard: expected exactly one $EXPECTED_DATASTORE in src, found:\" >&2\n\techo \"${datastore_calls:-<none>}\" >&2\n\texit 1\nfi\n\nrokit install\nwally install\nstylua --check src\nselene src\nrojo build default.project.json -o build/arena.rbxlx\n"
+ },
+ "verdict": "-"
+}

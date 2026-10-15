@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-typo",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "fix the typo 'recieve' in the comments under src/server",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Grep",
+  "Grep",
+  "Glob"
+ ],
+ "result": "I found no \"recieve\" under `src/server`, so I changed nothing. A case-insensitive search of the whole project also found no match. The only file in `src/server` is `init.server.luau`.\n\nIf the typo is spelled differently, for example \"recive\" or \"receieve\", tell me the spelling and I'll search for that.",
+ "cost": 0.045164800000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8809,
+  "cache_read_input_tokens": 44168,
+  "output_tokens": 550,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8809,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 101,
+    "cache_read_input_tokens": 17601,
+    "cache_creation_input_tokens": 375,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 375
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

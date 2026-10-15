@@ -1,6 +1,6 @@
 # ModuleLoader 4.0.0 Studio probe (2026-10-11)
 
-[PR #48](https://github.com/osabased/osaskills/pull/48) moved the SSA contract ([`ssa-bootstrap.md`](../../skills/structure-roblox-projects/references/ssa/ssa-bootstrap.md)) to ModuleLoader 4.0.0 from the source and release notes alone. This place checks those claims in a live Studio session.
+[PR #48](https://github.com/osabased/osaskills/pull/48) moved the SSA contract (then `ssa-bootstrap.md`, now [`ssa.md`](../../skills/structure-roblox-projects/references/ssa.md)) to ModuleLoader 4.0.0 from the source and release notes alone. This place checks those claims in a live Studio session.
 
 ## Build
 

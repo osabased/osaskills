@@ -1,0 +1,53 @@
+{
+ "id": "q-glob",
+ "kind": "quality",
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "scaffold": "base",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [],
+ "result": "Add a top-level `globIgnorePaths` array to `default.project.json`:\n\n```json\n{\n  \"name\": \"srp-revamp\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"src/client/Shop/Preview/**\"\n  ],\n  \"tree\": {\n    \"$className\": \"DataModel\"\n  }\n}\n```\n\n- **Path base:** Patterns are matched against paths relative to the project file's folder. `**` crosses directories, so `**/*.story.luau` catches stories at any depth.\n- **Preview folder:** Ignore the whole folder, not just `init.luau`. If only `init.luau` is ignored, Rojo no longer sees it as an init-backed script. It would build `Preview` as a plain Folder holding its other children. `src/client/Shop/Preview/**` drops the contents. If you have other `Preview` folders, `**/Preview/**` covers all of them.\n- **Remaining folder:** If an empty `Preview` Folder still shows up in the built place, add the bare folder path `src/client/Shop/Preview` as well. I haven't verified how 7.7 treats a directory whose contents are all ignored.\n- **Serve and sourcemap:** `globIgnorePaths` applies to `rojo serve` and `rojo sourcemap` as well as `rojo build`. Your stories would stop syncing into Studio, which breaks UI Labs while you develop. To keep them in dev and drop them from builds, make a second project file (for example `build.project.json`) with the ignores, and build with `rojo build build.project.json -o game.rbxl`. Keep `default.project.json` unchanged for serving. The second file needs the same `tree`, so duplicate it or generate it.\n- **Ignore file:** Rojo has no `.rojoignore`, so this has to go in the project file.\n\nTell me if you want me to apply either setup.",
+ "cost": 0.0456191,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8300,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1144,
+  "output_tokens_details": {
+   "thinking_tokens": 522
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8300,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1144,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8300,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8300
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

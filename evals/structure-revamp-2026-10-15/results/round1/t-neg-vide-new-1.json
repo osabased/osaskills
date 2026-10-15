@@ -1,0 +1,65 @@
+{
+ "id": "t-neg-vide",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a Vide component for an inventory list with a toggle button",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-vide"
+ ],
+ "reads": [],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.0611677,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12138,
+  "cache_read_input_tokens": 47137,
+  "output_tokens": 789,
+  "output_tokens_details": {
+   "thinking_tokens": 98
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12138,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 198,
+    "cache_read_input_tokens": 20571,
+    "cache_creation_input_tokens": 734,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 734
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

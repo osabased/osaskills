@@ -1,0 +1,54 @@
+{
+ "id": "t-neg-luau",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [],
+ "result": "# Type refinement with `typeof` in Luau\n\nLuau's type checker narrows a variable's type inside a branch when a condition tells it more about the value. `typeof(x) == \"string\"` is one of those conditions.\n\n## Basic narrowing\n\n```lua\nlocal function describe(value: string | number | nil)\n    if typeof(value) == \"string\" then\n        return value:upper()       -- value: string\n    elseif typeof(value) == \"number\" then\n        return value + 1           -- value: number\n    end\n    return \"nothing\"               -- value: nil\nend\n```\n\nThe checker narrows in three places:\n- **The true branch** keeps only the union members that match.\n- **The else path** removes them. After the `string` and `number` checks above, only `nil` remains.\n- **Early exits** carry the narrowing forward: after `if typeof(x) ~= \"string\" then return end`, `x` is a `string` for the rest of the function.\n\n## Which strings refine\n\nThe comparison must be against a string literal. The checker recognizes the built-in type names: `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"buffer\"` and `\"vector\"`.\n\n```lua\nlocal function run(callback: (() -> ()) | string)\n    if typeof(callback) == \"function\" then\n        callback()                 -- callback: () -> ()\n    end\nend\n```\n\n`type(x) == \"string\"` refines the same way. In Roblox, `typeof` is the usual choice because it also reports Roblox types such as `\"Vector3\"` and `\"Instance\"`. Refinement against those Roblox names is less reliable than for the built-ins. For Instances, prefer `x:IsA(\"Part\")`, which Roblox's Luau does narrow on.\n\n## Limits to watch for\n\n1. **The comparison must be inline.** Storing the result loses the refinement in the old solver:\n   ```lua\n   local isStr = typeof(v) == \"string\"\n   if isStr then v:upper() end    -- may error: v is still a union\n   ```\n   The new solver handles some of these cases, but inline checks are the safe habit.\n\n2. **Wrapping the check in a function doesn't refine.** `local function isString(x): boolean` returns a plain boolean, so callers get no narrowing. Luau has no user-defined type predicates, so repeat the `typeof` check at the call site.\n\n3. **Mutable state and closures reset the narrowing.** Refinement applies to locals and to property paths such as `self.name`. It is invalidated when the value is reassigned, and sometimes when a function call in between could mutate a table field.\n   ```lua\n   if typeof(self.name) == \"string\" then\n       doSomething()              -- may invalidate the refinement on a table field\n       self.name:upper()          -- can complain\n   end\n   ```\n   Copying to a local first (`local name = self.name`) avoids this.\n\n4. **`any` isn't narrowed to anything useful.** `typeof(x) == \"string\"` on an `any` value stays loosely typed. Annotate the value as `unknown` to get real narrowing. The checker then forces you to check before use, and each `typeof` branch refines it:\n   ```lua\n   local function handle(x: unknown)\n       if typeof(x) == \"number\" then\n           print(x + 1)           -- x: number\n       end\n   end\n   ```\n\n5. **Tables narrow to `table`, not to a specific shape.** `typeof(x) == \"table\"` doesn't prove `x` has a given field. Check the fields separately, or cast with `::` when you are certain.\n\n## Truthiness and nil checks\n\nThese also refine and often replace a `typeof` check:\n```lua\nlocal function f(x: string?)\n    if x then print(x:upper()) end   -- x: string\n    if x ~= nil then ... end         -- same effect\nend\n```\n\nUse `typeof(x) == \"nil\"` only when it reads better in context. It behaves the same as `x == nil`.\n\nIf you want, I can look at a specific refinement error in your code.",
+ "cost": 0.0504907,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8195,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1679,
+  "output_tokens_details": {
+   "thinking_tokens": 373
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8195,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1679,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8195,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8195
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

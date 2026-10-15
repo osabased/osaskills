@@ -7,7 +7,7 @@ import argparse, io, shutil, subprocess, tarfile, tempfile, urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-COMMIT = "1f7e2db67b7922b98f6d3bf9b14e32185ebed2a8"  # ModuleLoader v4.0.0, as pinned in ssa-bootstrap.md
+COMMIT = "1f7e2db67b7922b98f6d3bf9b14e32185ebed2a8"  # ModuleLoader v4.0.0, as pinned in structure-roblox-projects references/ssa.md
 TARBALL = f"https://codeload.github.com/ActualFire-Games/module-loader/tar.gz/{COMMIT}"
 
 

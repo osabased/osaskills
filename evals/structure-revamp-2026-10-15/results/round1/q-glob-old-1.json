@@ -1,0 +1,53 @@
+{
+ "id": "q-glob",
+ "kind": "quality",
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "scaffold": "base",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [],
+ "result": "Add a top-level `globIgnorePaths` array to `default.project.json`. Patterns are globs relative to the project file's directory:\n\n```json\n{\n  \"name\": \"srp-revamp\",\n  \"globIgnorePaths\": [\n    \"src/client/Shop/Preview\",\n    \"**/*.story.luau\"\n  ],\n  \"tree\": {\n    \"...\": \"...\"\n  }\n}\n```\n\n- **`src/client/Shop/Preview`:** this matches the folder itself, so Rojo skips the whole thing, including `init.luau` and any children. A pattern like `**/Preview/**` can leave the folder (and its `init`) behind as an empty instance, so I'd ignore the directory path. To exclude every `Preview` folder in the project, use `**/Preview`. That also catches any unrelated folder with that name.\n- **`**/*.story.luau`:** this matches story files at any depth.\n\nI haven't run this against your tree, so check it with `rojo build -o test.rbxl` and look for the stories and Preview in the output. `rojo sourcemap default.project.json` also works and is quicker to inspect.\n\n`globIgnorePaths` applies to `rojo serve` as well as `rojo build`. Rojo has no build-only exclusion. If you use UI Labs, your stories and Preview folders would stop syncing into Studio, so they'd disappear from the storybook.\n\nThe usual fix is a second project file for builds. Copy `default.project.json` to something like `build.project.json`, add `globIgnorePaths` only there, and run `rojo build build.project.json -o game.rbxl`. Keep `default.project.json` without the ignores for `rojo serve`.\n\nI can set up either layout if you want me to.",
+ "cost": 0.045953100000000004,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8266,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1191,
+  "output_tokens_details": {
+   "thinking_tokens": 630
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8266,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1191,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8266,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8266
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

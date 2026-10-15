@@ -1,0 +1,66 @@
+{
+ "id": "q-glob",
+ "kind": "quality",
+ "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+ "scaffold": "base",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/rojo.md",
+   5783
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Grep",
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": "Add a top-level `globIgnorePaths` to `default.project.json`. It sits beside `name` and `tree`, not inside `tree`. It is available in Rojo 7.x, and your 7.7 supports it.\n\n```json\n{\n  \"name\": \"arena\",\n  \"globIgnorePaths\": [\n    \"**/*.story.luau\",\n    \"**/Preview\"\n  ],\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Client\": { \"$path\": \"src/client\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } }\n  }\n}\n```\n\n- **Glob base:** patterns match relative to the project file's directory.\n- **Why `**/Preview` and not `**/Preview/**`:** because `Preview` is backed by `init.luau`, it becomes a ModuleScript with children. `**/Preview` drops the directory and everything under it. `**/Preview/**` would remove only the contents and leave the empty `Preview` ModuleScript in the build.\n- **Scope:** `**/Preview` matches any folder named `Preview` anywhere in the mapped paths, including `Packages`. If you only want `src/client/Shop/Preview`, use `src/client/**/Preview` instead.\n- **Negation:** `!` patterns work from 7.7.0. You can use one to keep a specific match.\n\nThis config applies to `rojo serve` as well as `rojo build`. Your stories and previews will therefore disappear from live sync, and from the sourcemap and luau-lsp. UI Labs needs them in Studio, so that is probably not what you want.\n\nThe pattern the Rojo reference in this project's skill recommends is to split the config into two files:\n\n- **`common.project.json`:** holds the full tree you have now.\n- **`default.project.json`:** a thin dev wrapper with `\"tree\": { \"$path\": \"common.project.json\" }`. It has no ignores, so `serve`, the sourcemap and luau-lsp still see stories.\n- **`release.project.json`:** the same wrapper plus the `globIgnorePaths` above. You build with `rojo build release.project.json -o game.rbxl`.\n\nTwo caveats with the split:\n\n- **Service placement:** don't add services beside the wrapper's root `$path`. On 7.7.0 and 7.7.1 that makes `rojo build` emit the service twice.\n- **`emitLegacyScripts`:** if you set it, put it in the file that holds the tree. A wrapper's value doesn't reach a nested project.\n\nAfter building, confirm the exclusions worked. Check that no `.story` or `Preview` instances appear in the built `.rbxlx`.\n\nI haven't edited any files. I can do the split if you want.",
+ "cost": 0.08241899999999999,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 14950,
+  "cache_read_input_tokens": 70830,
+  "output_tokens": 1552,
+  "output_tokens_details": {
+   "thinking_tokens": 55
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14950,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 943,
+    "cache_read_input_tokens": 22270,
+    "cache_creation_input_tokens": 2431,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2431
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

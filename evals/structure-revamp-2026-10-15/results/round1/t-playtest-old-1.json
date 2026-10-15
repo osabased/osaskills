@@ -1,0 +1,54 @@
+{
+ "id": "t-playtest",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [],
+ "result": "I don't see any Roblox Studio MCP tools connected in this session, so I can't run it for you. The usual workflow is below. Exact tool names depend on which Studio MCP server you've installed, so check yours.\n\n**1. Make sure the MCP is connected**\nStudio must be open with the MCP plugin or server enabled. Then Claude Code should list its tools (check `/mcp`). If nothing shows up here, that's why I can't drive Studio.\n\n**2. Start a play-test through the MCP**\nThe Studio MCP servers I know of expose tools along these lines:\n- `start_stop_play` starts or stops Play mode.\n- `run_script_in_play_mode` runs a Luau snippet during a play session and returns its output.\n- `get_console_output` reads the Output window, including errors and your `print`/`warn` calls.\n- `screen_capture` takes a screenshot so you can check that the UI rendered.\n- `user_mouse_input` and `user_keyboard_input` simulate clicks and key presses.\n- `character_navigation` moves the character.\n\n**3. Test the button**\nYou can test it two ways:\n\n- **Simulated click:** Take a screenshot to find the button, then use the mouse-input tool to click its screen position. This tests what a real player does, including layout and `ZIndex` problems. Then read the console.\n- **Script-driven click:** Use `run_script_in_play_mode` to fire the button from the client, for example:\n  ```lua\n  local btn = game.Players.LocalPlayer.PlayerGui.ShopGui.Frame.OpenButton\n  firesignal(btn.Activated) -- or btn.MouseButton1Click\n  ```\n  `firesignal` isn't available in all Studio contexts. If it fails, call the handler directly or have the script move the mouse over the button and click.\n\n**4. Verify the result**\n- Take a screenshot to confirm the shop frame became visible.\n- Read the console for errors or your debug prints.\n- For purchase buttons, confirm the server received the remote. Add a temporary `print` in the server handler and check the console. The client and server run in separate contexts during Play.\n\n**Common pitfalls**\n- The script runs in the wrong context (server vs client). UI lives in `PlayerGui`, so you need the client.\n- You tested before `PlayerGui` finished loading. Use `WaitForChild`.\n- `ResetOnSpawn` recreates the GUI after the character respawns, so references go stale.\n- Another transparent GUI sits on top of the button and blocks clicks.\n\nIf you tell me which MCP server you're using (or paste its tool list) and how the shop button is wired (the script path), I can write the exact test script.",
+ "cost": 0.04530869999999999,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8197,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1160,
+  "output_tokens_details": {
+   "thinking_tokens": 280
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8197,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1160,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8197,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8197
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

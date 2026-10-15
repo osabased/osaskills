@@ -1,0 +1,67 @@
+{
+ "id": "t-entry",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6070
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob"
+ ],
+ "result": "Put it at `src/client/init.client.luau`. That file already exists, and `default.project.json` maps `src/client` to `ReplicatedStorage/Client`. As the project is configured now, though, it won't run.\n\n**The problem:** `default.project.json` doesn't set `\"emitLegacyScripts\": false`. Rojo therefore builds `init.client.luau` as a `LocalScript`, and a `LocalScript` inside `ReplicatedStorage` never runs.\n\n**Fix:** add `\"emitLegacyScripts\": false` at the top level of `default.project.json`. Rojo then builds the file as a `Script` with `RunContext = Client`, which does run from `ReplicatedStorage`. This is Roblox's recommended setup for client entrypoints.\n\nHere is how that fits the rest of the layout:\n- **Server:** `src/server/init.server.luau` maps to `ServerScriptService/Server` and becomes a `RunContext = Server` script with the same setting.\n- **Client modules:** put them next to the entrypoint under `src/client/`, and have the entrypoint `require` them explicitly.\n- **Shared code:** `src/shared/` holds modules that both sides use.\n\nThere's an alternative if you'd rather not change the Rojo setting. Map the client entrypoint into `StarterPlayer/StarterPlayerScripts` as a `LocalScript`. That needs a new mapping entry and moves the entrypoint out of `src/client`, so I'd go with the setting change.\n\nDo you want me to add `\"emitLegacyScripts\": false` to `default.project.json`? It changes how every `.client`/`.server` file builds, so I haven't made the edit.",
+ "cost": 0.0714657,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13902,
+  "cache_read_input_tokens": 46757,
+  "output_tokens": 1117,
+  "output_tokens_details": {
+   "thinking_tokens": 189
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13902,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 701,
+    "cache_read_input_tokens": 20189,
+    "cache_creation_input_tokens": 2880,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2880
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

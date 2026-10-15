@@ -1,0 +1,22 @@
+{
+ "q-entry:R1": "round1/q-entry-new-1",
+ "q-entry:R2": "round1/q-entry-new-2",
+ "q-entry:R3": "round1/q-entry-old-1",
+ "q-entry:R4": "round1/q-entry-old-2",
+ "q-glob:R1": "round2/q-glob-new-1",
+ "q-glob:R2": "round2/q-glob-new-2",
+ "q-glob:R3": "round1/q-glob-old-1",
+ "q-glob:R4": "round1/q-glob-old-2",
+ "q-guard:R1": "round1/q-guard-old-2",
+ "q-guard:R2": "round2/q-guard-new-1",
+ "q-guard:R3": "round1/q-guard-old-1",
+ "q-guard:R4": "round2/q-guard-new-2",
+ "q-ready:R1": "round1/q-ready-old-2",
+ "q-ready:R2": "round1/q-ready-new-1",
+ "q-ready:R3": "round1/q-ready-old-1",
+ "q-ready:R4": "round1/q-ready-new-2",
+ "q-verify:R1": "round1/q-verify-old-2",
+ "q-verify:R2": "round2/q-verify-new-2",
+ "q-verify:R3": "round2/q-verify-new-1",
+ "q-verify:R4": "round1/q-verify-old-1"
+}

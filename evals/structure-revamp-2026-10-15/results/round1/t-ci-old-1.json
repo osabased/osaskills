@@ -1,0 +1,70 @@
+{
+ "id": "t-ci",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/workflows/default-tooling.md",
+   8373
+  ]
+ ],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Skill",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob"
+ ],
+ "result": "Before I write anything, I need a few decisions from you. The project has no CI host, no tool manifest and no lint or format configs yet, so these choices are open. They are batched here with my recommendation first.\n\n1. **CI host:** GitHub Actions (recommended), or GitLab CI or something else. The directory isn't a git repo yet, so I can't tell which you use.\n2. **Checks to run on each push and PR:**\n   - **Recommended:** `rojo build` to a `.rbxl`, `stylua --check`, `selene`, and `luau-lsp analyze`.\n   - **Smaller option:** `rojo build` and `stylua --check` only.\n   - Tests (Lest) aren't included because the project has none.\n3. **Tool manifest:** add a `rokit.toml` pinning rojo, stylua, selene, luau-lsp, lune and pesde, and install from it in CI (recommended). I'd also add the minimal `stylua.toml`, `selene.toml` and `.luaurc` the checks need. The alternative is to install each tool directly in the workflow with no manifest.\n4. **Packages:** the project has both `pesde.toml` (vide, blink) and `wally.toml` (Janitor, LemonSignal, Charm), and `default.project.json` maps `Packages` once. Which should CI install?\n   - **Recommended:** run `pesde install` and `wally install`, since both manifests exist.\n   - **Alternative:** use only one, if the other is leftover.\n   \n   Neither has a lockfile yet, so CI can't use locked installs until you commit them.\n\nReply with your picks, or \"go with the recommendations\" and I'll build it that way.",
+ "cost": 0.0929275,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18483,
+  "cache_read_input_tokens": 49935,
+  "output_tokens": 1399,
+  "output_tokens_details": {
+   "thinking_tokens": 191
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18483,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 686,
+    "cache_read_input_tokens": 23416,
+    "cache_creation_input_tokens": 4234,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4234
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}
