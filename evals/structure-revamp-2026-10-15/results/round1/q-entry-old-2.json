@@ -1,0 +1,62 @@
+{
+ "id": "q-entry",
+ "kind": "quality",
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "scaffold": "base",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "The client entrypoint should be `src/client/init.client.luau`, the file that already exists. As wired today, though, it never runs.\n\n**How it's wired now** (`default.project.json`)\n- `src/client` maps to `ReplicatedStorage.Client`.\n- `src/server` maps to `ServerScriptService.Server`.\n- `src/shared` maps to `ReplicatedStorage.Shared`.\n- `src/client/init.client.luau` is only `print(\"client\")`.\n- The project doesn't set `\"emitLegacyScripts\": false`, so Rojo builds `init.client.luau` as a `LocalScript`. A `LocalScript` in `ReplicatedStorage` never runs, so that print never fires.\n\n**What I recommend**\n- Make the entrypoint a `Script` with `RunContext = Client`, and keep it at `src/client/init.client.luau` in `ReplicatedStorage.Client`. That is Roblox's current recommendation.\n- The only change needed is adding `\"emitLegacyScripts\": false` at the top level of `default.project.json`. With that set, Rojo builds `*.client.luau` as a client-context `Script`.\n- The entrypoint should stay thin. It should `require` input modules placed as siblings under `src/client/`, plus anything from `Shared`.\n- Server code keeps the same rule. `init.server.luau` becomes a `RunContext = Server` `Script`, which is what it should be anyway.\n\n**Alternative:** map `src/client` to `StarterPlayer.StarterPlayerScripts.Client` and keep it a `LocalScript`. That works with no flag change. The downside is that it only runs once per spawn setup, so it's less flexible.\n\nPer your CLAUDE.md, this choice is yours. The flag also changes `init.server.luau` to a `Script` with `RunContext = Server`. Should I make the `emitLegacyScripts: false` change and build the controller as modules under `src/client/`, with the recommended option first and the `StarterPlayerScripts` mapping second? I haven't edited anything.",
+ "cost": 0.06821730000000001,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11997,
+  "cache_read_input_tokens": 48773,
+  "output_tokens": 1534,
+  "output_tokens_details": {
+   "thinking_tokens": 330
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11997,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 953,
+    "cache_read_input_tokens": 21035,
+    "cache_creation_input_tokens": 713,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 713
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

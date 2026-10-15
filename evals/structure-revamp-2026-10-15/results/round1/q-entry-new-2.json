@@ -1,0 +1,67 @@
+{
+ "id": "q-entry",
+ "kind": "quality",
+ "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+ "scaffold": "base",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6070
+  ]
+ ],
+ "tools": [
+  "Glob",
+  "Glob",
+  "Skill",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "**Recommendation:** make the controller a ModuleScript at `src/client/InputController.luau`, which builds to `ReplicatedStorage/Client/InputController`. Start it by `require` from the one client entrypoint. It should not be a second script.\n\n**What the project does today**\n- `default.project.json` is Rojo-driven and maps `src/client` to `ReplicatedStorage/Client`, `src/shared` to `ReplicatedStorage/Shared`, and `src/server` to `ServerScriptService/Server`.\n- The only client file is `src/client/init.client.luau`, which just does `print(\"client\")`. The project file has no `emitLegacyScripts` setting.\n- With Rojo 7 defaults, that file builds as a `LocalScript` named `Client` inside `ReplicatedStorage`. A `LocalScript` never runs in `ReplicatedStorage`, so **the client entrypoint is dead today**. Because it's an `init` file, the `Client` folder itself becomes that script, and any modules you add under `src/client` become its children.\n- The server side works. `init.server.luau` becomes a `Script` in `ServerScriptService`, which runs.\n\n**What I'd do**\n1. Set `\"emitLegacyScripts\": false` in `default.project.json`. That makes `init.client.luau` a `Script` with `RunContext = Client`, which is Roblox's recommended client entrypoint in `ReplicatedStorage`. The server `Script` also gets `RunContext = Server`, so check that it still behaves the same.\n2. Keep `src/client/init.client.luau` as the single client startup owner. It requires `InputController` and calls its start function explicitly. No loader exists in the project, so explicit requires are enough.\n3. Put `InputController` in `src/client/` as a ModuleScript. Client-only code such as input, camera and UI belongs in the client folder.\n4. If the controller needs types or action names shared with the server, put those in `src/shared`. If it sends input to the server, that needs a Remote, and the server must validate every payload.\n\n**Alternative:** use a `LocalScript` under `StarterPlayerScripts` only if you need it to live in a Starter container. That would add a second Rojo mapping and a second startup owner, so I wouldn't.\n\n**Decision for you:** changing `emitLegacyScripts` changes how both existing scripts are built, so I haven't touched it. Do you want me to make that change, and add the `InputController` module and the `require` in the entrypoint? I'd recommend yes.",
+ "cost": 0.0773534,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14139,
+  "cache_read_input_tokens": 48754,
+  "output_tokens": 1591,
+  "output_tokens_details": {
+   "thinking_tokens": 266
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14139,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1049,
+    "cache_read_input_tokens": 20982,
+    "cache_creation_input_tokens": 2908,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2908
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

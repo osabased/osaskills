@@ -1,0 +1,82 @@
+{
+ "id": "q-ready",
+ "kind": "quality",
+ "prompt": "Make this project easier for Claude to work in without me watching. Propose what you'd set up first; don't create or edit any files yet.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5564
+  ],
+  [
+   "structure-roblox-projects/references/project-guide.md",
+   5934
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "I haven't created or edited anything. Here is what I found and what I'd set up.\n\n## What's here\n- **Stack:** a Rojo 7.7.1 project called `arena` (`default.project.json`). Tools are pinned in `rokit.toml`: rojo, wally, stylua, selene and luau-lsp.\n- **Code:** it's small. `PlayerData` and `Shop` run on the server and `ShopButton` on the client, with a shared `Prices` table.\n- **Packages:** `wally.toml` has Janitor, LemonSignal and Charm. `pesde.toml` has Vide and Blink.\n- **Missing:** there is no `CLAUDE.md`, `.claude/settings.json`, check script, hooks, CI, or tests.\n- **No git repo:** this affects hooks and CI, covered below.\n\n## Proposed setup, in order\n1. **`CLAUDE.md`** that fits on one screen:\n   - the stack in one line\n   - the check command\n   - the hard rules, each naming the guard that enforces it\n   - a pointer to `.claude/roblox/project.md`\n\n   That guide would hold the filesystem-to-DataModel table, who owns startup, and how to reach each verification rung. Every claim would cite its source file.\n2. **One check command** (`scripts/check.sh`). It runs these steps in order and stops at the first failure:\n   1. `rokit install`, then the package restore\n   2. guards\n   3. a Blink codegen step, if you adopt Blink schemas\n   4. `stylua --check`, `selene`, and `luau-lsp analyze` with a sourcemap\n   5. `rojo build`, then a check of the built place's layout\n\n   It prints one line per step and only the failing step's last 40 lines. I'd allowlist it in `.claude/settings.json` so it runs without a prompt.\n3. **Guards.** Only for things that are permanent, a security hole, or silent:\n   - The DataStore name `PlayerData_v3` and the key prefix `player_`. Changing either hides every existing player's data.\n   - `--!strict` at the top of every file.\n   - No secrets or server logic in `ReplicatedStorage`.\n   - A single startup script on each side.\n4. **Hooks in `.claude/settings.json`:**\n   - A `PostToolUse` hook that runs stylua on each edited `.luau` file.\n   - A `Stop` hook that runs the check and blocks the stop if it fails, so I keep fixing instead of handing back broken work.\n5. **Verification notes** in the guide: which checks run offline, and which need a Studio play-test and so can't run unattended.\n6. **A fresh-agent trial.** A smaller model builds a small feature from the repo alone, and I fix the guide wherever it stalls. I'd delete the trial code afterwards.\n\n## Things I noticed that affect the setup\n- **Two package managers.** Wally and pesde both manage dependencies, and the project maps `Packages` once. Restore and the Rojo mapping need to account for both. Pesde installs to `luau_packages` by default, and I haven't confirmed where either output ends up.\n- **Possible data loss in `PlayerData.luau`.** If `GetAsync` fails, the player gets 100 coins, and `PlayerRemoving` then overwrites their saved value. There is also no `BindToClose`. I'd document this in the guide rather than fix it, unless you want it fixed.\n- **No git.** Without a repo, the `pre-push` hook doesn't apply. CI would depend on where this is hosted, and the skip-if-unchanged fingerprint would hash files instead of using git.\n- **No update check.** The skill's `check_updates.py` caches its result on disk, so I skipped it to stay read-only.\n\n## Decisions for you\nRecommended option first in each:\n1. **Scope:** build all six items. Alternative: only the check command and the `Stop` hook.\n2. **Packages:** keep wally and pesde, and make the check restore both. Alternative: consolidate on one.\n3. **Version control:** `git init` first, so the hooks and CI apply. Alternative: no git, with the check script and hooks only.\n4. **CI:** a GitHub Actions workflow that runs the check command. Alternative: skip CI for now.\n5. **`PlayerData` flaw:** document it only. Alternative: fix it as part of this setup.\n\nReply with your answers, or \"go with the recommendations\", and I'll start.",
+ "cost": 0.16369820000000002,
+ "turns": 19,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 28435,
+  "cache_read_input_tokens": 119282,
+  "output_tokens": 3801,
+  "output_tokens_details": {
+   "thinking_tokens": 625
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28435,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1874,
+    "cache_read_input_tokens": 35494,
+    "cache_creation_input_tokens": 2692,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2692
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

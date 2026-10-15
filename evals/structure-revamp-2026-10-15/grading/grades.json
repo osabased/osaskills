@@ -1,0 +1,624 @@
+{
+ "q-entry": {
+  "R1": {
+   "criteria": {
+    "E1": [
+     true,
+     "Reports the default.project.json mappings: src/client to ReplicatedStorage.Client, shared to ReplicatedStorage.Shared, server to ServerScriptService.Server."
+    ],
+    "E2": [
+     true,
+     "Says init.client.luau builds as a LocalScript in ReplicatedStorage and never runs; flags emitLegacyScripts as the missing setting."
+    ],
+    "E3": [
+     true,
+     "Recommends a RunContext=Client Script in ReplicatedStorage via emitLegacyScripts:false, with a LocalScript in StarterPlayerScripts as the alternative."
+    ],
+    "E4": [
+     true,
+     "All claims correct, including that a Script in a Starter container runs twice; it also honestly admits the Rojo version is unconfirmed."
+    ],
+    "E5": [
+     true,
+     "Concise and direct; the extra loader and Rojo-version questions are minor."
+    ]
+   },
+   "overall": 9
+  },
+  "R2": {
+   "criteria": {
+    "E1": [
+     true,
+     "Reports that src/client maps to ReplicatedStorage/Client, plus the shared and server mappings."
+    ],
+    "E2": [
+     true,
+     "States the init.client.luau LocalScript in ReplicatedStorage never runs, so the client entrypoint is dead today; notes the missing emitLegacyScripts."
+    ],
+    "E3": [
+     true,
+     "Recommends emitLegacyScripts:false so the entrypoint becomes a RunContext=Client Script in ReplicatedStorage; the controller is a ModuleScript it requires."
+    ],
+    "E4": [
+     true,
+     "No wrong claims; the init-file-becomes-script explanation is accurate. It omits the run-twice caveat but asserts nothing false."
+    ],
+    "E5": [
+     true,
+     "Tight, proportional answer that addresses both entrypoint placement and script type."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "E1": [
+     true,
+     "Reports the three mappings, including src/client to ReplicatedStorage.Client."
+    ],
+    "E2": [
+     true,
+     "Explains that without emitLegacyScripts the init.client.luau LocalScript sits in ReplicatedStorage and never runs, so the print never fires."
+    ],
+    "E3": [
+     true,
+     "Recommends emitLegacyScripts:false for a RunContext=Client Script in ReplicatedStorage, or remapping under StarterPlayerScripts for the LocalScript."
+    ],
+    "E4": [
+     true,
+     "No wrong claims; it candidly says the conclusion rests on the Rojo 7 default and the version wasn't verified."
+    ],
+    "E5": [
+     true,
+     "Concise, with the decision framed clearly and no excess process."
+    ]
+   },
+   "overall": 8
+  },
+  "R4": {
+   "criteria": {
+    "E1": [
+     true,
+     "Lists the default.project.json mappings, including src/client to ReplicatedStorage.Client."
+    ],
+    "E2": [
+     true,
+     "Says the missing emitLegacyScripts:false makes init.client.luau a LocalScript in ReplicatedStorage that never runs."
+    ],
+    "E3": [
+     true,
+     "Recommends a RunContext=Client Script via emitLegacyScripts:false at the top level; offers a StarterPlayerScripts LocalScript mapping as the alternative."
+    ],
+    "E4": [
+     false,
+     "Says the StarterPlayerScripts option 'only runs once per spawn setup, so it's less flexible'; that downside is wrong or muddled, and it never mentions the run-twice caveat."
+    ],
+    "E5": [
+     true,
+     "Concise; the closing question is slightly muddled but proportional."
+    ]
+   },
+   "overall": 6
+  }
+ },
+ "q-glob": {
+  "R1": {
+   "criteria": {
+    "G1": [
+     true,
+     "Puts `globIgnorePaths` at top level beside `name` and `tree`."
+    ],
+    "G2": [
+     true,
+     "Lists `**/*.story.luau` and explains it drops stories at any depth."
+    ],
+    "G3": [
+     true,
+     "Uses `**/Preview`, which drops the whole directory including `init.luau`."
+    ],
+    "G4": [
+     true,
+     "Says `**/Preview/**` removes contents but leaves the directory's own ModuleScript, so an empty Preview still builds."
+    ],
+    "G5": [
+     true,
+     "States globs match relative to the directory containing the project file."
+    ],
+    "G6": [
+     true,
+     "Says to check the built `.rbxlx` for `.story` and `Preview` and confirm neither appears."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "G1": [
+     true,
+     "Top-level `globIgnorePaths`, explicitly not inside `tree`, shown in a full config."
+    ],
+    "G2": [
+     true,
+     "Includes `**/*.story.luau`."
+    ],
+    "G3": [
+     true,
+     "Uses `**/Preview` and offers `src/client/**/Preview` to scope it to the client."
+    ],
+    "G4": [
+     true,
+     "Explains `**/Preview/**` removes only contents and leaves the empty `Preview` ModuleScript."
+    ],
+    "G5": [
+     true,
+     "States patterns match relative to the project file's directory."
+    ],
+    "G6": [
+     true,
+     "After building, check that no `.story` or `Preview` instances appear in the built `.rbxlx`."
+    ]
+   },
+   "overall": 9
+  },
+  "R3": {
+   "criteria": {
+    "G1": [
+     true,
+     "Top-level `globIgnorePaths` array in `default.project.json`."
+    ],
+    "G2": [
+     true,
+     "Includes `**/*.story.luau` and says it matches at any depth."
+    ],
+    "G3": [
+     true,
+     "Explicit `src/client/Shop/Preview` skips the whole folder with its init; offers `**/Preview` for all Preview folders."
+    ],
+    "G4": [
+     true,
+     "Warns `**/Preview/**` can leave the folder and its init behind as an empty instance."
+    ],
+    "G5": [
+     true,
+     "Says patterns are relative to the project file's directory; uses `src/...` paths."
+    ],
+    "G6": [
+     true,
+     "Suggests `rojo build -o test.rbxl` or `rojo sourcemap` and checking for stories and Preview."
+    ]
+   },
+   "overall": 8
+  },
+  "R4": {
+   "criteria": {
+    "G1": [
+     true,
+     "Top-level `globIgnorePaths` in `default.project.json`."
+    ],
+    "G2": [
+     true,
+     "Includes `**/*.story.luau`."
+    ],
+    "G3": [
+     true,
+     "Uses `src/client/Shop/Preview` and offers `**/Preview` for all Preview folders."
+    ],
+    "G4": [
+     true,
+     "Never mentions `**/Preview/**` but doesn't claim it suffices. Warns ignoring only `init.luau` leaves a Folder with children."
+    ],
+    "G5": [
+     true,
+     "Says patterns are relative to the project file's folder; the `src/...` path fits."
+    ],
+    "G6": [
+     true,
+     "Suggests `rojo build -o test.rbxl` and checking no Preview or story instances appear."
+    ]
+   },
+   "overall": 7
+  }
+ },
+ "q-ready": {
+  "R1": {
+   "criteria": {
+    "R1": [
+     true,
+     "States it created or edited nothing and waits for the user's choices before making files."
+    ],
+    "R2": [
+     false,
+     "Keeps check.sh but only adds a --quick mode; no type-check, pesde restore or summarized output added to it."
+    ],
+    "R3": [
+     false,
+     "Proposes only a PostToolUse stylua hook; no Stop hook, no loop guard, no pre-push or CI."
+    ],
+    "R4": [
+     false,
+     "No guard for the PlayerData_v3 name, the key prefix or emitLegacyScripts; remote validation appears only as a CLAUDE.md note."
+    ],
+    "R5": [
+     true,
+     "Short CLAUDE.md with the check command and conventions, pointing to library skills; hard rules are thin."
+    ],
+    "R6": [
+     false,
+     "Never mentions that the purchase flow or UI needs a Studio play-test."
+    ],
+    "R7": [
+     true,
+     "Small, proportionate list; only slips are a Shop.lua typo and leaving pesde packages out of the CLAUDE.md dependency list."
+    ]
+   },
+   "overall": 4
+  },
+  "R2": {
+   "criteria": {
+    "R1": [
+     true,
+     "Opens by saying nothing was created or edited, and asks for decisions before starting."
+    ],
+    "R2": [
+     true,
+     "Plans one scripts/check.sh adding luau-lsp, both package restores, a topology check and per-step output (while wrongly calling the script missing)."
+    ],
+    "R3": [
+     false,
+     "Stop hook blocks on failure but has no stop_hook_active loop guard; the stylua hook, pre-push and CI are included."
+    ],
+    "R4": [
+     true,
+     "Guards the PlayerData_v3 name and player_ prefix, plus no server logic in ReplicatedStorage and one startup script per side."
+    ],
+    "R5": [
+     true,
+     "One-screen CLAUDE.md with check command and guarded hard rules, pointing to .claude/roblox/project.md for detail."
+    ],
+    "R6": [
+     false,
+     "Says some checks need a Studio play-test but never names the purchase flow or UI."
+    ],
+    "R7": [
+     false,
+     "Wrongly lists the check script as missing; scripts/check.sh exists. A fresh-agent trial adds process."
+    ]
+   },
+   "overall": 6
+  },
+  "R3": {
+   "criteria": {
+    "R1": [
+     true,
+     "Says nothing was created or edited, and asks the user to confirm decisions first."
+    ],
+    "R2": [
+     false,
+     "Never mentions scripts/check.sh and says a single bootstrap command is missing; lists separate commands instead."
+    ],
+    "R3": [
+     false,
+     "Only a PostToolUse stylua hook; no Stop hook, no loop guard, no CI or pre-push."
+    ],
+    "R4": [
+     false,
+     "No guard for the DataStore name or prefix, emitLegacyScripts or topology; remote validation is only a CLAUDE.md gotcha."
+    ],
+    "R5": [
+     true,
+     "Short CLAUDE.md covering layout, commands and a validation gotcha, plus a pointer to library skills."
+    ],
+    "R6": [
+     false,
+     "No mention of Studio play-testing or what static checks cannot prove about the shop flow."
+    ],
+    "R7": [
+     false,
+     "Claims no single check command exists, missing the existing check.sh; also suggests running three installs to verify the toolchain."
+    ]
+   },
+   "overall": 3
+  },
+  "R4": {
+   "criteria": {
+    "R1": [
+     true,
+     "Says it changed nothing, skipped the cache-writing script, and asks for choices before building."
+    ],
+    "R2": [
+     true,
+     "Extends scripts/check.sh in place: adds pesde restore, luau-lsp analyze, rojo topology check and one-line-per-step output."
+    ],
+    "R3": [
+     true,
+     "Stop hook blocks on failure with a stop_hook_active guard, plus stylua on edit, pre-push and CI running the same command."
+    ],
+    "R4": [
+     true,
+     "Guards the PlayerData_v3 name and player_ prefix, nothing server-only in ReplicatedStorage and single startup scripts; --!strict is borderline."
+    ],
+    "R5": [
+     true,
+     "Screen-sized CLAUDE.md with the check command, rules and a pointer to the library skills."
+    ],
+    "R6": [
+     true,
+     "Says Studio play-testing of the shop flow stays a manual rung, and that the offline check does not cover it."
+    ],
+    "R7": [
+     true,
+     "Accurate on check.sh, pesde gap, emitLegacyScripts and the save-path risk; somewhat heavy (git, CI, trial) but proportionate."
+    ]
+   },
+   "overall": 9
+  }
+ },
+ "q-guard": {
+  "R1": {
+   "criteria": {
+    "G1": [
+     true,
+     "grep -qF matches exact GetDataStore(\"PlayerData_v3\") in PlayerData.luau; key prefix not pinned."
+    ],
+    "G2": [
+     true,
+     "if ! grep -qF; then echo; exit 1; fi works under set -e; I simulated it: unchanged passes, rename exits 1."
+    ],
+    "G3": [
+     true,
+     "Message names the orphaned-data rule, the file, and says to update check.sh if intended; no migration mention."
+    ],
+    "G4": [
+     false,
+     "Says it hasn't run the script but gives no break-test steps."
+    ],
+    "G5": [
+     true,
+     "One small guard in check.sh; nothing else touched."
+    ],
+    "G6": [
+     true,
+     "Failure message states that changing the name orphans saved player data."
+    ]
+   },
+   "overall": 7
+  },
+  "R2": {
+   "criteria": {
+    "G1": [
+     true,
+     "Pins the full exact line with grep -qF including PlayerData_v3; key prefix not pinned."
+    ],
+    "G2": [
+     true,
+     "Simulated: unchanged passes, rename exits 1; || true and if-condition are safe under set -euo pipefail."
+    ],
+    "G3": [
+     true,
+     "Message shows expected and found lines (with file path) and says to update expected_store; no migration mention."
+    ],
+    "G4": [
+     true,
+     "States it was not run or break-tested and gives concrete break-test steps (change to v4, run, revert)."
+    ],
+    "G5": [
+     true,
+     "Single inline guard; also enforces exactly one GetDataStore call, mildly broader but related."
+    ],
+    "G6": [
+     true,
+     "Script comment says changing the name hides every existing player's data."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "G1": [
+     true,
+     "grep -qF on exact GetDataStore(\"PlayerData_v3\") in PlayerData.luau; prefix not pinned."
+    ],
+    "G2": [
+     true,
+     "if ! grep -qF; then ...; exit 1; fi correct under set -e; simulated unchanged passes, rename fails."
+    ],
+    "G3": [
+     false,
+     "Message only names file and required name; no way to change on purpose, no migration, though chat mentions it."
+    ],
+    "G4": [
+     false,
+     "Says it hasn't run it but gives no break-test steps."
+    ],
+    "G5": [
+     true,
+     "One minimal guard in check.sh with a comment; no extras."
+    ],
+    "G6": [
+     true,
+     "Comment in the script says renaming orphans every saved player's data."
+    ]
+   },
+   "overall": 6
+  },
+  "R4": {
+   "criteria": {
+    "G1": [
+     true,
+     "Compares against the exact line with PlayerData_v3 via string equality; prefix not pinned."
+    ],
+    "G2": [
+     true,
+     "Guard script called from check.sh; || true safe, simulated unchanged passes and a rename exits 1 with message."
+    ],
+    "G3": [
+     true,
+     "Shows expected and found with file path and says to update EXPECTED in the guard; no migration mention."
+    ],
+    "G4": [
+     true,
+     "States no shell so it was not run, and gives break-test steps."
+    ],
+    "G5": [
+     false,
+     "Adds a new script file and also guards GetOrderedDataStore, GetGlobalDataStore and any added store, which wasn't asked."
+    ],
+    "G6": [
+     true,
+     "Guard header comment says renaming hides every existing player's data."
+    ]
+   },
+   "overall": 7
+  }
+ },
+ "q-verify": {
+  "R1": {
+   "criteria": {
+    "P1": [
+     false,
+     "Confirms the sync in step 2, but never runs a static check (check.sh, selene or stylua) before Play."
+    ],
+    "P2": [
+     true,
+     "Checks ServerStorage.Sword exists and is a Tool in Edit mode (step 3), and Remotes.PurchaseItem in step 5."
+    ],
+    "P3": [
+     true,
+     "Step 7 clicks the real BuySword button with user_mouse_input and labels the FireServer fallback as weaker evidence."
+    ],
+    "P4": [
+     true,
+     "Step 8 reads Coins going 100 to 50 and one Sword Tool in the Backpack on the server, noting silent failures."
+    ],
+    "P5": [
+     true,
+     "Step 10 covers the third click with no change, plus 'Nonexistent' and a number from the client."
+    ],
+    "P6": [
+     false,
+     "Never mentions that requiring game modules from execute_luau gives a separate instance, and doesn't warn against it."
+    ],
+    "P7": [
+     false,
+     "States no limits, such as multiplayer or latency. Persistence is an optional step, not a stated gap."
+    ],
+    "P8": [
+     false,
+     "Expects ReplicatedStorage.Client to be a LocalScript despite emitLegacyScripts false, and relies on invented tools such as run_script_in_play_mode."
+    ]
+   },
+   "overall": 5
+  },
+  "R2": {
+   "criteria": {
+    "P1": [
+     true,
+     "Step 0 runs a static check (selene/stylua) first, then step 1 compares Studio scripts to disk before Play."
+    ],
+    "P2": [
+     true,
+     "Step 2 checks ServerStorage.Sword is a Tool and step 4 confirms the runtime-created PurchaseItem RemoteEvent."
+    ],
+    "P3": [
+     true,
+     "Step 6 uses user_mouse_input on PlayerGui.ShopGui.BuySword and explains why handler or FireServer calls would be weaker."
+    ],
+    "P4": [
+     true,
+     "Step 7 checks Coins dropping 100 to 50 and one Sword in the Backpack, though it doesn't name the Server datamodel."
+    ],
+    "P5": [
+     true,
+     "Step 8 clicks a third time and expects Coins and the Backpack unchanged; it deliberately skips spoofed payloads."
+    ],
+    "P6": [
+     true,
+     "Step 6 says never to require the game's modules; it gives no reason but does avoid the trap."
+    ],
+    "P7": [
+     true,
+     "'What this doesn't cover' names DataStore persistence, multiplayer and latency, and says every step is reported as passed, failed or not run."
+    ],
+    "P8": [
+     true,
+     "Clear and proportional. Correctly checks the Script with RunContext Client entry. It misses the existing check.sh but falls back to selene and stylua."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "P1": [
+     true,
+     "Step 1 confirms the sync and step 3 runs a static check before Play, though it says to look for the command."
+    ],
+    "P2": [
+     true,
+     "Step 2 inspects ServerStorage.Sword and step 5 confirms the RemoteEvent exists at runtime."
+    ],
+    "P3": [
+     true,
+     "Step 6 uses user_mouse_input on BuySword and says execute_luau handler calls prove only the handler."
+    ],
+    "P4": [
+     true,
+     "Step 7 inspects the Server datamodel for Backpack.Sword and Coins going 100 to 50."
+    ],
+    "P5": [
+     true,
+     "Step 8 covers the third click (rejected) and non-string, unknown-name and table payloads from the client."
+    ],
+    "P6": [
+     true,
+     "Explicitly won't require game modules from execute_luau during Play, because that builds a second copy with separate state."
+    ],
+    "P7": [
+     true,
+     "Covered/not-covered section names multiplayer ordering, latency and unproven DataStore persistence, and says it reports failures honestly."
+    ],
+    "P8": [
+     true,
+     "Clear, with tools and a 'proves' line per step. The Packages risk is odd but harmless, and it asks useful questions."
+    ]
+   },
+   "overall": 9
+  },
+  "R4": {
+   "criteria": {
+    "P1": [
+     false,
+     "Confirms the Rojo sync in step 1 but never runs a static check or the project's check command."
+    ],
+    "P2": [
+     true,
+     "Step 2 checks ServerStorage.Sword is a Tool; step 5 checks PurchaseItem is a RemoteEvent."
+    ],
+    "P3": [
+     true,
+     "Step 7 clicks the real button with the mouse-input tool, but the Activated-from-code fallback isn't labelled as weaker."
+    ],
+    "P4": [
+     true,
+     "Steps 5 and 7 check Coins going 100 to 50 and exactly one Sword in the Backpack, with server-side code."
+    ],
+    "P5": [
+     true,
+     "Step 8 covers the third click with no coins and 'Bogus', 123 and nil payloads, expecting no state change."
+    ],
+    "P6": [
+     false,
+     "No mention of the separate-module-instance trap or of avoiding require from execute_luau."
+    ],
+    "P7": [
+     true,
+     "'Gaps' states single-player scope and that DataStore load race, saving on leave and respawn aren't covered; reports pass/fail honestly."
+    ],
+    "P8": [
+     true,
+     "Clear and proportional, with a useful DataStore-overwrite warning. Uses generic tool names, so it is less actionable."
+    ]
+   },
+   "overall": 6
+  }
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "id": "q-verify",
+ "kind": "quality",
+ "prompt": "Studio is open with Roblox's Studio MCP server connected, and rojo serve is syncing this project. I want you to check that buying the sword from the shop works end to end. You can't call Studio from here, so write the exact verification plan you'd follow: the steps, the tools, and what each step proves. Reply in chat only; don't edit files.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Glob",
+  "Read"
+ ],
+ "result": "I read the shop code first, so this plan targets how this project actually works. I haven't run any of it.\n\n**What the code does**\n- The client's `BuySword` button calls `PurchaseItem:FireServer(\"Sword\")`.\n- `src/server/Shop.luau` checks that the item is a string, that `Prices.Sword` is 50, that `ServerStorage.Sword` exists, and that the player has at least 50 coins.\n- It then subtracts 50 and clones the template into the player's Backpack.\n- `PlayerData` gives new players 100 coins, or their saved coins if the DataStore read works. It mirrors the balance to the `Coins` attribute.\n\n**Risks to check**\n- `default.project.json` doesn't map `ServerStorage`, and the repo has no Sword asset. If `ServerStorage.Sword` isn't saved in the place file, the server returns silently with no log. This is the most likely failure.\n- `PlayerData` uses the real `PlayerData_v3` DataStore. A test run can overwrite the saved coins for whoever is playing.\n\n**Plan**\n\nI'm using generic tool names. Before starting I'd list the MCP server's tools and map these steps onto whatever it exposes.\n\n1. **Confirm Rojo is synced.**\n   - Tool: Studio MCP script read or search, plus the `rojo serve` output.\n   - Check that `ServerScriptService.Server.Shop` and `ReplicatedStorage.Client.ShopButton` match `src/`, and that `Shared.Prices.Sword == 50`.\n   - This proves I'm testing the current code, not a stale copy.\n\n2. **Check the Sword asset (edit mode).**\n   - Tool: Studio MCP instance search or code execution.\n   - Check that `ServerStorage:FindFirstChild(\"Sword\")` is a `Tool` with a `Handle`.\n   - If it's missing, the purchase can never succeed, and I'd report that rather than fix it silently. Creating the asset is your decision.\n\n3. **Handle the DataStore.**\n   - I'd ask you first whether I can run a Play session against the real DataStore.\n   - The alternatives are to use a throwaway test place, or to accept that the test may overwrite the saved coins.\n\n4. **Start Play mode and clear the console.**\n   - Tool: the MCP play start or stop tool, then its console-output tool.\n   - Check for no errors from `Shop`, `PlayerData` or `ShopButton`. In particular, check for no infinite-yield warning on `Remotes.PurchaseItem` and no DataStore warnings.\n   - This proves both scripts boot and the remote is created.\n\n5. **Check the initial state.**\n   - Tool: run code in the play session (server side).\n   - Check `player:GetAttribute(\"Coins\") == 100`, that the Backpack has no Sword, and that `ReplicatedStorage.Remotes.PurchaseItem` is a RemoteEvent.\n   - If the attribute is nil, I'd wait for the DataStore load and re-check. A purchase fired during that window would be rejected, which is expected behaviour.\n\n6. **Check the button exists (client side).**\n   - Tool: run code on the client, or a screenshot.\n   - Check that `PlayerGui.ShopGui.BuySword` exists with the text \"Buy Sword (50)\".\n\n7. **Click the real button.**\n   - Tool: the MCP mouse-input tool if it has one. Otherwise I'd fire the button's `Activated` event from client code.\n   - After a short wait, check `Coins == 50` and that the Backpack has exactly one Sword.\n   - This is the end-to-end proof: the click reaches the server, which deducts the coins and clones the Sword.\n\n8. **Test the rejection cases.**\n   - Click a second time. The player should have 0 coins and two Swords.\n   - Click a third time. Nothing should change, since there are no coins left.\n   - From the client, fire `PurchaseItem` with `\"Bogus\"`, `123` and `nil`. Coins and Backpack should stay unchanged and there should be no server errors.\n   - This proves the server enforces the price and validates its inputs.\n\n9. **Check the console again.**\n   - Look for any errors that appeared after step 4.\n\n10. **Stop Play mode.**\n    - Restore the coins if step 3 put real data at risk.\n    - Then report each step as pass or fail, with the observed values.\n\n**Gaps**\n- This tests one player in Studio. It doesn't cover the DataStore load race, saving on leave, or what happens when the character respawns.\n- If step 2 fails, steps 7 and 8 can't pass until a Sword exists. I'd stop there and tell you.",
+ "cost": 0.10456230000000001,
+ "turns": 12,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 15605,
+  "cache_read_input_tokens": 99123,
+  "output_tokens": 3221,
+  "output_tokens_details": {
+   "thinking_tokens": 695
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15605,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1975,
+    "cache_read_input_tokens": 24742,
+    "cache_creation_input_tokens": 614,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 614
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

@@ -1,6 +1,6 @@
 # Behavioral evaluation scenarios
 
-Use after changing orientation, freshness, review gates, setup choices, or structural integration. Run affected cases with independent agents in isolated fixtures. Give each agent the request, skill and raw project evidence; withhold expected outcomes, suspected defects and prior conclusions. Inspect actual responses, reads, commands and writes. Document integrity and checker tests do not prove agent behavior.
+Use after changing orientation, freshness, review gates, setup choices, agent readiness, verification, or structural integration. Run affected cases with independent agents in isolated fixtures. Give each agent the request, skill and raw project evidence; withhold expected outcomes, suspected defects and prior conclusions. Inspect actual responses, reads, commands and writes. Document integrity and checker tests do not prove agent behavior.
 
 ## Task-scoped orientation during an ordinary task
 
@@ -28,7 +28,7 @@ Assess: asks a small useful needs round before selecting architecture or tooling
 
 Round 2 answers: "A small solo game prototype with a round timer and a simple UI. I want Luau and mostly Studio, plus an external editor and Git for the code. Studio should keep ownership of the map and UI assets. No community runtime libraries. I do not need CI yet. I want a minimal maintainable setup and to review the proposal before you implement anything."
 
-Assess: researches current workflow fit, honors ownership/library/minimality constraints, and presents one executable coherent setup with actual paths/classes/startup/network/check contracts, sources and review boundary. Does not install/scaffold/save before approval or import the old fixed SSA/Rojo stack. Presents credible competing options if research yields an unresolved consequential choice.
+Assess: researches current workflow fit, honors ownership/library/minimality constraints, and presents one executable coherent setup with actual paths/classes/startup/network/check contracts, sources and review boundary. Includes the agent foundation sized to a solo prototype: a short guide with its `CLAUDE.md` pointer, one check command, and a Stop hook; no CI, since the user declined it, and no guards beyond what a permanent or security rule needs. Does not install/scaffold/save before approval or import the old fixed SSA/Rojo stack. Presents credible competing options if research yields an unresolved consequential choice.
 
 ## Reuse a guide; review a stale clause
 
@@ -75,3 +75,35 @@ Fixture: mapped helper required by ancestry; supply callers and mapping.
 Request: "Move this helper under the feature implementation folder and update callers."
 
 Assess: traces and updates affected paths, preserves DataModel behavior, establishes proportionate recovery and checks, and avoids an unrelated full migration inventory.
+
+## Make a project agent-ready
+
+Fixture: a working Rojo game with StyLua, Selene and luau-lsp configured but no check script, hooks or CI, and a sparse `CLAUDE.md`. A data module names its DataStore with a literal, and the README bans a networking library's client-to-server events because of a receive-side flaw.
+
+Request: "Make this project easier for Claude to work in without me watching."
+
+Assess: proposes before building. The proposal has one check command covering the steps the project's tools support; guards only for the store identity, the banned client-to-server feature (pinned to the library version it was reviewed against) and silent topology rules, not for style or library preferences; a `PostToolUse` format hook, a Stop hook that exits at once when `stop_hook_active` is set, a pre-push hook and CI running the same command; a short `CLAUDE.md` pointing to a task guide; and how each verification rung is reached, naming what stays Studio-only. Offers a fresh-agent trial. Does not adopt libraries, restructure code or write files before review.
+
+## Add a guard
+
+Fixture: a project with a check command and a guard script; a data module whose store name and key prefix are literals.
+
+Request: "Add a guard so nobody changes the DataStore name by accident."
+
+Assess: compares the exact identity lines, fails with a message naming the rule, the file and how to change it on purpose, and wires the guard into the check command. Break-tests it once and reverts the break. Lists the guard where the project lists its guards. Adds no unrelated guards.
+
+## Verify in a Studio play-test
+
+Fixture: a Rojo game with a shop button that sends a client-to-server purchase request; Studio MCP connected and the dev build served.
+
+Request: "Check that buying the sword from the shop works end to end."
+
+Assess: runs the check command first; confirms Studio is running the edited source before Play; clicks the real button rather than calling the handler; observes through the UI, console and Instance tree, recording short-lived UI instead of polling for it; does not require the game's data or network modules from `execute_luau`; reports each rung it ran and names the ones it didn't, such as multiplayer; stops only the play session it started.
+
+## Fresh-agent trial
+
+Fixture: a project with a guide and a check command.
+
+Request: "Test whether a fresh agent could build a feature here."
+
+Assess: gives a smaller model only the repository and a small client/server feature. Grades outcomes (placement, server authority, the project's patterns, a passing check, honest verification), not library or style choices the guide leaves open. Turns stalls into guide fixes or guards proposed for review, and deletes the trial's code afterward.

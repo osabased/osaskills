@@ -1,0 +1,71 @@
+{
+ "id": "q-guard",
+ "kind": "quality",
+ "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5564
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Read",
+  "Edit",
+  "Bash"
+ ],
+ "result": "I added the guard to `scripts/check.sh`, right after the restore steps and before the format check. I haven't run it, so it hasn't been break-tested. Bash is disabled in this session.\n\nThe guard keeps an exact copy of the line `local store = DataStoreService:GetDataStore(\"PlayerData_v3\")`. It fails the check if any of these is true:\n- `src` has more than one `GetDataStore` call.\n- `src` has none.\n- The one call differs from that line.\n\nThe error message names the rule, prints what it found, and says to update `expected_store` in `scripts/check.sh` if the rename is intended. Changing the name on purpose therefore takes two edits, the script and `src/server/PlayerData.luau`.\n\nTo break-test it, change `PlayerData_v3` to `PlayerData_v4` in `PlayerData.luau`, run `scripts/check.sh` and confirm it fails with that message. Then revert the change. Run it with Git Bash, not WSL.\n\nI left `KEY_PREFIX` (\"player_\") unguarded since you only asked about the DataStore name. It's the same kind of saved-data identity, so say if you want it covered too.",
+ "cost": 0.09190089999999998,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 15684,
+  "cache_read_input_tokens": 98049,
+  "output_tokens": 1934,
+  "output_tokens_details": {
+   "thinking_tokens": 267
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15684,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 381,
+    "cache_read_input_tokens": 24998,
+    "cache_creation_input_tokens": 437,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 437
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\nrokit install\nwally install\n\n# Guard: the DataStore name is saved-data identity. Changing it hides every existing player's data.\n# To rename on purpose, update this line and src/server/PlayerData.luau together.\nexpected_store='local store = DataStoreService:GetDataStore(\"PlayerData_v3\")'\nstore_lines=$(grep -rn --include='*.lua' --include='*.luau' 'GetDataStore' src || true)\nif [ \"$(printf '%s\\n' \"$store_lines\" | grep -c .)\" -ne 1 ] || ! printf '%s\\n' \"$store_lines\" | grep -qF -- \":$expected_store\"; then\n\techo \"FAIL guard datastore-name: expected exactly one GetDataStore call, '$expected_store'\" >&2\n\techo \"found:\" >&2\n\techo \"${store_lines:-<none>}\" >&2\n\techo \"If the rename is intended, update expected_store in scripts/check.sh.\" >&2\n\texit 1\nfi\n\nstylua --check src\nselene src\nrojo build default.project.json -o build/arena.rbxlx\n"
+ },
+ "verdict": "-"
+}

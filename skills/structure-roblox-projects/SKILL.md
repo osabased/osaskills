@@ -1,62 +1,66 @@
 ---
 name: structure-roblox-projects
-description: "Roblox/Luau project structure and integration: where scripts and modules belong (ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage, ReplicatedFirst), Script vs LocalScript vs RunContext, client/server boundaries and RemoteEvents, startup/bootstrap wiring, and moving or renaming modules safely. Use when Roblox work touches Rojo (default.project.json, *.project.json, sourcemap.json, rojo build/serve/syncback), Studio Script Sync, roblox-ts output, Rokit/Wally/pesde/StyLua/selene/luau-lsp setup, a new Roblox project, onboarding to an unfamiliar Roblox repo or writing its agent guide, or migrating between Studio, Script Sync and Rojo. Also covers Server Authority prediction/rollback and Script Capabilities sandbox boundaries. Not needed for small edits inside an already-understood file."
+description: "Structure Roblox/Luau projects and make them agent-ready. Use for Roblox work on: where scripts go and whether they run (ServerScriptService, ReplicatedStorage, StarterPlayerScripts, ServerStorage, ReplicatedFirst; Script, LocalScript, RunContext); Remotes and client/server authority; Rojo config (*.project.json, globIgnorePaths, sourcemap.json, rojo build/serve/syncback), Studio Script Sync or roblox-ts output; Rokit, Wally, pesde, StyLua, Selene, luau-lsp or Lest setup; a check script, guards (a check that fails when someone renames a DataStore, uses a banned API or misplaces a script), Claude Code hooks or CI; testing a change in a Studio play-test or through the Studio MCP; a new project, onboarding or an agent guide; moving or migrating scripts; Server Authority or Script Capabilities. Use it even when the answer seems familiar: it records current Rojo and engine behavior that models get wrong. Not needed for edits inside one already-understood file."
 ---
 
 # Structure Roblox Projects
 
-Work from where the project's code actually lives and how it actually starts. Keep a coherent existing structure, toolchain, and pins, and finish the requested task. The defaults here are for choices the project has not already made.
+Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill.
 
-**First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping current](references/core/keeping-current.md). Skip silently if it can't run.
+**First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping this skill current](references/keeping-current.md#keeping-this-skill-current). Skip silently if it can't run.
 
-## Placement quick reference
+## Facts models get wrong
 
-- Server-only code: `Script`s in `ServerScriptService`; server-only modules and assets in `ServerScriptService` or `ServerStorage`. Clients never receive them.
-- Client entrypoint: a `Script` with `RunContext = Client` in `ReplicatedStorage` (Roblox's current recommendation), or a `LocalScript` in `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or `StarterPack`. A `LocalScript` in `ReplicatedStorage` never runs. A Client-RunContext `Script` in a Starter container runs twice (original and clone).
-- Rojo 7 file suffixes: `*.client.luau` builds a `LocalScript` unless the project sets `"emitLegacyScripts": false`, which makes it a `Script` with `RunContext = Client` (`*.server.luau` likewise becomes `RunContext = Server`). So a default-settings `init.client.luau` mapped into `ReplicatedStorage` never runs. Script Sync's suffixes (`.local.luau`, `.legacy.luau`) mean nothing to Rojo, which builds them as ModuleScripts.
-- Shared modules, types, constants, and Remotes: `ReplicatedStorage`. Everything there is visible to clients, so keep secrets out.
-- Earliest loading UI only: `ReplicatedFirst`.
-- A ModuleScript runs once per Luau environment (server, each client, each `Actor`). Its returned state is not shared between them.
-- Validate all client input on the server. Keep DataStores, purchases, and authoritative game state server-side, and replicate only what clients need.
+- A `LocalScript` runs only under a player (`PlayerScripts`, `PlayerGui`, `Backpack`, the character; usually placed through the Starter containers) or in `ReplicatedFirst`. In `ReplicatedStorage` it never runs. A `Script` with `RunContext = Client` runs from `ReplicatedStorage`, which is Roblox's current recommendation for client entrypoints; in a Starter container it runs twice (original and clone).
+- Rojo 7: `*.client.luau` builds a `LocalScript` unless the project sets `"emitLegacyScripts": false`, which makes it a `Script` with `RunContext = Client` (`*.server.luau` likewise gets `RunContext = Server`). So a default-settings `init.client.luau` mapped into `ReplicatedStorage` never runs. Script Sync's `.local.luau` and `.legacy.luau` suffixes mean nothing to Rojo, which builds them as ModuleScripts.
+- A ModuleScript runs once per Luau environment (the server, each client, each `Actor`). Its state is never shared between them.
+- Everything in `ReplicatedStorage` and `ReplicatedFirst` reaches clients. Secrets, DataStores, purchases, validation and authoritative state stay in `ServerScriptService` or `ServerStorage`. Validate every client-to-server payload on the server.
+- Don't call `require()` in a desynchronized parallel phase; require first, in serial context.
+- A build, an offline test run or a loader's "loaded" flag proves nothing about Studio startup, rendering, input or multiplayer.
 
 ## Work loop
 
-1. **Locate the owned source.** Read the project's instructions (`CLAUDE.md`) and existing guidance, such as `.claude/roblox/project.md` or `.agents/roblox/project.md`. Identify the affected project or place, authored versus generated files, which workflow syncs them (Studio, Script Sync, Rojo, a compiler), and the startup path that reaches the code. Follow mappings and `require`s; don't infer execution from folder names. An empty folder does not mean the Studio place is empty.
-2. **Trace only the boundary the change crosses.** Check client/server placement and replication, startup and lifecycle, dependencies, and the checks that cover them. Recheck stale or contradictory guidance against source. Stop when those questions have answers or specific gaps. A routine edit needs no project overview, new guide, or architecture review.
-3. **Do the work.** Include the caller, entrypoint, mapping, configuration, and focused-test edits the change needs to actually run. Trace moves and renames before applying them, and keep a way to undo risky ones.
-4. **Verify and stop.** Inspect the diff and any generated output, then run the smallest checks that cover the change. Broaden only for failures or unresolved integration risk. Name checks you could not run. A build, an offline run, or a loader's "loaded" flag does not prove Studio startup, rendering, input, or multiplayer behavior.
+1. **Locate.** Read `CLAUDE.md` and the project guide it points to. Find the files that own the change, which workflow syncs them (Rojo, Script Sync, Studio, a compiler), and the startup path that reaches them. Follow mappings and `require`s; don't infer execution from folder names. An empty folder doesn't mean the Studio place is empty.
+2. **Trace the boundary the change crosses:** client/server placement, startup, Remotes, saved data, and the checks that cover them. Stop when each has an answer or a named gap. A routine edit needs no overview or new guide.
+3. **Do the whole change,** including the caller, entrypoint, mapping and test edits it needs to run. If the user restricts which files you may edit, do the allowed part and name the exact edit that stays blocked ([write scope](references/migration.md#write-scope)).
+4. **Verify** with the project's check command (if no guide names it, look in `scripts/`, the README and CI config), then the lowest rung of the [verification ladder](references/verification.md) that can observe the change. Name the rungs you couldn't run, and never report an unrun check as passed.
 
-Give each execution environment one clear startup owner and keep the earliest-loading content small.
+## An agent-ready project
 
-If the user restricts which files you may edit, or ownership of existing or generated files is unclear, use [modification scope](references/core/modification-scope.md). A shared file is not automatically restricted. Do the authorized part and name the exact edit that stays blocked.
+An agent works safely in a Roblox project that has the pieces below. When you set up a project or write its guide, propose the missing ones, sized to the project, and build them after the user reviews the proposal. When asked whether a project is agent-ready, check each row.
 
-## Match the deliverable
+| Piece | Done when | Details |
+| --- | --- | --- |
+| Guide | `CLAUDE.md` fits on a screen and points to task guides; claims cite their source | [project guide](references/project-guide.md) |
+| One check command | Restore, guards, codegen, tests, format, lint, types, builds and topology run from one command that prints one line per step | [checks](references/checks.md#one-check-command) |
+| Guards | A rule whose break is permanent, a security hole or silent fails the check; library-coupled guards are pinned to the version they were reviewed against | [guards](references/checks.md#guards) |
+| Hooks and CI | Format on edit, the check before the agent stops and before push, the same command in CI, tools installable in a fresh checkout | [hooks and CI](references/checks.md#hooks-and-ci) |
+| Verification ladder | The guide says how to reach each rung this project supports, up to a Studio play-test | [verification](references/verification.md) |
+| Dev/release boundary | Dev-only content can't ship or run in live servers, and live sync is locked to the right place | [dev and release builds](references/rojo.md#dev-and-release-builds) |
+| Fresh-agent trial | A new agent built a small feature from the repo alone, and the guide was fixed where it stalled | [trial](references/project-guide.md#trial-it-with-a-fresh-agent) |
 
-- **Ordinary task:** the work loop above.
-- **Project overview or agent guide:** [project guide](references/conventions/project-guide.md). Keep facts separate from suggested improvements.
-- **New project or new foundation:** [needs-led setup](references/workflows/onboarding.md). Propose one setup for review before building it, unless the user already approved it or asked you to just build it.
-- **Review or design:** stay read-only unless asked to implement. Back findings with concrete project impact. A design names source/generated ownership, exact entrypoint paths, classes or RunContexts and owners, communication boundaries, and the checks for the proposed behavior.
-- **Migration:** [migration](references/workflows/migration.md) for an explicit migration or plan. Ordinary moves use only its tracing and recovery safeguards.
+Be strict only where a mistake is permanent or a security hole. Libraries, the engine and community practice change, so everything else lives in the guide, where it can change without fighting a check.
 
-## Boundary references
+## Route by task
 
-| When the task needs it | Read |
+| Task | Read |
 | --- | --- |
-| Placement, entrypoints, grouping, source of truth (Studio vs Script Sync vs Rojo), or Remote design | [Practices](references/core/practices.md) |
-| A consequential project choice is still open | [Preference resolution](references/conventions/preference-resolution.md) |
-| Rojo mapping, build/serve, topology, or dev/release composition changes | [Rojo](references/workflows/rojo.md) |
-| Script Sync ownership, conflicts, managed topology, or metadata changes | [Script Sync](references/workflows/script-sync.md) |
-| Configuring formatters, linters, type checking, tests, packages, or tool versions | [Default tooling](references/workflows/default-tooling.md) |
-| The project uses or explicitly selects the ModuleLoader SSA contract | [SSA](references/ssa/ssa.md); [bootstrap](references/ssa/ssa-bootstrap.md) for loader or entrypoint changes |
-| Server Authority prediction/rollback or shared deterministic simulation | [Server Authority](references/platform/server-authority.md) |
-| An active or likely Script Capabilities sandbox | [Script Capabilities](references/platform/script-capabilities.md) |
+| Ordinary edit | The work loop only |
+| Placement, entrypoints, Remotes, grouping, or choosing Studio vs Script Sync vs Rojo | [Placement](references/placement.md) |
+| Project overview, agent guide or `CLAUDE.md` pointer | [Project guide](references/project-guide.md) |
+| Agent readiness, checks, guards, hooks or CI | [Checks](references/checks.md) |
+| Tests, Studio engine tests, play-tests, Studio MCP | [Verification](references/verification.md) |
+| New project or new foundation | [New project](references/new-project.md) |
+| Rojo mapping, build/serve, topology, dev/release builds | [Rojo](references/rojo.md) |
+| Script Sync boundary, conflicts or metadata | [Script Sync](references/script-sync.md) |
+| Formatter, linter, type checker, test runner, packages or tool versions | [Tooling](references/tooling.md) |
+| Move, rename, restructure or migrate | [Migration](references/migration.md) |
+| The project uses ModuleLoader SSA | [SSA](references/ssa.md) |
+| Server Authority or Script Capabilities | [Engine modes](references/engine-modes.md) |
+| Adopting or upgrading a tool or library, or a claim about what is current | [Keeping current](references/keeping-current.md) |
 
-Plugins, packages/models, compilers, and custom or mixed workflows keep their real host and consumer contracts. Use their own documentation where these references don't cover them.
-
-## Current facts
-
-Running a project's already-pinned tools needs no freshness research. Check current docs and releases only when you adopt, add, or upgrade a tool or library, rely on version-sensitive behavior you have not confirmed for the project's pinned version, or make a recommendation. Then follow [evidence and freshness](references/core/evidence-and-freshness.md). Platform pages change: re-open the linked official page before relying on version-sensitive behavior, and say which lookups you could not make.
+Reviews and designs stay read-only unless the user asks for the change; back each finding with its concrete effect on the project. Plugins, packages and compiler pipelines keep their own host and consumer contracts; use their documentation where these references don't cover them. Running a project's already-pinned tools needs no freshness research.
 
 ## Companion skill
 
-The `roblox-resource-acquisition` skill is optional. If it is installed beside this one ([SKILL.md](../roblox-resource-acquisition/SKILL.md)), use it to choose, acquire, adopt, or repair libraries and tools. If it is missing, use canonical sources directly; nothing here requires it.
+The `roblox-resource-acquisition` skill is optional. If it is installed beside this one ([SKILL.md](../roblox-resource-acquisition/SKILL.md)), use it to choose, adopt, upgrade or repair libraries and tools. If it is missing, use canonical sources directly; nothing here requires it.

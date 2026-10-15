@@ -1,0 +1,60 @@
+{
+ "id": "t-guard",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Grep",
+  "Grep",
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.058369899999999995,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12317,
+  "cache_read_input_tokens": 43999,
+  "output_tokens": 469,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12317,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 225,
+    "cache_read_input_tokens": 17475,
+    "cache_creation_input_tokens": 4009,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4009
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

@@ -10,7 +10,7 @@
    "reviewed": "7.7.1",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/rojo.md",
+    "references/rojo.md",
     "SKILL.md",
     "tests/test_check_rojo_artifact.py"
    ],
@@ -28,10 +28,9 @@
    "reviewed": "4.0.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/ssa/ssa-bootstrap.md",
-    "references/ssa/ssa.md"
+    "references/ssa.md"
    ],
-   "notes": "Fixed SSA compatibility contract: follow ssa-bootstrap.md 'Migration and upgrade' (API, discovery defaults, lifecycle order, failure behavior, release asset SHA-256, license) before changing the pin."
+   "notes": "Fixed SSA compatibility contract: follow ssa.md 'Migration and upgrade' (API, discovery defaults, lifecycle order, failure behavior, release asset SHA-256, license) before changing the pin."
   },
   {
    "id": "lute",
@@ -42,9 +41,9 @@
    "reviewed": "1.0.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ],
-   "notes": "default-tooling.md describes stable 1.0.0 dry-run and compile behavior."
+   "notes": "tooling.md describes stable 1.0.0 dry-run and compile behavior."
   },
   {
    "id": "rokit",
@@ -55,7 +54,7 @@
    "reviewed": "1.2.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -67,7 +66,7 @@
    "reviewed": "0.3.2",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -79,7 +78,7 @@
    "reviewed": "0.7.4",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -91,7 +90,8 @@
    "reviewed": "0.11.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md",
+    "references/verification.md"
    ]
   },
   {
@@ -103,7 +103,7 @@
    "reviewed": "2.6.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -115,7 +115,7 @@
    "reviewed": "0.32.0",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -127,7 +127,7 @@
    "reviewed": "1.70.1",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md"
    ]
   },
   {
@@ -139,7 +139,8 @@
    "reviewed": "0.6.1",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/workflows/default-tooling.md"
+    "references/tooling.md",
+    "references/verification.md"
    ]
   }
  ]

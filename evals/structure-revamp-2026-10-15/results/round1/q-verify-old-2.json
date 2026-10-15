@@ -1,0 +1,62 @@
+{
+ "id": "q-verify",
+ "kind": "quality",
+ "prompt": "Studio is open with Roblox's Studio MCP server connected, and rojo serve is syncing this project. I want you to check that buying the sword from the shop works end to end. You can't call Studio from here, so write the exact verification plan you'd follow: the steps, the tools, and what each step proves. Reply in chat only; don't edit files.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "Reading the code changed what I'd check. Here's the plan, based on `Shop.luau`, `PlayerData.luau`, `ShopButton.luau`, `shared/init.luau` and `default.project.json`.\n\n**What the code does**\n- The client button `BuySword` fires `PurchaseItem` with `\"Sword\"`.\n- The server checks that the price is in `Prices` (50), that `ServerStorage.Sword` exists, and that the player has at least 50 coins.\n- It then deducts the coins and clones the template into the player's Backpack.\n- Every failed check is a silent `return`, so a broken purchase looks the same as a click that did nothing.\n- Coins come from `GetAsync(\"PlayerData_v3\")` and default to 100 if the load fails.\n\n**Risks to check**\n- **Missing template:** `default.project.json` doesn't map `ServerStorage`, so `ServerStorage.Sword` must already exist in the open place file. If it doesn't, every purchase silently fails.\n- **Stale saved coins:** with Studio API access enabled, a previous run may have saved a low balance, which also fails silently.\n- **Load race:** coins aren't set until the async load finishes, so an early click sees a balance of 0.\n\nI'm assuming the MCP tools are roughly `list_roblox_studios`/`set_active_studio`, `search_game_tree`/`inspect_instance`, `script_read`, `execute_luau` (edit mode), `start_stop_play`, `run_script_in_play_mode`, `get_console_output`, `user_mouse_input` and `screen_capture`. I'll check the real names and schemas before step 1.\n\n**Steps**\n\n1. **Confirm the target Studio instance.**\n   - Tools: `list_roblox_studios` and `set_active_studio`.\n   - Proves: I'm driving the place that rojo is syncing, not another open window.\n\n2. **Confirm the sync landed.**\n   - Tools: `script_read` on `ServerScriptService.Server.Shop`, `ReplicatedStorage.Client.ShopButton` and `ReplicatedStorage.Shared`. I compare each against `src/`.\n   - Also `search_game_tree` to check that `ReplicatedStorage.Client` is a LocalScript (`init.client.luau`).\n   - Proves: Studio is running the code on disk, not a stale copy.\n\n3. **Check the preconditions in edit mode.**\n   - Tools: `inspect_instance` or `execute_luau` for `ServerStorage:FindFirstChild(\"Sword\")` and its `ClassName`.\n   - Proves: the template exists and is a `Tool`. If it's missing, I stop and report it. I won't create one without asking you, because that changes the place.\n   - Also ask you whether Studio API access to DataStores is on, since that decides whether saved coins can interfere.\n\n4. **Start Play and read the baseline.**\n   - Tools: `start_stop_play` (play), then `get_console_output`.\n   - Proves: both scripts started with no errors, such as a require failure or a `WaitForChild` hang warning on `Remotes.PurchaseItem`.\n\n5. **Check the server state before buying.**\n   - Tool: `run_script_in_play_mode` on the server side, reading `Remotes.PurchaseItem`, `player:GetAttribute(\"Coins\")` and the Backpack contents.\n   - Proves: the remote replicated, coins loaded (expecting 100, or a saved balance), and the Backpack has no Sword yet. The baseline matters because the success check is a change from it.\n\n6. **Check the client UI.**\n   - Tools: `screen_capture` and a client-side `run_script_in_play_mode` to check `PlayerGui.ShopGui.BuySword`.\n   - Proves: the button exists with the text \"Buy Sword (50)\" and is on screen.\n\n7. **Buy the sword by clicking the real button.**\n   - Tool: `user_mouse_input` at the button position, which is 180px from the right edge and 60px from the bottom.\n   - Fallback: if clicking can't be driven, a client script that fires `:FireServer(\"Sword\")`. I'd report that as weaker evidence, because it skips the button's `Activated` wiring.\n   - Proves: the full path of button, remote, server handler.\n\n8. **Check the result on the server.**\n   - Tool: server-side `run_script_in_play_mode` after a short wait.\n   - Proves: the Coins attribute went from 100 to 50 and exactly one `Sword` Tool is in the Backpack. I also check that the Tool is a clone and not the `ServerStorage` original, which only shows up if its Parent changed.\n\n9. **Check the replicated client view.**\n   - Tools: client-side `run_script_in_play_mode`, then `screen_capture`.\n   - Proves: the client sees the Sword in its Backpack and the hotbar shows it.\n\n10. **Test the negative cases.**\n    - Click again: the balance is 50, which equals the price, so this should succeed and take the balance to 0, with a second Sword. Click a third time: nothing should change.\n    - Fire `\"Nonexistent\"` and a non-string value (for example `42`) from the client: no change and no server error.\n    - Proves: the guards work, and the balance never goes negative.\n\n11. **Check persistence (optional, only if API access is on).**\n    - Tool: `start_stop_play` (stop), then play again and read the Coins attribute.\n    - Proves: the saved balance loads.\n    - Caveat: this writes to the `PlayerData_v3` key for the Studio user, so I'd ask you first.\n\n12. **Stop Play and finish.**\n    - Tools: `start_stop_play` (stop) and a final `get_console_output`.\n    - Proves: no late errors, such as a `SetAsync` failure on leave.\n\n**Reporting**\n- I'd report each step as pass or fail, with the observed values: coins before and after, and the Backpack contents.\n- Anything I couldn't drive, such as the mouse click, I'd label as not verified.\n- Because failed purchases are silent, I'd treat \"no errors in the console\" as no evidence. The only proof is the coin and Backpack change.\n\nI haven't run any of this. Each step is a plan until its output is observed.",
+ "cost": 0.09293310000000002,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13243,
+  "cache_read_input_tokens": 48391,
+  "output_tokens": 3511,
+  "output_tokens_details": {
+   "thinking_tokens": 632
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13243,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2612,
+    "cache_read_input_tokens": 20604,
+    "cache_creation_input_tokens": 2390,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2390
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

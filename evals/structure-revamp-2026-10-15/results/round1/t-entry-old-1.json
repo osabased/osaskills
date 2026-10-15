@@ -1,0 +1,63 @@
+{
+ "id": "t-entry",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": null,
+ "cost": 0.05414129999999999,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11128,
+  "cache_read_input_tokens": 46473,
+  "output_tokens": 497,
+  "output_tokens_details": {
+   "thinking_tokens": 59
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11128,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 200,
+    "cache_read_input_tokens": 19947,
+    "cache_creation_input_tokens": 348,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 348
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

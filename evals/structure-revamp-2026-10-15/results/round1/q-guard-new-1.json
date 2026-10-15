@@ -1,0 +1,64 @@
+{
+ "id": "q-guard",
+ "kind": "quality",
+ "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Grep",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Edit",
+  "Bash"
+ ],
+ "result": "I added the guard to `scripts/check.sh`, but I couldn't run it. The Bash tool is disabled in this session, so it hasn't been tested.\n\nIt runs before `rokit install` and fails the check with exit code 1 in two cases:\n- `src` has no `GetDataStore(\"PlayerData_v3\")` call.\n- Any `GetDataStore(...)` call in `src` uses a different name.\n\nThe error message points to `src/server/PlayerData.luau`. A comment in the script says why the name is pinned: renaming the store orphans every saved player profile.\n\nThe guard also fires if someone adds a second DataStore. Changing the name on purpose means editing `PLAYER_DATASTORE` in `scripts/check.sh`. I didn't ask first because it only adds a check; the pin lives in one variable.\n\nThe matching is plain grep, so it only sees string literals passed directly to `GetDataStore`. A name built from a variable or constant would get past it. The code uses a literal today.\n\nYou can test it by changing the name in `PlayerData.luau` and running `scripts/check.sh`. It should fail immediately.",
+ "cost": 0.09570290000000001,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 16521,
+  "cache_read_input_tokens": 125049,
+  "output_tokens": 1709,
+  "output_tokens_details": {
+   "thinking_tokens": 253
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16521,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 402,
+    "cache_read_input_tokens": 25873,
+    "cache_creation_input_tokens": 399,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 399
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\nPLAYER_DATASTORE=\"PlayerData_v3\"\n# Renaming the store orphans every saved player profile; bump it only with a migration.\nif ! grep -rqF \"GetDataStore(\\\"$PLAYER_DATASTORE\\\")\" src \\\n\t|| grep -rhoE 'GetDataStore\\([^)]*\\)' src | grep -vxF \"GetDataStore(\\\"$PLAYER_DATASTORE\\\")\"; then\n\techo \"check: DataStore name must be \\\"$PLAYER_DATASTORE\\\" (src/server/PlayerData.luau)\" >&2\n\texit 1\nfi\n\nrokit install\nwally install\nstylua --check src\nselene src\nrojo build default.project.json -o build/arena.rbxlx\n"
+ },
+ "verdict": "-"
+}

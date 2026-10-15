@@ -1,0 +1,65 @@
+{
+ "id": "t-playtest",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4149
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Read",
+  "Glob"
+ ],
+ "result": "Here is how to test the shop button in a Play-test through the Studio MCP. I haven't run any of it against your project.\n\n**Before you start**\n1. List the MCP server's tools first. Tool names change, so check these against what it actually exposes.\n2. Confirm Studio has your latest code. In Edit mode, read the changed module's `Source` with `execute_luau` or `script_read`. A commit hash doesn't tell you this, because uncommitted edits aren't in it. If you use Rojo, the dev build needs to be synced.\n\n**Run the test**\n1. Call `start_stop_play` to enter Play. Changes you make during a play-test are discarded when it stops.\n2. Find the button with `search_game_tree` or `inspect_instance` on the Client datamodel. Confirm it exists and note its path, for example `LocalPlayer.PlayerGui.<ShopGui>.<ShopButton>`.\n3. Click it with `user_mouse_input`, passing that `instance_path`. This fires the button's real `Activated` event. Calling the handler directly only proves the handler works, not the button.\n4. Check the result:\n   - Use `inspect_instance` or `search_game_tree` to see whether the shop frame opened or its `Visible` property changed.\n   - Use `get_console_output` on both Client and Server for errors. If the button fires a RemoteEvent, the Server output shows whether it was received and validated.\n\n**Pitfalls**\n- **Timing.** The first `execute_luau` after Play takes 7 to 15 seconds, and each call takes a few seconds. A short-lived UI state can be gone before you look. To catch it, make one `execute_luau` call that connects the relevant signals, such as `Activated` or `GetPropertyChangedSignal(\"Visible\")`. Have it append timestamped lines to a `StringValue` under `LocalPlayer`, then read that value after the click. Connections outlive the call.\n- **Don't `require` your own game modules** from `execute_luau` during Play. That creates a second copy with its own state, and its errors look like game bugs. Observe through the UI, the console and the Instance tree.\n- **`screen_capture` only works in Edit mode.** You can't take screenshots during Play. Use the Instance tree to check what the UI is doing.\n- **Console noise.** Mocked DataStores and unavailable APIs print warnings in Studio. Ignore those, but check anything that mentions your shop code.\n- **Cleanup.** Stop only the play session you started.\n\n**What this doesn't cover**\n- Server Authority rollback, ordering and latency need Studio's multi-client test, which is a separate step.\n- Real purchases won't complete in Studio. You can check that the prompt is triggered, but not the full Robux flow.\n\nThere's no `CLAUDE.md` in this project, so I don't know your GUI names or which console messages are expected. If you give me the button's path, I can write out the exact call sequence.",
+ "cost": 0.0698521,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12919,
+  "cache_read_input_tokens": 46741,
+  "output_tokens": 1349,
+  "output_tokens_details": {
+   "thinking_tokens": 43
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12919,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 966,
+    "cache_read_input_tokens": 20165,
+    "cache_creation_input_tokens": 1921,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1921
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

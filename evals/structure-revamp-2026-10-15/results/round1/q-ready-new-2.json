@@ -1,0 +1,78 @@
+{
+ "id": "q-ready",
+ "kind": "quality",
+ "prompt": "Make this project easier for Claude to work in without me watching. Propose what you'd set up first; don't create or edit any files yet.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5564
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "I read the project without changing anything. I skipped the skill's `check_updates.py` run, because it writes a cache file.\n\n## What's there\n- **Code:** a small Rojo project, `default.project.json`, with `src/server` (`PlayerData`, `Shop`), `src/client` (`ShopButton`) and `src/shared`. Startup is `init.server.luau` and `init.client.luau`. `emitLegacyScripts` is false, so the client entrypoint in `ReplicatedStorage` does run.\n- **Tools:** `rokit.toml` pins rojo, wally, stylua, selene and luau-lsp. `stylua.toml` and `selene.toml` exist.\n- **Check script:** `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check`, `selene` and `rojo build`.\n- **Missing:**\n  - There is no `CLAUDE.md`, `.claude/settings.json`, hooks, CI or tests.\n  - It isn't a git repo.\n  - There is no `.luaurc`, no `sourcemap.json` and no type-check step.\n\n## Gaps and a decision I need\n- **Two package managers.** `wally.toml` lists Janitor, LemonSignal and Charm. `pesde.toml` lists Vide and Blink. `check.sh` only runs `wally install`, so the pesde packages are never restored, and `Packages/` is mapped to a single folder.\n- **No source control.** Hooks, a pre-push check and CI all assume git.\n- **A data-loss risk in `PlayerData.luau`.** If the `GetAsync` call fails, the player gets 100 coins. On leave, `SetAsync` then overwrites their saved coins with that default. I won't change this unless you ask, but the guide should record it and the other save rules.\n\n## Proposed setup, in order\n1. **`CLAUDE.md`**, short enough to fit on a screen. It covers:\n   - the layout and startup path;\n   - the check command, run with Git Bash because PowerShell's `bash` may be WSL;\n   - the server/client rules;\n   - which checks run only locally;\n   - a pointer to the library skills already in `.claude/skills`.\n2. **One check command.** I'd extend `scripts/check.sh` in place:\n   - restore for both package managers;\n   - guards;\n   - stylua, selene and `luau-lsp analyze`, which needs a `sourcemap.json` and `.luaurc`;\n   - the rojo build, plus a topology check of the built place using the skill's `check_rojo_artifact.py`;\n   - one output line per step, with the full log written to a file.\n3. **Guards,** only for permanent, security and silent failures:\n   - the DataStore name `PlayerData_v3` and the `player_` key prefix stay unchanged;\n   - nothing server-only goes into `ReplicatedStorage`;\n   - there is exactly one server startup script and one client startup script;\n   - `--!strict` stays in every file.\n4. **`.claude/settings.json`:**\n   - allow the check command;\n   - a `PostToolUse` hook that runs stylua on edited `.luau` files;\n   - a `Stop` hook that runs the check and blocks on failure, with a guard against `stop_hook_active` looping.\n5. **Git and CI,** if you want them: `git init`, a `pre-push` hook, and a GitHub Actions workflow that runs the same command.\n6. **Verification section in the guide.** It would say what the offline check proves. Studio play-testing of the shop flow stays a manual rung, and I'd say so rather than imply it's covered.\n7. **Fresh-agent trial.** After the setup, a new agent builds a small feature from the repo alone, and I fix the guide wherever it stalls.\n\n## Questions (recommended option first)\n1. **Package managers:** (a) keep both and make the check restore both, (b) move everything to pesde, (c) move everything to Wally. Blink and Vide have no Wally route, so (a) is the lowest-risk choice.\n2. **Source control and CI:** (a) `git init` plus a pre-push hook plus CI, (b) `git init` only, (c) none. If (c), the git hook and CI parts of step 5 are dropped.\n3. **Stop hook strictness:** (a) block the stop until the check passes, (b) run the check and report without blocking. (a) is what makes unattended work safe, but a failure the agent can't fix will make it spin until Claude Code's continuation cap.\n4. **Save-path bug in `PlayerData.luau`:** (a) leave it and document it in the guide, (b) fix it as a separate change afterwards.\n\nTell me which options you want, or say \"go with the recommendations\", and I'll build it.",
+ "cost": 0.1559806,
+ "turns": 19,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 26345,
+  "cache_read_input_tokens": 121806,
+  "output_tokens": 3840,
+  "output_tokens_details": {
+   "thinking_tokens": 593
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26345,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1823,
+    "cache_read_input_tokens": 34515,
+    "cache_creation_input_tokens": 1581,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1581
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

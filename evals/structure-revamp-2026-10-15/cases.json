@@ -1,0 +1,133 @@
+[
+ {
+  "id": "t-entry",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should my client entrypoint script go in this project?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-glob",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-onboard",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-remote",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-agentready",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-ci",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "set up CI for my Rojo project",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-playtest",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-guard",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "add a guard so nobody changes the DataStore name",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-tween",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-luau",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-typo",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "fix the typo 'recieve' in the comments under src/server",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-vide",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a Vide component for an inventory list with a toggle button",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "q-entry",
+  "kind": "quality",
+  "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
+  "scaffold": "base",
+  "max_turns": 15
+ },
+ {
+  "id": "q-glob",
+  "kind": "quality",
+  "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
+  "scaffold": "base",
+  "max_turns": 15
+ },
+ {
+  "id": "q-ready",
+  "kind": "quality",
+  "prompt": "Make this project easier for Claude to work in without me watching. Propose what you'd set up first; don't create or edit any files yet.",
+  "scaffold": "game",
+  "max_turns": 15
+ },
+ {
+  "id": "q-guard",
+  "kind": "quality",
+  "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+  "scaffold": "game",
+  "max_turns": 15
+ },
+ {
+  "id": "q-verify",
+  "kind": "quality",
+  "prompt": "Studio is open with Roblox's Studio MCP server connected, and rojo serve is syncing this project. I want you to check that buying the sword from the shop works end to end. You can't call Studio from here, so write the exact verification plan you'd follow: the steps, the tools, and what each step proves. Reply in chat only; don't edit files.",
+  "scaffold": "game",
+  "max_turns": 15
+ }
+]

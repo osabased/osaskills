@@ -1,0 +1,72 @@
+{
+ "id": "q-verify",
+ "kind": "quality",
+ "prompt": "Studio is open with Roblox's Studio MCP server connected, and rojo serve is syncing this project. I want you to check that buying the sword from the shop works end to end. You can't call Studio from here, so write the exact verification plan you'd follow: the steps, the tools, and what each step proves. Reply in chat only; don't edit files.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4149
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "This is the plan, not a result. I haven't run anything, since I can't call Studio from here.\n\n## What I found in the code\n\n- **Flow:** `ShopGui.BuySword` fires `PurchaseItem:FireServer(\"Sword\")`. `Shop.luau` checks the price (50, from `Shared.Prices`), looks for `ServerStorage.Sword`, and checks the coin balance. It then deducts the coins and clones the template into `Player.Backpack`.\n- **Likely failure:** `default.project.json` doesn't map `ServerStorage`. Rojo won't create a `Sword` template, so it has to already exist in the place file. If it doesn't, the server hits `not template` and returns with no error and no log.\n- **Coin balance:** `PlayerData` starts a player at 100 coins unless `PlayerData_v3` holds a saved number. A saved balance under 50 would also make the purchase silently do nothing.\n\n## Steps\n\n**0. Static check.** Run the project's check command, if there is one (I haven't found one yet), or `selene src` and `stylua --check src`. This proves syntax, lint and format only. It says nothing about runtime.\n\n**1. Confirm Rojo and Studio agree.**\n- List the MCP server's tools first, since names change.\n- In Edit mode, use `execute_luau` or `script_read` to read the `Source` of `ServerScriptService.Server.Shop` and `ReplicatedStorage.Client.ShopButton`. Compare them to the files on disk.\n- Check that `ReplicatedStorage.Client` is a `Script` with `RunContext = Client`. `emitLegacyScripts: false` should give that, and a `LocalScript` there would never run.\n- This proves Studio is running my bytes and that the client entrypoint will actually start.\n\n**2. Check the preconditions in Edit mode.**\n- Use `search_game_tree` and `inspect_instance` to confirm `ServerStorage.Sword` exists and is a `Tool`. It has to be there for the purchase to work.\n- If it's missing, stop and report it. Fixing it means either adding the Tool in Studio or mapping `ServerStorage` in Rojo. That's a decision for you (which one, and the asset itself), so I wouldn't pick it myself.\n\n**3. Start the play-test.** Call `start_stop_play`. I'll only stop a session I started.\n\n**4. Check startup.**\n- Wait 7–15 s, since the first call after Play is slow.\n- Run `get_console_output` on both the Server and Client datamodels, and check there are no script errors.\n- Use `search_game_tree` to confirm `ReplicatedStorage.Remotes.PurchaseItem` is a `RemoteEvent` and that `PlayerGui.ShopGui.BuySword` exists.\n- This proves server startup, replication, and that the client script ran.\n\n**5. Record the starting state.**\n- Use `inspect_instance` on `Players.<me>` to read the `Coins` attribute.\n- Use it on `Backpack` to confirm there's no Sword already.\n- I need `Coins >= 50` here. If it's lower, a saved balance is in the way, and that's a test-setup finding, not a shop bug. I'd report it and not change the data.\n\n**6. Click the button for real.**\n- Call `user_mouse_input` with `instance_path = LocalPlayer.PlayerGui.ShopGui.BuySword` and a click.\n- This fires `Activated` through real input. Calling the handler or `FireServer` from `execute_luau` would only test that handler.\n- Because the timing is slow, I'd first connect `Coins` and `Backpack.ChildAdded` with a single `execute_luau` that appends timestamped lines to a `StringValue` under `LocalPlayer`. I'd read that afterward and never `require` the game's modules.\n\n**7. Check the result.**\n- `Coins` should drop by exactly 50, for example 100 to 50.\n- `Backpack` should contain one `Sword` Tool.\n- The console should show no new errors.\n- This proves the full chain: click, remote, server validation, deduction and grant.\n\n**8. Negative cases.**\n- Click again. If `Coins` is 50, the second purchase succeeds and brings it to 0, with a second Sword in the Backpack. A third click should then do nothing: `Coins` stays at 0 and the Backpack count doesn't change.\n- This proves the server rejects purchases the player can't afford.\n- I'd skip testing a spoofed payload such as a non-string or unknown item, because it needs `FireServer` from `execute_luau`. That only exercises the server validation path, and I'd say so if I did it.\n\n**9. Stop the play-test.** Call `start_stop_play`. Changes made during play are discarded, so nothing persists.\n\n## What this doesn't cover\n\n- **Saving:** Studio's DataStore is usually mocked or disabled, so I can't confirm that coins save across sessions. Saving is also unguarded, because `pcall` swallows failures.\n- **Multiplayer:** I won't test several clients or latency.\n- **Possible bug, not testable here:** `PlayerRemoving` saves `coins[player]` after the character may have gone, and the Sword is not persisted. The server also doesn't check that the Backpack exists beyond `WaitForChild`, which would hang forever if it never appears.\n\nEvery step I run will be reported as passed, failed or not run. The most likely outcome is a failure at step 2, because of the missing `Sword` template.",
+ "cost": 0.1046551,
+ "turns": 13,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16447,
+  "cache_read_input_tokens": 49751,
+  "output_tokens": 3388,
+  "output_tokens_details": {
+   "thinking_tokens": 499
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16447,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2146,
+    "cache_read_input_tokens": 21922,
+    "cache_creation_input_tokens": 4276,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4276
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

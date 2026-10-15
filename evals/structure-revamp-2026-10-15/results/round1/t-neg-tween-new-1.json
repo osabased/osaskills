@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-tween",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Glob",
+  "Read",
+  "Read"
+ ],
+ "result": "I can't find a GUI in this project. `src/client/init.client.luau` only has `print(\"client\")`, and there are no ScreenGui definitions or `.rbxm`/`.rbxmx` files. Which GUI do you mean? These are the things I need to know:\n\n1. **Target:** Which GUI should fade in? My recommendation is a ScreenGui named `MainMenu` in `PlayerGui`. If you meant a different one, give me its name or path, or paste its code. If it doesn't exist yet, say so and I'll build it.\n2. **Fade method:** My recommendation is a `CanvasGroup` as the root, tweening `GroupTransparency` from 1 to 0. That fades every descendant with one tween. The alternative is to tween each element's `BackgroundTransparency`, `TextTransparency` and `ImageTransparency`. That works with plain Frames but takes more code.\n3. **Timing:** My recommendation is 0.5 seconds, `Enum.EasingStyle.Quad`, `Enum.EasingDirection.Out`, played once when the script runs. Tell me if you want different timing or a different trigger, such as a button press or an event.\n4. **Location:** My recommendation is to put the code in `src/client/init.client.luau`, replacing the `print`. Or I can put it in a separate module under `src/client`.\n\nReply \"go with your recommendations\" plus the GUI's name, and I'll write it.",
+ "cost": 0.049657799999999995,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 9136,
+  "cache_read_input_tokens": 44418,
+  "output_tokens": 866,
+  "output_tokens_details": {
+   "thinking_tokens": 104
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9136,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 545,
+    "cache_read_input_tokens": 17854,
+    "cache_creation_input_tokens": 449,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 449
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

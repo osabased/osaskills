@@ -1,0 +1,72 @@
+{
+ "id": "q-verify",
+ "kind": "quality",
+ "prompt": "Studio is open with Roblox's Studio MCP server connected, and rojo serve is syncing this project. I want you to check that buying the sword from the shop works end to end. You can't call Studio from here, so write the exact verification plan you'd follow: the steps, the tools, and what each step proves. Reply in chat only; don't edit files.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4149
+  ]
+ ],
+ "tools": [
+  "Skill",
+  "Grep",
+  "Glob",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read",
+  "Read"
+ ],
+ "result": "# Verification plan: buying the sword from the shop\n\nI haven't run any of this. I read `Shop.luau`, `ShopButton.luau`, `PlayerData.luau`, `shared/init.luau` and `default.project.json`, and the plan follows from them.\n\n## What the code does\n\n1. The client `BuySword` button fires `PurchaseItem:FireServer(\"Sword\")`.\n2. The server checks that the argument is a string, that `Prices.Sword` is 50, and that `ServerStorage.Sword` exists. It also checks that the player has at least 50 coins.\n3. If those pass, it subtracts 50 and clones the template into `Player.Backpack`.\n4. Coins live in a server table and are mirrored to the `Coins` attribute on the player. New players start with 100, unless a saved value loads.\n\n## Risks to check first\n\n- **`ServerStorage.Sword` isn't synced.** `default.project.json` doesn't map `ServerStorage`, so the template must already exist in the Studio place. If it's missing, the server silently returns and the click does nothing.\n- **`Packages` may not exist.** The project maps `ReplicatedStorage.Packages` to `Packages`. If that folder is absent on disk, check that the Rojo sync still completes.\n- **Every failure on the server is silent.** There are no logs on rejection, so a failed purchase shows up only as a state that didn't change.\n\n## Steps\n\n**0. List the Studio MCP server's tools.**\n- **Tool:** the MCP tool list.\n- **Proves:** the tool names below still match. The verification reference says they change, so I'd adjust the later steps if they differ.\n\n**1. Confirm Studio is running the bytes on disk (Edit mode).**\n- **Tool:** `execute_luau` or `script_read`, reading `Source` of `ServerScriptService.Server.Shop`, `ReplicatedStorage.Client.ShopButton` and `ReplicatedStorage.Shared`. I'd compare each against the files on disk.\n- **Proves:** Rojo is syncing the current code. Without this, a pass could be against a stale copy.\n\n**2. Confirm the preconditions (Edit mode).**\n- **Tool:** `search_game_tree` or `inspect_instance` on `ServerStorage.Sword`.\n- **Proves:** the template exists and is a `Tool`. It also shows whether the sword is already somewhere that would confuse step 6.\n\n**3. Static check.**\n- **Tool:** the project check command, if one exists. I'd look for it in `CLAUDE.md` or a scripts folder. Otherwise I'd run `selene` and `luau-lsp analyze`, whichever the project pins, through Bash.\n- **Proves:** syntax, types and lint only. It says nothing about runtime behavior.\n\n**4. Start the play-test.**\n- **Tool:** `start_stop_play`.\n- **Proves:** nothing yet. It only starts the session. I'd wait about 15 seconds, because the first `execute_luau` after Play is slow.\n\n**5. Check the startup path.**\n- **Tool:** `get_console_output` (Server and Client), then `search_game_tree` and `inspect_instance` on the Client and Server datamodels.\n- **Look for:**\n  - `ReplicatedStorage.Remotes.PurchaseItem` exists as a `RemoteEvent`.\n  - `PlayerGui.ShopGui.BuySword` exists on the client.\n  - The player has `Coins = 100`. If a saved value loaded, I'd note it and adjust the expected numbers.\n  - No script errors in either console.\n- **Proves:** the server and client entrypoints run, the remote is created, `WaitForChild` doesn't hang, and the UI renders. Studio's mocked DataStore noise is expected.\n\n**6. Click the button for real.**\n- **Tool:** `user_mouse_input` with `instance_path` `LocalPlayer.PlayerGui.ShopGui.BuySword`, then a click.\n- **Proves:** the real input path reaches `Activated`. Calling the handler through `execute_luau` would prove only the handler. I won't `require` game modules from `execute_luau` during Play, since that builds a second copy with separate state.\n\n**7. Check the success outcome.**\n- **Tool:** `inspect_instance` on the Server datamodel, for `Players.<me>.Backpack` and the player's `Coins` attribute.\n- **Expect:** `Backpack.Sword` exists and `Coins` goes from 100 to 50.\n- **Proves:** the full chain works: client to remote to server validation to deduct and clone, and the replicated result.\n\n**8. Check the rejection paths.**\n- **Second click:** coins go 50 to 0 and there is a second sword. Nothing in the code stops a player buying duplicates. If that isn't intended, I'd report it as a finding instead of a pass.\n- **Third click:** the click should be rejected. Coins stay at 0 and no third sword appears. This proves the balance check.\n- **Bad payloads:** one `execute_luau` that calls `FireServer` on the client's `PurchaseItem` with a non-string, an unknown name such as `\"Nope\"`, and a table. Coins and Backpack must not change, and the server console must show no errors. This proves the server validates client input.\n- **Proves:** the server is authoritative. The 50 price comes from `Shared.Prices`, which the client can read but whose result the server recomputes. The client's `\"Sword\"` string is the only thing it trusts.\n\n**9. Check the console and stop.**\n- **Tool:** `get_console_output`, then `start_stop_play` to stop the session I started.\n- **Proves:** no errors were raised during the run. Stopping discards the play-session changes, so Edit-mode state stays clean.\n\n## What this does and doesn't cover\n\n- **Covered:** static check, play-test startup, replication, rendering, real click input, the success path and the rejection paths.\n- **Not covered:** multiplayer ordering or latency, since the plan runs a single client. DataStore persistence is also unproven. Studio mocks it, so I can't say whether the 50 coins would save after `PlayerRemoving`.\n- **Reporting:** any step that fails or can't run gets reported as such, with the console output or instance state I saw.\n\n## Questions for you\n\n1. Should buying a second sword count as a bug? My recommendation is to treat it as a finding, since nothing prevents duplicates.\n2. Is `ServerStorage.Sword` meant to exist only in the Studio place, or should it be synced through Rojo? If it's place-only, step 2 is the only guard against a silent failure.",
+ "cost": 0.10843789999999999,
+ "turns": 13,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 16079,
+  "cache_read_input_tokens": 74459,
+  "output_tokens": 3666,
+  "output_tokens_details": {
+   "thinking_tokens": 427
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16079,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2423,
+    "cache_read_input_tokens": 25150,
+    "cache_creation_input_tokens": 680,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 680
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

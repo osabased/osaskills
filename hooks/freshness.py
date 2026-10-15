@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = ROOT / "skills" / "roblox-resource-acquisition" / "scripts"
 SKILLS = {
     "roblox-resource-acquisition": "references/keeping-current.md",
-    "structure-roblox-projects": "references/core/keeping-current.md",
+    "structure-roblox-projects": "references/keeping-current.md",
 }
 CLONE_REASONS = {
     "missing": "the project declares this library at the catalog pin and has no skill for it",

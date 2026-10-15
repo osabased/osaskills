@@ -1,0 +1,61 @@
+{
+ "id": "q-guard",
+ "kind": "quality",
+ "prompt": "Add a guard to the check script so nobody changes the DataStore name by accident.",
+ "scaffold": "game",
+ "max_turns": 15,
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "tools": [
+  "Grep",
+  "Glob",
+  "Read",
+  "Read",
+  "Edit"
+ ],
+ "result": "I added a guard at the top of `scripts/check.sh`. It fails the check if `src/server/PlayerData.luau` no longer contains `GetDataStore(\"PlayerData_v3\")`. I haven't run the script.\n\nThe failure message says that changing the name orphans saved player data. It also says to update the script if the rename is intended. It runs before `rokit install`, so it fails immediately.\n\nThe guard only matches that exact call. If someone moves the name into a constant or another file, it will fail and need updating.",
+ "cost": 0.0573685,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 10463,
+  "cache_read_input_tokens": 66305,
+  "output_tokens": 887,
+  "output_tokens_details": {
+   "thinking_tokens": 92
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10463,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 163,
+    "cache_read_input_tokens": 19732,
+    "cache_creation_input_tokens": 482,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 482
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\nif ! grep -qF 'GetDataStore(\"PlayerData_v3\")' src/server/PlayerData.luau; then\n\techo 'check: DataStore name in src/server/PlayerData.luau is not \"PlayerData_v3\"; changing it orphans saved player data. Update scripts/check.sh if the rename is intended.' >&2\n\texit 1\nfi\n\nrokit install\nwally install\nstylua --check src\nselene src\nrojo build default.project.json -o build/arena.rbxlx\n"
+ },
+ "verdict": "-"
+}
