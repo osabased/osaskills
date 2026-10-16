@@ -1,0 +1,254 @@
+{
+ "id": "q-adopt-guard",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "Add Blink so the server can tell each client when their coins change (see src/server/Coins.luau). Our rule is no client-to-server Blink events, ever, so make sure that can't creep in later.",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/setup.md",
+   847
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md",
+   3009
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/troubleshooting.md",
+   2104
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/schema.md",
+   3520
+  ],
+  [
+   "structure-roblox-projects/references/checks.md",
+   5768
+  ]
+ ],
+ "steps": [
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && ls -a && cat pesde.toml default.project.json scripts/check.sh && cat src/server/Coins.luau && ls .claude/skills scripts; find src -type f"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && cat scripts/check_guards.py"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills\" && cat roblox-resource-acquisition/SKILL.md; ls -R roblox-resource-acquisition structure-roblox-projects | head -60"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills/roblox-resource-acquisition\" && cat references/adopting.md; ls -R libraries/roblox-blink; cat libraries/roblox-blink/SKILL.md; python scripts/clone_children.py --project \"<runs>"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills\" && cat roblox-resource-acquisition/libraries/roblox-blink/references/setup.md roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md roblox-resource-acquisition/libraries/roblox-"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills\" && cat roblox-resource-acquisition/libraries/roblox-blink/references/setup.md roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md roblox-resource-acquisition/libraries/roblox-"
+  ],
+  [
+   "Read",
+   "<runs>\\q-adopt-guard-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-adopt-guard-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\api-and-lifecycle.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-adopt-guard-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\troubleshooting.md"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && cat rokit.toml pesde.lock | head -60; cat src/server/init.server.luau src/server/Round.luau; ls .claude/skills/structure-roblox-projects/references; which pesde rokit python"
+  ],
+  [
+   "Read",
+   "<runs>\\q-adopt-guard-new-2\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-adopt-guard-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\schema.md"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && cat stylua.toml selene.toml; ls -a src; cat .gitignore 2>/dev/null; printf '\\n[dev_dependencies]\\nblink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" }\\n' >> pesde.toml && export PATH=\"$HOME/.rokit/bin"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && tail -4 pesde.toml; cat stylua.toml selene.toml; ls -a src"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-new-2\\pesde.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && PATH=\"$HOME/.rokit/bin:$PATH\" pesde install 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && pesde install 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "pesde install"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-new-2\\network\\main.blink"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-new-2\\scripts\\check_guards.py"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-new-2\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-new-2\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-new-2\\scripts\\check.sh"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-new-2\\.styluaignore"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-new-2\\selene.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && python scripts/check_guards.py; echo \"exit=$?\""
+  ],
+  [
+   "Bash",
+   "python scripts/check_guards.py"
+  ],
+  [
+   "Bash",
+   "T=$(mktemp -d) && mkdir -p \"$T/scripts\" \"$T/network\" \"$T/src/client/UI\" && cp scripts/check_guards.py \"$T/scripts/\" && cp network/main.blink \"$T/network/\" && echo '[graph.\"1axen/blink@0.18.9 lune\"]' > \"$T/pesde.lock\" && echo \"--- clean\" && python -I \"$T/scripts/check_guards.py\"; echo \"--- client eve"
+  ],
+  [
+   "Bash",
+   "mkdir -p _gt/scripts _gt/network _gt/src/client/UI && cp scripts/check_guards.py _gt/scripts/ && cp network/main.blink _gt/network/ && echo '[graph.\"1axen/blink@0.18.9 lune\"]' > _gt/pesde.lock && echo \"--- clean\" && python -I _gt/scripts/check_guards.py && echo ok"
+  ],
+  [
+   "Bash",
+   "printf 'event Buy {\\n\\tFrom:   Client,\\n\\tType: Reliable, Call: SingleAsync }\\nfunction Get { Yield: Coroutine }\\n' >> _gt/network/main.blink && python -I _gt/scripts/check_guards.py"
+  ],
+  [
+   "Bash",
+   "cp network/main.blink _gt/network/main.blink && printf -- '-- event X { From: Client }\\n--[[ function Y\\n From: Client ]]\\n' >> _gt/network/main.blink && python -I _gt/scripts/check_guards.py && echo \"comments ok\" && mkdir _gt/other && printf 'event E { From: Client }' > _gt/other/x.blink && python "
+  ],
+  [
+   "Bash",
+   "echo '[graph.\"1axen/blink@0.19.0 lune\"]' > _gt/pesde.lock && python -I _gt/scripts/check_guards.py"
+  ],
+  [
+   "Bash",
+   "rm -r _gt && ls -a"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-new-2\\CLAUDE.md"
+  ]
+ ],
+ "denials": [
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills\" && cat roblox-resource-acquisition/libraries/roblox-blink/references/setup.md roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md roblox-resource-acquisition/libraries/roblox-"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2/.claude/skills\" && cat roblox-resource-acquisition/libraries/roblox-blink/references/setup.md roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md roblox-resource-acquisition/libraries/roblox-"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && cat stylua.toml selene.toml; ls -a src; cat .gitignore 2>/dev/null; printf '\\n[dev_dependencies]\\nblink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" }\\n' >> pesde.toml && export PATH=\"$HOME/.rokit/bin"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && PATH=\"$HOME/.rokit/bin:$PATH\" pesde install 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && pesde install 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "pesde install"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-new-2\" && python scripts/check_guards.py; echo \"exit=$?\""
+  ],
+  [
+   "Bash",
+   "T=$(mktemp -d) && mkdir -p \"$T/scripts\" \"$T/network\" \"$T/src/client/UI\" && cp scripts/check_guards.py \"$T/scripts/\" && cp network/main.blink \"$T/network/\" && echo '[graph.\"1axen/blink@0.18.9 lune\"]' > \"$T/pesde.lock\" && echo \"--- clean\" && python -I \"$T/scripts/check_guards.py\"; echo \"--- client eve"
+  ]
+ ],
+ "result": "The Blink code is written, but the install, code generation and `bash scripts/check.sh` haven't run. `pesde install` needs your approval, and I can't generate the Blink files or finish the checks until it has run.\n\n**What's in place**\n- **Dependency:** `pesde.toml` has `blink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" }` under `[dev_dependencies]`. The lock doesn't resolve it yet.\n- **Schema:** `network/main.blink` declares one event, `CoinsChanged`, from the server to the client, carrying a `u32` balance. It is configured to generate into `src/server/Network/`, `src/client/Network/` and `src/shared/Network/`.\n- **Server:** `src/server/Coins.luau` now requires `Network.Server` and fires `CoinsChanged` to that player from `Coins.add`.\n- **Check script:** `scripts/check.sh` now runs the guards first, then `pesde run blink -- network/main`, then stylua and selene. The generated files are excluded from both through `.styluaignore` and `selene.toml`.\n- **CLAUDE.md:** a Blink entry in the Libraries list states the ban and where it's enforced.\n\n**The guard** (in `scripts/check_guards.py`)\n- **What it bans:** every `.blink` schema in the repo (and `network/*.txt`) may contain no `From: Client` event and no `function`. A `function` is also client-to-server, since the client invokes it.\n- **How it reads schemas:** it ignores comments and handles multi-line event declarations.\n- **Version pin:** it fails unless `pesde.lock` resolves Blink to 0.18.9, with a \"re-review this guard\" message. That version parses the whole incoming buffer before any handler runs ([issue #45](https://github.com/1Axen/blink/issues/45)).\n- **Failure message:** it names the file and line, and says how to lift the ban on purpose.\n- **Break-tests:** I ran them on a scratch copy and removed it afterwards. A client event, a function, a schema in another folder and a version change all fail. Clean and commented-out code pass. Against the real project it currently fails on \"found none\", because the lock lacks Blink.\n\n**What you need to do**\n1. Run `pesde install`, then `pesde run blink -- network/main` to generate the three Blink files.\n2. Run `python .claude/skills/roblox-resource-acquisition/scripts/clone_children.py --project . roblox-blink`. `CLAUDE.md` already points to that skill, which isn't cloned until the lock matches.\n3. Run `bash scripts/check.sh`.\n\n**Not done**\n- **Client side:** nothing on the client listens to `CoinsChanged` yet. Hooking it into Charm state and `CoinLabel` changes what players see, so tell me if you want that.\n- **Initial balance:** the server only fires when coins are added, so a joining client isn't sent its starting balance. That's fine while balances start at 0.\n- **Janitor pin:** `pesde.toml` pins Janitor at 1.17.0 but its skill targets 1.18.3. This task doesn't use Janitor, so I left both alone.",
+ "cost": 0.37798350000000003,
+ "turns": 35,
+ "usage": {
+  "input_tokens": 42,
+  "cache_creation_input_tokens": 41673,
+  "cache_read_input_tokens": 820275,
+  "output_tokens": 12918,
+  "output_tokens_details": {
+   "thinking_tokens": 4112
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 41673,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1153,
+    "cache_read_input_tokens": 52137,
+    "cache_creation_input_tokens": 611,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 611
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  ".styluaignore": "src/server/Network/Server.luau\nsrc/client/Network/Client.luau\nsrc/shared/Network/Types.luau\n",
+  "CLAUDE.md": "# coin-run\n\nRoblox round game: Rojo + pesde + Vide + Charm + Janitor. Run `bash scripts/check.sh` before calling a change done; `python scripts/check_guards.py` runs the project's guards on their own.\n\n## Libraries\n\n- **Vide**: UI rendering. Use the `roblox-vide` skill.\n- **Janitor**: cleanup ownership. Use the `roblox-janitor` skill.\n- **Charm**: client-only UI state shared across components, in `src/client/State`.\n- **Blink**: server-to-client networking, schema in `network/main.blink`, generated into `Network/` folders by `pesde run blink -- network/main`. Never edit generated files. Use the `roblox-blink` skill. Client-to-server events and functions are banned (receive-side DoS, Blink issue #45); `scripts/check_guards.py` fails on them and on any Blink version other than the one it was reviewed against.\n- **Signal** (`src/shared/Signal.luau`): in-runtime custom events. A vendored module, not a package.\n",
+  "pesde.toml": "name = \"example/coin_run\"\nversion = \"0.1.0\"\nprivate = true\n\n[target]\nenvironment = \"roblox\"\n\n[indices]\ndefault = \"https://github.com/pesde-pkg/index\"\n\n[wally_indices]\ndefault = \"https://github.com/UpliftGames/wally-index\"\n\n[dependencies]\nCharm = { wally = \"littensy/charm\", version = \"=0.11.1\" }\nJanitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }\nvide = { repo = \"https://github.com/centau/vide\", rev = \"5ed4c01940e6bd578fb83253cfbeda0a6c05177c\" }\n\n[dev_dependencies]\nblink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" }\n",
+  "selene.toml": "std = \"roblox\"\nexclude = [\"src/server/Network/Server.luau\", \"src/client/Network/Client.luau\", \"src/shared/Network/Types.luau\"]\n",
+  "network/main.blink": "option ServerOutput = \"../src/server/Network/Server.luau\"\noption ClientOutput = \"../src/client/Network/Client.luau\"\noption TypesOutput = \"../src/shared/Network/Types.luau\"\noption RemoteScope = \"CoinRun\"\n\nevent CoinsChanged { From: Server, Type: Reliable, Call: ManyAsync, Data: u32 }\n",
+  "scripts/check.sh": "#!/usr/bin/env bash\nset -euo pipefail\ncd \"$(dirname \"$0\")/..\"\n\nrokit install\npesde install --locked\npython scripts/check_guards.py\npesde run blink -- network/main\nstylua --check src\nselene src\nrojo build default.project.json -o build/coin-run.rbxlx\n",
+  "scripts/check_guards.py": "\"\"\"Project guards: each fails the build when a banned pattern appears.\n\n- No Instance.new under src/client/UI: build UI with Vide's create.\n- No client-to-server Blink: no `From: Client` event and no `function` in any .blink schema. Pinned to Blink 0.18.9.\n\"\"\"\nfrom pathlib import Path\nimport re\nimport sys\n\nROOT = Path(__file__).resolve().parent.parent\nGUARDS = [\n    (\"src/client/UI\", \"*.luau\", re.compile(r\"Instance\\.new\"), \"build UI Instances with Vide's create\"),\n]\n\nBLINK_REVIEWED = \"0.18.9\"\nBLINK_LOCKED = re.compile(r\"1axen/blink@([^\\s\\\"]+)\")\nBLINK_SKIPPED_DIRS = {\"roblox_packages\", \"lune_packages\", \".pesde\", \"build\", \".claude\"}\nBLINK_COMMENTS_AND_STRINGS = re.compile(r'\"[^\"\\n]*\"|--\\[(=*)\\[.*?\\]\\1\\]|--[^\\n]*', re.DOTALL)\nBLINK_BANS = [\n    (re.compile(r\"\\bFrom\\s*:\\s*Client\\b\"), \"client-to-server event\"),\n    (re.compile(r\"\\bfunction\\b\"), \"function (the client invokes the server)\"),\n]\nBLINK_REASON = (\n    \"client-to-server Blink is banned: 0.18.9 parses the whole incoming buffer before any handler runs \"\n    \"(https://github.com/1Axen/blink/issues/45). To allow it on purpose, mitigate that in the receive path \"\n    \"and edit BLINK_BANS in scripts/check_guards.py\"\n)\n\n\ndef blink_schemas() -> list[Path]:\n    schemas = [p for p in ROOT.rglob(\"*.blink\") if not BLINK_SKIPPED_DIRS & set(p.relative_to(ROOT).parts)]\n    return sorted(schemas + list((ROOT / \"network\").glob(\"*.txt\")))\n\n\ndef blink_code(text: str) -> str:\n    def blank(match: re.Match) -> str:\n        return match.group(0) if match.group(0).startswith('\"') else re.sub(r\"[^\\n]\", \" \", match.group(0))\n\n    return BLINK_COMMENTS_AND_STRINGS.sub(blank, text)\n\n\ndef check_blink() -> list[str]:\n    lock = ROOT / \"pesde.lock\"\n    versions = set(BLINK_LOCKED.findall(lock.read_text(encoding=\"utf-8\"))) if lock.exists() else set()\n    if versions != {BLINK_REVIEWED}:\n        found = \", \".join(sorted(versions)) or \"none\"\n        return [\n            f\"pesde.lock: Blink guard reviewed against {BLINK_REVIEWED}, found {found}: \"\n            \"re-review this guard, then update BLINK_REVIEWED in scripts/check_guards.py\"\n        ]\n    failures = []\n    for path in blink_schemas():\n        code = blink_code(path.read_text(encoding=\"utf-8\"))\n        for number, line in enumerate(code.splitlines(), 1):\n            for banned, what in BLINK_BANS:\n                if banned.search(line):\n                    failures.append(f\"{path.relative_to(ROOT).as_posix()}:{number}: {what}; {BLINK_REASON}\")\n    return failures\n\n\ndef main() -> int:\n    failures = []\n    for folder, pattern, banned, reason in GUARDS:\n        for path in sorted((ROOT / folder).rglob(pattern)):\n            for number, line in enumerate(path.read_text(encoding=\"utf-8\").splitlines(), 1):\n                if banned.search(line):\n                    failures.append(f\"{path.relative_to(ROOT)}:{number}: {reason}\")\n    failures += check_blink()\n    for failure in failures:\n        print(failure)\n    return 1 if failures else 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
+  "src/server/Coins.luau": "--!strict\nlocal Players = game:GetService(\"Players\")\n\nlocal Network = require(script.Parent.Network.Server)\n\nlocal Coins = {}\n\nlocal balances: { [Player]: number } = {}\n\nfunction Coins.get(player: Player): number\n\treturn balances[player] or 0\nend\n\nfunction Coins.add(player: Player, amount: number)\n\tbalances[player] = Coins.get(player) + amount\n\tNetwork.CoinsChanged.Fire(player, balances[player])\nend\n\nfunction Coins.start()\n\tPlayers.PlayerAdded:Connect(function(player)\n\t\tbalances[player] = 0\n\tend)\n\tPlayers.PlayerRemoving:Connect(function(player)\n\t\tbalances[player] = nil\n\tend)\nend\n\nreturn Coins\n"
+ },
+ "verdict": "-"
+}

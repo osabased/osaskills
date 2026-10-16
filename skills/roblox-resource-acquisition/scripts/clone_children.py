@@ -7,13 +7,17 @@ PROJECT/.claude/skills/<child>/ and loads as a project skill from the next sessi
 Clone states: missing (no folder), foreign (the folder holds a different skill), other-pin
 (a clone of another pin), stale (same pin, files differ from the catalog) and current.
 
+Each row and result carries "declared": the project's manifest and lock compared with the
+catalog pin (PASS, FAIL or UNAVAILABLE, with a reason). An other-pin row also carries the
+clone's pin and the same comparison against it.
+
 A clone is refused when the folder is foreign, when the project's manifest and lock declare a
 different version (FAIL), or when replacing an other-pin clone without the project declaring
-the catalog pin (PASS). An UNAVAILABLE declaration check still clones and is reported.
+the catalog pin (PASS). An UNAVAILABLE comparison still clones and is reported.
 A refresh replaces the whole folder, so local edits to a clone are overwritten.
 
-Prints a JSON array. Exit codes: 0 every request done; 1 a child was refused or unknown.
-Needs Python 3.11+ and PyYAML, like check_resource_install.py.
+Prints a JSON array. Exit codes: 0 every request done; 1 a skill was refused or unknown.
+Needs Python 3.11+ and PyYAML.
 """
 from __future__ import annotations
 
@@ -24,7 +28,7 @@ import shutil
 import sys
 
 from _common import load_yaml
-import check_resource_install
+import _pins
 
 CATALOG = Path(__file__).resolve().parent.parent / "libraries"
 IGNORED = ("__pycache__",)
@@ -52,19 +56,6 @@ def identity(root: Path) -> tuple[str, str] | None:
         return None
 
 
-def declared(child: Path, project: Path) -> dict[str, str]:
-    """Run the parent's declaration check for child against project, as check_resource_install's CLI reports it."""
-    try:
-        result = check_resource_install.check(child, project, declared_only=True)
-    except PermissionError as exc:
-        return {"status": "UNAVAILABLE", "reason": f"manifest read denied: {exc}"}
-    except check_resource_install.Unavailable as exc:
-        return {"status": "UNAVAILABLE", "reason": str(exc)}
-    except (OSError, UnicodeError, ValueError, TypeError, KeyError, AttributeError) as exc:
-        return {"status": "FAIL", "reason": str(exc)}
-    return {"status": result["status"], "reason": result.get("reason", "declared at the catalog pin")}
-
-
 def clone_state(child: Path, target: Path) -> str:
     if not target.exists():
         return "missing"
@@ -81,10 +72,15 @@ def target_for(project: Path, name: str) -> Path:
 
 
 def status(project: Path, catalog: Path = CATALOG) -> list[dict]:
-    return [
-        {"child": name, "pin": identity(child)[1], "declared": declared(child, project), "clone": clone_state(child, target_for(project, name))}
-        for name, child in catalog_children(catalog).items()
-    ]
+    rows = []
+    for name, child in catalog_children(catalog).items():
+        target = target_for(project, name)
+        row = {"child": name, "pin": identity(child)[1], "declared": _pins.check(child, project), "clone": clone_state(child, target)}
+        if row["clone"] == "other-pin":
+            row["clone_pin"] = identity(target)[1]
+            row["clone_declared"] = _pins.check(target, project)
+        rows.append(row)
+    return rows
 
 
 def sync(child: Path, target: Path) -> list[str]:
@@ -100,10 +96,10 @@ def sync(child: Path, target: Path) -> list[str]:
 def clone(name: str, project: Path, catalog: Path = CATALOG) -> dict:
     child = catalog_children(catalog).get(name)
     if child is None:
-        return {"child": name, "status": "refused", "reason": f"no catalog child named {name} in {catalog}"}
+        return {"child": name, "status": "refused", "reason": f"no catalog library skill named {name} in {catalog}"}
     target = target_for(project, name)
     state = clone_state(child, target)
-    report = {"child": name, "pin": identity(child)[1], "declared": declared(child, project)}
+    report = {"child": name, "pin": identity(child)[1], "declared": _pins.check(child, project)}
     if state == "current":
         return {**report, "status": "current"}
     if state == "foreign":
@@ -120,12 +116,12 @@ def clone(name: str, project: Path, catalog: Path = CATALOG) -> dict:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
-    parser.add_argument("children", nargs="*", help="catalog child names, such as roblox-vide")
+    parser.add_argument("children", nargs="*", help="catalog library skill names, such as roblox-vide")
     parser.add_argument("--project", type=Path, required=True, help="project root that holds .claude/skills/")
-    parser.add_argument("--status", action="store_true", help="report every catalog child's clone state instead of cloning")
+    parser.add_argument("--status", action="store_true", help="report every catalog library skill's clone state instead of cloning")
     args = parser.parse_args(argv)
     if args.status == bool(args.children):
-        parser.error("give --status or child names, not both")
+        parser.error("give --status or skill names, not both")
     if not args.project.is_dir():
         parser.error(f"project directory not found: {args.project}")
     project = args.project.resolve()

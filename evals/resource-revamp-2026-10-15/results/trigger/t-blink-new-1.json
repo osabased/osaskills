@@ -1,0 +1,131 @@
+{
+ "id": "t-blink",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "set up Blink for networking in this pesde project",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   8756
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/setup.md",
+   847
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/schema.md",
+   3520
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/api-and-lifecycle.md",
+   3009
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\pesde.toml"
+  ],
+  [
+   "Glob",
+   "*.{json,toml,sh,py,lock}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\scripts\\check_guards.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\schema.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-new-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\api-and-lifecycle.md"
+  ],
+  [
+   "Glob",
+   "**/SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.09418100000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18334,
+  "cache_read_input_tokens": 47730,
+  "output_tokens": 1606,
+  "output_tokens_details": {
+   "thinking_tokens": 235
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18334,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 845,
+    "cache_read_input_tokens": 22122,
+    "cache_creation_input_tokens": 5379,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5379
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: RESOURCE-SLUG
@@ -20,22 +20,15 @@ routing:
     - MATERIAL-ROUTING-EXCLUSION
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
     - path: SKILL.md
       roles: [routing, common-use, ownership, security, verification, maintenance, setup, troubleshooting]
       when: every activated use
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: CONCRETE-POLICY-REASON
 installation:
   # wally | pesde-wally (checks pesde.toml or, when absent, wally.toml) | pesde-registry |
-  # pesde-git | npm | asset | custom. See references/child-authoring.md#install-profiles.
+  # pesde-git | npm | asset | custom. See references/writing-library-skills.md#install-profiles.
   profile: pesde-wally
   dependency_section: dependencies
   registry: https://CANONICAL-REGISTRY
   target: roblox
-  integrity:
-    files:
-      RELATIVE-SOURCE-FILE: REVIEWED-SHA256

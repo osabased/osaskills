@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: blink
@@ -23,7 +23,6 @@ routing:
     matching guidance.
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -53,15 +52,8 @@ guidance:
     - troubleshooting
     when: compiler errors, missing outputs, client hangs, packet drops or the receive-side security boundary
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
-    to completion
 installation:
   profile: pesde-registry
   dependency_section: dev_dependencies
   registry: https://github.com/pesde-pkg/index
   target: lune
-  integrity:
-    files:
-      release/blink_pesde.luau: aea36deb0fbaf177fba4b48e5c88c9cb820abf5d077e4e237b98dcf96631343f

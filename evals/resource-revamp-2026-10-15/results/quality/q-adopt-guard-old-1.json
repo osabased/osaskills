@@ -1,0 +1,161 @@
+{
+ "id": "q-adopt-guard",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "Add Blink so the server can tell each client when their coins change (see src/server/Coins.luau). Our rule is no client-to-server Blink events, ever, so make sure that can't creep in later.",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-old-1\" && ls -a && cat scripts/check.sh && cat scripts/check_guards.py && cat src/server/Coins.luau && cat default.project.json pesde.toml rokit.toml 2>/dev/null; find src .claude -type f | head -50"
+  ],
+  [
+   "Bash",
+   "ls \"<old-plugin>/skills/roblox-resource-acquisition/\" 2>&1 | head"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-old-1/.claude/skills/roblox-resource-acquisition/libraries/roblox-blink\" && cat SKILL.md resource.yaml references/setup.md references/schema.md references/api-and-lifecycle.md"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-old-1\" && cat src/server/init.server.luau src/server/Round.luau src/client/init.client.luau src/client/UI/CoinLabel.luau src/client/State/README.md .claude/settings.json selene.toml pesde.lock | head -250"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-old-1\" && for t in rokit pesde rojo stylua selene lune python; do printf \"%s: \" $t; command -v $t || echo missing; done; ls roblox_packages 2>&1 | head -3"
+  ],
+  [
+   "Bash",
+   "which rokit pesde rojo stylua selene lune python; ls roblox_packages"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-old-1\\pesde.toml"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-old-1\\network\\main.blink"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-old-1\\network\\main.blink"
+  ],
+  [
+   "Bash",
+   "pesde install 2>&1 | tail -15 && pesde run blink -- --version && pesde run blink -- network/main 2>&1 | tail -10; ls -R src | head -30"
+  ],
+  [
+   "Bash",
+   "pesde install"
+  ],
+  [
+   "Bash",
+   "cat > scripts/check_guards.py <<'EOF'\n\"\"\"Project guards: each fails the build when a banned pattern appears.\n\n- No Instance.new under src/client/UI: build UI with Vide's create.\n- No client-to-server Blink: schemas may only declare events with From: Server.\n\"\"\"\nfrom pathlib import Path\nimport re\nimp"
+  ],
+  [
+   "Grep",
+   "BLINK_BANNED"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-old-1\\scripts\\check_guards.py"
+  ],
+  [
+   "Bash",
+   "python scripts/check_guards.py"
+  ],
+  [
+   "Write",
+   "<runs>\\q-adopt-guard-old-1\\network\\bad_probe.blink"
+  ],
+  [
+   "Bash",
+   "python scripts/check_guards.py"
+  ],
+  [
+   "Bash",
+   "rm network/bad_probe.blink"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-old-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-adopt-guard-old-1\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [
+  [
+   "Bash",
+   "ls \"<old-plugin>/skills/roblox-resource-acquisition/\" 2>&1 | head"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-adopt-guard-old-1\" && for t in rokit pesde rojo stylua selene lune python; do printf \"%s: \" $t; command -v $t || echo missing; done; ls roblox_packages 2>&1 | head -3"
+  ],
+  [
+   "Bash",
+   "pesde install 2>&1 | tail -15 && pesde run blink -- --version && pesde run blink -- network/main 2>&1 | tail -10; ls -R src | head -30"
+  ],
+  [
+   "Bash",
+   "pesde install"
+  ],
+  [
+   "Bash",
+   "cat > scripts/check_guards.py <<'EOF'\n\"\"\"Project guards: each fails the build when a banned pattern appears.\n\n- No Instance.new under src/client/UI: build UI with Vide's create.\n- No client-to-server Blink: schemas may only declare events with From: Server.\n\"\"\"\nfrom pathlib import Path\nimport re\nimp"
+  ]
+ ],
+ "result": "The Blink wiring and the guard are written, but I couldn't finish the install, so the project doesn't build yet. `pesde install` needs your approval and I can't run it. I haven't run `check.sh` or any of the other tools.\n\n**To finish, run these from the project root:**\n```\npesde install\npesde run blink -- network/main\nbash scripts/check.sh\n```\n`pesde install` updates `pesde.lock`, which `check.sh` needs because it installs with `--locked`. The second command generates `src/server/Network/Server.luau`, `src/client/Network/Client.luau` and `src/shared/Network/Types.luau`. Until they exist, `Coins.luau` requires a missing module. Don't hand-edit those files. `selene src` may complain about the generated code; I haven't seen it run.\n\n**What changed**\n- **`pesde.toml`:** adds the Blink CLI 0.18.9 as a `[dev_dependencies]` entry, as the Blink skill describes.\n- **`network/main.blink`:** declares one event, `CoinsChanged`, sent from the server and carrying a `u32` balance. Remotes are scoped to `CoinRun`, and the client handler is async.\n- **`src/server/Coins.luau`:** `Coins.add` now fires `CoinsChanged` to that player with their new balance.\n- **`scripts/check_guards.py`:** a new Blink guard fails on any `From: Client` event or any `function` declaration in any `.blink` file. It ignores comments, handles declarations split across lines, and is part of `check.sh`. I tested it on a throwaway schema and then deleted that file.\n\n**Things to know**\n- I banned Blink `function` too, even though your rule only mentions events, because a function is a client call the server answers. Say so if you want functions allowed.\n- The guard only reads `.blink` files. Blink also accepts a `.txt` schema, which it would miss.\n- I did not touch the client. Nothing listens to `CoinsChanged` yet, so `CoinLabel` still shows \"Coins: 0\". Updating the label changes what players see, so I held off. The natural fit is a Charm atom in `src/client/State` that the Blink handler sets and `CoinLabel` reads. Want me to do that?\n- I don't fire anything on join, because the client may not be listening yet and the label already starts at 0. The first update arrives with the first coin. A client that joins late won't see coins it earned before it connected, and it can't ask for them, since client-to-server events are banned.",
+ "cost": 0.2447493,
+ "turns": 21,
+ "usage": {
+  "input_tokens": 30,
+  "cache_creation_input_tokens": 28043,
+  "cache_read_input_tokens": 474173,
+  "output_tokens": 8510,
+  "output_tokens_details": {
+   "thinking_tokens": 2464
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 28043,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 829,
+    "cache_read_input_tokens": 38624,
+    "cache_creation_input_tokens": 494,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 494
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "pesde.toml": "name = \"example/coin_run\"\nversion = \"0.1.0\"\nprivate = true\n\n[target]\nenvironment = \"roblox\"\n\n[indices]\ndefault = \"https://github.com/pesde-pkg/index\"\n\n[wally_indices]\ndefault = \"https://github.com/UpliftGames/wally-index\"\n\n[dependencies]\nCharm = { wally = \"littensy/charm\", version = \"=0.11.1\" }\nJanitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }\nvide = { repo = \"https://github.com/centau/vide\", rev = \"5ed4c01940e6bd578fb83253cfbeda0a6c05177c\" }\n\n[dev_dependencies]\nblink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" }\n",
+  "network/main.blink": "option ServerOutput = \"../src/server/Network/Server.luau\"\noption ClientOutput = \"../src/client/Network/Client.luau\"\noption TypesOutput = \"../src/shared/Network/Types.luau\"\noption RemoteScope = \"CoinRun\"\n\nevent CoinsChanged { From: Server, Type: Reliable, Call: SingleAsync, Data: u32 }\n",
+  "scripts/check_guards.py": "\"\"\"Project guards: each fails the build when a banned pattern appears.\n\n- No Instance.new under src/client/UI: build UI with Vide's create.\n- No client-to-server Blink: schemas may only declare events with From: Server.\n\"\"\"\nfrom pathlib import Path\nimport re\nimport sys\n\nROOT = Path(__file__).resolve().parent.parent\nGUARDS = [\n    (\"src/client/UI\", \"*.luau\", re.compile(r\"Instance\\.new\"), \"build UI Instances with Vide's create\"),\n]\nBLINK_BANNED = [\n    (re.compile(r\"\\bFrom\\s*:\\s*Client\\b\"), \"Blink events must be From: Server\"),\n    (re.compile(r\"^\\s*(?:export\\s+)?function\\b\", re.MULTILINE), \"Blink functions are client-to-server calls\"),\n]\nBLINK_COMMENT = re.compile(r\"--\\[\\[.*?\\]\\]|--[^\\n]*\", re.DOTALL)\n\n\ndef blank_comments(text: str) -> str:\n    return BLINK_COMMENT.sub(lambda match: re.sub(r\"[^\\n]\", \" \", match.group()), text)\n\n\ndef check_lines() -> list[str]:\n    failures = []\n    for folder, pattern, banned, reason in GUARDS:\n        for path in sorted((ROOT / folder).rglob(pattern)):\n            for number, line in enumerate(path.read_text(encoding=\"utf-8\").splitlines(), 1):\n                if banned.search(line):\n                    failures.append(f\"{path.relative_to(ROOT)}:{number}: {reason}\")\n    return failures\n\n\ndef check_blink() -> list[str]:\n    failures = []\n    for path in sorted(ROOT.rglob(\"*.blink\")):\n        text = blank_comments(path.read_text(encoding=\"utf-8\"))\n        for banned, reason in BLINK_BANNED:\n            for match in banned.finditer(text):\n                number = text.count(\"\\n\", 0, match.start()) + 1\n                failures.append(f\"{path.relative_to(ROOT)}:{number}: {reason}\")\n    return failures\n\n\ndef main() -> int:\n    failures = check_lines() + check_blink()\n    for failure in failures:\n        print(failure)\n    return 1 if failures else 0\n\n\nif __name__ == \"__main__\":\n    sys.exit(main())\n",
+  "src/server/Coins.luau": "--!strict\nlocal Players = game:GetService(\"Players\")\n\nlocal Network = require(script.Parent.Network.Server)\n\nlocal Coins = {}\n\nlocal balances: { [Player]: number } = {}\n\nfunction Coins.get(player: Player): number\n\treturn balances[player] or 0\nend\n\nfunction Coins.add(player: Player, amount: number)\n\tbalances[player] = Coins.get(player) + amount\n\tNetwork.CoinsChanged.Fire(player, balances[player])\nend\n\nfunction Coins.start()\n\tPlayers.PlayerAdded:Connect(function(player)\n\t\tbalances[player] = 0\n\tend)\n\tPlayers.PlayerRemoving:Connect(function(player)\n\t\tbalances[player] = nil\n\tend)\nend\n\nreturn Coins\n"
+ },
+ "verdict": "-"
+}

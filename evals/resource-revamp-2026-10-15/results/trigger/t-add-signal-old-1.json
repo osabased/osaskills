@@ -1,0 +1,76 @@
+{
+ "id": "t-add-signal",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,json,toml,sh,py}"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-old-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-old-1\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "The game already has a signal library, so I haven't added anything. `src/shared/Signal.luau` is the vendored module that `CLAUDE.md` describes. It has `Signal.new()`, `:Connect`, `:Fire` and `:DisconnectAll`, and it's strictly typed. `Fire` runs each callback in its own `task.spawn`.\n\nNo module uses it yet. `Round.luau` and `Coins.luau` only use Roblox's built-in events. I can see three things you might mean:\n\n1. **Use the existing module.** Add events to the game modules. For example, `Coins.changed` fires from `Coins.add`, and `Round.started` and `Round.ended` fire from `Round.play`. This is my recommendation, since the module is already there and `CLAUDE.md` says to use it.\n2. **Improve the module.** It has no `Once`, `Wait` or `Destroy`. Its `Connection` can't be passed to `janitor:Add(conn, \"Disconnect\")` without naming the method. It also doesn't cap `DisconnectAll` ownership the way the Janitor skill expects (`janitor:Add(signal, \"Destroy\")`).\n3. **Replace it with a package.** One option is LemonSignal through pesde. This conflicts with the `CLAUDE.md` rule that Signal is a vendored module, not a package.\n\nWhich one do you want? If it's 1, which events should the modules fire, and should the client be able to listen to them? Events fired on the server won't reach the client without a RemoteEvent.",
+ "cost": 0.0751179,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14400,
+  "cache_read_input_tokens": 47559,
+  "output_tokens": 1275,
+  "output_tokens_details": {
+   "thinking_tokens": 123
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14400,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 581,
+    "cache_read_input_tokens": 22062,
+    "cache_creation_input_tokens": 1505,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1505
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

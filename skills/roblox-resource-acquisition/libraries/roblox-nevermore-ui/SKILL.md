@@ -9,7 +9,12 @@ Pinned target: `@quenty/blend` `12.50.2` from NevermoreEngine commit `3286fd397c
 
 ## Check the pin
 
-If the project pins these npm packages, confirm all four match the target. If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read `package.json` and `package-lock.json` directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+Before relying on version-specific guidance, read the project's manifest and lock:
+
+- `package.json` declares `@quenty/blend` `12.50.2`, `@quenty/rx` `13.34.2`, `@quenty/brio` `14.37.2` and `@quenty/loader` `10.11.3` as exact versions under `dependencies` (an alias such as `"npm:@quenty/blend@12.50.2"` counts).
+- `package-lock.json` has a `node_modules/<name>` entry for each, at the same version and resolved from `https://registry.npmjs.org`.
+
+If they show another version, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't declare these packages, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; reading the manifest is not a runtime test.
 
 ## Core API
 
@@ -64,3 +69,4 @@ clicks:Destroy()
 - Brio lifetimes and value-owned work: read [Brio](references/brio.md).
 - npm restore, the shared adapter, `bootstrapGame`/`bootstrapPlugin`/`bootstrapStory` and replication: read [setup](references/setup.md).
 - Missing loader links, server packages visible on the client, duplicate UI or construction failures: read [troubleshooting](references/troubleshooting.md).
+- Wrong or missing guidance at this pin: report it with the smallest reproduction and the exact proposed fix. Fix it in the `roblox-resource-acquisition` catalog, not here, because re-cloning overwrites local edits.

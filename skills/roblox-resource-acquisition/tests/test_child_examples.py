@@ -33,7 +33,7 @@ def test_worked_child_validates(tmp_path, skill_mod, folder):
     errors, _ = skill_mod.validate_skill(candidate)
     assert errors == [], "\n".join(errors)
     descriptor = yaml.safe_load((candidate / "resource.yaml").read_text(encoding="utf-8"))
-    assert set(descriptor["reconciliation"]) == {"policy", "reason"}
+    assert descriptor["schema_version"] == 2 and "reconciliation" not in descriptor
 
 
 def test_tool_fixture_contract_and_failure_ownership(tmp_path, monkeypatch):

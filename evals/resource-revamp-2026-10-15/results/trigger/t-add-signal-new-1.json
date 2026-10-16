@@ -1,0 +1,76 @@
+{
+ "id": "t-add-signal",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,toml,json,sh,py}"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-new-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-new-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-new-1\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "A signal library is already in the game, so I haven't changed anything yet. `src/shared/Signal.luau` is the vendored module that `CLAUDE.md` describes. It's strictly typed and has `Signal.new()`, `:Connect`, `:Fire` and `:DisconnectAll`. Nothing requires it yet: `Coins` and `Round` don't use it.\n\nThe module also has some gaps:\n- **Duplicate connects:** callbacks are keyed by function. Connecting the same function twice gives one entry, and disconnecting either connection removes it.\n- **Missing methods:** there's no `Once`, `Wait` or `Destroy`. `Destroy` matters for Janitor, because `janitor:Add(signal, \"Destroy\")` needs it.\n- **Fire timing:** `Fire` uses `task.spawn`, so listeners run immediately. A listener that errors is reported but doesn't stop the others.\n\nWhat did you want here? These are my recommendations, first option in each case:\n1. **Scope:** wire the existing module into the game, for example a `Coins.changed` signal fired from `Coins.add` and a `Round.ended` signal. The alternatives are to harden the module only, or to do both.\n2. **Hardening, if you want it:** add `Once`, `Wait` and `Destroy`, and make each `Connect` its own connection even for the same function. The alternative is to leave the module as it is.\n3. **Replacing it:** keep the vendored module. The alternative is to swap in a package such as LemonSignal, which would mean a new dependency and an edit to the `CLAUDE.md` line saying Signal is vendored.\n\nWhich signals do you want the modules to fire, or should I go with `Coins.changed` and `Round.ended`?",
+ "cost": 0.0841684,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16151,
+  "cache_read_input_tokens": 49424,
+  "output_tokens": 1461,
+  "output_tokens_details": {
+   "thinking_tokens": 222
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16151,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 751,
+    "cache_read_input_tokens": 23803,
+    "cache_creation_input_tokens": 1515,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1515
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

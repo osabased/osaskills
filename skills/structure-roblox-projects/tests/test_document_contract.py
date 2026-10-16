@@ -85,7 +85,6 @@ def test_all_references_are_reachable_from_the_entrypoint():
 # Links outside this skill may only target these stable entry points.
 ALLOWED_EXTERNAL_TARGETS = {
     "roblox-resource-acquisition/SKILL.md",
-    "roblox-resource-acquisition/references/child-usage.md",
 }
 
 

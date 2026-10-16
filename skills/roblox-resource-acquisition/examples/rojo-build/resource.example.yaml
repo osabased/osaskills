@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: rojo-rbx-rojo
@@ -21,7 +21,6 @@ routing:
   - The requested proof needs live Studio synchronization, physics or gameplay execution.
 guidance:
   claim_scope: executable-integration
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -43,9 +42,6 @@ guidance:
     - troubleshooting
     when: diagnosing matching symptoms
   executable_fixture: scripts/smoke_build.py
-reconciliation:
-  policy: required
-  reason: Project source/tool installation can change independently.
 installation:
   profile: custom
   custom_checker: scripts/check_build.py

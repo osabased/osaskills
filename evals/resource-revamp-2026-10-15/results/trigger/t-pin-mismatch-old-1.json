@@ -1,0 +1,95 @@
+{
+ "id": "t-pin-mismatch",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/child-usage.md",
+   4176
+  ],
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   4892
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "(?i)janitor"
+  ],
+  [
+   "Read",
+   "<runs>\\t-pin-mismatch-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\child-usage.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-pin-mismatch-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Glob",
+   ".claude/skills/roblox-janitor/**"
+  ],
+  [
+   "Bash",
+   "uv run --no-project --python \">=3.11\" --with pyyaml python \"<runs>/t-pin-mismatch-old-1/.claude/skills/roblox-resource-acquisition/scripts/check_resource_install.py\" \"<runs>/t-pin-mismatch-old-1/.claude/ski"
+  ],
+  [
+   "Grep",
+   "(?i)janitor"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.07459350000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13935,
+  "cache_read_input_tokens": 44515,
+  "output_tokens": 1439,
+  "output_tokens_details": {
+   "thinking_tokens": 263
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13935,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 454,
+    "cache_read_input_tokens": 18987,
+    "cache_creation_input_tokens": 4115,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4115
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

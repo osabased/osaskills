@@ -9,7 +9,9 @@ Pinned target: `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f` (source reviewed 2026-
 
 ## Check the pin
 
-If the project vendors or pins GoodSignal, compare its source header and bytes with the pinned commit; a same-named package is not enough. This child uses a custom profile, so the shared checker reports it unavailable and never runs it: follow [setup](references/setup.md) for the exact check. If the `roblox-resource-acquisition` skill is available, load it and also run the record query its `references/child-usage.md` describes. If the parent, Python or a project record is unavailable, read the project's source directly and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
+If the project vendors GoodSignal, its header or the project guide names commit `99497c8cd6e5b50c5f4f12796d4ebc3e7dbf9d1f`, and the vendored source matches that commit's `src/init.lua`; a same-named package is not enough. [Setup](references/setup.md) has the exact comparison.
+
+If it shows another source, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't vendor GoodSignal, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; comparing source is not a runtime test.
 
 ## Core API
 

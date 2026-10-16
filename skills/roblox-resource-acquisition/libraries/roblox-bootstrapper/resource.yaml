@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: bootstrapper
@@ -23,7 +23,6 @@ routing:
   - The project pins a different Bootstrapper target; keep that pin and find matching guidance.
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -49,22 +48,8 @@ guidance:
     - troubleshooting
     when: modules not starting, phase failures, hangs or work after teardown
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
-    to completion
 installation:
   profile: pesde-git
   dependency_section: dependencies
   target: roblox
   new_structure: false
-  integrity:
-    files:
-      src/init.luau: dd7f94d7a0a10de13b838e65549c9de3b540c568c7c44cf89f0b3ace2b1725fc
-    version_header:
-      path: src/init.luau
-      contains: --v1.2.2
-    manifest:
-      path: wally.toml
-      name: ldgerrits/bootstrapper
-      version: 1.2.2

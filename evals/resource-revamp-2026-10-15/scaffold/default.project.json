@@ -1,0 +1,13 @@
+{
+  "name": "coin-run",
+  "emitLegacyScripts": false,
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": { "$path": "src/shared" },
+      "Client": { "$path": "src/client" },
+      "Packages": { "$path": "roblox_packages" }
+    },
+    "ServerScriptService": { "Server": { "$path": "src/server" } }
+  }
+}

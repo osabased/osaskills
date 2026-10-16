@@ -1,0 +1,110 @@
+{
+ "id": "q-existing",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "Add a library so server modules can fire custom events, and use it in src/server/Coins.luau so other modules can react when a player's coins change.",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Read",
+   "<runs>\\q-existing-new-2\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-existing-new-2\\src\\server\\Coins.luau"
+  ],
+  [
+   "Grep",
+   "require\\("
+  ],
+  [
+   "Bash",
+   "cd <runs>/q-existing-new-2 && cat default.project.json && cat src/server/Round.luau"
+  ],
+  [
+   "Bash",
+   "cd <runs>/q-existing-new-2 && python - <<'E'\np='src/server/Coins.luau'\ns=open(p).read()\ns=s.replace('''local Players = game:GetService(\"Players\")\n\nlocal Coins = {}\n''','''local Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetServi"
+  ],
+  [
+   "Bash",
+   "cd <runs>/q-existing-new-2; bash scripts/check.sh"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\q-existing-new-2\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-existing-new-2\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-existing-new-2\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [
+  [
+   "Bash",
+   "cd <runs>/q-existing-new-2 && python - <<'E'\np='src/server/Coins.luau'\ns=open(p).read()\ns=s.replace('''local Players = game:GetService(\"Players\")\n\nlocal Coins = {}\n''','''local Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetServi"
+  ],
+  [
+   "Bash",
+   "cd <runs>/q-existing-new-2; bash scripts/check.sh"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ]
+ ],
+ "result": "I added `Coins.changed` to `src/server/Coins.luau`, but I couldn't run `bash scripts/check.sh` because the sandbox asked for approval and it wasn't granted. The change is unchecked, so please run `bash scripts/check.sh` yourself.\n\nI didn't add a new library. The project already has the vendored `src/shared/Signal.luau` for in-runtime custom events, and it's reachable from server code as `ReplicatedStorage.Shared.Signal`. I used it directly.\n\n- **Event:** `Coins.changed` is a `Signal<Player, number>`. Other modules can react with `Coins.changed:Connect(function(player, balance) ... end)`.\n- **When it fires:** `Coins.add` fires it after updating the balance, passing the player and their new total.\n- **Not covered:** nothing fires when a balance is reset to 0 on `PlayerAdded` or cleared on `PlayerRemoving`. Say if you want it to fire for those too.",
+ "cost": 0.1285662,
+ "turns": 11,
+ "usage": {
+  "input_tokens": 16,
+  "cache_creation_input_tokens": 22833,
+  "cache_read_input_tokens": 144022,
+  "output_tokens": 2280,
+  "output_tokens_details": {
+   "thinking_tokens": 280
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22833,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 329,
+    "cache_read_input_tokens": 22037,
+    "cache_creation_input_tokens": 796,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 796
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "src/server/Coins.luau": "--!strict\nlocal Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal Signal = require(ReplicatedStorage.Shared.Signal)\n\nlocal Coins = {}\n\nCoins.changed = Signal.new() :: Signal.Signal<Player, number>\n\nlocal balances: { [Player]: number } = {}\n\nfunction Coins.get(player: Player): number\n\treturn balances[player] or 0\nend\n\nfunction Coins.add(player: Player, amount: number)\n\tlocal balance = Coins.get(player) + amount\n\tbalances[player] = balance\n\tCoins.changed:Fire(player, balance)\nend\n\nfunction Coins.start()\n\tPlayers.PlayerAdded:Connect(function(player)\n\t\tbalances[player] = 0\n\tend)\n\tPlayers.PlayerRemoving:Connect(function(player)\n\t\tbalances[player] = nil\n\tend)\nend\n\nreturn Coins\n"
+ },
+ "verdict": "-"
+}

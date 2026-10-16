@@ -1,0 +1,17 @@
+name = "example/coin_run"
+version = "0.1.0"
+private = true
+
+[target]
+environment = "roblox"
+
+[indices]
+default = "https://github.com/pesde-pkg/index"
+
+[wally_indices]
+default = "https://github.com/UpliftGames/wally-index"
+
+[dependencies]
+Charm = { wally = "littensy/charm", version = "=0.11.1" }
+Janitor = { wally = "howmanysmall/janitor", version = "=1.17.0" }
+vide = { repo = "https://github.com/centau/vide", rev = "5ed4c01940e6bd578fb83253cfbeda0a6c05177c" }

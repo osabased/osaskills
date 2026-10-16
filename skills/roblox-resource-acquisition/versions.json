@@ -11,7 +11,7 @@
    "reviewed_on": "2026-10-02",
    "files": [
     "libraries/roblox-vide/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -28,7 +28,7 @@
    "reviewed_on": "2026-10-03",
    "files": [
     "libraries/roblox-charm/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -44,7 +44,7 @@
    "reviewed_on": "2026-10-02",
    "files": [
     "libraries/roblox-ui-labs/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -61,7 +61,7 @@
    "reviewed_on": "2026-10-02",
    "files": [
     "libraries/roblox-bootstrapper/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -78,7 +78,7 @@
    "reviewed_on": "2026-10-03",
    "files": [
     "libraries/roblox-janitor/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -94,7 +94,7 @@
    "reviewed_on": "2026-10-03",
    "files": [
     "libraries/roblox-lemonsignal/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -110,7 +110,7 @@
    "reviewed_on": "2026-10-03",
    "files": [
     "libraries/roblox-blink/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -127,7 +127,7 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "libraries/roblox-nevermore-ui/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -144,7 +144,7 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "libraries/roblox-nevermore-ui/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -160,7 +160,7 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "libraries/roblox-nevermore-ui/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"
@@ -176,7 +176,7 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "libraries/roblox-nevermore-ui/",
-    "references/bundled-skills.md"
+    "references/library-skills.md"
    ],
    "repo_files": [
     "README.md"

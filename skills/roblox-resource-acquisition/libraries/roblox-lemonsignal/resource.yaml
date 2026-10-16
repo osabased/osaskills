@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: lemonsignal
@@ -23,7 +23,6 @@ routing:
   - The project pins a different LemonSignal target; keep that pin and find matching guidance.
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -49,15 +48,8 @@ guidance:
     - troubleshooting
     when: unexpected arguments, a stuck Wait, leaks or events that keep firing
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
-    to completion
 installation:
   profile: pesde-wally
   dependency_section: dependencies
   registry: https://github.com/UpliftGames/wally-index
   target: roblox
-  integrity:
-    files:
-      src/LemonSignal.lua: 944fdda27e5e97bd2c44f3a4d7850d1838fba461391fb8a79b0ebffa04933ef2

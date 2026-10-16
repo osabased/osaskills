@@ -9,7 +9,11 @@ Pinned target: commit `ff6700d32875dde5ef9e3625a159436ebd4dc3e9` (tag v1.2.2, so
 
 ## Check the pin
 
-If the project pins Bootstrapper, confirm it matches the target. If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+Before relying on version-specific guidance, read the project's manifest and lock:
+
+- `pesde.toml` declares `{ repo = "https://github.com/LDGerrits/Bootstrapper", rev = "ff6700d32875dde5ef9e3625a159436ebd4dc3e9" }` (under any alias), and `pesde.lock` resolves it to `ldgerrits/bootstrapper@0.0.0-4f94dfb887d0d0f81faaf00849d8670e5e8ed7de roblox`.
+
+If they show another version, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't declare Bootstrapper, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; reading the manifest is not a runtime test.
 
 ## Core API
 
@@ -62,3 +66,4 @@ local stopUpdate = Bootstrapper.bindToHeartbeat(modules :: { any }, ":update") -
 - Binding cleanup, ordering rules, error keys and full signatures: read [API and lifecycle](references/api-and-lifecycle.md).
 - Installing, restoring, or the wrapper-casing workaround: read [setup](references/setup.md).
 - Modules that don't start, missing modules, or work that runs after teardown: read [troubleshooting](references/troubleshooting.md).
+- Wrong or missing guidance at this pin: report it with the smallest reproduction and the exact proposed fix. Fix it in the `roblox-resource-acquisition` catalog, not here, because re-cloning overwrites local edits.

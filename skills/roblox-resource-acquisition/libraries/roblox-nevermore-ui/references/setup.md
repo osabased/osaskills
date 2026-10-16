@@ -13,7 +13,7 @@ The project declares exact direct npm pins in `package.json`, locked in `package
 
 - Restore with the project's own preparation command. The reviewed project used `scripts/prepare.ps1`, which runs `npm ci --ignore-scripts`. Keep dependency scripts disabled unless they have been reviewed.
 - Don't edit `node_modules`, and don't regenerate the lock to hide a mismatch.
-- The parent's npm check compares each direct declaration, the lock's registry URL and SHA-512 integrity, the installed `package.json` version, and the reviewed Lua source. It doesn't check transitive packages or runtime behavior.
+- The pin check (this skill's `## Check the pin`, or `roblox-resource-acquisition`'s `--status`) compares each direct declaration with the lock's entry, registry URL and SHA-512 integrity. It doesn't read installed packages, transitive packages or runtime behavior.
 
 ## The shared adapter
 

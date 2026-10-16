@@ -1,0 +1,82 @@
+{
+ "id": "t-use-janitor",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "use our Janitor to clean up this tween when the frame is destroyed",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "TweenService|:Create\\(|Tween"
+  ],
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Glob",
+   "**/*.{luau,lua,toml,lock}"
+  ],
+  [
+   "Grep",
+   "(?i)tween|janitor"
+  ],
+  [
+   "Read",
+   "<runs>\\t-use-janitor-new-1\\src\\client\\UI\\CoinLabel.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-use-janitor-new-1\\src\\client\\UI\\App.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.057955099999999996,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10916,
+  "cache_read_input_tokens": 44691,
+  "output_tokens": 981,
+  "output_tokens_details": {
+   "thinking_tokens": 240
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10916,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 235,
+    "cache_read_input_tokens": 19060,
+    "cache_creation_input_tokens": 1023,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1023
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

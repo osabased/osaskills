@@ -1,0 +1,98 @@
+{
+ "id": "q-existing",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "Add a library so server modules can fire custom events, and use it in src/server/Coins.luau so other modules can react when a player's coins change.",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Read",
+   "<runs>\\q-existing-old-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-existing-old-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-existing-old-1\" && cat default.project.json; grep -rn \"require\" src | head -20"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-existing-old-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-existing-old-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-existing-old-1\" && bash scripts/check.sh 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ]
+ ],
+ "denials": [
+  [
+   "Bash",
+   "cd \"<runs>/q-existing-old-1\" && bash scripts/check.sh 2>&1 | tail -20"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ]
+ ],
+ "result": "`Coins` now fires an event whenever a player's balance changes. I couldn't run `bash scripts/check.sh` because the command needed approval and wasn't granted, so the change is unchecked.\n\nI didn't add a library. `src/shared/Signal.luau` already exists as the project's vendored custom-event module and works from server modules, so a second one would only duplicate it.\n\nIn `src/server/Coins.luau`:\n- **New event:** `Coins.Changed` is a `Signal<Player, number, number>`.\n- **When it fires:** `Coins.add` fires it after updating the balance, with `(player, newBalance, previousBalance)`.\n- **How to listen:** other modules can call `Coins.Changed:Connect(function(player, current, previous) ... end)`.\n\n`Coins.add` is the only place a balance changes, apart from the join and leave resets in `Coins.start`. Those don't fire the event. A player joining at 0 or leaving isn't a coin change, but tell me if you want them to fire it too.",
+ "cost": 0.113785,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 21561,
+  "cache_read_input_tokens": 101370,
+  "output_tokens": 1738,
+  "output_tokens_details": {
+   "thinking_tokens": 125
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21561,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 334,
+    "cache_read_input_tokens": 21464,
+    "cache_creation_input_tokens": 97,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 97
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "src/server/Coins.luau": "--!strict\nlocal Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\n\nlocal Signal = require(ReplicatedStorage.Shared.Signal)\n\nlocal Coins = {}\n\nCoins.Changed = Signal.new() :: Signal.Signal<Player, number, number>\n\nlocal balances: { [Player]: number } = {}\n\nfunction Coins.get(player: Player): number\n\treturn balances[player] or 0\nend\n\nfunction Coins.add(player: Player, amount: number)\n\tlocal previous = Coins.get(player)\n\tlocal current = previous + amount\n\tbalances[player] = current\n\tCoins.Changed:Fire(player, current, previous)\nend\n\nfunction Coins.start()\n\tPlayers.PlayerAdded:Connect(function(player)\n\t\tbalances[player] = 0\n\tend)\n\tPlayers.PlayerRemoving:Connect(function(player)\n\t\tbalances[player] = nil\n\tend)\nend\n\nreturn Coins\n"
+ },
+ "verdict": "-"
+}

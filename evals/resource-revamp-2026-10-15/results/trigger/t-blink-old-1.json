@@ -1,0 +1,119 @@
+{
+ "id": "t-blink",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "set up Blink for networking in this pesde project",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   6160
+  ],
+  [
+   "roblox-resource-acquisition/references/bundled-skills.md",
+   4160
+  ],
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   9038
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,json,sh,py,blink,luau}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\scripts\\check_guards.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\bundled-skills.md"
+  ],
+  [
+   "Glob",
+   "libraries/roblox-blink/**"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-old-1\\src\\server\\init.server.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0868884,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16540,
+  "cache_read_input_tokens": 45064,
+  "output_tokens": 1621,
+  "output_tokens_details": {
+   "thinking_tokens": 417
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16540,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 547,
+    "cache_read_input_tokens": 19580,
+    "cache_creation_input_tokens": 6127,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6127
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

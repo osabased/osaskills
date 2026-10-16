@@ -1,0 +1,60 @@
+{
+ "id": "t-pin-mismatch",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "(?i)janitor"
+  ]
+ ],
+ "denials": [],
+ "result": "Your project and the skill disagree on the Janitor version, but nothing is broken. `pesde.toml` pins Janitor to `=1.17.0`, and `pesde.lock` resolves to the same 1.17.0. The roblox-janitor skill was written for 1.18.3.\n\nI haven't changed anything. The pin is yours, and I won't bump it to match the skill. You have two options:\n\n1. **Stay on 1.17.0 (my recommendation unless you need something from 1.18.3).** I'd treat the skill as a guide and only use Janitor API I can confirm exists in 1.17.0. If a task depends on behavior that may have changed between the two versions, I'll stop and ask you first. This is the safe choice for now.\n2. **Upgrade to 1.18.3.** The roblox-resource-acquisition skill has an upgrade flow for this. It bumps the pin, updates the lock, and then the skill matches your project. It's worth doing if you want the skill's guidance to apply exactly. You should also run `bash scripts/check.sh` after the upgrade to catch any behavior changes.\n\nWhich do you want? If you're not working with Janitor right now, you can ignore the warning.",
+ "cost": 0.042867199999999994,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 8046,
+  "cache_read_input_tokens": 25652,
+  "output_tokens": 811,
+  "output_tokens_details": {
+   "thinking_tokens": 247
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8046,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 391,
+    "cache_read_input_tokens": 16485,
+    "cache_creation_input_tokens": 728,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 728
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

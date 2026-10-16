@@ -9,7 +9,9 @@ Pinned target: plugin release `v1.6.1` (source reviewed 2026-10-02). [resource.y
 
 ## Check the pin
 
-The installed plugin file can change without any project lock changing, so check it before relying on version-specific behavior. If the `roblox-resource-acquisition` skill is available, load it and run the asset check its `references/child-usage.md` describes, passing the installed plugin file with `--asset`. If the parent, Python, or the plugin file is unavailable, compare what you can (the toolbar name, the installed file's hash) and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+The installed plugin file can change without any project file changing, so check it before relying on version-specific behavior. Find the UI Labs file in Studio's Plugins folder (Studio: **Plugins > Plugins Folder**; a project installer may name it, for example `UILabsManagedPlugin.rbxm`) and hash it with `sha256sum <file>` or `Get-FileHash <file>`. Release v1.6.1's `Plugin.rbxm` has SHA-256 `c785b1fc2593d633ad3dba51aeb778cee3026393574b99438fa276ad31d5283b`.
+
+If the hash differs, tell the user, use only API you can confirm in the installed version, and stop where the task depends on behavior that may differ. If you can't reach the file, compare what you can (the toolbar name, the plugin's version text) and say which check you skipped. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; hashing the file is not a runtime test.
 
 ## Core API
 
@@ -59,3 +61,4 @@ return {
 - The Vide mounter's lifecycle, the controls API, Environment helpers and story discovery: read [API and lifecycle](references/api-and-lifecycle.md).
 - Installing or verifying the plugin file: read [setup](references/setup.md).
 - A missing story, nil controls, duplicate widgets or a stale preview: read [troubleshooting](references/troubleshooting.md).
+- Wrong or missing guidance at this pin: report it with the smallest reproduction and the exact proposed fix. Fix it in the `roblox-resource-acquisition` catalog, not here, because re-cloning overwrites local edits.

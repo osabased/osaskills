@@ -1,4 +1,4 @@
-"""Validate the bundled resource children (skills under libraries/ with resource.yaml), without host claims."""
+"""Validate the catalog library skills (skills under libraries/ with resource.yaml), without host claims."""
 from pathlib import Path
 
 import pytest
@@ -24,15 +24,15 @@ def test_bundled_child_is_a_complete_composed_package(skill_mod, child):
 def test_bundled_child_names_the_parent_without_a_path(child):
     # A clone in a project's .claude/skills/ has no parent folder at any fixed relative path.
     text = (child / 'SKILL.md').read_text(encoding='utf-8')
-    assert '`roblox-resource-acquisition`' in text and '`references/child-usage.md`' in text
+    assert '`roblox-resource-acquisition`' in text
     assert '](../' not in text
 
 
-@pytest.mark.skipif(not BUNDLES, reason='No bundled children in libraries/ (standalone install)')
-def test_bundled_children_are_present_without_record_paths():
+@pytest.mark.skipif(not BUNDLES, reason='No library skills in libraries/ (standalone install)')
+def test_bundled_children_are_present_on_contract_two():
     assert {child.name for child in BUNDLES} >= {
         'roblox-vide', 'roblox-charm', 'roblox-ui-labs', 'roblox-bootstrapper',
         'roblox-janitor', 'roblox-lemonsignal', 'roblox-blink', 'roblox-nevermore-ui'}
     for child in BUNDLES:
-        reconciliation = yaml.safe_load((child / 'resource.yaml').read_text(encoding='utf-8'))['reconciliation']
-        assert set(reconciliation) == {'policy', 'reason'}, child.name
+        descriptor = yaml.safe_load((child / 'resource.yaml').read_text(encoding='utf-8'))
+        assert descriptor['schema_version'] == 2 and 'reconciliation' not in descriptor, child.name

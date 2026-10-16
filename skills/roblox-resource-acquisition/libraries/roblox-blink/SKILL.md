@@ -9,7 +9,12 @@ Pinned target: `0.18.9` (source reviewed 2026-10-03). [resource.yaml](resource.y
 
 ## Check the pin
 
-If the project pins Blink, confirm it matches the target (`pesde run blink -- --version` prints `0.18.9`). If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+Before relying on version-specific guidance, read the project's manifest and lock:
+
+- `pesde.toml` declares `{ name = "1axen/blink", version = "=0.18.9", target = "lune" }` under `[dev_dependencies]` (any alias), and `pesde.lock` resolves it to `1axen/blink@0.18.9 lune`.
+- `pesde run blink -- --version` prints `0.18.9`.
+
+If they show another version, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't declare Blink, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; reading the manifest is not a runtime test.
 
 ## Core API
 
@@ -63,3 +68,4 @@ Net.CoinsChanged.Fire(player, 150)
 - Generated runtime behavior, polling, functions, placement and lifecycle: read [API and lifecycle](references/api-and-lifecycle.md).
 - Installing or restoring the pesde CLI: read [setup](references/setup.md).
 - A compiler error, missing outputs, a client that waits forever, or the security boundary: read [troubleshooting](references/troubleshooting.md).
+- Wrong or missing guidance at this pin: report it with the smallest reproduction and the exact proposed fix. Fix it in the `roblox-resource-acquisition` catalog, not here, because re-cloning overwrites local edits.

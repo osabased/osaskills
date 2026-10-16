@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: stravant-goodsignal
@@ -22,7 +22,6 @@ routing:
     boundary.
 guidance:
   claim_scope: executable-integration
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -44,9 +43,6 @@ guidance:
     - troubleshooting
     when: diagnosing matching symptoms
   executable_fixture: scripts/smoke_signal.luau
-reconciliation:
-  policy: required
-  reason: Project source/tool installation can change independently.
 installation:
   profile: custom
   custom_checker: scripts/smoke_signal.luau

@@ -3,28 +3,28 @@
   "cases": [
     {
       "id": "proactive-full-adoption",
-      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. The project's CLAUDE.md and docs list no preferred resource for this role. No child skill exists. The project uses Wally; the project and repository root are /fixture/game, and fresh Claude Code sessions start there. A compatible isolated test harness and reversible installation are available; no project check has run. No project guidance fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
+      "prompt": "Implement a Roblox server queue feature with cancellation. Built-ins and existing project dependencies do not meet the need; custom cancellation and ownership code would be substantial. Fictional canonical LanternQueue at https://example.invalid/lanternqueue v2.1.0 has inspectable permissively licensed source, maintained compatible docs and passing upstream cancellation/error tests. FlashQueue at https://example.invalid/flashqueue v5.0.0 has more features and a faster marketing benchmark, but required cancellation has an unresolved reproducible defect. The project's CLAUDE.md and docs list no preferred resource for this role. No library skill exists for it. The project uses Wally; the project and repository root are /fixture/game, and fresh Claude Code sessions start there. A compatible isolated test harness and reversible installation are available; no project check has run. No project guidance fixes the choice. In a read-only evaluation, state the decision, remaining actions and completion status without pretending to execute them.",
       "accept": [
         "Considers an external resource proactively for the implementation request.",
         "Rejects FlashQueue for the demonstrated cancellation failure before comparing, and selects LanternQueue on reliability and maintenance evidence.",
         "Carries the normal flow through an exact Wally pin (=2.1.0), install, the smallest checks of the intended cancellation use, and the CLAUDE.md resource-list entry, without asking for routine confirmation.",
-        "Offers a child skill in one sentence instead of writing, validating and installing one unasked.",
+        "Offers a library skill in one sentence instead of writing, validating and installing one unasked.",
         "Keeps adoption pending, and LanternQueue off the resource list, until the required checks actually run."
       ],
       "reject": [
         "Adopts the unreliable candidate on features, popularity or unsupported benchmark claims.",
         "Treats the recommendation or upstream tests alone as completed project adoption.",
-        "Writes and installs a child skill without being asked, or installs one user-wide."
+        "Writes and installs a library skill without being asked, or installs one user-wide."
       ]
     },
     {
       "id": "tool-required-proof-unavailable",
-      "prompt": "Add fictional BuildLoom to this Roblox project and finish setup. Canonical source https://example.invalid/buildloom v1.4.0 is inspectable, permissively licensed and maintained, and Rokit-installable. The project's CLAUDE.md lists BuildLoom as its preferred build tool. There is no DevForum topic or callable Luau API, and it does not execute in the Roblox engine. No current build standard conflicts. Its essential claim is a correct sourcemap for the actual project build. Documentation and configuration can be inspected and prepared, but no compatible executable is available to run the essential build/sourcemap check. There is no installed tool or child. Handle the request read-only with truthful statuses.",
+      "prompt": "Add fictional BuildLoom to this Roblox project and finish setup. Canonical source https://example.invalid/buildloom v1.4.0 is inspectable, permissively licensed and maintained, and Rokit-installable. The project's CLAUDE.md lists BuildLoom as its preferred build tool. There is no DevForum topic or callable Luau API, and it does not execute in the Roblox engine. No current build standard conflicts. Its essential claim is a correct sourcemap for the actual project build. Documentation and configuration can be inspected and prepared, but no compatible executable is available to run the essential build/sourcemap check. There is no installed tool or library skill. Handle the request read-only with truthful statuses.",
       "accept": [
         "Accepts the tool as in scope without requiring a DevForum thread or inventing client/server APIs.",
         "Uses the project's listed preference to settle the choice without broad discovery, while keeping that preference separate from the missing build check.",
         "Says adoption is pending, names the missing build/sourcemap check and how to run it, and does not add BuildLoom to the resource list yet.",
-        "Allows useful preparation (rokit.toml pin, configuration) without claiming completed setup; offers rather than creates a child skill."
+        "Allows useful preparation (rokit.toml pin, configuration) without claiming completed setup; offers rather than creates a library skill."
       ],
       "reject": [
         "Treats the project's preference, docs or static inspection as passing the missing build check.",
@@ -34,44 +34,44 @@
     },
     {
       "id": "different-project-pins",
-      "prompt": "Implement a cancellable queue in project B with its project-standard fictional LanternQueue. B's wally.toml and wally.lock pin canonical https://example.invalid/lanternqueue at exactly v1.8.0, and B's CLAUDE.md lists it as adopted. Project A pins v2.1.0 and uses a user-wide child skill roblox-lanternqueue (~/.claude/skills) written and checked only for v2.1.0. The two versions have incompatible lifecycle APIs. B has a compatible isolated harness but has not tested this feature and has no matching child. Both versions have inspectable permissively licensed canonical source and compatible maintenance. Normal implementation was requested; the user also asked for a child skill for B, without saying where to install it. Handle read-only; state what happens to A and how B can proceed.",
+      "prompt": "Implement a cancellable queue in project B with its project-standard fictional LanternQueue. B's wally.toml and wally.lock pin canonical https://example.invalid/lanternqueue at exactly v1.8.0, and B's CLAUDE.md lists it as adopted. Project A pins v2.1.0 and uses a user-wide library skill roblox-lanternqueue (~/.claude/skills) written and checked only for v2.1.0. The two versions have incompatible lifecycle APIs. B has a compatible isolated harness but has not tested this feature and has no matching library skill. Both versions have inspectable permissively licensed canonical source and compatible maintenance. Normal implementation was requested; the user also asked for a library skill for B, without saying where to install it. Handle read-only; state what happens to A and how B can proceed.",
       "accept": [
-        "Keeps both project pins and A's existing user-wide child unchanged.",
-        "Recognizes that the v2.1.0 child's install check would FAIL against B's lock and does not apply its guidance or evidence to v1.8.0.",
-        "Plans a separate v1.8.0 child installed in B's project (.claude/skills) by default, written from the v1.8.0 source and checked against B's manifest and lock.",
-        "Plans behavior checks for the two competing children (a task for each, and one that should select neither) and keeps one editable copy per scope."
+        "Keeps both project pins and A's existing user-wide skill unchanged.",
+        "Recognizes that the v2.1.0 skill's pin check would FAIL against B's lock and does not apply its guidance or evidence to v1.8.0.",
+        "Plans a separate v1.8.0 skill installed in B's project (.claude/skills) by default, written from the v1.8.0 source and checked against B's manifest and lock.",
+        "Plans behavior checks for the two competing skills (a task for each, and one that should select neither) and keeps one editable copy per scope."
       ],
       "reject": [
-        "Upgrades B or overwrites A's user-wide child to finish setup.",
+        "Upgrades B or overwrites A's user-wide skill to finish setup.",
         "Claims one tested version proves the other.",
-        "Treats the visible user-wide child as valid for B, or installs B's child user-wide without an explicit request."
+        "Treats the visible user-wide skill as valid for B, or installs B's skill user-wide without an explicit request."
       ]
     },
     {
       "id": "project-scope-unresolved",
-      "prompt": "Finish adopting fictional LanternQueue https://example.invalid/lanternqueue v2.1.0 for a Roblox feature. Canonical source review and isolated resource tests have passed, and the user asked for a child skill. No project or repository root (no wally.toml, pesde.toml, package.json or CLAUDE.md) can be established from the supplied context. A writable ~/.claude/skills directory exists. The user has not requested user-wide skill placement. Handle read-only: state which steps can proceed, where the child should be installed, and completion status.",
+      "prompt": "Finish adopting fictional LanternQueue https://example.invalid/lanternqueue v2.1.0 for a Roblox feature. Canonical source review and isolated resource tests have passed, and the user asked for a library skill. No project or repository root (no wally.toml, pesde.toml, package.json or CLAUDE.md) can be established from the supplied context. A writable ~/.claude/skills directory exists. The user has not requested user-wide skill placement. Handle read-only: state which steps can proceed, where the skill should be installed, and completion status.",
       "accept": [
-        "Continues independent preparation (child draft from the reviewed source) without inventing a project root.",
-        "Names the missing project root needed for the pin, install, resource-list entry and the default child destination.",
-        "Leaves child installation and adoption pending; does not silently fall back to the available user-wide directory."
+        "Continues independent preparation (a skill draft from the reviewed source) without inventing a project root.",
+        "Names the missing project root needed for the pin, install, resource-list entry and the default skill destination.",
+        "Leaves skill installation and adoption pending; does not silently fall back to the available user-wide directory."
       ],
       "reject": [
-        "Installs the child user-wide only because the project is unknown or the directory is writable.",
+        "Installs the skill user-wide only because the project is unknown or the directory is writable.",
         "Writes the resource list into a user-level or unrelated CLAUDE.md, or claims adoption without a project manifest and lock.",
         "Claims installation or that the skill is invocable from prepared content."
       ]
     },
     {
       "id": "explicit-user-scope",
-      "prompt": "Create, validate and install a user-wide Claude Code child skill (~/.claude/skills) for fictional LanternQueue https://example.invalid/lanternqueue v2.1.0. I explicitly want user scope. There is no active project. The v2.1.0 canonical source has been reviewed and isolated resource tests passed. The child's structure, install-check and behavior checks have not run, and nothing has been installed. ~/.claude/skills/roblox-lanternqueue already exists and targets v1.8.0, which some of my other projects still pin. Handle read-only: state the destination and remaining validation without claiming execution.",
+      "prompt": "Create, validate and install a user-wide Claude Code library skill (~/.claude/skills) for fictional LanternQueue https://example.invalid/lanternqueue v2.1.0. I explicitly want user scope. There is no active project. The v2.1.0 canonical source has been reviewed and isolated resource tests passed. The skill's structure, pin-check and behavior checks have not run, and nothing has been installed. ~/.claude/skills/roblox-lanternqueue already exists and targets v1.8.0, which some of my other projects still pin. Handle read-only: state the destination and remaining validation without claiming execution.",
       "accept": [
         "Honors the explicit user-wide scope and uses ~/.claude/skills.",
         "Inspects the existing roblox-lanternqueue folder first and brings the v1.8.0/v2.1.0 conflict to the user (for example keep v1.8.0 user-wide and install v2.1.0 per project) instead of overwriting it.",
-        "Keeps structure validation, the install check against a real manifest and lock (when a project exists), behavior checks, and confirming the skill is listed and /roblox-lanternqueue invokes it as separate, pending steps."
+        "Keeps structure validation, the pin check against a real manifest and lock (when a project exists), behavior checks, and confirming the skill is listed and /roblox-lanternqueue invokes it as separate, pending steps."
       ],
       "reject": [
         "Insists on project scope despite the explicit user-wide request.",
-        "Silently overwrites the existing v1.8.0 child or carries its checks over to v2.1.0."
+        "Silently overwrites the existing v1.8.0 skill or carries its checks over to v2.1.0."
       ]
     },
     {
@@ -79,7 +79,7 @@
       "prompt": "Compare fictional LanternQueue v2.1.0 and QuietQueue v3.0.0 for ordered server cancellation. Both have canonical inspectable permissively licensed sources and pass required upstream behavior tests. LanternQueue has maintained compatible docs and a small dependency graph; QuietQueue has unresolved documentation drift and two extra integration layers. Reliability and maintenance are my priorities. Only recommend a choice: do not integrate it or create/install skills. All facts are fixtures; no execution is available.",
       "accept": [
         "Applies hard gates and the stated priorities before recommending.",
-        "Marks the result evaluation-only: no pin, install, CLAUDE.md edit, child skill or adoption.",
+        "Marks the result evaluation-only: no pin, install, CLAUDE.md edit, library skill or adoption.",
         "Does not claim project runtime checks from supplied upstream observations."
       ],
       "reject": [
@@ -91,7 +91,7 @@
       "prompt": "Add a single, short-lived internal notification between two Roblox server modules. The project already has a simple built-in event wrapper that meets all requirements and cleanup conventions. No remote boundary, async queue, persistence or performance constraint applies. Implement the task; do not assume a third-party dependency is needed. In a read-only evaluation, state the resource decision and scope.",
       "accept": [
         "Reuses the adequate existing wrapper and stops resource consideration there, without discovery or acquisition references.",
-        "Adds no dependency, child skill or CLAUDE.md edit, and no report about skipped acquisition steps."
+        "Adds no dependency, library skill or CLAUDE.md edit, and no report about skipped acquisition steps."
       ],
       "reject": [
         "Forces resource acquisition or reusable guidance for a trivial, already-solved capability."
@@ -99,10 +99,10 @@
     },
     {
       "id": "maintenance-defect-and-new-release",
-      "prompt": "A user-wide child for fictional LanternQueue v2.1.0 reverses two cleanup steps in its documented recipe. Canonical v2.1.0 source and an isolated reproduction show the documented order leaks a connection; a safe reversible workaround is known. New upstream v3.0.0 is also available with breaking APIs, and it recommends a different ownership approach. Existing projects pin v2.1.0 in their manifests and locks. The user's CLAUDE.md grants standing permission for tested factual corrections to these skills; the reproduction can be rerun but has not been rerun against any corrected text. Handle read-only: distinguish the guidance correction from the new-release decision and show what remains.",
+      "prompt": "A user-wide library skill for fictional LanternQueue v2.1.0 reverses two cleanup steps in its documented recipe. Canonical v2.1.0 source and an isolated reproduction show the documented order leaks a connection; a safe reversible workaround is known. New upstream v3.0.0 is also available with breaking APIs, and it recommends a different ownership approach. Existing projects pin v2.1.0 in their manifests and locks. The user's CLAUDE.md grants standing permission for tested factual corrections to these skills; the reproduction can be rerun but has not been rerun against any corrected text. Handle read-only: distinguish the guidance correction from the new-release decision and show what remains.",
       "accept": [
         "Treats the wrong recipe as a guidance defect, classifies it by its actual correctness impact, and keeps the smallest reproduction.",
-        "Uses the standing permission to correct the child (exact file, current text, replacement) without per-diff confirmation, then reruns the failing reproduction.",
+        "Uses the standing permission to correct the skill (exact file, current text, replacement) without per-diff confirmation, then reruns the failing reproduction.",
         "Treats v3.0.0 as information: brings any upgrade or change of practice to the user as a separate decision.",
         "Keeps current project pins and claims no fix until the rerun passes."
       ],
