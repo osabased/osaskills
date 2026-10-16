@@ -1,0 +1,99 @@
+{
+ "id": "t-upgrade",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   5002
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "vide"
+  ],
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-upgrade-new-1/.claude/skills/roblox-resource-acquisition\" && python scripts/check_updates.py 2>&1 | head -40"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Grep",
+   "(?i)upgrade, replace or remove"
+  ],
+  [
+   "Glob",
+   "**/{resource.yaml,versions.json}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-new-1\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "0\\.4\\.1|5ed4c01|release_commit|selector|guard"
+  ],
+  [
+   "Grep",
+   "(?i)vide"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0807396,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14315,
+  "cache_read_input_tokens": 44876,
+  "output_tokens": 1898,
+  "output_tokens_details": {
+   "thinking_tokens": 463
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14315,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 906,
+    "cache_read_input_tokens": 19254,
+    "cache_creation_input_tokens": 4228,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4228
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

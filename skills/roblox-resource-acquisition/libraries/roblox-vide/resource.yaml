@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: vide
@@ -24,7 +24,6 @@ routing:
   - The project pins a different Vide target; keep that pin and find matching guidance.
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -51,17 +50,8 @@ guidance:
     - troubleshooting
     when: diagnosing a Vide error message, leaked UI or analyzer error
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
-    to completion
 installation:
   profile: pesde-git
   dependency_section: dependencies
   target: roblox
   new_structure: true
-  integrity:
-    aggregate:
-      directory: src
-      suffix: .luau
-      sha256: 73ac80a420cb550e9ae20d3f8115d5684409dbba7c3b11db2c7ee666d87fcf65

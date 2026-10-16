@@ -1,4 +1,4 @@
-"""Cloning catalog children into a project's .claude/skills/ and reporting clone state."""
+"""Cloning catalog library skills into a project's .claude/skills/ and reporting clone state."""
 import importlib.util
 import json
 from pathlib import Path
@@ -127,23 +127,49 @@ def test_status_reports_each_catalog_child(tmp_path, catalog):
     project = make_project(tmp_path / "game", "2.0.0")
     assert clones.status(project, catalog) == [{
         "child": "roblox-lemonsignal", "pin": "2.0.0",
-        "declared": {"status": "PASS", "reason": "declared at the catalog pin"}, "clone": "missing"}]
+        "declared": {"status": "PASS", "reason": "pesde.toml and pesde.lock match the pin"}, "clone": "missing"}]
 
 
-def test_session_hook_names_only_clones_the_project_needs(tmp_path):
+def test_status_compares_an_other_pin_clone_with_the_project(tmp_path, catalog):
+    project = make_project(tmp_path / "game", "1.8.0")
+    shutil.copytree(catalog / "roblox-lemonsignal", target(project))
+    set_pin(target(project), "1.9.0")
+    [row] = clones.status(project, catalog)
+    assert row["clone"] == "other-pin" and row["clone_pin"] == "1.9.0"
+    assert row["declared"]["status"] == "FAIL" and row["clone_declared"]["status"] == "FAIL"
+    assert "=1.8.0" in row["clone_declared"]["reason"]
+
+
+@pytest.fixture
+def freshness():
     hook = ROOT.parent.parent / "hooks" / "freshness.py"
     if not hook.exists():
         pytest.skip("not running from the plugin repository")
     spec = importlib.util.spec_from_file_location("freshness", hook)
-    freshness = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(freshness)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_session_hook_names_only_clones_the_project_needs(tmp_path, freshness):
     project = make_project(tmp_path / "game", "2.0.0")
-    note = freshness.clone_note(project)
+    note = freshness.library_note(project)
     assert "- roblox-lemonsignal: the project declares" in note and note.count("\n- ") == 1
     clones.clone("roblox-lemonsignal", project)
-    assert freshness.clone_note(project) == ""
+    assert freshness.library_note(project) == ""
     (target(project) / "SKILL.md").write_text("edited\n", encoding="utf-8")
-    assert "- roblox-lemonsignal: the clone differs" in freshness.clone_note(project)
+    assert "- roblox-lemonsignal: the clone differs" in freshness.library_note(project)
+
+
+def test_session_hook_names_a_clone_the_project_pins_differently(tmp_path, freshness):
+    project = make_project(tmp_path / "game", "1.9.0")
+    assert freshness.library_note(project) == ""
+    shutil.copytree(ROOT / "libraries" / "roblox-lemonsignal", target(project))
+    note = freshness.library_note(project)
+    assert "doesn't match the version these skills target" in note and "keep the project's pin" in note
+    assert "- roblox-lemonsignal (targets 2.0.0): " in note and "=1.9.0" in note
+    set_pin(target(project), "1.8.0")
+    assert "- roblox-lemonsignal (targets 1.8.0): " in freshness.library_note(project)
 
 
 def test_cli_refuses_unknown_children_with_exit_1(tmp_path):

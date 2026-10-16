@@ -1,7 +1,7 @@
-schema_version: 1
+schema_version: 2
 parent_contract:
   name: roblox-resource-acquisition
-  version: 1
+  version: 2
 scope: project
 resource:
   slug: charm
@@ -23,7 +23,6 @@ routing:
   - The project pins a different Charm target; keep that pin and find matching guidance.
 guidance:
   claim_scope: advice-only
-  shared_usage: references/child-usage.md
   documents:
   - path: SKILL.md
     roles:
@@ -49,16 +48,8 @@ guidance:
     - troubleshooting
     when: a value or UI does not update, a Studio-only error, or an effect survives teardown
   executable_fixture: null
-reconciliation:
-  policy: conditional
-  reason: immutable direct declaration/lock identifies ordinary use; defer installed source integrity
-    to completion
 installation:
   profile: pesde-wally
   dependency_section: dependencies
   registry: https://github.com/UpliftGames/wally-index
   target: roblox
-  integrity:
-    files:
-      src/init.luau: ad8d276b54ee32787f9e3a6e165c80ee44aea808294a45a5070bcabddf0bef39
-      src/system.luau: f15e7d4b41729135d5fd12ccd93fe581ebd136598f36dcc908e8ffbe2c174d94

@@ -1,0 +1,83 @@
+{
+ "id": "t-folders",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6142
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-old-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ]
+ ],
+ "denials": [],
+ "result": "Your repo, coin-run, already uses the layout I'd recommend for a new game, so I'd copy it. `default.project.json` maps it like this:\n\n```text\nReplicatedStorage/\n  Shared/      modules both sides run (types, constants, Signal, pure logic)\n  Client/      client-only code (init.client.luau entrypoint, UI/, State/)\n  Packages/    pesde packages (roblox_packages)\nServerScriptService/\n  Server/      init.server.luau entrypoint, plus feature modules (Round, Coins)\nServerStorage/ (add when needed)\n  Assets/      server-only templates and assets\n```\n\n**Rules behind it**\n- **Server code goes in `ServerScriptService`.** That covers DataStores, purchases, validation and round state. Put server-only assets and templates in `ServerStorage`.\n- **Everything in `ReplicatedStorage` is readable by clients, including module source.** Never put secrets or authoritative logic there.\n- **Use one entrypoint per side.** `src/server/init.server.luau` starts the server and `src/client/init.client.luau` starts the client. Each one explicitly requires the feature modules, so startup order is easy to find.\n- **`emitLegacyScripts: false` is why the client entrypoint works from `ReplicatedStorage`.** Rojo builds `init.client.luau` as a `Script` with `RunContext = Client`. With Rojo's default settings it would be a `LocalScript`, which never runs there.\n- **Keep Remotes in `ReplicatedStorage/Remotes`** or let a networking library create them. The server should check the type, range, ownership and rate of every client payload.\n- **Use `ReplicatedFirst` only for loading-screen code.**\n\n**Grouping inside each side**\n- Start with a flat list of modules per side, as you have now.\n- Once you have several gameplay systems, switch to feature folders: `Server/Combat`, `Client/Combat` and `Shared/Combat`.\n- Pick one pattern and stay with it.\n\n**Questions for you**\n1. Is this a separate new game or a new feature in coin-run? If it's separate, I can scaffold the same structure, with `check.sh` and guards, in a fresh project.\n2. Do you want me to add `ServerStorage/Assets` and a `Remotes` mapping to `default.project.json` now, or wait until you have something to put in them? I'd wait.\n\nI didn't run the skill's update check (`check_updates.py`), so I don't know if any tool has a newer release.",
+ "cost": 0.07221620000000001,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13059,
+  "cache_read_input_tokens": 44682,
+  "output_tokens": 1550,
+  "output_tokens_details": {
+   "thinking_tokens": 345
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13059,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1008,
+    "cache_read_input_tokens": 19186,
+    "cache_creation_input_tokens": 3040,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3040
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

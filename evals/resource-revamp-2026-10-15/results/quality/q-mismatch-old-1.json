@@ -1,0 +1,108 @@
+{
+ "id": "q-mismatch",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "Use Janitor in src/server/Round.luau so each round's coin part and its connections are cleaned up when the round ends.",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Read",
+   "<runs>\\q-mismatch-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Grep",
+   "Janitor"
+  ],
+  [
+   "Glob",
+   "*.{toml,json,lock}"
+  ],
+  [
+   "Bash",
+   "cat default.project.json; grep -rn \"Packages\" src --include=*.luau | head"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-mismatch-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\q-mismatch-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh 2>&1 | tail -30"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ],
+  [
+   "Bash",
+   "python scripts/check_guards.py"
+  ]
+ ],
+ "denials": [
+  [
+   "Bash",
+   "bash scripts/check.sh 2>&1 | tail -30"
+  ],
+  [
+   "Bash",
+   "bash scripts/check.sh"
+  ]
+ ],
+ "result": "`src/server/Round.luau` now uses a Janitor per round. It owns the coin part, the `Heartbeat` spin connection and the `Touched` connection, and `janitor:Destroy()` cleans all three when the round ends. The new `require` is `ReplicatedStorage.Packages.Janitor`.\n\n`python scripts/check_guards.py` ran with no output. I couldn't run `bash scripts/check.sh` because it needs approval I didn't get, so the full check hasn't run. I haven't tested it in Studio either.\n\n- **Version mismatch:** the `roblox-janitor` skill targets Janitor 1.18.3, but the project pins `=1.17.0` in `pesde.toml`. I kept the project's pin. The calls I used (`new`, `Add`, `Destroy`) exist in both versions as far as I know, but I haven't confirmed this against the 1.17.0 source.\n- **`task.wait` errors:** if `task.wait` errors, the janitor isn't destroyed. That's the same as the old code, so I left it.",
+ "cost": 0.0875474,
+ "turns": 12,
+ "usage": {
+  "input_tokens": 14,
+  "cache_creation_input_tokens": 12879,
+  "cache_read_input_tokens": 142134,
+  "output_tokens": 2179,
+  "output_tokens_details": {
+   "thinking_tokens": 235
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12879,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 350,
+    "cache_read_input_tokens": 23829,
+    "cache_creation_input_tokens": 125,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 125
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {
+  "src/server/Round.luau": "--!strict\nlocal Players = game:GetService(\"Players\")\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal RunService = game:GetService(\"RunService\")\n\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\n\nlocal Coins = require(script.Parent.Coins)\n\nlocal Round = {}\n\nfunction Round.play(duration: number)\n\tlocal janitor = Janitor.new()\n\n\tlocal coin = janitor:Add(Instance.new(\"Part\"))\n\tcoin.Name = \"Coin\"\n\tcoin.Anchored = true\n\tcoin.Size = Vector3.new(2, 2, 2)\n\tcoin.Position = Vector3.new(0, 5, 0)\n\tcoin.Parent = workspace\n\n\tjanitor:Add(RunService.Heartbeat:Connect(function(dt)\n\t\tcoin.CFrame *= CFrame.Angles(0, dt * 2, 0)\n\tend))\n\n\tjanitor:Add(coin.Touched:Connect(function(hit)\n\t\tlocal player = Players:GetPlayerFromCharacter(hit.Parent)\n\t\tif player then\n\t\t\tCoins.add(player, 1)\n\t\tend\n\tend))\n\n\ttask.wait(duration)\n\n\tjanitor:Destroy()\nend\n\nreturn Round\n"
+ },
+ "verdict": "-"
+}

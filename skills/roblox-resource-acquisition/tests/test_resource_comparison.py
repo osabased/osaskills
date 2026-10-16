@@ -60,7 +60,7 @@ def test_comparison_case_definitions_are_well_formed():
 
 
 def test_hard_gates_come_before_comparison():
-    assert RUBRIC.index("## 5. Apply the hard gates") < RUBRIC.index("## 6. Compare and decide")
-    gates = RUBRIC.split("## 5. Apply the hard gates", 1)[1].split("## 6. Compare and decide", 1)[0]
+    assert RUBRIC.index("## Hard gates") < RUBRIC.index("## Compare and decide")
+    gates = RUBRIC.split("## Hard gates", 1)[1].split("## Compare and decide", 1)[0]
     for name in ("Fit", "Evaluability", "Compatibility", "Safety", "License", "Proof"):
         assert f"- **{name}:**" in gates

@@ -9,7 +9,9 @@ Pinned target: `7.7.0` (source reviewed 2026-09-30). [resource.yaml](resource.ex
 
 ## Check the pin
 
-The project's tool lock (for example `tool-lock.json`, `rokit.toml` or `aftman.toml`) should pin Rojo 7.7.0. `scripts/check_build.py` checks the executable's identity, version and hash against that lock before it runs anything; the shared checker reports this custom profile unavailable and never runs it. If the `roblox-resource-acquisition` skill is available, load it and also run the record query its `references/child-usage.md` describes. If the parent, Python or a project record is unavailable, run `rojo --version` and read the lock directly, and say which checks were skipped. Stop only on a `FAIL`, `MISMATCH`, `BLOCKED` or `FAILED` result, an observed mismatch, or an explicit block.
+The project's tool lock (for example `tool-lock.json`, `rokit.toml` or `aftman.toml`) pins `rojo-rbx/rojo` at `7.7.0`, and `rojo --version` prints `Rojo 7.7.0`. `scripts/check_build.py` checks the executable's identity, version and hash against that lock before it runs anything.
+
+If they show another version, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't use Rojo, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; a build is not a runtime test.
 
 ## Core API
 

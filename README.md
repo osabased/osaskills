@@ -57,7 +57,7 @@ Each library skill is an API guide for one pinned version: core API table, examp
 | [roblox-blink](./skills/roblox-resource-acquisition/libraries/roblox-blink/) | Blink (networking IDL compiler) | 0.18.9 |
 | [roblox-nevermore-ui](./skills/roblox-resource-acquisition/libraries/roblox-nevermore-ui/) | Nevermore Blend, Rx, Brio | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
-Use the guide only when your project pins the same version. Cloning a guide doesn't install the library or change your project's pins. The [bundled catalogue](./skills/roblox-resource-acquisition/references/bundled-skills.md) has the selection rules.
+Use the guide only when your project pins the same version. Cloning a guide doesn't install the library or change your project's pins. Each guide's "Check the pin" section names the manifest entry and lock key it expects, and [library skills](./skills/roblox-resource-acquisition/references/library-skills.md) covers cloning them and comparing their pins with a project.
 
 Agent-facing project files live in the project's agent directory: `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. The Roblox project guide goes in `<agent dir>/roblox/project.md` and VOD project notes in `<agent dir>/vod/project-context.md`. Adopted Roblox resources are listed in a marked block in the project's `CLAUDE.md`; their pins stay in the project's manifests and locks.
 
@@ -76,7 +76,7 @@ The plugin has no fixed version, so each commit is a new version. Turn on auto-u
 Instruction-only skills need no setup. The Roblox resource checkers need Python 3.11+ and PyYAML. With [uv](https://docs.astral.sh/uv/) you don't need to install anything first:
 
 ```sh
-uv run --no-project --python ">=3.11" --with pyyaml python .claude/skills/roblox-resource-acquisition/scripts/check_resource_install.py --help
+uv run --no-project --python ">=3.11" --with pyyaml python .claude/skills/roblox-resource-acquisition/scripts/clone_children.py --help
 ```
 
 Adjust the path to where the skill is installed. `vod-discovery` has its own environment; see its [setup guide](./skills/vod-discovery/references/setup.md).
@@ -101,4 +101,4 @@ for t in skills/vod-discovery/tests/test_*.js; do node "$t"; done
 claude plugin validate .
 ```
 
-The real-Rojo tests skip when `rojo` can't run (not on `PATH`, or a Rokit shim outside a Rokit project), and a skipped test is not real-build coverage. CI runs the test suites above, with Rojo 7.7.1 installed. None of these checks measure how well a skill triggers or how an agent performs with it; for that, see [`evals/`](./evals/) and the [resource-comparison guide](./skills/roblox-resource-acquisition/evals/README.md). The [2026-10-11 Sonnet with/without comparison](./evals/sonnet-ab-2026-10-11/README.md) measures triggering and answer quality with the current skills. The [2026-10-11 audit](./evals/rra-slim-2026-10-11/README.md) records the slimming of the two Roblox workflow skills and an old-versus-new comparison. The [plugin triggering check](./evals/plugin-trigger-2026-10-11/README.md) repeats the triggering test with the installed plugin, including that the user-only skills stay out of automatic use. The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) is a historical snapshot that predates the Claude port and uses the old skill names.
+The real-Rojo tests skip when `rojo` can't run (not on `PATH`, or a Rokit shim outside a Rokit project), and a skipped test is not real-build coverage. CI runs the test suites above, with Rojo 7.7.1 installed. None of these checks measure how well a skill triggers or how an agent performs with it; for that, see [`evals/`](./evals/) and the [resource-comparison guide](./skills/roblox-resource-acquisition/evals/README.md). The [2026-10-15 structure revamp](./evals/structure-revamp-2026-10-15/README.md) and [resource-acquisition revamp](./evals/resource-revamp-2026-10-15/README.md) evals compare each skill's old and new versions. The [2026-10-11 Sonnet with/without comparison](./evals/sonnet-ab-2026-10-11/README.md) measures triggering and answer quality with the current skills. The [2026-10-11 audit](./evals/rra-slim-2026-10-11/README.md) records the slimming of the two Roblox workflow skills and an old-versus-new comparison. The [plugin triggering check](./evals/plugin-trigger-2026-10-11/README.md) repeats the triggering test with the installed plugin, including that the user-only skills stay out of automatic use. The [2026-10-06 simplification review](./evals/skill-simplification-2026-10-06/README.md) is a historical snapshot that predates the Claude port and uses the old skill names.

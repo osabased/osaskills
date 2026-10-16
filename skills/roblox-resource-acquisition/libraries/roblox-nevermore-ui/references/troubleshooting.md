@@ -3,7 +3,7 @@
 | Symptom | Check and fix |
 | --- | --- |
 | Nothing appears | `Blend.New` was never subscribed. Call `:Subscribe()` and keep the subscription. |
-| The parent's declaration or integrity check fails | Inspect `package.json`, the lock's direct entries, the npm aliases, the archive URL and integrity, and the actual package folder. Restore through the project's preparation command. Never upgrade a pin or edit `node_modules` to make the check pass. |
+| The pin check fails | Inspect `package.json`, the lock's direct entries, the npm aliases, the archive URL and integrity, and the actual package folder. Restore through the project's preparation command. Never upgrade a pin or edit `node_modules` to make the check pass. |
 | `script.Parent.loader` is missing, or a named package can't be found | Require the shared adapter, not raw `Blend.lua`. Bootstrapping belongs to the root owner. Check the mapped package topology ([setup](setup.md)). |
 | Server-only packages are visible on a Studio client | The Studio fast path is active. Keep `skipStudioFastPath = true`, and test replication in both Studio and a live-like run before claiming it works. |
 | Duplicate UI or callbacks after a remount | Subscriptions, states or loaders aren't owned. Give each mount its own subscriptions and state; borrow the shared infrastructure. Tear down producers before consumers, and keep feature teardown safe to repeat. |
@@ -17,4 +17,4 @@
 
 ## Verifying a claim
 
-Run the declaration and installed-integrity checks against the actual project, then the project's own analysis, adapter, mapping and build checks (the reviewed project used `scripts/check.ps1`). Mount, update and unmount behavior, rendering, input, replication, late emissions and Output diagnostics all need a run in Studio. Source review and checker fixtures don't exercise them.
+Check the pin against the actual project, then the project's own analysis, adapter, mapping and build checks (the reviewed project used `scripts/check.ps1`). Mount, update and unmount behavior, rendering, input, replication, late emissions and Output diagnostics all need a run in Studio. Source review and checker fixtures don't exercise them.

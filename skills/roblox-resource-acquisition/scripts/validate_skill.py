@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate child contract 1, composed guidance and local links; no runtime claim."""
+"""Validate a library skill: contract 2, its pin check, guidance and local links; no runtime claim."""
 from __future__ import annotations
 
 import argparse
@@ -96,6 +96,11 @@ def local_links(root: Path, source: Path, text: str) -> list[tuple[Path, str]]:
     return links
 
 
+def section(body: str, heading: str) -> str:
+    match = re.search(rf"^{re.escape(heading)}[ \t]*$(.*?)(?=^## |\Z)", body, re.M | re.S)
+    return match.group(1) if match else ""
+
+
 def validate_skill(root: Path) -> tuple[list[str], list[str]]:
     root = root.resolve()
     errors, warnings = [], []
@@ -139,7 +144,7 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
         while pending:
             source = pending.pop()
             content = source.read_text(encoding="utf-8-sig")
-            if re.search(r"\b(?:TBD|TODO|RESOURCE-SLUG|VERSION/COMMIT/STATE|SELECTOR-VALUE|SOURCE-GROUNDED-CALL|CONCRETE-TRIGGERS-WITH-API-AND-FILE-NAMES|PIN-SPECIFIC-BEHAVIOR)\b|^\s*[-*]?\s*\.\.\.\s*$", content, re.M):
+            if re.search(r"\b(?:TBD|TODO|RESOURCE-SLUG|VERSION/COMMIT/STATE|SELECTOR-VALUE|SOURCE-GROUNDED-CALL|CONCRETE-TRIGGERS-WITH-API-AND-FILE-NAMES|PIN-SPECIFIC-BEHAVIOR|MANIFEST-ENTRY|LOCK-KEY)\b|^\s*[-*]?\s*\.\.\.\s*$", content, re.M):
                 errors.append(f"unfinished scaffold in {source.relative_to(root)}")
             for target, _ in local_links(root, source, content):
                 if target.suffix == ".md":
@@ -152,8 +157,11 @@ def validate_skill(root: Path) -> tuple[list[str], list[str]]:
             errors.append(f"declared guidance is unreachable from SKILL.md: {target.relative_to(root)}")
         if "resource.yaml" not in unfenced(body):
             errors.append("entrypoint must route to resource.yaml")
-        if "child-usage.md" not in unfenced(body):
-            errors.append("entrypoint must route to the parent's references/child-usage.md")
+        pin_check = section(body, "## Check the pin")
+        selector, install = contract["resource"]["selector"], contract["installation"]
+        for value in (selector["value"], selector.get("tree"), install.get("asset_sha256")):
+            if value and value not in pin_check:
+                errors.append(f"the Check the pin section must state the pinned value {value}")
         if not re.search(r"^#\s+\S", unfenced(body), re.M):
             errors.append("missing resource name as a level-1 heading")
         headings = {line.strip() for line in unfenced(body).splitlines() if line.startswith("## ")}
@@ -177,7 +185,7 @@ def main(argv: list[str] | None = None) -> int:
         for error in errors:
             print("- " + error)
         return 1
-    print("PASS: structural generated-skill checks passed (resource-child contract 1)")
+    print("PASS: structural generated-skill checks passed (resource.yaml contract 2)")
     print("NOTE: structural checks do not prove instructions, runtime behavior, or host routing")
     return 0
 

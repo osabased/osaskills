@@ -9,7 +9,12 @@ Pinned target: `2.0.0` (source reviewed 2026-10-03). [resource.yaml](resource.ya
 
 ## Check the pin
 
-If the project pins LemonSignal, confirm it matches the target. If the `roblox-resource-acquisition` skill is available, load it and run the checks its `references/child-usage.md` describes. If the parent or Python is unavailable, read the project's manifest/lock directly and say which checks were skipped. On a `FAIL` result or an observed mismatch, tell the user and keep the project's pin; continue with API you can confirm at the project's version, and stop only where the task depends on version-specific behavior. Stop on a blocked use noted in the project's `CLAUDE.md`.
+Before relying on version-specific guidance, read the project's manifest and lock:
+
+- `pesde.toml` declares `{ wally = "data-oriented-house/lemonsignal", version = "=2.0.0" }` (under any alias), and `pesde.lock` resolves it to `wally#data-oriented-house/lemonsignal@2.0.0 roblox`.
+- In a Wally project, `wally.toml` declares `"data-oriented-house/lemonsignal@=2.0.0"`, or a range that `wally.lock` resolves to `2.0.0`.
+
+If they show another version, tell the user, keep the project's pin, use only API you can confirm at that version, and stop where the task depends on behavior that may differ. If the user wants this skill's version instead, upgrade through the `roblox-resource-acquisition` skill. If the project doesn't declare LemonSignal, this skill is advice only. Stop on a blocked use noted in the project's `CLAUDE.md`. Say what you checked; reading the manifest is not a runtime test.
 
 ## Core API
 
@@ -62,3 +67,4 @@ heartbeat:Destroy() -- drops listeners and the native connection
 - Wait/cancellation patterns, wrapping engine signals, ownership and the thread pool: read [API and lifecycle](references/api-and-lifecycle.md).
 - Installing, restoring or mapping the package: read [setup](references/setup.md).
 - Unexpected arguments, a stuck `Wait`, or events that keep firing: read [troubleshooting](references/troubleshooting.md).
+- Wrong or missing guidance at this pin: report it with the smallest reproduction and the exact proposed fix. Fix it in the `roblox-resource-acquisition` catalog, not here, because re-cloning overwrites local edits.

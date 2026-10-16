@@ -1,16 +1,12 @@
-"""Wally projects (wally.toml, wally.lock, Packages/_Index) and advisory results."""
-import hashlib
-import json
-
+"""Wally projects (wally.toml, wally.lock) compared with a skill's pin."""
 import pytest
 import yaml
 
 import fixtures
-import check_resource_install as install
+import _pins as pins
 import _resource_contract as contract
 
 REGISTRY = "https://github.com/UpliftGames/wally-index"
-SOURCE = b"return { new = function() end }\n"
 
 
 def make_child(tmp_path, profile="pesde-wally", section=None, companions=None):
@@ -19,8 +15,7 @@ def make_child(tmp_path, profile="pesde-wally", section=None, companions=None):
     (child / "SKILL.md").write_text(fixtures.valid_skill_text(), encoding="utf-8")
     data = fixtures.write_contract(child)
     data["resource"]["package_id"] = "example/widget"
-    data["installation"] = {"profile": profile, "dependency_section": section or "dependencies",
-        "registry": REGISTRY, "integrity": {"files": {"src/init.luau": hashlib.sha256(SOURCE).hexdigest()}}}
+    data["installation"] = {"profile": profile, "dependency_section": section or "dependencies", "registry": REGISTRY}
     if profile == "pesde-wally":
         data["installation"]["target"] = "roblox"
     if companions:
@@ -30,8 +25,8 @@ def make_child(tmp_path, profile="pesde-wally", section=None, companions=None):
 
 
 def make_project(tmp_path, *, requirement="example/widget@1.2.3", locked="1.2.3", section="dependencies",
-                 extra_packages="", root_extra=""):
-    project = tmp_path / "game"
+                 extra_packages="", root_extra="", name="game"):
+    project = tmp_path / name
     project.mkdir()
     (project / "wally.toml").write_text(
         f'[package]\nname = "me/game"\nversion = "0.1.0"\nregistry = "{REGISTRY}"\nrealm = "shared"\n\n'
@@ -41,95 +36,74 @@ def make_project(tmp_path, *, requirement="example/widget@1.2.3", locked="1.2.3"
         f'[[package]]\nname = "example/widget"\nversion = "{locked}"\ndependencies = [{root_extra}]\n\n'
         f'[[package]]\nname = "me/game"\nversion = "0.1.0"\ndependencies = [["Widget", "example/widget@{locked}"]]\n'
         + extra_packages, encoding="utf-8")
-    folder = {"dependencies": "Packages", "server-dependencies": "ServerPackages", "dev-dependencies": "DevPackages"}[section]
-    package = project / folder / "_Index" / f"example_widget@{locked}" / "widget"
-    (package / "src").mkdir(parents=True)
-    (package / "wally.toml").write_text(f'[package]\nname = "example/widget"\nversion = "{locked}"\n', encoding="utf-8")
-    (package / "src" / "init.luau").write_bytes(SOURCE)
-    return project, package
+    return project
 
 
 def test_pesde_wally_child_checks_a_plain_wally_project(tmp_path):
     child = make_child(tmp_path)
-    project, package = make_project(tmp_path)
-    declared = install.check(child, project, declared_only=True)
-    assert declared["status"] == "PASS" and declared["manager"] == "wally" and declared["alias"] == "Widget"
-    assert "range" in declared["notes"][0]
-    result = install.check(child, project)
-    assert result["lane"] == "installed-integrity"
-    assert result["package_dir"] == str(package.resolve())
-    (package / "src" / "init.luau").write_text("return 'changed'\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="digest differs"):
-        install.check(child, project)
+    project = make_project(tmp_path)
+    result = pins.check(child, project)
+    assert result["status"] == "PASS"
+    assert result["reason"].startswith("wally.toml and wally.lock match the pin; ") and "a range" in result["reason"]
 
 
-def test_wally_profile_server_section_and_exact_pin(tmp_path, capsys):
+def test_wally_profile_server_section_and_exact_pin(tmp_path):
     child = make_child(tmp_path, profile="wally", section="server-dependencies")
     assert contract.load_contract(child)["installation"]["profile"] == "wally"
-    project, _ = make_project(tmp_path, requirement="example/widget@=1.2.3", section="server-dependencies")
-    result = install.check(child, project)
-    assert result["status"] == "PASS" and "notes" not in result
-    assert install.main([str(child), "--project", str(project)]) == 0
-    assert json.loads(capsys.readouterr().out)["status"] == "PASS"
+    project = make_project(tmp_path, requirement="example/widget@=1.2.3", section="server-dependencies")
+    assert pins.check(child, project) == {"status": "PASS", "reason": "wally.toml and wally.lock match the pin"}
 
 
 @pytest.mark.parametrize("requirement,locked,message", [
-    ("example/widget@=1.3.0", "1.3.0", "pins =1.3.0"),
+    ("example/widget@=1.3.0", "1.3.0", "pins example/widget to =1.3.0"),
     ("example/widget@1.2.3", "1.4.0", "resolves example/widget to 1.4.0"),
 ])
-def test_observed_wally_mismatch_fails(tmp_path, capsys, requirement, locked, message):
+def test_observed_wally_mismatch_fails(tmp_path, requirement, locked, message):
     child = make_child(tmp_path)
-    project, _ = make_project(tmp_path, requirement=requirement, locked=locked)
-    with pytest.raises(ValueError, match=message):
-        install.check(child, project, declared_only=True)
-    assert install.main([str(child), "--project", str(project), "--declared"]) == 1
-    assert json.loads(capsys.readouterr().out)["status"] == "FAIL"
+    project = make_project(tmp_path, requirement=requirement, locked=locked)
+    result = pins.check(child, project)
+    assert result["status"] == "FAIL" and message in result["reason"]
 
 
-def test_undeclared_or_unsupported_project_is_advisory(tmp_path, capsys):
+def test_lock_bound_to_a_fork_fails(tmp_path):
     child = make_child(tmp_path)
-    project, _ = make_project(tmp_path, requirement="other/thing@1.0.0")
-    assert install.main([str(child), "--project", str(project), "--declared"]) == 2
-    result = json.loads(capsys.readouterr().out)
-    assert result["status"] == "UNAVAILABLE" and result["advisory"] is True
-    assert "does not pin it" in result["reason"]
+    project = make_project(tmp_path)
+    lock = project / "wally.lock"
+    lock.write_text(lock.read_text(encoding="utf-8").replace('["Widget", "example/widget@1.2.3"]', '["Widget", "otherorg/widget@1.2.3"]'), encoding="utf-8")
+    result = pins.check(child, project)
+    assert result["status"] == "FAIL" and "binds Widget to otherorg/widget" in result["reason"]
+
+
+def test_undeclared_or_unsupported_project_is_unavailable(tmp_path):
+    child = make_child(tmp_path)
+    project = make_project(tmp_path, requirement="other/thing@1.0.0")
+    result = pins.check(child, project)
+    assert result["status"] == "UNAVAILABLE" and "the project doesn't pin it" in result["reason"]
     empty = tmp_path / "empty"
     empty.mkdir()
-    assert install.main([str(child), "--project", str(empty), "--declared"]) == 2
-    result = json.loads(capsys.readouterr().out)
+    result = pins.check(child, empty)
     assert result["status"] == "UNAVAILABLE" and "pesde.toml" in result["reason"]
 
 
-def test_uninstalled_wally_packages_are_advisory_not_a_mismatch(tmp_path, capsys):
+def test_malformed_lock_is_a_mismatch(tmp_path):
     child = make_child(tmp_path)
-    project, package = make_project(tmp_path)
-    import shutil
-    shutil.rmtree(project / "Packages")
-    assert install.main([str(child), "--project", str(project)]) == 2
-    assert "installed source not found" in json.loads(capsys.readouterr().out)["reason"]
+    project = make_project(tmp_path)
+    (project / "wally.lock").write_text("not = [valid", encoding="utf-8")
+    assert pins.check(child, project)["status"] == "FAIL"
 
 
 def test_wally_registry_and_companion_edges(tmp_path):
     companion = {"package_id": "example/helper", "version": "2.0.0", "registry": REGISTRY,
-        "parent_package": "example/widget", "edge_alias": "Helper",
-        "integrity": {"files": {"init.luau": hashlib.sha256(b"return 1\n").hexdigest()}}}
+        "parent_package": "example/widget", "edge_alias": "Helper"}
     child = make_child(tmp_path, companions=[companion])
-    project, _ = make_project(tmp_path)
-    with pytest.raises(ValueError, match="companion"):
-        install.check(child, project, declared_only=True)
-    (project / "wally.lock").unlink()
-    (project / "wally.toml").unlink()
-    import shutil
-    shutil.rmtree(project)
-    project, _ = make_project(
-        tmp_path, root_extra='["Helper", "example/helper@2.0.0"]',
+    project = make_project(tmp_path)
+    result = pins.check(child, project)
+    assert result["status"] == "FAIL" and "example/helper@2.0.0" in result["reason"]
+    project = make_project(
+        tmp_path, name="linked", root_extra='["Helper", "example/helper@2.0.0"]',
         extra_packages='\n[[package]]\nname = "example/helper"\nversion = "2.0.0"\ndependencies = []\n')
-    helper = project / "Packages" / "_Index" / "example_helper@2.0.0" / "helper"
-    helper.mkdir(parents=True)
-    (helper / "wally.toml").write_text('[package]\nname = "example/helper"\nversion = "2.0.0"\n', encoding="utf-8")
-    (helper / "init.luau").write_bytes(b"return 1\n")
-    assert install.check(child, project)["lane"] == "installed-integrity"
+    assert pins.check(child, project)["status"] == "PASS"
     manifest = (project / "wally.toml").read_text(encoding="utf-8")
     (project / "wally.toml").write_text(manifest.replace(REGISTRY, "https://example.com/impostor-index"), encoding="utf-8")
-    with pytest.raises(ValueError, match="registry differs"):
-        install.check(child, project, declared_only=True)
+    result = pins.check(child, project)
+    assert result["status"] == "FAIL" and "another registry" in result["reason"]

@@ -1,0 +1,87 @@
+{
+ "id": "t-folders",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6142
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-new-1\\default.project.json"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-folders-new-1\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's the layout I'd start from. It follows Roblox's current guidance, and your coin-run project already matches most of it.\n\n```text\nReplicatedStorage/\n  Client/            Script (RunContext = Client) plus client-only modules: UI, input, camera\n  Shared/            types, constants, pure logic both sides run\n  Remotes/           RemoteEvents (or let a networking library create them)\n  Packages/          third-party packages\nServerScriptService/\n  Server/            Script (RunContext = Server) plus server-only modules\nServerStorage/\n  Assets/            server-only templates and assets\nReplicatedFirst/     only the loading-screen subset, if you have one\n```\n\n**Rules that matter**\n- **Anything in `ReplicatedStorage` is readable by clients, source included.** Authoritative state, DataStores, purchases and validation go in `ServerScriptService` or `ServerStorage`.\n- **Use one entrypoint per side.** There's one server `Script` and one client `Script`, and each requires its feature modules explicitly. Add separate `Init` and `Start` phases only if startup order actually matters.\n- **Client entrypoints belong in `ReplicatedStorage`.** Use a `Script` with `RunContext = Client` there. A `LocalScript` placed in `ReplicatedStorage` never runs.\n- **Treat every client-to-server Remote as attack surface.** The server checks type, range, ownership and rate on each call.\n- **Module state is per environment.** The server and each client get their own copy of a ModuleScript, so state is never shared between them.\n- **Group by feature once the game has several systems.** For example, `Server/Combat`, `Client/Combat` and `Shared/Combat`. For a small game, a flat list per side is simpler.\n- **Keep the filesystem as the source of truth.** Rojo (or Script Sync) is easier for you and for me to read, diff and check than anything that lives only in Studio. Don't run two sync systems on the same content.\n\n**How coin-run compares:** `default.project.json` maps `src/shared`, `src/client` and `src/server` to `ReplicatedStorage.Shared`, `ReplicatedStorage.Client` and `ServerScriptService.Server`. It also sets `\"emitLegacyScripts\": false`, which is what makes `init.client.luau` run from `ReplicatedStorage`. The only things missing are `ServerStorage` and a `Remotes` folder, and you can add those when you need them.\n\nI couldn't run the skill's update check because the Bash tool is disabled in this session.\n\nIf you meant a separate new game rather than coin-run, tell me about its size and whether you'll use Rojo or Studio only. I can tailor the layout from that.",
+ "cost": 0.0757607,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13358,
+  "cache_read_input_tokens": 45167,
+  "output_tokens": 1780,
+  "output_tokens_details": {
+   "thinking_tokens": 373
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13358,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1135,
+    "cache_read_input_tokens": 19547,
+    "cache_creation_input_tokens": 2978,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2978
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

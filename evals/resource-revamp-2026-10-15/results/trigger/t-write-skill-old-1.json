@@ -1,0 +1,85 @@
+{
+ "id": "t-write-skill",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/child-authoring.md",
+   10373
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   ".claude/skills/**/*"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Glob",
+   "*.{toml,json,lock,sh,py}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\child-authoring.md"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-old-1\\pesde.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't written anything yet. A few answers will change what I write.\n\n**What I understand:** you want a Claude skill for Fusion (dphfox/Fusion, the Roblox reactive UI library) that tells agents which APIs to use and how. It should follow the structure `roblox-resource-acquisition` prescribes for library skills: `SKILL.md`, `resource.yaml` and references.\n\nFusion isn't in this project. `pesde.toml` pins Vide, Charm and Janitor, and the project's `CLAUDE.md` names Vide for UI rendering. The existing skills only cover those three. Fusion also has no catalog skill to clone, so I'd write it from scratch.\n\n**Questions** (recommended option first):\n\n1. **Version pin.** Which Fusion version should the skill target? I recommend **0.3.x**, the current line. It uses `scope:New`, `scope:Value` and `doCleanup`, and it differs a lot from 0.2's `New`/`Value` globals, so agents mix the two up. The alternative is 0.2.x, if you have code on it.\n2. **Where it should live.** I recommend **this project's `.claude/skills/roblox-fusion/`**. The other choices are `~/.claude/skills/` for all your projects, or a catalog contribution to `osabased/osaskills`.\n3. **Relationship to Vide.** I recommend that the skill state that this project renders UI with Vide, and that Fusion is for other projects or a migration. Agents then won't add Fusion here by mistake. If you are moving this project to Fusion, tell me. The skill, `CLAUDE.md` and `pesde.toml` would then all need to change.\n4. **Source access.** I can't fetch the Fusion repo in this session, because I have no web tool. That leaves two options:\n   - **(a)** You give me a local clone or the docs, and I ground the API table in the pinned source, as the authoring guide requires.\n   - **(b)** I write it from memory and mark it `advice-only`. The API table would be unverified, and I'd say so in the skill and in my summary.\n\n   I recommend **(a)**. The authoring guide forbids inventing APIs, and Fusion's API changed a lot between versions.\n\nI'd also leave out scripts and a fixture. The skill would be `advice-only`, and I'd run `validate_skill.py` on it.",
+ "cost": 0.0892847,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16893,
+  "cache_read_input_tokens": 47007,
+  "output_tokens": 1700,
+  "output_tokens_details": {
+   "thinking_tokens": 308
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16893,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 961,
+    "cache_read_input_tokens": 21503,
+    "cache_creation_input_tokens": 4557,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4557
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}

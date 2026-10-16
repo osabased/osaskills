@@ -1,0 +1,55 @@
+{
+ "id": "t-luau-types",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "explain Luau type refinement with typeof checks",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "In Luau, refinement means the type checker narrows a variable's type inside a branch, based on a condition it recognizes.\n\n## The basics\n\n```lua\nlocal function describe(value: string | number | nil)\n    if typeof(value) == \"string\" then\n        return value:upper()      -- value: string\n    elseif typeof(value) == \"number\" then\n        return value + 1          -- value: number\n    end\n    return \"nothing\"              -- value: nil\nend\n```\n\n- In the true branch, the type narrows to the matching member of the union.\n- In the false branch, that member is removed. After the `string` and `number` checks fail, only `nil` is left.\n- `type(x) == \"...\"` refines the same way. `typeof` also covers Roblox datatypes, such as `\"Vector3\"`, `\"CFrame\"` and `\"Instance\"`.\n\n## Most useful with `unknown`\n\n`unknown` accepts any value but allows no operations until you refine it. This is the right type for untrusted input such as remote arguments, `pcall` results and decoded JSON.\n\n```lua\nlocal function onRemote(player: Player, amount: unknown)\n    if typeof(amount) ~= \"number\" then\n        return              -- early exit narrows everything below\n    end\n    print(amount + 1)       -- amount: number\nend\n```\n\nEarly returns work the same way. Once you `return` or `error` on the bad case, the rest of the function sees the narrowed type.\n\n## Other forms that refine\n\n```lua\nif x then ... end                  -- removes nil and false\nif x ~= nil then ... end           -- removes nil\nif typeof(x) == \"table\" then ...   -- table (fields still unknown)\nassert(typeof(x) == \"string\")      -- refines for the code after the assert\n```\n\n`and`/`or` compose these:\n\n```lua\nlocal ok = typeof(v) == \"number\" and v > 0   -- v is a number on the right side\n```\n\n## Limitations\n\n- **Roblox classes:** `typeof(x) == \"Instance\"` only tells you it's some Instance. To narrow to a specific class, use `x:IsA(\"BasePart\")`, which refines in recent Luau. Otherwise cast with `::`.\n- **No user-defined predicates:** if you move the check into a helper like `isString(x)`, the caller gets no refinement. Inline the check, or return the narrowed value from the helper.\n- **Mutation invalidates refinement:** reassigning the variable resets it. Refined table fields (`typeof(t.x) == \"number\"`) can also be invalidated by calls in between. Copy into a local first:\n  ```lua\n  local n = t.x\n  if typeof(n) == \"number\" then ... end\n  ```\n- **Closures:** refinement of a mutable upvalue doesn't carry into a function defined later. Capture a local copy instead.\n- **Strings are not literal types:** `typeof(x) == \"string\"` gives you `string`. To narrow among singleton types (`\"a\" | \"b\"`), compare with `==` directly.\n\n## Rule of thumb\n\nType inputs as `unknown`, refine with `typeof` at the boundary, and return early on failure. After that, the rest of the function is fully typed with no casts.",
+ "cost": 0.0466307,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7285,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1657,
+  "output_tokens_details": {
+   "thinking_tokens": 631
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7285,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1657,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7285,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7285
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

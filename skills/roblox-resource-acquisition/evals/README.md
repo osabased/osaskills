@@ -5,9 +5,9 @@ Hand-graded, closed-world cases for `roblox-resource-acquisition`. All resources
 | File | Covers |
 | --- | --- |
 | [comparison-cases.json](comparison-cases.json) | Choosing between candidates: strict priorities vs thresholds, supplied quantitative models, unknown evidence vs real ties, hard gates, fixed targets and project-listed preferences, existing capabilities, unverified vs unavailable checks, bounded workarounds, owner-reserved choices, resumed evaluations. Each case has a `family`; paired cases list each other in `related`. |
-| [adoption-cases.json](adoption-cases.json) | The add/adopt flow: proactive adoption, pending adoption when a required check can't run, different pins across projects, unresolved project scope, explicit user-wide child placement, evaluation-only scope, an already-solved task, and a guidance fix vs a new release. |
+| [adoption-cases.json](adoption-cases.json) | The add/adopt flow: proactive adoption, pending adoption when a required check can't run, different pins across projects, unresolved project scope, explicit user-wide skill placement, evaluation-only scope, an already-solved task, and a guidance fix vs a new release. |
 | [community-cases.json](community-cases.json) | Community evidence: copied endorsements, a project-named target, inaccessible channels, version/context disagreement, sparse evidence, and when no survey is needed. |
-| [maintenance-cases.json](maintenance-cases.json) | Using an adopted child: install check `PASS` / `UNAVAILABLE` / `FAIL`, conditional vs required reconciliation, and hard / soft / harmless guidance defects. |
+| [maintenance-cases.json](maintenance-cases.json) | Using an adopted library skill: pin check `PASS` / `UNAVAILABLE` / `FAIL`, a plugin file outside the lock, and hard / soft / harmless guidance defects. |
 | [trigger-cases.json](trigger-cases.json) | Queries that should and should not select the skill, for tuning the `description`. Rerun after any description change; near-misses matter as much as positives. |
 
 ## Running a case

@@ -35,15 +35,15 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
      - `selector` value (for commit pins, resolve the new tag to its full commit and, for pesde git, the tree);
      - `release_commit`;
      - `source_review_date`;
-     - the `integrity` hashes, recomputed from the new release's source;
-     - companion versions.
-   - `SKILL.md`: the pinned version, the Core API table, the example and the gotchas, so they match the new source. Remove gotchas the release fixed and add new ones.
+     - companion versions, and for npm the reviewed `archive_url` and `archive_integrity`;
+     - for an asset, `asset_sha256` of the new release file.
+   - `SKILL.md`: the pinned version and the `## Check the pin` entries (the validator fails until they state the new pin), the Core API table, the example and the gotchas, so they match the new source. Remove gotchas the release fixed and add new ones.
    - Any affected `references/*.md`.
-   - The pin in [bundled skills](bundled-skills.md) and the repository `README.md` table.
+   - The pin in the [catalog table](library-skills.md) and the repository `README.md` table.
 5. **Verify.**
    - Run `scripts/validate_skill.py libraries/roblox-<lib>`.
    - Run this skill's tests (`python -m pytest -q` in this folder).
-   - Run the install checker against a project fixture that pins the new version. The fixture is in the temporary directory; for Wally packages, use `wally install`.
+   - Make a fixture project in the temporary directory whose manifest and lock pin the new version, and confirm `scripts/clone_children.py --project FIXTURE --status` reports the skill's `declared` as `PASS`.
    - When the API or behavior changed, give a fresh subagent a realistic task with the updated skill and check that it uses the new API correctly.
 6. **Record it.** Set `reviewed` and `reviewed_on` in `versions.json`.
 7. **Open the PR** with `gh pr create`. Use the title `Update <name> to <version>` and include in the body:
@@ -55,4 +55,4 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
 
 If the release breaks the guidance in ways you can't resolve with confidence, or a check fails, open the PR as a draft and list the open questions instead of guessing. A new major version always gets a fresh source review, not just a version bump.
 
-Remove the temporary worktree or clone when done. Once merged, installed plugin copies pick the change up on their next plugin update; the plugin version follows the repository's commits, so no version bump is needed. A project's clone of the child picks it up only when re-cloned: after the plugin update, `--status` reports the clone as `stale` and the session hook names it (see [cloning a child](bundled-skills.md#clone-a-child-into-a-project)).
+Remove the temporary worktree or clone when done. Once merged, installed plugin copies pick the change up on their next plugin update; the plugin version follows the repository's commits, so no version bump is needed. A project's clone of the skill picks it up only when re-cloned: after the plugin update, `--status` reports the clone as `stale` and the session hook names it (see [cloning](library-skills.md#clone-into-a-project)).

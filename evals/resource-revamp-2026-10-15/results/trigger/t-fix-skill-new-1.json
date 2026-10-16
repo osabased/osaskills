@@ -1,0 +1,74 @@
+{
+ "id": "t-fix-skill",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "the roblox-vide skill told me to use show() the wrong way, fix the skill",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   ".claude/skills/**/*"
+  ],
+  [
+   "Grep",
+   "show\\("
+  ],
+  [
+   "Grep",
+   "show\\("
+  ]
+ ],
+ "denials": [],
+ "result": "I found two things, and I need one answer from you before editing.\n\n**What I found.** The `show` docs disagree with each other:\n- `SKILL.md:26` says `show(cond, fn, fallback?)` builds `fn()`, so `fn` takes no arguments.\n- `references/api-and-lifecycle.md:49` says `component(valueSource, present)`, so the component receives a Source holding the last truthy value and a `present` Source.\n\nI haven't checked either against Vide 0.4.1 itself. I'd rather not guess which one is wrong.\n\n**Questions**\n1. **What exactly went wrong?** Examples would be the code the skill told you to write and the error or wrong behavior you got. One example is enough. Was it:\n   - (a) the signature or argument shape, such as `fn` taking no arguments versus taking a value,\n   - (b) what `cond` should be, such as a getter versus a plain value,\n   - (c) the fallback or exit-delay behavior, or\n   - (d) something else?\n2. **Where should the fix go?** I'd recommend the catalog source at `<new-plugin>`, then a re-clone. The resource-acquisition skill says a cloned skill is fixed in the catalog, because a refresh overwrites local edits to the clone. The other option is to edit only this project's clone in `.claude/skills/roblox-vide`. That fixes it here but leaves the catalog wrong. Opening a PR to `osabased/osaskills` is a separate step, and I'd only do it if you say so.\n\nOnce I have your answer, I'll check the behavior against the Vide 0.4.1 source or docs and fix both the `SKILL.md` row and the reference so they agree.",
+ "cost": 0.0850726,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16024,
+  "cache_read_input_tokens": 47546,
+  "output_tokens": 1621,
+  "output_tokens_details": {
+   "thinking_tokens": 535
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16024,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 978,
+    "cache_read_input_tokens": 21911,
+    "cache_creation_input_tokens": 3280,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3280
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

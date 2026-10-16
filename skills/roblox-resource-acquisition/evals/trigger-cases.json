@@ -10,7 +10,7 @@
     {"id": "upgrade-pinned-vide", "should_trigger": true, "query": "Vide has a new release, should we bump our pinned version?"},
     {"id": "devforum-resource", "should_trigger": true, "query": "found this DevForum community resource for pathfinding, is it any good to use?"},
     {"id": "rokit-stylua", "should_trigger": true, "query": "add StyLua and Selene to the project's rokit toolchain"},
-    {"id": "child-check-fail", "should_trigger": true, "query": "the roblox-janitor skill's install check says FAIL for my wally.lock, what now"},
+    {"id": "library-pin-mismatch", "should_trigger": true, "query": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now"},
     {"id": "roblox-ts-package", "should_trigger": true, "query": "which npm package should I use for state management in roblox-ts"},
     {"id": "use-adopted-janitor", "should_trigger": false, "query": "use our Janitor to clean up this tween when the frame is destroyed"},
     {"id": "folder-layout", "should_trigger": false, "query": "how should I organize ServerScriptService and ReplicatedStorage for a new game"},

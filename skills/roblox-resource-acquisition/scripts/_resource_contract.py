@@ -1,4 +1,4 @@
-"""Static, versioned child specifications (resource-child contract 1)."""
+"""Static, versioned library skill descriptors (resource.yaml contract 2)."""
 from __future__ import annotations
 
 from datetime import date
@@ -10,8 +10,8 @@ from urllib.parse import parse_qsl, urlparse
 
 from _common import load_yaml, validated_url_host, SENSITIVE_QUERY_RE, has_immutable_version_evidence
 
-SCHEMA_VERSION = 1
-PARENT_CONTRACT_VERSION = 1
+SCHEMA_VERSION = 2
+PARENT_CONTRACT_VERSION = 2
 PARENT_NAME = "roblox-resource-acquisition"
 CORE_ROLES = {"routing", "common-use", "ownership", "security", "verification", "maintenance"}
 ALL_ROLES = CORE_ROLES | {"setup", "troubleshooting", "recipes", "lifecycle", "api"}
@@ -21,7 +21,6 @@ HEX256 = re.compile(r"^[0-9a-f]{64}$")
 SLUG = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 NPM_PACKAGE = re.compile(r"(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*")
 EXACT_RELEASE = re.compile(r"\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?")
-LEGACY_RECONCILIATION_FIELDS = {"record", "learnings", "no_project_record", "no_project_learnings"}
 
 
 def url_identity(value: str) -> tuple[str, str, int | None, str, str]:
@@ -84,35 +83,6 @@ def choice(value: Any, options: set[str], label: str) -> str:
     return value
 
 
-def validate_integrity(value: Any, label: str) -> None:
-    spec = mapping(value, {"files", "aggregate", "version_header", "manifest"}, set(), label)
-    if not spec:
-        raise ValueError(f"{label} needs at least one integrity expectation")
-    files = spec.get("files", {})
-    if not isinstance(files, dict):
-        raise ValueError(f"{label}.files must be a mapping")
-    for path, digest in files.items():
-        within(Path.cwd(), path)
-        if not isinstance(digest, str) or not HEX256.fullmatch(digest):
-            raise ValueError(f"{label}.files requires SHA256 digests")
-    if "aggregate" in spec:
-        aggregate = mapping(spec["aggregate"], {"directory", "suffix", "sha256", "recursive"}, {"directory", "suffix", "sha256"}, label + ".aggregate")
-        within(Path.cwd(), aggregate["directory"])
-        if aggregate["suffix"] not in {".lua", ".luau"} or not HEX256.fullmatch(str(aggregate["sha256"])):
-            raise ValueError(f"{label}.aggregate requires a source suffix and SHA256")
-        if "recursive" in aggregate and type(aggregate["recursive"]) is not bool:
-            raise ValueError(f"{label}.aggregate.recursive must be boolean")
-    if "version_header" in spec:
-        header = mapping(spec["version_header"], {"path", "contains"}, {"path", "contains"}, label + ".version_header")
-        within(Path.cwd(), header["path"])
-        string(header["contains"], label + ".version_header.contains")
-    if "manifest" in spec:
-        manifest = mapping(spec["manifest"], {"path", "name", "version"}, {"path", "name", "version"}, label + ".manifest")
-        within(Path.cwd(), manifest["path"])
-        string(manifest["name"], label + ".manifest.name")
-        string(manifest["version"], label + ".manifest.version")
-
-
 def validate_npm_package(value: dict, registry: str, label: str) -> None:
     if not NPM_PACKAGE.fullmatch(string(value.get("package_id"), label + ".package_id")):
         raise ValueError(label + " requires a canonical npm package identity")
@@ -132,14 +102,13 @@ def validate_npm_package(value: dict, registry: str, label: str) -> None:
         raise ValueError(label + " archive_integrity is malformed") from exc
     if len(digest) != 64:
         raise ValueError(label + " archive_integrity requires a SHA512 SRI digest")
-    validate_integrity(value.get("integrity"), label + ".integrity")
 
 
 def validate_companions(companions: Any, package_id: str) -> None:
     if not isinstance(companions, list):
         raise ValueError("installation.companions must be a list")
     packages = {package_id}
-    fields = {"package_id", "version", "registry", "integrity", "parent_package", "edge_alias"}
+    fields = {"package_id", "version", "registry", "parent_package", "edge_alias"}
     for companion in companions:
         companion = mapping(companion, fields, fields, "installation.companions[]")
         for field in ("package_id", "version", "parent_package", "edge_alias"):
@@ -152,21 +121,22 @@ def validate_companions(companions: Any, package_id: str) -> None:
             raise ValueError("companion version must be an exact release")
         packages.add(companion["package_id"])
         url_identity(companion["registry"])
-        validate_integrity(companion["integrity"], "installation.companions[].integrity")
 
 
 def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]:
     path = root / "resource.yaml"
     if not path.is_file():
-        raise ValueError("resource.yaml is required; regenerate the child using resource-child contract 1")
+        raise ValueError(f"resource.yaml is required; regenerate the skill using resource.yaml contract {SCHEMA_VERSION}")
     data = load_yaml(path.read_text(encoding="utf-8-sig"))
-    required = {"schema_version", "parent_contract", "scope", "resource", "routing", "guidance", "reconciliation", "installation"}
+    if not isinstance(data, dict):
+        raise ValueError("resource.yaml must be a mapping")
+    if type(data.get("schema_version")) is not int or data["schema_version"] != SCHEMA_VERSION:
+        raise ValueError(f"resource.yaml schema_version is {data.get('schema_version')!r}, expected {SCHEMA_VERSION}; re-clone the skill from the catalog or regenerate it")
+    required = {"schema_version", "parent_contract", "scope", "resource", "routing", "guidance", "installation"}
     mapping(data, required, required, "resource.yaml")
-    if type(data["schema_version"]) is not int or data["schema_version"] != SCHEMA_VERSION:
-        raise ValueError("unsupported resource.yaml schema_version; regenerate the child")
     parent = mapping(data["parent_contract"], {"name", "version"}, {"name", "version"}, "parent_contract")
     if parent["name"] != PARENT_NAME or type(parent["version"]) is not int or parent["version"] != PARENT_CONTRACT_VERSION:
-        raise ValueError("unsupported shared parent contract; regenerate with the installed parent")
+        raise ValueError(f"parent_contract must be {PARENT_NAME} version {PARENT_CONTRACT_VERSION}; re-clone the skill from the catalog or regenerate it")
     choice(data["scope"], {"project", "user"}, "scope")
     resource = mapping(data["resource"], {"slug", "name", "canonical_url", "package_id", "selector", "source_review_date", "devforum_url"}, {"slug", "name", "canonical_url", "package_id", "selector", "source_review_date", "devforum_url"}, "resource")
     if not SLUG.fullmatch(string(resource["slug"], "resource.slug")):
@@ -200,12 +170,10 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
     routing = mapping(data["routing"], {"use_when", "avoid_when"}, {"use_when", "avoid_when"}, "routing")
     strings(routing["use_when"], "routing.use_when")
     strings(routing["avoid_when"], "routing.avoid_when")
-    guidance = mapping(data["guidance"], {"claim_scope", "shared_usage", "documents", "executable_fixture"}, {"claim_scope", "shared_usage", "documents", "executable_fixture"}, "guidance")
+    guidance = mapping(data["guidance"], {"claim_scope", "documents", "executable_fixture"}, {"claim_scope", "documents", "executable_fixture"}, "guidance")
     choice(guidance["claim_scope"], {"advice-only", "executable-integration"}, "guidance.claim_scope")
-    if guidance["shared_usage"] != "references/child-usage.md":
-        raise ValueError("guidance.shared_usage must route to the installed parent's child-usage contract")
     if guidance["claim_scope"] == "advice-only" and guidance["executable_fixture"] is not None:
-        raise ValueError("advice-only children do not carry an executable integration fixture")
+        raise ValueError("an advice-only skill does not carry an executable integration fixture")
     if guidance["claim_scope"] == "executable-integration":
         fixture = within(root, guidance["executable_fixture"])
         if check_documents and not fixture.is_file():
@@ -234,21 +202,14 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
             core.update(roles)
     if not CORE_ROLES <= core or not {"setup", "troubleshooting"} <= coverage:
         raise ValueError("entrypoint must cover routing/use/ownership/security/verification/maintenance; setup and troubleshooting must be reachable")
-    # record, learnings and no_project_* are legacy fields from older children. They are
-    # still accepted so installed children keep validating, but nothing reads them.
-    reconciliation = mapping(data["reconciliation"], {"policy", "reason"} | LEGACY_RECONCILIATION_FIELDS, {"policy", "reason"}, "reconciliation")
-    choice(reconciliation["policy"], {"required", "conditional", "not-applicable"}, "reconciliation.policy")
-    string(reconciliation["reason"], "reconciliation.reason")
-    for field in sorted(LEGACY_RECONCILIATION_FIELDS & set(reconciliation)):
-        string(reconciliation[field], "reconciliation." + field)
-    install = mapping(data["installation"], {"profile", "dependency_section", "registry", "target", "new_structure", "integrity", "companions", "asset_sha256", "custom_checker", "archive_url", "archive_integrity"}, {"profile"}, "installation")
+    install = mapping(data["installation"], {"profile", "dependency_section", "registry", "target", "new_structure", "companions", "asset_sha256", "custom_checker", "archive_url", "archive_integrity"}, {"profile"}, "installation")
     profile = choice(install["profile"], PROFILES, "installation.profile")
     fields = {
-        "wally": {"dependency_section", "registry", "integrity", "companions"},
-        "pesde-wally": {"dependency_section", "registry", "target", "integrity", "companions"},
-        "pesde-registry": {"dependency_section", "registry", "target", "integrity"},
-        "pesde-git": {"dependency_section", "target", "new_structure", "integrity"},
-        "npm": {"dependency_section", "registry", "integrity", "companions", "archive_url", "archive_integrity"},
+        "wally": {"dependency_section", "registry", "companions"},
+        "pesde-wally": {"dependency_section", "registry", "target", "companions"},
+        "pesde-registry": {"dependency_section", "registry", "target"},
+        "pesde-git": {"dependency_section", "target", "new_structure"},
+        "npm": {"dependency_section", "registry", "companions", "archive_url", "archive_integrity"},
         "asset": {"asset_sha256"},
         "custom": {"custom_checker"},
     }[profile] | {"profile"}
@@ -261,7 +222,6 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
         url_identity(string(install.get("registry"), "installation.registry"))
         if selector["kind"] != "version":
             raise ValueError("registry package profiles require an exact version selector")
-        validate_integrity(install.get("integrity"), "installation.integrity")
         validate_companions(install.get("companions", []), resource["package_id"])
     elif profile.startswith("pesde-"):
         if resource["package_id"] is None:
@@ -276,7 +236,6 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
             raise ValueError("pesde-git requires immutable commit and lock tree")
         if "new_structure" in install and type(install["new_structure"]) is not bool:
             raise ValueError("installation.new_structure must be boolean")
-        validate_integrity(install.get("integrity"), "installation.integrity")
         validate_companions(install.get("companions", []), resource["package_id"])
     elif profile == "npm":
         if selector["kind"] != "version":
@@ -288,7 +247,7 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
         if not isinstance(companions, list):
             raise ValueError("installation.companions must be a list")
         packages = {resource["package_id"]}
-        fields = {"package_id", "version", "dependency_section", "archive_url", "archive_integrity", "integrity"}
+        fields = {"package_id", "version", "dependency_section", "archive_url", "archive_integrity"}
         for companion in companions:
             mapping(companion, fields, fields, "installation.companions[]")
             validate_npm_package(companion, registry, "installation.companions[]")
@@ -301,6 +260,6 @@ def load_contract(root: Path, *, check_documents: bool = True) -> dict[str, Any]
     else:
         checker = within(root, install.get("custom_checker"))
         if (check_documents and not checker.is_file()) or not str(install["custom_checker"]).startswith("scripts/"):
-            raise ValueError("custom profile requires an existing child-owned scripts/ checker")
+            raise ValueError("custom profile requires an existing checker in the skill's scripts/")
     return data
 

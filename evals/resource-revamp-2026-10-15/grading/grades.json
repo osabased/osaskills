@@ -1,0 +1,748 @@
+{
+ "q-existing": {
+  "R1": {
+   "criteria": {
+    "X1": [
+     true,
+     "Found src/shared/Signal.luau and required it as ReplicatedStorage.Shared.Signal."
+    ],
+    "X2": [
+     true,
+     "Added no dependency or second signal module and said so."
+    ],
+    "X3": [
+     true,
+     "Coins.changed fires from Coins.add with (player, new balance). The require path and Signal.new/:Fire/:Connect match the real module."
+    ],
+    "X4": [
+     true,
+     "File keeps --!strict, and get, add and start behave as before."
+    ],
+    "X5": [
+     true,
+     "Only Coins.luau changed, with no extra docs, skills or records."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "X1": [
+     true,
+     "Used the vendored Signal module via ReplicatedStorage.Shared.Signal."
+    ],
+    "X2": [
+     true,
+     "No new dependency or module added."
+    ],
+    "X3": [
+     true,
+     "Coins.changed fires after the balance update with (player, balance), using the real Signal API."
+    ],
+    "X4": [
+     true,
+     "--!strict stays and existing behavior is intact."
+    ],
+    "X5": [
+     true,
+     "Single-file change; its python edit was refused (the file still shows the change), and it reported the unchecked state honestly."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "X1": [
+     true,
+     "Noticed and used the vendored Signal module."
+    ],
+    "X2": [
+     true,
+     "Added no dependency and explained that a second signal module would only duplicate it."
+    ],
+    "X3": [
+     true,
+     "Coins.Changed fires from Coins.add with (player, current, previous), using the correct API and require path. The previous balance gives the delta, which is useful."
+    ],
+    "X4": [
+     true,
+     "--!strict stays and get, add and start behave as before."
+    ],
+    "X5": [
+     true,
+     "A minimal single-file edit with no extra ceremony."
+    ]
+   },
+   "overall": 9
+  },
+  "R4": {
+   "criteria": {
+    "X1": [
+     true,
+     "Found Signal via grep and CLAUDE.md and used it."
+    ],
+    "X2": [
+     true,
+     "Added no dependency and explicitly noted that the project already has a signal library."
+    ],
+    "X3": [
+     true,
+     "Coins.Changed fires from Coins.add with (player, new balance), using the correct API and path."
+    ],
+    "X4": [
+     true,
+     "--!strict stays and existing behavior is unchanged. A stray double blank line is a trivial style nit."
+    ],
+    "X5": [
+     true,
+     "Minimal edit to one file, with no extra work."
+    ]
+   },
+   "overall": 8
+  }
+ },
+ "q-evaluate": {
+  "R1": {
+   "criteria": {
+    "E1": [
+     true,
+     "No files changed; the only command run was the update check."
+    ],
+    "E2": [
+     true,
+     "Notes the project has no remotes, that coins live server-side only, and that the only traffic today is low-frequency server-to-client coins and round updates."
+    ],
+    "E3": [
+     true,
+     "Accurately describes the CLI step, generated modules, the pesde dev tool, the 1.0 rewrite and the issue #45 parse behaviour. It also says the 0.18.9 update check showed current, which I can't confirm."
+    ],
+    "E4": [
+     true,
+     "Cites issue #45 and says schema bounds don't stop the whole-buffer parse; it also notes server-to-client events carry no trust risk."
+    ],
+    "E5": [
+     true,
+     "Clear 'not yet' recommendation with a deciding tradeoff and what would change it; says it did no DevForum search or install. Its claim that 0.18.9 is current is a mild overstatement."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "E1": [
+     true,
+     "Only read files with cat and ls; no changes."
+    ],
+    "E2": [
+     true,
+     "Grounded in the empty networking surface and the likely coin count, round state and collect request events."
+    ],
+    "E3": [
+     true,
+     "Accurate on the lune dev dependency, the generated files, the regenerate step, the issue #45 parse and the 1.0 rewrite."
+    ],
+    "E4": [
+     true,
+     "Explains issue #45 in detail, including that a client can send an oversized buffer and that you'd need a pre-decode budget."
+    ],
+    "E5": [
+     true,
+     "Clear recommendation with tradeoffs, plus an explicit 'Unchecked' note that it didn't re-check whether #45 was fixed upstream."
+    ]
+   },
+   "overall": 7
+  },
+  "R3": {
+   "criteria": {
+    "E1": [
+     true,
+     "No files changed."
+    ],
+    "E2": [
+     true,
+     "Grounded in Round and Coins being server-only, no trust boundary yet, and small infrequent coin and round updates."
+    ],
+    "E3": [
+     true,
+     "Accurate on buffer serialization, typed schemas, the generated workflow, issue #45 and the 1.0 rewrite."
+    ],
+    "E4": [
+     true,
+     "Raises issue #45 and the oversized-buffer risk, and says to add a receive-side limit before adopting."
+    ],
+    "E5": [
+     true,
+     "Clear 'stay on RemoteEvents' recommendation with tradeoffs; states gaps, including that a fix for #45 is unverified."
+    ]
+   },
+   "overall": 7
+  },
+  "R4": {
+   "criteria": {
+    "E1": [
+     true,
+     "No files changed, nothing installed."
+    ],
+    "E2": [
+     true,
+     "Ties to the empty networking surface and names CoinsChanged and round state as the events a coin-run game needs."
+    ],
+    "E3": [
+     true,
+     "Accurate on the pesde lune dev dependency, the generated Fire/On API, bounded types, the 1000-byte unreliable limit, stale outputs and the startup side effects."
+    ],
+    "E4": [
+     true,
+     "Leads the costs with issue #45 and the whole-buffer parse, and says a plain remote handler can validate before doing any work."
+    ],
+    "E5": [
+     true,
+     "Says Blink is a reasonable fit but not yet, with the deciding tradeoff; says it didn't check upstream beyond the skill."
+    ]
+   },
+   "overall": 8
+  }
+ },
+ "q-mismatch": {
+  "R1": {
+   "criteria": {
+    "M1": [
+     true,
+     "States that pesde.toml pins Janitor =1.17.0 while the roblox-janitor skill targets 1.18.3."
+    ],
+    "M2": [
+     true,
+     "Says it kept the pin and the changed file list shows only Round.luau."
+    ],
+    "M3": [
+     true,
+     "Creates one Janitor per round, adds the part and both connections with default types, calls janitor:Destroy() after the wait, and requires ReplicatedStorage.Packages.Janitor."
+    ],
+    "M4": [
+     true,
+     "Uses only new, Add and Destroy and says it believes 1.17.0 has them but couldn't confirm. The default-type Add also exists in 1.17.0."
+    ],
+    "M5": [
+     true,
+     "No extra files or ceremony. The alphabetical reorder of the service requires is a small unrequested change."
+    ]
+   },
+   "overall": 7
+  },
+  "R2": {
+   "criteria": {
+    "M1": [
+     true,
+     "Names the 1.17.0 pin in pesde.toml and pesde.lock against the skill's 1.18.3 target."
+    ],
+    "M2": [
+     true,
+     "Explicitly leaves the manifest untouched and suggests the upgrade flow."
+    ],
+    "M3": [
+     true,
+     "Per-round Janitor, with the part added as \"Destroy\" and both connections as \"Disconnect\", then Destroy after the wait, and the correct require path."
+    ],
+    "M4": [
+     true,
+     "Passes the method names explicitly because it couldn't confirm 1.17.0's defaults, which is the most defensive choice, and says so."
+    ],
+    "M5": [
+     true,
+     "Only Round.luau was changed, and the message is concise."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "M1": [
+     true,
+     "Clearly calls out the 1.17.0 pin against the skill's 1.18.3 target."
+    ],
+    "M2": [
+     true,
+     "Says it left the pin alone and the changed file list shows only Round.luau."
+    ],
+    "M3": [
+     true,
+     "Janitor per round, with the part added as \"Destroy\" and both connections as \"Disconnect\", Destroy at the end, and the correct require path."
+    ],
+    "M4": [
+     true,
+     "Uses explicit method names and only Add and Destroy, and says it couldn't verify them against the 1.17.0 source."
+    ],
+    "M5": [
+     true,
+     "Minimal edit, plus an honest note that an early error or cancelled thread would skip cleanup, the same as the old code."
+    ]
+   },
+   "overall": 8
+  },
+  "R4": {
+   "criteria": {
+    "M1": [
+     true,
+     "States the skill targets 1.18.3 and the project pins =1.17.0."
+    ],
+    "M2": [
+     true,
+     "Kept the project's pin and edited only Round.luau."
+    ],
+    "M3": [
+     true,
+     "Janitor per round with default-typed Adds for the part and both connections, Destroy at round end, and the correct require path."
+    ],
+    "M4": [
+     true,
+     "Used new, Add and Destroy and said it hasn't confirmed them against the 1.17.0 source. The default-type Add exists in both versions."
+    ],
+    "M5": [
+     true,
+     "Proportional. It ran python scripts/check_guards.py, which passed, and was honest that check.sh and Studio were not run."
+    ]
+   },
+   "overall": 8
+  }
+ },
+ "q-clone": {
+  "R1": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned roblox-charm with clone_children.py and the skill appears in .claude/skills. The final message says the recipe came from that skill. The command list shows no read of it, probably because the Read tool isn't listed."
+    ],
+    "K2": [
+     true,
+     "src/client/State/Coins.luau returns Charm.atom(0) with --!strict and the require path ReplicatedStorage.Packages.Charm."
+    ],
+    "K3": [
+     true,
+     "A fromCharm helper makes a vide.source from Charm.untracked(getter), subscribes with Charm.subscribe and passes the unsubscribe to vide.cleanup. The Text function reads the source, not the raw atom."
+    ],
+    "K4": [
+     true,
+     "No pins or dependencies changed, --!strict kept, and the UI is built with vide.create with no Instance.new."
+    ],
+    "K5": [
+     true,
+     "Small change. It states that check.sh was refused and that nothing was checked or run in Studio, and it asks the user to run it."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned roblox-charm, then cat the SKILL.md and the reference file. It also noted the 0.11.1 pin matches pesde.toml."
+    ],
+    "K2": [
+     true,
+     "Coins.luau is --!strict, returns Charm.atom(0), and requires Charm from ReplicatedStorage.Packages."
+    ],
+    "K3": [
+     true,
+     "Builds a vide.source from Charm.untracked(coins), updates it in a Charm.subscribe callback, passes the subscription to vide.cleanup, and sets Text = text."
+    ],
+    "K4": [
+     true,
+     "No dependency or pin changes, --!strict kept, vide.create used and no Instance.new."
+    ],
+    "K5": [
+     true,
+     "Proportional. It reports that check.sh was refused and that python check_guards.py passed, and says nothing was type-checked or run in Studio. The extra Janitor-mismatch note is a harmless aside."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "K1": [
+     true,
+     "The first clone attempt was refused, but the second clone_children.py call succeeded and roblox-charm was added. The message says it followed the skill's bridge recipe. The command list shows no read of it."
+    ],
+    "K2": [
+     true,
+     "Coins.luau is --!strict and returns Charm.atom(0) with the correct require path."
+    ],
+    "K3": [
+     true,
+     "Makes a vide.source from Charm.untracked(Coins), calls cleanup(Charm.subscribe(Coins, coins)), and the Text function reads the source. Passing the source directly as the callback should work, since Vide's setter ignores the extra argument."
+    ],
+    "K4": [
+     true,
+     "No pin or dependency changes, --!strict kept, and vide.create used with no Instance.new."
+    ],
+    "K5": [
+     true,
+     "Concise, and clear that the shell kept asking for approval so nothing was checked. The one gap is that it never mentions that it also did not run Studio, though it says no run in Studio."
+    ]
+   },
+   "overall": 7
+  },
+  "R4": {
+   "criteria": {
+    "K1": [
+     false,
+     "Did not clone roblox-charm into the project, and no skill was added. It read the catalog copy under .claude/skills/roblox-resource-acquisition and noted the project has no Charm skill, but gave no reason for not cloning."
+    ],
+    "K2": [
+     true,
+     "Coins.luau is --!strict and returns Charm.atom(0) with the correct require path."
+    ],
+    "K3": [
+     true,
+     "Makes a source from Charm.untracked(coins), subscribes with Charm.subscribe, calls vide.cleanup on the subscription, and the Text function reads the source."
+    ],
+    "K4": [
+     true,
+     "No pin or dependency changes, --!strict kept, and vide.create used with no Instance.new."
+    ],
+    "K5": [
+     true,
+     "Honest and proportional: it says check.sh was refused, that check_guards.py passed, and that nothing was run in Studio or linted."
+    ]
+   },
+   "overall": 6
+  }
+ },
+ "q-adopt-guard": {
+  "R1": {
+   "criteria": {
+    "G1": [
+     true,
+     "pesde.toml has blink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" } under [dev_dependencies], and the message says pesde install is still needed to write the lock."
+    ],
+    "G2": [
+     false,
+     "The roblox-blink skill was not cloned and no reason was given for that. The schema is server-to-client only with output paths set, but Coins.luau was not edited to fire the event and there is no client handler."
+    ],
+    "G3": [
+     true,
+     "check_guards.py scans **/*.blink and fails on any event that is not From: Server (so From: Client is caught) and on any function declaration, ignoring comments."
+    ],
+    "G4": [
+     true,
+     "The guard reads the Blink version from pesde.lock, fails with a re-review message on mismatch or a missing lock entry, and gives file:line messages with how to change the rule. The docstring lists it, and the agent break-tested it with python on throwaway schemas."
+    ],
+    "G5": [
+     false,
+     "CLAUDE.md was not changed; the agent deferred the Blink entry until after install."
+    ],
+    "G6": [
+     true,
+     "The message says plainly that pesde install was refused, that nothing was generated, that the version-pin check was untested, and lists the next steps."
+    ]
+   },
+   "overall": 5
+  },
+  "R2": {
+   "criteria": {
+    "G1": [
+     true,
+     "Blink =0.18.9 is added under [dev_dependencies] with target lune, and the message says pesde install must update pesde.lock."
+    ],
+    "G2": [
+     false,
+     "The roblox-blink skill was not cloned and no reason given. The schema is server-to-client, the output paths are set and Coins.add fires CoinsChanged, but there is no client listener, and the agent deliberately left the client out."
+    ],
+    "G3": [
+     true,
+     "The guard scans every .blink file, blanks comments, and fails on From: Client and on function declarations."
+    ],
+    "G4": [
+     false,
+     "There is no version pin read from the lockfile and no re-review message. The messages are terse, give no instructions for changing the rule on purpose, and the docstring entry is a one-liner. The agent did break-test the guard."
+    ],
+    "G5": [
+     false,
+     "CLAUDE.md was not changed."
+    ],
+    "G6": [
+     true,
+     "The message says pesde install was refused, check.sh and codegen were not run, lists the exact commands for the user, and notes the late-join limitation and the missing client."
+    ]
+   },
+   "overall": 5
+  },
+  "R3": {
+   "criteria": {
+    "G1": [
+     true,
+     "The exact-pinned lune dev dependency was added to pesde.toml, and the message says the lock needs pesde install."
+    ],
+    "G2": [
+     false,
+     "No skill was cloned, and no schema, server fire or client listener was written; only a plan was given."
+    ],
+    "G3": [
+     false,
+     "No guard was added to check_guards.py; it is only described as a planned step."
+    ],
+    "G4": [
+     false,
+     "Nothing was implemented, so no lockfile pin, message or docstring entry exists."
+    ],
+    "G5": [
+     false,
+     "CLAUDE.md was not changed."
+    ],
+    "G6": [
+     true,
+     "The message is honest that only the dependency line was added, that the install was declined, and what remains."
+    ]
+   },
+   "overall": 2
+  },
+  "R4": {
+   "criteria": {
+    "G1": [
+     true,
+     "The exact-pinned lune dev dependency was added to pesde.toml, and the message tells the user to run pesde install to pin it in the lock."
+    ],
+    "G2": [
+     false,
+     "The roblox-blink skill was not cloned and no reason given. The schema is server-to-client with output paths set and Coins.add fires the event, but there is no client listener (the agent asked before wiring the UI), and generation is wired into check.sh."
+    ],
+    "G3": [
+     true,
+     "The guard scans network/*.blink and *.txt and fails on From: Client (case-insensitive, whitespace-tolerant) and on function declarations, with comments stripped."
+    ],
+    "G4": [
+     true,
+     "The guard reads the Blink version from pesde.lock and fails with a re-review message on mismatch. It also fails when no schema is found, reports file:line, and has the rule and how to change it in the docstring. The agent break-tested it with python."
+    ],
+    "G5": [
+     false,
+     "CLAUDE.md gains a Blink entry naming the ban and check_guards.py, but it does not name the roblox-blink skill."
+    ],
+    "G6": [
+     true,
+     "The message says nothing was installed, generated or run end to end, that the guard currently fails without a lock entry, and lists the user's next steps and the possible stylua/selene issue."
+    ]
+   },
+   "overall": 7
+  }
+ },
+ "q-clone-fixed": {
+  "R1": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned roblox-charm with clone_children.py, and the message says the bridge recipe came from the skill."
+    ],
+    "K2": [
+     true,
+     "State/Coins.luau is --!strict, requires ReplicatedStorage.Packages.Charm and returns Charm.atom(0)."
+    ],
+    "K3": [
+     true,
+     "A local fromCharm helper seeds a Vide source with Charm.untracked and wraps Charm.subscribe in vide.cleanup, and the Text property reads the source."
+    ],
+    "K4": [
+     true,
+     "No pins changed, --!strict kept, and the UI uses vide.create with no Instance.new."
+    ],
+    "K5": [
+     true,
+     "A small change, and it says plainly that check.sh was refused and nothing was checked or run in Studio."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned roblox-charm with the clone script and says it followed the skill and that the pin matches pesde.toml."
+    ],
+    "K2": [
+     true,
+     "Coins.luau returns Charm.atom(0) with the correct Packages.Charm require and --!strict."
+    ],
+    "K3": [
+     true,
+     "Seeds a source with Charm.untracked(coins), then vide.cleanup(Charm.subscribe(coins, ...)), and the label reads the source."
+    ],
+    "K4": [
+     true,
+     "No dependency changes, --!strict kept, vide.create used."
+    ],
+    "K5": [
+     true,
+     "Honest that check.sh was refused and nothing was type-checked or run in Studio. It did run check_guards.py, which passed, and reported that."
+    ]
+   },
+   "overall": 8
+  },
+  "R3": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned the skill, then read SKILL.md and the Charm-to-Vide bridge section in the reference before writing the code."
+    ],
+    "K2": [
+     true,
+     "Coins.luau returns Charm.atom(0) with the correct require path and --!strict."
+    ],
+    "K3": [
+     true,
+     "Correct source plus cleanup(Charm.subscribe(...)) bridge, and the label reads the source."
+    ],
+    "K4": [
+     true,
+     "No pin changes and --!strict kept. vide.create is used, and the Client.State.Coins require path matches the Rojo mapping."
+    ],
+    "K5": [
+     true,
+     "Honest that check.sh was refused and nothing was run in Studio, and that check_guards.py passed. It also notes the skill marks the recipe as not run."
+    ]
+   },
+   "overall": 8
+  },
+  "R4": {
+   "criteria": {
+    "K1": [
+     true,
+     "Cloned roblox-charm on the second attempt, after the first command was refused, and says it followed the skill's recipe."
+    ],
+    "K2": [
+     true,
+     "Coins.luau returns Charm.atom(0) with the correct require and --!strict."
+    ],
+    "K3": [
+     true,
+     "Seeds a source and registers cleanup(Charm.subscribe(Coins, coins)), so the label updates. Passing the source setter directly as the callback is terse and may not type-check cleanly under strict, but it works at runtime."
+    ],
+    "K4": [
+     true,
+     "No dependency changes, --!strict kept, vide.create used."
+    ],
+    "K5": [
+     true,
+     "Honest that check.sh was refused and nothing was checked or run in Studio, and offers to run it once approved."
+    ]
+   },
+   "overall": 7
+  }
+ },
+ "q-adopt-guard-fixed": {
+  "R1": {
+   "criteria": {
+    "G1": [
+     true,
+     "pesde.toml has blink = { name = \"1axen/blink\", version = \"=0.18.9\", target = \"lune\" } under [dev_dependencies], and the message says the lock doesn't resolve it until `pesde install` runs."
+    ],
+    "G2": [
+     true,
+     "It read the roblox-blink skill and explained the clone has to wait for the lock. The schema has ServerOutput/ClientOutput/TypesOutput and a From: Server event, and Coins.add fires it. The client listener is missing (it asks first), and the generated modules were not hand-written."
+    ],
+    "G3": [
+     true,
+     "check_guards.py scans every .blink file and fails on both `From: Client` and `function`, ignoring comments and strings and handling multi-line declarations."
+    ],
+    "G4": [
+     true,
+     "The guard requires pesde.lock to resolve Blink to 0.18.9 with a re-review message. Failures give file:line plus the issue #45 reason and how to lift the ban. It is listed in the docstring and was break-tested with python in a scratch copy."
+    ],
+    "G5": [
+     true,
+     "The CLAUDE.md Blink entry names the roblox-blink skill, the client-to-server ban and the check_guards.py enforcement."
+    ],
+    "G6": [
+     true,
+     "It says install, codegen and check.sh did not run, lists the user's next steps, and reports that the real project fails the guard only because the lock lacks Blink."
+    ]
+   },
+   "overall": 8
+  },
+  "R2": {
+   "criteria": {
+    "G1": [
+     true,
+     "Exact =0.18.9 lune-target entry under [dev_dependencies], and it says `pesde install` must be run to update the lock."
+    ],
+    "G2": [
+     false,
+     "The schema is correct and Coins.add fires CoinsChanged, but it read the skill in place without cloning it or explaining why not, and the client listener is not wired."
+    ],
+    "G3": [
+     true,
+     "The guard fails on `From: Client` and on `function` declarations in any .blink file, with comments stripped and multi-line declarations handled."
+    ],
+    "G4": [
+     false,
+     "No lockfile version pin, and the failure message is only a short reason string with no way to change the rule. It is listed in the docstring and was probe-tested."
+    ],
+    "G5": [
+     false,
+     "CLAUDE.md was not changed, so there is no Blink entry."
+    ],
+    "G6": [
+     true,
+     "Clearly says install, codegen and check.sh were not run, gives the commands to run, and notes the .txt schema gap."
+    ]
+   },
+   "overall": 6
+  },
+  "R3": {
+   "criteria": {
+    "G1": [
+     true,
+     "Exact =0.18.9 lune-target dev dependency, and the lock is stated to need `pesde install`."
+    ],
+    "G2": [
+     false,
+     "The schema and the server fire are right and the generated modules were not hand-written, but there is no skill clone or explanation of why not, and no client listener."
+    ],
+    "G3": [
+     true,
+     "The guard scans network/*.blink and *.txt, strips comments, and fails on `From: Client` and on `function Name`."
+    ],
+    "G4": [
+     true,
+     "It reads the lock for 0.18.9 with a re-review failure, fails if no schema is found, reports file:line, and documents how to lift the ban in the docstring. It was break-tested with python. The ban message itself doesn't say how to change the rule."
+    ],
+    "G5": [
+     false,
+     "The CLAUDE.md Blink entry states the ban and the guard but does not name the roblox-blink skill."
+    ],
+    "G6": [
+     true,
+     "Honest that nothing was installed, generated or run end to end; lists what's left and flags possible stylua/selene problems."
+    ]
+   },
+   "overall": 7
+  },
+  "R4": {
+   "criteria": {
+    "G1": [
+     true,
+     "Exact =0.18.9 lune-target dev dependency, and the lock is stated to need `pesde install`."
+    ],
+    "G2": [
+     false,
+     "Schema is fine and it explains the clone must wait for the lock, but Coins.luau does not fire the event and the client doesn't listen, so the core server-fire step is left to the user."
+    ],
+    "G3": [
+     true,
+     "The guard fails on `From: Client` and on `function Name` in .blink files, and also on schemas outside network/."
+    ],
+    "G4": [
+     true,
+     "It reads the version from the lock and fails with a re-review message when it is missing or different. The message names file:line and how to change the rule, and it is in the docstring. It was not break-tested because the lock is missing."
+    ],
+    "G5": [
+     true,
+     "The CLAUDE.md entry names the roblox-blink skill, the ban and check_guards.py, though it is marked 'Pending'."
+    ],
+    "G6": [
+     true,
+     "Honest that install, codegen, the break-test and check.sh did not run, and that Coins.add is not wired yet."
+    ]
+   },
+   "overall": 5
+  }
+ }
+}

@@ -35,12 +35,12 @@
       "id": "adequate-existing-capability",
       "prompt": "Implement one short-lived internal notification using this Roblox project's existing built-in event wrapper. It already meets all behavior, ownership and cleanup requirements. No external resource decision, defect, remote boundary or performance concern exists. Read-only exercise: state the resource decision and necessary work; use only these facts.",
       "accept": [
-        "Reuses the adequate wrapper without community surveys, dependency discovery or a child skill.",
+        "Reuses the adequate wrapper without community surveys, dependency discovery or a library skill.",
         "Keeps the plan scoped to the requested implementation and its relevant checks."
       ],
       "reject": [
         "Runs a community review as a prerequisite to using the wrapper.",
-        "Adds a dependency or child skill despite no adoption need."
+        "Adds a dependency or library skill despite no adoption need."
       ]
     },
     {

@@ -1,0 +1,79 @@
+{
+ "id": "t-hitbox",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   9038
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,wally.toml,package.json,rokit.toml,default.project.json}"
+  ],
+  [
+   "Grep",
+   "(?i)hitbox|Raycast|GetPartBoundsInBox|GetPartBoundsInRadius|workspace:Blockcast|Spherecast|Shapecast"
+  ]
+ ],
+ "denials": [],
+ "result": "Don't write a raycast hitbox yourself, and don't adopt a hitbox module yet. Roblox's built-in spatial queries cover most cases. I haven't looked anything up online, so the module notes below are from memory and unverified.\n\nYour `src` has no hitbox or raycast code, and I only checked that, not `pesde.toml`. Nothing existing needs to be reused.\n\n**Which approach fits depends on what the hitbox is for:**\n\n| Need | Use |\n| --- | --- |\n| Melee swing, area hit, pickup or coin overlap, sensor zone | `workspace:GetPartBoundsInBox`, `GetPartBoundsInRadius` or `GetPartsInPart` with `OverlapParams`. This is one call per check and simple to reason about. |\n| Fast melee that could skip through targets between frames | The same query each frame, plus `workspace:Blockcast` or `Spherecast` from last frame's position to this frame's. |\n| Projectiles | FastCast (a community module) is the usual choice for bullet-style raycasting with travel time. A manual per-frame `Raycast` from the last position to the new one is also easy. |\n| A prebuilt melee hitbox with a visualizer | Community modules such as RaycastHitboxV4 exist. They attach raycast points to a weapon and fire hit events. They add machinery you may not need, and some are old and unmaintained. |\n\n**Recommendation:** start with the built-in queries wrapped in a small local function that takes a shape, `OverlapParams` and a dedupe set. Add a module only if you need FastCast-style projectile simulation or per-attachment weapon tracing. That keeps the dependency count down.\n\n**Whichever you pick, run the hit check on the server.** The client can send an \"I swung\" request, but the server should decide who got hit.\n\n**Questions:**\n1. What are the hitboxes for: melee, projectiles, or area and overlap checks like coin pickups?\n2. If you want a module, should I look up and compare current options, or are the built-in queries enough?\n\nIf you pick a module, I'll check its repository, license, release notes and open issues before recommending it.",
+ "cost": 0.07352,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13082,
+  "cache_read_input_tokens": 43900,
+  "output_tokens": 1679,
+  "output_tokens_details": {
+   "thinking_tokens": 418
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13082,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1009,
+    "cache_read_input_tokens": 18397,
+    "cache_creation_input_tokens": 3852,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3852
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

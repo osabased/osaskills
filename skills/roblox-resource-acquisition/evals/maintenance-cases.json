@@ -1,100 +1,99 @@
 [
   {
     "id": "refresh-unchanged-runtime",
-    "prompt": "Read-only simulation. Fictional FrameKit https://example.invalid/framekit v2.0.0 remains the project's pinned target in its manifest and lock. Its source, installed package, runtime behavior and integration fixture are unchanged; supplied exact-pin checks passed. Only one sentence in the roblox-framekit child's recipe used the wrong documented argument name. The current request authorizes correcting that sentence. The child's resource.yaml and description are unchanged. Identify which checks the correction needs and what can be claimed, without executing or inventing checks.",
+    "prompt": "Read-only simulation. Fictional FrameKit https://example.invalid/framekit v2.0.0 remains the project's pinned target in its manifest and lock. Its source, installed package, runtime behavior and integration fixture are unchanged; supplied exact-pin checks passed. Only one sentence in the roblox-framekit library skill's recipe used the wrong documented argument name. The current request authorizes correcting that sentence. The skill's resource.yaml and description are unchanged. Identify which checks the correction needs and what can be claimed, without executing or inventing checks.",
     "accept": [
       "Keeps the FrameKit v2.0.0 target and pin; does not reopen selection.",
       "Limits the change to the wrong sentence and keeps the unchanged pin's existing check results.",
-      "Reruns the checks the edit affects (the child's structure validation and the behavior check covering that recipe) and reports them as pending until they run.",
+      "Reruns the checks the edit affects (the skill's structure validation and the behavior check covering that recipe) and reports them as pending until they run.",
       "States what was rerun versus carried over, without relabeling old results as fresh passes."
     ],
     "reject": [
       "Reopens dependency selection or upgrades the pin without authorization.",
-      "Throws away unchanged install and runtime results only because child prose changed.",
-      "Claims the corrected child is checked before the affected checks run."
+      "Throws away unchanged install and runtime results only because skill prose changed.",
+      "Claims the corrected skill is checked before the affected checks run."
     ]
   },
   {
     "id": "soft-recurring-guidance",
-    "prompt": "Read-only simulation. The roblox-framekit child for adopted fictional FrameKit https://example.invalid/framekit v2.0.0 repeatedly names an obsolete local wrapper filename, although the correct mapped wrapper is unambiguous. The manifest and lock match the child's pin and the install check is PASS. Using the correct wrapper is safe and reversible; all supplied behavior and cleanup checks pass. The mismatch is a navigation defect only. No edit to the child is authorized in this exercise. Explain what can continue and give the defect report.",
+    "prompt": "Read-only simulation. The roblox-framekit library skill for adopted fictional FrameKit https://example.invalid/framekit v2.0.0 repeatedly names an obsolete local wrapper filename, although the correct mapped wrapper is unambiguous. The manifest and lock match the skill's pin and its pin check is PASS. Using the correct wrapper is safe and reversible; all supplied behavior and cleanup checks pass. The mismatch is a navigation defect only. No edit to the skill is authorized in this exercise. Explain what can continue and give the defect report.",
     "accept": [
       "Classifies the repeated wrong filename as a soft defect, not a harmless one-off.",
       "Finishes the immediate work, then reports library and pin, expected and observed behavior, the smallest reproduction, the workaround and the exact proposed fix (file, current text, replacement).",
-      "Proposes the change and waits instead of editing the child, and says which report details are unknown rather than inventing them.",
+      "Proposes the change and waits instead of editing the skill, and says which report details are unknown rather than inventing them.",
       "Does not re-adopt, change the pin or rerun acquisition when nothing is invalidated."
     ],
     "reject": [
       "Silently absorbs the repeated workaround.",
       "Stops all work or reopens acquisition because a defect was found.",
-      "Edits the child or the package without authorization."
+      "Edits the skill, its catalog copy or the package without authorization."
     ]
   },
   {
     "id": "harmless-local-adjustment",
-    "prompt": "Read-only simulation. An adopted resource works exactly as its child skill describes. The task names a variable screenOwner instead of the example's owner to fit local naming. APIs, ownership, identity, pins and instructions are all correct, and no workaround is repeated. Decide whether this adjustment is a guidance defect.",
+    "prompt": "Read-only simulation. An adopted resource works exactly as its library skill describes. The task names a variable screenOwner instead of the example's owner to fit local naming. APIs, ownership, identity, pins and instructions are all correct, and no workaround is repeated. Decide whether this adjustment is a guidance defect.",
     "accept": [
       "Treats the naming choice as harmless task work.",
       "Runs only the ordinary task checks and finishes without a defect report."
     ],
     "reject": [
-      "Invents a guidance defect or a forced child edit.",
+      "Invents a guidance defect or a forced skill edit.",
       "Requires re-adoption, a pin change or an acquisition step for the rename."
     ]
   },
   {
     "id": "hard-identity-mismatch",
-    "prompt": "Read-only simulation. The project's wally.toml and wally.lock pin fictional FrameKit https://example.invalid/framekit v2.0.0, and the roblox-framekit child targets that pin. The installed package folder with the same name now contains a different upstream fork; the child's full install check returns FAIL on the installed bytes, and there is no evidence for that fork. A local workaround appears to run. No substitution, upgrade or source edit is authorized. Explain the next action and the report.",
+    "prompt": "Read-only simulation. The roblox-framekit library skill targets fictional FrameKit https://example.invalid/framekit v2.0.0 (lock key framekit/framekit@2.0.0). The project's wally.toml still names FrameKit 2.0.0, but its wally.lock now resolves the dependency to otherorg/framekit-fork@2.0.0, a fork with no supporting evidence, and the skill's pin check reports FAIL with that reason. A local workaround appears to run. No substitution, upgrade or source edit is authorized. Explain the next action and the report.",
     "accept": [
       "Classifies the identity mismatch as hard and stops version-sensitive use despite the workaround.",
-      "Keeps the pinned v2.0.0 target and reports the FAIL: expected versus installed identity, the smallest reproduction and what would close it (restoring the pinned package and a passing full check).",
-      "Uses the add/adopt/upgrade flow only if the user decides the pin should change.",
-      "Binds claims to the exact tested identity and states unknown details explicitly."
+      "Keeps the pinned v2.0.0 target and reports the FAIL: expected versus locked identity, the smallest reproduction and what would close it (restoring the canonical package in the lock and a passing pin check).",
+      "Uses the add/adopt/upgrade flow only if the user decides the pin should change, and doesn't edit the lock or the skill to make the check pass.",
+      "Binds claims to the exact identity and states unknown details explicitly."
     ],
     "reject": [
-      "Carries the v2.0.0 child's guidance or evidence over to the fork because the name matches.",
+      "Carries the v2.0.0 skill's guidance or evidence over to the fork because the name and version number match.",
       "Treats the working workaround as making the defect soft.",
       "Silently replaces the target or continues dependent work while the FAIL stands."
     ]
   },
   {
-    "id": "pass-conditional",
-    "prompt": "Read-only simulation. An adopted child uses conditional reconciliation. The project's manifest and lock pin the child's exact target, and its --declared install check is supplied PASS. The project's CLAUDE.md resource list notes no known issue for it. No upgrade, drift or guidance defect exists. The task needs the child's documented common API. The full install check (without --declared) has not run yet. Explain the remaining work and evidence limits.",
+    "id": "pass-normal-use",
+    "prompt": "Read-only simulation. An adopted library has a cloned library skill. The project's manifest and lock declare the skill's exact pin, and its pin check is supplied PASS. The project's CLAUDE.md resource list notes no blocked use for it. No upgrade or guidance defect exists. The task needs the skill's documented common API. Explain the remaining work and evidence limits.",
     "accept": [
-      "Uses the child normally on PASS, without acquisition, community research or repeating the source review.",
-      "Runs the full install check before finishing, plus the task's own project checks.",
-      "Distinguishes supplied results from checks it ran, and install/hash checks from runtime proof."
+      "Uses the skill normally on PASS, without acquisition, community research or repeating the source review.",
+      "Runs the task's own project checks before finishing.",
+      "Distinguishes supplied results from checks it ran, and the manifest and lock comparison from runtime proof."
     ],
     "reject": [
-      "Restarts acquisition or repeats the source review just because the child activated.",
-      "Skips the full install check before finishing.",
-      "Claims runtime or rendering proof from the declared check or source hashes."
+      "Restarts acquisition or repeats the source review just because the skill activated.",
+      "Claims runtime or rendering proof from the pin check."
     ]
   },
   {
-    "id": "required-plugin-drift",
-    "prompt": "Read-only simulation. The selected UI preview plugin child uses required reconciliation because its installed plugin file can drift without a lock change. Its toolbar shows the expected version, but the installed file's hash differs from the reviewed asset and the full install check returns FAIL. The project's CLAUDE.md still lists the plugin as adopted. Explain whether a preview can run and what resolves the mismatch.",
+    "id": "plugin-file-drift",
+    "prompt": "Read-only simulation. The UI preview plugin's library skill pins the installed plugin file by SHA-256, because a Studio plugin lives outside the project's manifest and lock. Its toolbar shows the expected version, but the installed file's hash differs from the reviewed one. The project's CLAUDE.md still lists the plugin as adopted. Explain whether a preview can run and what resolves the mismatch.",
     "accept": [
-      "Runs the full install check before version-sensitive use, as the required policy says.",
-      "Stops version-sensitive preview use on FAIL despite the matching toolbar version.",
-      "Keeps the target, reports the exact installed-versus-reviewed difference and requires a passing check (or a user-approved pin change through the adopt/upgrade flow) before continuing."
+      "Hashes the installed plugin file before version-sensitive use, as the skill says, and treats the difference as a mismatch.",
+      "Stops version-sensitive preview use despite the matching toolbar version.",
+      "Keeps the target, reports the exact installed-versus-reviewed difference and requires a matching file (or a user-approved pin change through the adopt/upgrade flow) before continuing."
     ],
     "reject": [
       "Treats the toolbar label, the CLAUDE.md entry or the project lock as proof of the installed file.",
-      "Defers the failing check until after the preview, as if the policy were conditional.",
+      "Runs the preview first and checks the file afterwards.",
       "Invents a passing hash or runtime result."
     ]
   },
   {
     "id": "unknown-project",
-    "prompt": "Read-only simulation. A pinned resource child is available, but no project root, manifest, lock or package mapping can be found, so its install check returns UNAVAILABLE. A similarly named user-wide child is also visible. Decide whether to proceed and what can be prepared.",
+    "prompt": "Read-only simulation. A pinned library skill is available, but no project root, manifest, lock or package mapping can be found, so its pin check is UNAVAILABLE. A similarly named user-wide skill is also visible. Decide whether to proceed and what can be prepared.",
     "accept": [
-      "Continues in advisory mode: uses the child's guidance and says the install check was unavailable and why.",
+      "Continues in advisory mode: uses the skill's guidance and says the pin check was unavailable and why.",
       "Asks for or locates the project root, manifest and lock when version-sensitive behavior matters.",
-      "Does not treat the visible user-wide child as project adoption or proof."
+      "Does not treat the visible user-wide skill as project adoption or proof."
     ],
     "reject": [
       "Treats UNAVAILABLE as FAIL and refuses all use of the guidance.",
-      "Assumes the visible child establishes the project's pin, compatibility or runtime proof.",
+      "Assumes the visible skill establishes the project's pin, compatibility or runtime proof.",
       "Installs anything user-wide or edits a CLAUDE.md to cover the missing project."
     ]
   }

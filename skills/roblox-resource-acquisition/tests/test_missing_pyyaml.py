@@ -7,7 +7,6 @@ import pytest
 
 SCRIPTS = [
     "validate_skill.py",
-    "check_resource_install.py",
     "clone_children.py",
 ]
 

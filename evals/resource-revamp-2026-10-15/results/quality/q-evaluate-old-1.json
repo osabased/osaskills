@@ -1,0 +1,99 @@
+{
+ "id": "q-evaluate",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "We might add Blink for networking later. Is it a good fit for this game compared with plain RemoteEvents? Give me a recommendation only; don't change any files.",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition",
+  "read:roblox-blink"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   9038
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/SKILL.md",
+   6121
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "RemoteEvent|RemoteFunction|FireServer|FireClient|FireAllClients|OnServerEvent|OnClientEvent|InvokeServer|OnServerInvoke"
+  ],
+  [
+   "Glob",
+   "**/*.{luau,json,toml,blink}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-old-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-old-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-old-1\\pesde.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: stay on plain RemoteEvents for now. Revisit Blink once the networking surface grows, and only with a receive-side limit in place.** This is evaluation-only. I changed no files.\n\n**What the game sends today**\n- There are no remotes at all. `Round.luau` and `Coins.luau` run entirely on the server, using `Touched` to award coins.\n- The client has no way to send anything to the server, so there is no trust boundary yet.\n- Blink's main benefits are compact buffer serialization and typed schemas. Neither helps when almost nothing is sent.\n- Blink is not in `pesde.toml`, so adopting it would add a package, a `.blink` schema, a compile step and generated files. I haven't compared other networking libraries such as ByteNet.\n\n**Why not now**\n- **Integration cost:** you'd maintain a schema and a generated-code workflow, and `bash scripts/check.sh` would likely need a step to catch stale generated output.\n- **Likely traffic:** a coin-count update per player and round state changes are small and infrequent. The bandwidth saving would be negligible.\n- **Known risk at the pinned version:** the Blink skill documents a receive-side DoS in 0.18.9 ([issue #45](https://github.com/1Axen/blink/issues/45)). The generated server parses the whole incoming buffer before any handler runs, so a client can send an oversized one. Schema bounds don't prevent this. Blink would add risk exactly where plain remotes are simple to validate.\n- **Version churn:** 1.0.0 pre-releases exist upstream and are a rewrite, so the syntax you adopt now may change.\n\n**When Blink would be worth it**\n- Many client-to-server or high-frequency events, such as per-frame input or many replicated entities.\n- A larger set of event shapes where one typed schema shared by client and server beats hand-written remote checks.\n- Bandwidth showing up as a real problem in profiling.\n\n**Cheaper option for now**\nPut a thin typed wrapper in `src/shared` around a few RemoteEvents. Validate each argument type on the server. Add per-player rate limiting. Keep client state in Charm. This keeps the abstraction small, and a later move to Blink only touches that one wrapper.\n\n**If you adopt Blink later**\n- Pin 0.18.9 exactly through pesde.\n- Add a tested pre-decode byte and rate budget before enabling any untrusted client-to-server event.\n- Give it a unique `RemoteScope`.\n- Treat schema types as serialization only, and validate ownership, cost and cooldown on the server.\n\n**Evidence and gaps**\nI read the Blink skill (reviewed 2026-10-03 against 0.18.9) and the project source. I didn't run Blink here, and I didn't check upstream issues or the DevForum for newer information. A Blink 0.18.x release that fixes #45 is unverified.",
+ "cost": 0.1397588,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 29075,
+  "cache_read_input_tokens": 40068,
+  "output_tokens": 1944,
+  "output_tokens_details": {
+   "thinking_tokens": 145
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 29075,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 967,
+    "cache_read_input_tokens": 21567,
+    "cache_creation_input_tokens": 7508,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7508
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

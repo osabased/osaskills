@@ -1,0 +1,55 @@
+{
+ "id": "t-luau-types",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "explain Luau type refinement with typeof checks",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "# Luau type refinement with `typeof`\n\nRefinement narrows a value's type inside a branch, based on a check the type checker understands.\n\n## Basic use\n\n```lua\nlocal function describe(value: string | number | nil)\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper()        -- value: string\n\telseif typeof(value) == \"number\" then\n\t\treturn value + 1            -- value: number\n\tend\n\treturn \"nothing\"                -- value: nil\nend\n```\n\nThe checker recognizes `typeof(x) == \"<name>\"` (and `type(x) == \"<name>\"`) and narrows `x` in the true branch. In the false branch it removes that type from the union.\n\n## What you can check\n\n- **Primitives:** `\"string\"`, `\"number\"`, `\"boolean\"`, `\"nil\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"buffer\"`.\n- **Roblox datatypes:** `\"Vector3\"`, `\"CFrame\"`, `\"Color3\"`, `\"UDim2\"`, `\"Instance\"`, and so on. `typeof` is the one to use for these, because `type()` returns `\"userdata\"` for them.\n\n```lua\nlocal function move(target: Vector3 | BasePart)\n\tif typeof(target) == \"Vector3\" then\n\t\tprint(target.Magnitude)\n\telse\n\t\tprint(target.Position)      -- target: BasePart\n\tend\nend\n```\n\n## Related refinements\n\n- **Truthiness:** `if x then` removes `nil` and `false`.\n- **Equality:** `if x == nil`, or comparing against a singleton such as `x == \"Idle\"`, narrows string-literal unions.\n- **Tagged unions:** checking a discriminant field (`if shape.kind == \"circle\"`) narrows the table type.\n- **Early exit:** the narrowing persists after the check.\n\n```lua\nlocal function f(x: string?)\n\tif typeof(x) ~= \"string\" then\n\t\treturn\n\tend\n\tprint(x:len())                  -- x: string\nend\n```\n\n## Limitations\n\n- **Mutable state:** refinements on table fields (`self.target`) can be invalidated by function calls or assignments in between. Copy the value to a local first.\n- **Closures:** a refinement does not carry into a closure if the variable can be reassigned. Use a local that is never reassigned.\n- **Aliased checks:** `local isStr = typeof(x) == \"string\"; if isStr then` does not refine `x`. The check must appear in the condition itself.\n- **Tables:** `typeof(x) == \"table\"` narrows to the table members of a union. It cannot tell two different table shapes apart, so use a discriminant field for that.\n- **Roblox classes:** `typeof(x) == \"Instance\"` only narrows to `Instance`. For a specific class you need `IsA`, and how well it refines depends on the solver version. Check it against your Luau version and fall back to a cast (`x :: BasePart`) if needed.\n\nI can show examples in your codebase if you want, such as the `src/client/State` Charm code.",
+ "cost": 0.0409647,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7161,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1140,
+  "output_tokens_details": {
+   "thinking_tokens": 157
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7161,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1140,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7161,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7161
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS"
+}

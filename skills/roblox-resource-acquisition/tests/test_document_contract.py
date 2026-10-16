@@ -72,7 +72,7 @@ def test_relative_markdown_links_and_anchors_resolve():
                 continue
             path_part, _, anchor = target.partition("#")
             if source.parent.name == "templates" and path_part.startswith("references/"):
-                continue  # scaffold link in the child template
+                continue  # scaffold link in the library skill template
             target_path = source if not path_part else (source.parent / path_part).resolve()
             if path_part.endswith(".example.yaml") or target_path.name == "resource.yaml":
                 continue  # examples rename their descriptor when materialized
@@ -98,9 +98,9 @@ def test_add_adopt_reaches_each_in_scope_reference():
     assert {
         "references/choosing.md",
         "references/adopting.md",
-        "references/bundled-skills.md",
-        "references/child-authoring.md",
-    } <= _links(_mode("Add, adopt or upgrade"))
+        "references/writing-library-skills.md",
+    } <= _links(_mode("Add or adopt"))
+    assert "references/library-skills.md" in _links(_mode("Library skills"))
 
 
 def test_removed_lifecycle_machinery_stays_removed():
@@ -127,12 +127,12 @@ def test_no_codex_host_paths_or_invocation_syntax_remain():
 def test_templates_match_the_contract():
     spec = yaml.safe_load((ROOT / "templates/resource-skill-template.yaml").read_text(encoding="utf-8"))
     assert spec["scope"] == "project"
-    assert set(spec["reconciliation"]) == {"policy", "reason"}
-    assert spec["guidance"]["shared_usage"] == "references/child-usage.md"
+    assert spec["schema_version"] == 2 and spec["parent_contract"]["version"] == 2
+    assert "reconciliation" not in spec and "shared_usage" not in spec["guidance"]
     template = (ROOT / "templates/resource-skill-template.md").read_text(encoding="utf-8")
     for heading in ("## Check the pin", "## Core API", "## Gotchas", "## Read further"):
         assert heading in template
-    assert "`references/child-usage.md`" in template and "](../" not in template
+    assert "`roblox-resource-acquisition`" in template and "](../" not in template
 
 
 def test_reference_file_pointers_are_links_not_bare_code_paths():

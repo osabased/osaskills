@@ -1,0 +1,91 @@
+{
+ "id": "q-evaluate",
+ "kind": "quality",
+ "max_turns": 30,
+ "clones": [],
+ "prompt": "We might add Blink for networking later. Is it a good fit for this game compared with plain RemoteEvents? Give me a recommendation only; don't change any files.",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition",
+  "read:roblox-blink"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5469
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/SKILL.md",
+   6443
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "RemoteEvent|RemoteFunction|FireServer|FireClient|FireAllClients|OnServerEvent|OnClientEvent|OnServerInvoke|InvokeServer"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-evaluate-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\SKILL.md"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/q-evaluate-new-2\" && cat pesde.toml default.project.json 2>/dev/null; ls"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: Blink is a reasonable fit, but don't adopt it yet. Start with plain RemoteEvents behind one small wrapper, and move to Blink when the remote count or payload size justifies a schema.** This is evaluation only. I changed no files and installed nothing.\n\n**What I checked**\n- `src/` has no remotes today. The server has `Coins` and `Round`, and the client has a Vide UI. So there's no networking to migrate and no measured bandwidth problem.\n- The project uses pesde, which fits Blink. The Blink skill pins `1axen/blink` 0.18.9 as a `lune` dev dependency, run as a CLI. That's a small install and easy to remove.\n- I read the catalog's Blink skill, which was reviewed on 2026-10-03. I did not run Blink or check DevForum or upstream issues beyond what that skill cites.\n\n**Where Blink would help this game**\n- The schema is a single source of truth. A coin-run game will have a few events: `CoinsChanged`, round state, and a pickup or claim request. Typed generated `Fire` and `On` calls keep the client and server in sync.\n- It gives you range-bounded types and compact buffer serialization. Both are useful if you send frequent coin or round updates to many players.\n- It supports unreliable events, with a 1000-byte payload limit.\n\n**Where it costs you**\n- **Receive-side DoS risk ([issue #45](https://github.com/1Axen/blink/issues/45)).** In 0.18.9 the generated server code parses the whole incoming buffer before any handler runs. Schema bounds don't protect against that. Before you accept untrusted client-to-server events, you'd need a tested byte and rate budget in the receive path. A plain RemoteEvent handler can validate its arguments before doing any work. This is the strongest reason not to adopt it casually.\n- **Generated code.** It adds a compile step, and the generated files must never be edited by hand. A failed compile can leave stale outputs. You also need a check, via `scripts/check.sh`, to keep them current.\n- **Startup side effects.** Requiring a generated module immediately creates remotes and starts connections, and there's no teardown. That works against your Janitor-based cleanup ownership.\n- **Version risk.** 1.0.0 pre-releases are a rewrite with different syntax, so an upgrade later is a migration.\n- **Types aren't authorization.** You still validate ownership, cooldowns and similar checks on the server, exactly as with RemoteEvents.\n\n**Why RemoteEvents first**\n- With a handful of low-frequency events, Blink's bandwidth savings are negligible.\n- A thin wrapper module in `src/shared`, with one function per event and server-side validation, gives you the same call-site shape. Blink's generated `Net.Event.Fire/On` API can then replace it later without touching callers.\n- It avoids the #45 risk and the build step until you actually need them.\n\n**When to switch**\n- You have roughly a dozen or more remotes, or high-frequency or per-player replication such as many coins or positions per tick.\n- Profiling shows network cost.\n- You're willing to add a pre-decode budget for client-sent events and a guard that keeps the generated output current.\n\nIf you do adopt it, I'd follow the `roblox-resource-acquisition` adoption flow:\n- Pin 0.18.9.\n- Clone the `roblox-blink` skill.\n- List it in `CLAUDE.md`.\n- Give it a unique `RemoteScope`.\n- Add a guard against hand-edited generated files.",
+ "cost": 0.09445980000000001,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16833,
+  "cache_read_input_tokens": 51758,
+  "output_tokens": 2194,
+  "output_tokens_details": {
+   "thinking_tokens": 344
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16833,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1386,
+    "cache_read_input_tokens": 22058,
+    "cache_creation_input_tokens": 5850,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5850
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-"
+}

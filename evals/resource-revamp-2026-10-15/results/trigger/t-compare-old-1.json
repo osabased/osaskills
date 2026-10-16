@@ -1,0 +1,55 @@
+{
+ "id": "t-compare",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "max_turns": 3,
+ "clones": [],
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Janitor. This project already uses it (see `CLAUDE.md`), so adding Trove would mean two cleanup libraries doing the same job.\n\nThey overlap heavily, so the project's choice matters more than any feature gap. Both give you `Add`, a cleanup call, and instance-bound cleanup. Janitor also lets you remove a single item (`Remove`, `Get`) and link cleanup to an Instance with `LinkToInstance`.\n\nIn the Vide UI code, Janitor isn't the right tool for everything. Vide ties cleanup to its own reactive scopes, so inside a component use `cleanup()` or an `effect`. That covers connections you make while a component renders. Keep Janitor for things that live outside a Vide scope, such as client controllers, services, and long-lived objects.\n\nIf you have a specific leak or a component you're unsure about, point me at it and I'll say which side it belongs on.",
+ "cost": 0.0341987,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7162,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 463,
+  "output_tokens_details": {
+   "thinking_tokens": 165
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7162,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 463,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7162,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7162
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL"
+}
