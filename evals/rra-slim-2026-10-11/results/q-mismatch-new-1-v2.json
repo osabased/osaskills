@@ -28,7 +28,7 @@
  "seconds": 18.0,
  "rc": 0,
  "stderr": "",
- "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-ebsfnwem",
+ "project": "projects/proj-ebsfnwem",
  "written": {
   "src\\server\\init.server.luau": "local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal RunService = game:GetService(\"RunService\")\n\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\n\nlocal ROUND_LENGTH = 30\n\nprint(\"server\")\n\nlocal function startRound(): () -> ()\n\tlocal janitor = Janitor.new()\n\n\tlocal part = janitor:Add(Instance.new(\"Part\"))\n\tpart.Name = \"RoundPart\"\n\tpart.Anchored = true\n\tpart.Position = Vector3.new(0, 10, 0)\n\tpart.Parent = workspace\n\n\tjanitor:Add(RunService.Heartbeat:Connect(function(dt)\n\t\tpart.CFrame *= CFrame.Angles(0, dt, 0)\n\tend))\n\n\t-- Call the returned function when the round ends.\n\treturn function()\n\t\tjanitor:Destroy()\n\tend\nend\n\n-- Placeholder round loop; replace the task.wait with the real round-end signal.\ntask.spawn(function()\n\twhile true do\n\t\tlocal endRound = startRound()\n\t\ttask.wait(ROUND_LENGTH)\n\t\tendRound()\n\t\ttask.wait(5) -- intermission\n\tend\nend)\n"
  }

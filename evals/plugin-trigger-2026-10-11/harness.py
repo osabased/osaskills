@@ -53,6 +53,8 @@ def run(cli, case, workdir, plugin_dir=None):
                     (denied if c.get("is_error") else reads).append(pending.pop(c["tool_use_id"]))
         if t == "result":
             result, cost = ev.get("result"), ev.get("total_cost_usd")
+    # Results are committed, so drop the local temp path a reply may quote.
+    result = result and result.replace(str(workdir), "<tmp>")
     return dict(case, loaded=loaded, reads=reads, denied=denied, tools=tools, cost=cost, rc=p.returncode,
                 init_skills=len(init_skills), result=result, stderr=p.stderr[-400:])
 

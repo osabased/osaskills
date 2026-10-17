@@ -62,7 +62,7 @@ def run(case):
         if ev.get("type") == "result":
             result, cost, turns = ev.get("result"), ev.get("total_cost_usd"), ev.get("num_turns")
     out = dict(case, skills=skills, tools=tools, result=result, cost=cost, turns=turns,
-               seconds=round(time.time() - t, 1), rc=p.returncode, stderr=p.stderr[-500:], project=str(proj))
+               seconds=round(time.time() - t, 1), rc=p.returncode, stderr=p.stderr[-500:], project=proj.relative_to(ROOT).as_posix())
     # capture files the model wrote
     written = {}
     for f in proj.rglob("*"):

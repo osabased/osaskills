@@ -30,7 +30,7 @@
  "seconds": 23.4,
  "rc": 0,
  "stderr": "",
- "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-mmj_vzco",
+ "project": "projects/proj-mmj_vzco",
  "written": {
   ".styluaignore": "# Installed packages (Wally/pesde) and generated output\nPackages/\nServerPackages/\nDevPackages/\nsourcemap.json\n\n# Agent skills and tooling, not game source\n.claude/\n",
   "rokit.toml": "[tools]\nstylua = \"johnnymorganz/stylua@2.1.0\"\n",

@@ -30,7 +30,7 @@
  "seconds": 22.9,
  "rc": 0,
  "stderr": "",
- "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-f1pg53c0",
+ "project": "projects/proj-f1pg53c0",
  "written": {
   ".styluaignore": "# Installed or generated code\nPackages/\nroblox_packages/\nluau_packages/\nlune_packages/\nsourcemap.json\n\n# Blink-generated output\n**/Blink/\n*.blink.luau\n\n# Bundled agent skills (not project source)\n.claude/\n",
   "rokit.toml": "[tools]\nstylua = \"JohnnyMorganz/stylua@2.1.0\"\n",
