@@ -31,7 +31,8 @@ Assert the runtime topology the architecture needs: each entrypoint at its inten
 - `--require-path` asserts a full DataModel-relative path in both. A sourcemap rooted below DataModel keeps its root name as the first segment.
 - `--require-path-fragment` and `--forbid-path-fragment` are substring matches, for exclusion classes such as `.story`.
 - `--singleton-class` requires exactly one instance of a class in each.
-- It doesn't check per-path classes, `RunContext` or execution; add project assertions for those.
+- `--require-class PATH=Class[:RunContext]` asserts that a full path is exactly one instance of that class in both. For a `Script`, the `RunContext` (`Legacy`, `Server`, `Client` or `Plugin`) is checked in the place only, since the sourcemap doesn't record it; a `Script` with no `RunContext` property reads as `Legacy`. Rojo 7.7.1 writes it as a token, 0 to 3 in that order. For example, `ReplicatedStorage/Client=Script:Client` fails on a default-settings `init.client.luau` there, which builds as a `LocalScript` that never runs, and passes once `emitLegacyScripts` is `false`.
+- It doesn't check execution; a play-test does.
 
 To make it a project gate, copy it into the repository with a note of its origin and call it from the check command; a path into one machine's installed skill folder is fine for a probe, not a gate. Break-test it once: move an entrypoint to the wrong service or map it twice, remove a required dependency, leak dev content, and confirm each fails.
 
