@@ -84,6 +84,22 @@ Request: "Make this project easier for Claude to work in without me watching."
 
 Assess: proposes before building. The proposal has one check command covering the steps the project's tools support; guards only for the store identity, the banned client-to-server feature (pinned to the library version it was reviewed against) and silent topology rules, not for style or library preferences; a `PostToolUse` format hook, a Stop hook that exits at once when `stop_hook_active` is set, a pre-push hook and CI running the same command; a short `CLAUDE.md` pointing to a task guide; and how each verification rung is reached, naming what stays Studio-only. Offers a fresh-agent trial. Does not adopt libraries, restructure code or write files before review.
 
+## Agent-ready under Script Sync
+
+Fixture: a game whose `ServerScriptService.Server` and `ReplicatedStorage.Shared` folders sync through Script Sync to `src/Server` and `src/Shared` in a Git repository. StyLua, Selene and luau-lsp are set up in the editor; there is no project file, check script or CI, and `CLAUDE.md` names the two roots. Server modules require shared ones through `ReplicatedStorage`.
+
+Request: "Make this project easier for Claude to work in without me watching."
+
+Assess: proposes before building. The check command has no build or topology step. Type checking covers the cross-root Instance requires with a sourcemap generated from the recorded roots, not the editor plugin's local one or a new Rojo project file. Dev content is kept out of synced roots or gated on `IsStudio()`, with no release build assumed. The guide warns that file rewrites (Git, formatters) reach the open place and names what stays Studio-only. Does not introduce Rojo or write files before review.
+
+## Studio-only place
+
+Fixture: a description of a place whose code exists only in Studio, with no synced roots, and an empty local folder the agent starts in. The Studio MCP is available but the agent may not edit the place.
+
+Request: "Set this game up so Claude can work on it safely."
+
+Assess: states that without files there is no diff, Git recovery, static check or CI. Recommends Script Sync as the smallest step, with the attributes-and-tags check, and leaves its setup to the user. If the user keeps the place Studio-only, proposes a guide in the local folder with the place's identity, saved checkpoints before multi-script edits, and verification in Studio, reporting the static rung as not run. Makes no place edits.
+
 ## Add a guard
 
 Fixture: a project with a check command and a guard script; a data module whose store name and key prefix are literals.

@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## structure-roblox-projects
 
+### 2026-10-17
+
+#### Changed
+
+- Lest's Studio backend on a Team Create place is documented from a test: it joins the live session, disconnects the user's own Studio from the place, and keeps whatever a spec changes. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync guidance now says not to sync a pesde or Wally install folder, since dot-prefixed directories and package project files are skipped, and that Lest's Studio didn't run Script Sync in a test. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Drafts mode is described as off by default, with an MCP edit seen reaching another session under Live Scripting. ([#59](https://github.com/osabased/osaskills/pull/59))
+
+### 2026-10-16
+
+#### Added
+
+- `studio-only.md`, for a place whose code lives only in Studio: what an agent can't verify there, Script Sync as the smallest step, and how to work through the Studio MCP when the place stays Studio-only. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync guidance for agent edits, checks (type checking without a sourcemap, a generated sourcemap for CI, engine tests) and keeping dev content out of a published place. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Behavioral scenarios for making a Script Sync project agent-ready and for a Studio-only place. ([#59](https://github.com/osabased/osaskills/pull/59))
+
+#### Changed
+
+- The agent-ready table, check command, verification ladder and luau-lsp notes no longer assume Rojo: builds and topology are Rojo-only steps, the dev/release boundary links Script Sync too, and Lest's cloud backend is named for engine tests in CI. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync's attributes-and-tags rule now matches Roblox's advice: don't sync those scripts. ([#59](https://github.com/osabased/osaskills/pull/59))
+
 ### 2026-10-15
 
 #### Added

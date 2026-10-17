@@ -12,7 +12,7 @@ Use to choose an open layout, container, entrypoint, Remote or grouping, or to j
 | Rojo | Local files and project files define the DataModel and sync into Studio | The filesystem as source of truth |
 | Custom | Another sync model with its own explicit rules | Projects none of the above describes |
 
-Roblox recommends Script Sync for external editing and versioned code, and tools such as Rojo when the filesystem should own the project. For agents, a filesystem source of truth matters: what an agent can read, diff and check is what it can verify, and anything that only exists in Studio needs a Studio connection to inspect. Never run two sync systems on the same content. Details: [Rojo](rojo.md), [Script Sync](script-sync.md).
+Roblox recommends Script Sync for external editing and versioned code, and tools such as Rojo when the filesystem should own the project. For agents, a filesystem source of truth matters: what an agent can read, diff and check is what it can verify, and anything that only exists in Studio needs a Studio connection to inspect. Never run two sync systems on the same content. Details: [Rojo](rojo.md), [Script Sync](script-sync.md), [Studio-only](studio-only.md).
 
 ## Containers
 

@@ -127,7 +127,8 @@
    "reviewed": "1.70.1",
    "reviewed_on": "2026-10-11",
    "files": [
-    "references/tooling.md"
+    "references/tooling.md",
+    "references/script-sync.md"
    ]
   },
   {
@@ -140,7 +141,9 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "references/tooling.md",
-    "references/verification.md"
+    "references/verification.md",
+    "references/script-sync.md",
+    "references/studio-only.md"
    ]
   }
  ]
