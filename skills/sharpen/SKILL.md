@@ -61,7 +61,7 @@ Save it to `<agent dir>/briefs/YYYY-MM-DD-<slug>.md`. The agent dir is `.claude/
 ```markdown
 # <Short name>
 
-**Verdict:** Go | Reshape | Not this: <one line why>
+**Verdict:** <Go, Reshape or Not this>. <One line on why.>
 
 ## Goal
 <One or two sentences: what will exist or be different.>
