@@ -1,6 +1,7 @@
 ---
 name: sharpen
-description: Interviews the user to turn an abstract, half-formed direction into a defined goal, then gives an honest read on whether it is what they actually want, and saves a brief. Use when the user brings a vague or open-ended idea before building anything ("I want to make something like…", "thinking about going in the direction of…", "not sure exactly what I want but…", "help me figure out what I want"), when a request names a feeling or vibe instead of an outcome, when they ask for a feature without saying what problem it solves or what it should do ("I want a feature that…", "can we add something like…"), or when they invoke /sharpen. Don't use it when the request is already concrete and actionable, or when the user asks you to just start.
+description: Interviews you to turn an abstract, half-formed direction or a vague feature idea into a defined goal, then gives an honest read on whether it is what you actually want, and saves a brief. Invoke with /sharpen when you have a direction rather than a destination and want it pinned down before anything gets built.
+disable-model-invocation: true
 ---
 
 # Sharpen

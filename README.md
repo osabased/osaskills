@@ -17,7 +17,7 @@ Claude Code leaves auto-update off for third-party marketplaces. To get new vers
 
 ### Cowork / Claude desktop
 
-Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `motion-studies` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
+Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `sharpen`, `motion-studies` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped.
 
 ### Skills CLI or manual copy
 
@@ -35,7 +35,7 @@ Check that Claude actually loaded a skill: it should appear under `/skills`, and
 | Problem | Skill | Invocation |
 |---|---|---|
 | An agent left you with findings or open-ended choices, and you need a clear recommendation and next step | [then-what](./skills/then-what/) | `/then-what` only |
-| You have a vague direction and want help defining it, and checking it's what you actually want, before anything gets built | [sharpen](./skills/sharpen/) | automatic |
+| You have a vague direction and want help defining it, and checking it's what you actually want, before anything gets built | [sharpen](./skills/sharpen/) | `/sharpen` only |
 | You want to preview an uncertain animation before production work | [motion-studies](./skills/motion-studies/) | `/motion-studies` only |
 | You need to place Roblox code correctly, set up Rojo or Script Sync, start or onboard a project, or make a Roblox repo agent-ready (guide, checks, hooks, CI, play-test verification) | [structure-roblox-projects](./skills/structure-roblox-projects/) | automatic |
 | You want to choose, add, compare, or upgrade a Roblox library or development tool | [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) | automatic |
