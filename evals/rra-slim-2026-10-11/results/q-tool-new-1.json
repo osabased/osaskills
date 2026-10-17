@@ -26,7 +26,7 @@
  "seconds": 20.0,
  "rc": 0,
  "stderr": "",
- "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-8dj54y2v",
+ "project": "projects/proj-8dj54y2v",
  "written": {
   ".styluaignore": "# Installed packages and generated output\nPackages/\nDevPackages/\nServerPackages/\nsourcemap.json\n\n# Agent skills and their example scripts are not project source\n.claude/\n",
   "rokit.toml": "[tools]\nstylua = \"JohnnyMorganz/StyLua@2.0.2\"\n",

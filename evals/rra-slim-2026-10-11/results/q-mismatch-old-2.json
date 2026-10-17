@@ -27,7 +27,7 @@
  "seconds": 21.9,
  "rc": 0,
  "stderr": "",
- "project": "C:\\Users\\Lowle\\OneDrive\\Desktop\\osaskills\\evals\\rra-slim-2026-10-11\\projects\\proj-cqxvcqkm",
+ "project": "projects/proj-cqxvcqkm",
  "written": {
   "src\\server\\init.server.luau": "local ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal RunService = game:GetService(\"RunService\")\n\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\n\nlocal ROUND_LENGTH = 30\nlocal INTERMISSION = 5\nlocal SPIN_SPEED = math.rad(90)\n\nprint(\"server\")\n\nlocal function startRound(): typeof(Janitor.new())\n\tlocal janitor = Janitor.new()\n\n\tlocal part = janitor:Add(Instance.new(\"Part\"))\n\tpart.Name = \"RoundPart\"\n\tpart.Anchored = true\n\tpart.Position = Vector3.new(0, 10, 0)\n\tpart.Parent = workspace\n\n\tjanitor:Add(RunService.Heartbeat:Connect(function(dt)\n\t\tpart.CFrame *= CFrame.Angles(0, SPIN_SPEED * dt, 0)\n\tend))\n\n\treturn janitor\nend\n\nlocal function endRound(janitor: typeof(Janitor.new()))\n\tjanitor:Destroy() -- destroys the part and disconnects Heartbeat\nend\n\ntask.spawn(function()\n\twhile true do\n\t\tlocal roundJanitor = startRound()\n\t\ttask.wait(ROUND_LENGTH)\n\t\tendRound(roundJanitor)\n\t\ttask.wait(INTERMISSION)\n\tend\nend)\n"
  }
