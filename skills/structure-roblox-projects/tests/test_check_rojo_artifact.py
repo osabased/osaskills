@@ -355,6 +355,191 @@ class ArtifactCheckerTests(unittest.TestCase):
             )
             self.assertEqual(["place: expected exactly one ReplicatedStorage, found 2"], failures)
 
+    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    def test_rojo_client_script_in_replicated_storage_needs_client_run_context(self) -> None:
+        local_script = "'ReplicatedStorage/Shared' is a LocalScript, expected Script"
+        for emit_legacy, client_failures, server_context in (
+            (True, [f"sourcemap: {local_script}", f"place: {local_script}"], "Legacy"),
+            (False, [], "Server"),
+        ):
+            with self.subTest(emitLegacyScripts=emit_legacy), tempfile.TemporaryDirectory() as directory:
+                sourcemap_path, place_path = build_script_fixture(Path(directory), emit_legacy)
+                artifacts = {
+                    "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                    "place": CHECKER.read_rbxlx(place_path),
+                }
+                self.assertEqual(
+                    client_failures,
+                    CHECKER.check_artifacts(
+                        artifacts,
+                        required_classes=[
+                            "ReplicatedStorage/Shared=Script:Client",
+                            f"ServerScriptService/Server/Main=Script:{server_context}",
+                            "ServerScriptService/Server/Util=ModuleScript",
+                        ],
+                    ),
+                )
+
+    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    def test_rojo_wrong_run_context_fails_only_in_the_place(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            sourcemap_path, place_path = build_script_fixture(Path(directory), False)
+            failures = CHECKER.check_artifacts(
+                {
+                    "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                    "place": CHECKER.read_rbxlx(place_path),
+                },
+                required_classes=["ReplicatedStorage/Shared=Script:Server"],
+            )
+            self.assertEqual(
+                ["place: 'ReplicatedStorage/Shared' has RunContext Client, expected Server"],
+                failures,
+            )
+
+
+def build_script_fixture(directory: Path, emit_legacy: bool) -> tuple[Path, Path]:
+    shared = directory / "src" / "shared"
+    server = directory / "src" / "server"
+    shared.mkdir(parents=True)
+    server.mkdir(parents=True)
+    (shared / "init.client.luau").write_text("print('client')\n", encoding="utf-8")
+    (server / "Main.server.luau").write_text("print('server')\n", encoding="utf-8")
+    (server / "Util.luau").write_text("return {}\n", encoding="utf-8")
+    project = {
+        "name": "Fixture",
+        "emitLegacyScripts": emit_legacy,
+        "tree": {
+            "$className": "DataModel",
+            "ReplicatedStorage": {
+                "$className": "ReplicatedStorage",
+                "Shared": {"$path": "src/shared"},
+            },
+            "ServerScriptService": {
+                "$className": "ServerScriptService",
+                "Server": {"$path": "src/server"},
+            },
+        },
+    }
+    (directory / "default.project.json").write_text(json.dumps(project), encoding="utf-8")
+    sourcemap_path = directory / "fixture.sourcemap.json"
+    place_path = directory / "fixture.rbxlx"
+    for command in (
+        ["rojo", "sourcemap", "default.project.json", "-o", str(sourcemap_path)],
+        ["rojo", "build", "default.project.json", "-o", str(place_path)],
+    ):
+        result = subprocess.run(command, cwd=directory, check=False, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise AssertionError(result.stderr)
+    return sourcemap_path, place_path
+
+
+def script_sourcemap() -> dict[str, object]:
+    return {
+        "name": "Fixture",
+        "className": "DataModel",
+        "children": [
+            {
+                "name": "ReplicatedStorage",
+                "className": "ReplicatedStorage",
+                "children": [
+                    {"name": "Shared", "className": "LocalScript"},
+                    {"name": "Twin", "className": "ModuleScript"},
+                    {"name": "Twin", "className": "ModuleScript"},
+                ],
+            },
+            {
+                "name": "ServerScriptService",
+                "className": "ServerScriptService",
+                "children": [
+                    {"name": "Main", "className": "Script"},
+                    {"name": "Old", "className": "Script"},
+                ],
+            },
+        ],
+    }
+
+
+def script_rbxlx() -> str:
+    return '''<roblox version="4">
+<Item class="ReplicatedStorage"><Properties><string name="Name">ReplicatedStorage</string></Properties>
+  <Item class="LocalScript"><Properties><string name="Name">Shared</string></Properties></Item>
+  <Item class="ModuleScript"><Properties><string name="Name">Twin</string></Properties></Item>
+  <Item class="ModuleScript"><Properties><string name="Name">Twin</string></Properties></Item>
+</Item>
+<Item class="ServerScriptService"><Properties><string name="Name">ServerScriptService</string></Properties>
+  <Item class="Script"><Properties><string name="Name">Main</string><token name="RunContext">1</token></Properties></Item>
+  <Item class="Script"><Properties><string name="Name">Old</string></Properties></Item>
+</Item>
+</roblox>'''
+
+
+class RequireClassTests(unittest.TestCase):
+    def check(self, *requirements: str) -> tuple[int, str]:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            map_path = root / "fixture.sourcemap.json"
+            place_path = root / "fixture.rbxlx"
+            map_path.write_text(json.dumps(script_sourcemap()), encoding="utf-8")
+            place_path.write_text(script_rbxlx(), encoding="utf-8")
+            arguments = ["--sourcemap", str(map_path), "--place", str(place_path)]
+            for requirement in requirements:
+                arguments += ["--require-class", requirement]
+            stderr = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(stderr):
+                code = CHECKER.main(arguments)
+            return code, stderr.getvalue()
+
+    def test_accepts_matching_classes_and_run_contexts(self) -> None:
+        code, stderr = self.check(
+            "ReplicatedStorage/Shared=LocalScript",
+            "ServerScriptService/Main=Script:Server",
+            "ServerScriptService/Old=Script:Legacy",
+            "/ServerScriptService/Main/=Script",
+        )
+        self.assertEqual((0, ""), (code, stderr))
+
+    def test_rejects_wrong_class_in_both_artifacts(self) -> None:
+        code, stderr = self.check("ReplicatedStorage/Shared=Script:Client")
+        self.assertEqual(1, code)
+        self.assertIn("sourcemap: 'ReplicatedStorage/Shared' is a LocalScript, expected Script", stderr)
+        self.assertIn("place: 'ReplicatedStorage/Shared' is a LocalScript, expected Script", stderr)
+
+    def test_rejects_wrong_run_context_in_place_only(self) -> None:
+        code, stderr = self.check("ServerScriptService/Main=Script:Client")
+        self.assertEqual(1, code)
+        self.assertNotIn("sourcemap:", stderr)
+        self.assertIn("place: 'ServerScriptService/Main' has RunContext Server, expected Client", stderr)
+
+    def test_script_without_run_context_reads_as_legacy(self) -> None:
+        code, stderr = self.check("ServerScriptService/Old=Script:Server")
+        self.assertEqual(1, code)
+        self.assertIn("has RunContext Legacy, expected Server", stderr)
+
+    def test_rejects_missing_and_ambiguous_paths(self) -> None:
+        code, stderr = self.check(
+            "ReplicatedStorage/Missing=ModuleScript", "ReplicatedStorage/Twin=ModuleScript"
+        )
+        self.assertEqual(1, code)
+        self.assertIn("place: 'ReplicatedStorage/Missing' is missing", stderr)
+        self.assertIn(
+            "sourcemap: 'ReplicatedStorage/Twin' names 2 instances; a class check needs exactly one",
+            stderr,
+        )
+
+    def test_rejects_malformed_requirements(self) -> None:
+        for requirement in (
+            "ReplicatedStorage/Shared",
+            "=LocalScript",
+            "ReplicatedStorage/Shared=",
+            "ReplicatedStorage/Shared=Script:",
+            "ReplicatedStorage/Shared=LocalScript:Client",
+            "ReplicatedStorage/Shared=Script:client",
+        ):
+            with self.subTest(requirement=requirement):
+                code, stderr = self.check(requirement)
+                self.assertEqual(2, code)
+                self.assertIn("--require-class", stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
