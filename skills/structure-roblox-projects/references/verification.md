@@ -19,6 +19,7 @@ Design for the low rungs: split pure logic out of modules that touch Roblox APIs
 - **Native backend:** no `game`, `script` or Roblox types, so the module under test can't touch them.
 - **Lune backend:** `task` exists only as a library (`require("@lune/task")`), so a module the spec loads doesn't see it unless passed in. An error inside a `task.spawn` thread exits Lune and fails the whole run.
 - **Studio backend:** runs in edit mode. Place scripts don't run, physics doesn't step, and `RunService:IsClient()` and `IsServer()` are both true. Startup, interaction and multiplayer still need a play-test.
+- **Studio backend on a Team Create place:** Lest's Studio joins the live session under the user's account, so it sees edits made seconds earlier, before any save. Joining disconnects the user's own Studio from that place ("you have joined a game from another device"), and anything a spec creates or changes stays in the shared place. Warn the user before a run, and run specs that change the place against a place file. Observed with Lest 0.6.1 and Studio 0.743 in October 2026.
 
 ## Play-tests with Studio MCP
 

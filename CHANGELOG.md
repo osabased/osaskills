@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## structure-roblox-projects
 
+### 2026-10-17
+
+#### Changed
+
+- Lest's Studio backend on a Team Create place is documented from a test: it joins the live session, disconnects the user's own Studio from the place, and keeps whatever a spec changes. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync guidance now says not to sync a pesde or Wally install folder, since dot-prefixed directories and package project files are skipped, and that Lest's Studio didn't run Script Sync in a test. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Drafts mode is described as off by default, with an MCP edit seen reaching another session under Live Scripting. ([#59](https://github.com/osabased/osaskills/pull/59))
+
 ### 2026-10-16
 
 #### Added
