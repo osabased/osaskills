@@ -1,0 +1,84 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStoreService|GetDataStore|OrderedDataStore|ProfileStore|ProfileService"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's my understanding: you want a check that fails whenever the DataStore name changes from the value we set, so an accidental rename can't ship and hide players' saved data. I haven't changed anything yet, because I need two details first.\n\nThe repo doesn't have a DataStore yet. `src/server/init.server.luau` only contains `print(\"server\")`, and nothing uses `DataStoreService`. So there's no name to protect.\n\n1. **What is the exact DataStore name?** Send the string. If you haven't picked one, tell me and I'll suggest one. I'd also create a small data module that holds the name as a constant, so the game and the guard both use it. Is that OK?\n2. **Where should the guard run?** I recommend a check script that runs on `pre-push` and in CI. That covers every teammate, not just Claude sessions. The alternative is a Claude Code hook only, which stops agent edits but not a person editing by hand. Which do you want? I'd pick the first.\n\nOnce you answer, I'll add the data module, the check script with the name copied into it (so changing the name takes two deliberate edits), and the hook or CI wiring. Then I'll test it by renaming the store, confirming the check fails, and reverting.",
+ "cost": 0.004683339999999999,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15247,
+  "cache_read_input_tokens": 48134,
+  "output_tokens": 2304,
+  "output_tokens_details": {
+   "thinking_tokens": 1205
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15247,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1353,
+    "cache_read_input_tokens": 21504,
+    "cache_creation_input_tokens": 2910,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2910
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

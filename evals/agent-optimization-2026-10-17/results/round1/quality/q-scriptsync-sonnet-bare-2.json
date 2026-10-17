@@ -1,0 +1,89 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "bare",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-bare-2\\client\\Controller.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-bare-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-bare-2\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,*.project.json,*.toml,*.json,selene.toml,.luaurc,shared/**,client/**,server/**}"
+  ]
+ ],
+ "denials": [],
+ "result": "**What I think you want:** add Janitor through pesde, then change `client/Controller.client.luau` so the `InputBegan` dash connection is disconnected when the character respawns. Right now each `CharacterAdded` adds another connection, and the old ones keep firing against stale humanoids. Correct me if that's wrong.\n\n**What I found**\n- `rokit.toml` pins only stylua and selene. There is no pesde, no `pesde.toml` and no lockfile.\n- There is no Rojo project, and Script Sync only carries `server/`, `shared/` and `client/` into Studio. A package installed to a default `luau_packages/` folder would never reach Studio.\n- pesde's Roblox target normally generates its requires from a Rojo sourcemap. I haven't verified how it behaves without a Rojo project, so that is the main risk.\n\n**Install**\n1. Add `pesde` to `rokit.toml` and run `rokit install`. I'd look up the current pesde release then, not guess the version.\n2. Run `pesde init` with the roblox target. Add `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }` and `[wally_indices] default = \"https://github.com/UpliftGames/wally-index\"`, as in the skill's setup notes.\n3. Point the packages directory at a synced folder, such as `shared/Packages`. Then it reaches Studio as `ReplicatedStorage.Shared.Packages`, and the client can require it.\n4. Run `pesde install`. Check that `pesde.lock` resolves `wally#howmanysmall/janitor@1.18.3`, with typed-promise 4.0.6 and evaera/promise 4.0.0.\n5. If pesde insists on a sourcemap, the fallback is a minimal `default.project.json` used only to generate it. It would not be used for syncing. This needs your approval because it adds Rojo to a project that deliberately has none.\n\n**Wire in** (`client/Controller.client.luau`)\n- Require Janitor from `ReplicatedStorage.Shared.Packages`. Check the generated wrapper path before writing it, because the package's own project name is lowercase `janitor`.\n- Create one `Janitor.new()` at the top of the file.\n- At the start of `onCharacter`, call `janitor:Cleanup()` so the previous character's connection is gone. Then `janitor:Add(UserInputService.InputBegan:Connect(...))`. A connection defaults to `\"Disconnect\"`, so no method argument is needed.\n- Alternatively, use a fixed index: `janitor:Add(conn, \"Disconnect\", \"Dash\")`. Re-adding under the same index cleans up the old one, so no explicit `Cleanup` is needed. I prefer this because it is a single line, but it ties cleanup to the next spawn, not the death.\n- Optionally add `janitor:Add(humanoid.Died:Once(...))` or `LinkToInstance(character)`. Cleanup would then happen when the character is destroyed, not only at the next spawn. `LinkToInstance` fires on `Destroying`, which is what `LoadCharacter` does to the old character.\n\n**Check it works**\n- Static: `stylua --check` and `selene` on the changed file. There's no check script yet, and selene may need a Roblox standard-library config. I'd flag that if it complains.\n- Install: confirm the lock versions above, and that the package files appear under `shared/Packages` and show up in Studio's Explorer after a sync.\n- Runtime in Studio Play:\n  1. Press the dash key and confirm one dash per press.\n  2. Reset the character several times.\n  3. Press the dash key again. Without the fix, each respawn adds another handler. With it, the dash behaves the same after any number of respawns.\n  4. For a hard check, temporarily add `print` calls and confirm exactly one handler fires. Remove them afterwards.\n- I can't run Studio from here, so the runtime check is yours unless a Studio tool is connected. Static checks and lock inspection I can do.\n\n**Questions, recommended answer first**\n1. Package location: `shared/Packages`? (Recommended. The alternative is `client/Packages`, which keeps it client-only.)\n2. If pesde needs a sourcemap, may I add a minimal `default.project.json` for that purpose only? (Recommended: yes, kept out of syncing.)\n3. Cleanup trigger: indexed `Add` plus `LinkToInstance(character)`, or just the next-spawn cleanup?\n4. Should I commit `pesde.lock` and the package folder, or gitignore the packages? There's no git repo here yet, so this only matters if you plan to add one.",
+ "cost": 0.09041280000000002,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14858,
+  "cache_read_input_tokens": 50788,
+  "output_tokens": 2589,
+  "output_tokens_details": {
+   "thinking_tokens": 464
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14858,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1910,
+    "cache_read_input_tokens": 23797,
+    "cache_creation_input_tokens": 812,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 812
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

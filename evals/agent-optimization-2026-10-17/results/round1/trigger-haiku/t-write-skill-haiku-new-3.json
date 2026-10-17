@@ -1,0 +1,119 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10342
+  ],
+  [
+   "roblox-vide/resource.yaml",
+   1695
+  ],
+  [
+   "roblox-vide/SKILL.md",
+   7099
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "<new-plugin>\\skills\\roblox-resource-acquisition\\**\\*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-3\\.claude\\skills\\roblox-vide\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-3\\.claude\\skills\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "ToolSearch",
+   ""
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ]
+ ],
+ "denials": [
+  [
+   "Glob",
+   "<new-plugin>\\skills\\roblox-resource-acquisition\\**\\*"
+  ]
+ ],
+ "result": null,
+ "cost": 0.006279460000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 21110,
+  "cache_read_input_tokens": 48136,
+  "output_tokens": 3151,
+  "output_tokens_details": {
+   "thinking_tokens": 1880
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21110,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1546,
+    "cache_read_input_tokens": 21657,
+    "cache_creation_input_tokens": 8620,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8620
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

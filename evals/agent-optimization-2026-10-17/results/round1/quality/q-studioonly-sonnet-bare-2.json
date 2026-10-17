@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "bare",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I understand you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and change every place that calls or references it, so nothing still uses the old name. I'm assuming Rewards is a ModuleScript and that this is only a rename with no behavior change.\n\n**One question before I start (my recommendation first):**\n- Should the rename be clean, with no `GiveCoins` alias left behind? I recommend clean, because it's the only way to prove no callers were missed. The alternative is to keep `Rewards.GiveCoins = Rewards.AwardCoins` temporarily. That's safer if your two collaborators have unpublished edits that still call the old name.\n\nI haven't verified the exact tool names. I'm going from memory of Roblox's built-in Studio MCP server, and I'd check them against the tool list the server reports when I connect. By name, the tools are `list_roblox_studios`, `set_active_studio`, `search_game_tree`, `script_read`, `script_grep`, `multi_edit`, `execute_luau`, `get_console_output` and `start_stop_play`. If a name differs, I'd use the closest equivalent and tell you.\n\n## Plan\n\n1. **Connect to the right Studio.**\n   - Use `list_roblox_studios`, then `set_active_studio` on the one with Sword Arena (place ID 1234567890). This matters if you have several Studio windows open.\n\n2. **Read the target.**\n   - Use `search_game_tree` to find `ServerScriptService.Rewards`, and `script_read` to read its full source.\n   - Confirm that it's a ModuleScript and how `GiveCoins` is defined (`function Rewards.GiveCoins`, `Rewards.GiveCoins = function`, or a table field).\n   - I'd save the original source in my notes, because there's no git or Rojo to restore from.\n\n3. **Find every reference, not just direct calls.**\n   - Run `script_grep` across the whole place for `GiveCoins`. This also catches uses that aren't direct calls: `[\"GiveCoins\"]`, `:GiveCoins(`, local aliases like `local give = Rewards.GiveCoins`, destructuring, comments, and strings.\n   - Also search the instance tree (`search_game_tree` or `execute_luau` over `game:GetDescendants()`) for non-script uses: RemoteEvents, BindableFunctions or Attributes named `GiveCoins`. A RemoteEvent with that name is a separate API, so I'd list it for you rather than rename it.\n   - Sort the hits into definition, direct callers, indirect references (aliases and string lookups) and unrelated matches.\n   - Show you the list before editing.\n\n4. **Check for Team Create conflicts.**\n   - Re-read each script that will change immediately before editing it, so I don't overwrite a collaborator's edit made since step 2.\n   - Use `multi_edit` for each script, with exact-match replacements that only touch real references. Do the definition and all callers in one batch, so the game isn't left half-renamed for the other two editors.\n   - Leave unrelated matches alone, such as a different module's own `GiveCoins`.\n\n5. **Verify it worked.**\n   - **Static check:** rerun the `script_grep` for `GiveCoins`. The expected result is zero hits, apart from anything I deliberately left, which I'd report. Run another for `AwardCoins`, and confirm the hit count equals the definition plus the callers I edited.\n   - **Syntax and load check:** use `execute_luau` to `require` the Rewards module and assert that `type(m.AwardCoins) == \"function\"` and `m.GiveCoins == nil`. I'd also load each edited script with `loadstring` or a source check to catch typos.\n   - **Runtime check:** run `get_console_output` before and after a `start_stop_play` playtest. Trigger a coin award through the normal path if one is easy to reach, and look for \"attempt to call a nil value\" or \"GiveCoins is not a valid member\" errors. I can only test paths the playtest actually reaches, so I'd flag callers I couldn't exercise.\n\n6. **Report back.**\n   - List every script and line changed, the verification results, and anything skipped or uncertain. Examples are string-built lookups, remotes with the same name, and callers that only run in specific game states.\n   - Tell you to publish or save so the other two editors get the change, and to warn them. I wouldn't publish on my own.\n\n**Limits:**\n- There's no source control, so the rollback is the original text I saved in step 2 plus Studio's version history.\n- If another editor adds a new `GiveCoins` call after my final grep, the rename will miss it. Once the change is published, it's worth asking them to use `AwardCoins`.",
+ "cost": 0.0518951,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7429,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2120,
+  "output_tokens_details": {
+   "thinking_tokens": 540
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7429,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2120,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7429,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7429
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

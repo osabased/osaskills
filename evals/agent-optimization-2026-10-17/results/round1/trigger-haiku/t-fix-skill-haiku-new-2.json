@@ -1,0 +1,111 @@
+{
+ "id": "t-fix-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-vide skill told me to use show() the wrong way, fix the skill",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-vide/SKILL.md",
+   7099
+  ],
+  [
+   "roblox-vide/references/api-and-lifecycle.md",
+   7481
+  ],
+  [
+   "roblox-vide/resource.yaml",
+   1695
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/roblox-vide/**"
+  ],
+  [
+   "Grep",
+   "show\\("
+  ],
+  [
+   "Read",
+   "<runs>\\t-fix-skill-haiku-new-2\\.claude\\skills\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-fix-skill-haiku-new-2\\.claude\\skills\\roblox-vide\\references\\api-and-lifecycle.md"
+  ],
+  [
+   "Glob",
+   "**/{show,apply,init}.luau"
+  ],
+  [
+   "Glob",
+   "**/roblox-vide/SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-fix-skill-haiku-new-2\\.claude\\skills\\roblox-vide\\resource.yaml"
+  ]
+ ],
+ "denials": [
+  [
+   "Glob",
+   "**/roblox-vide/SKILL.md"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00482008,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16169,
+  "cache_read_input_tokens": 45168,
+  "output_tokens": 2268,
+  "output_tokens_details": {
+   "thinking_tokens": 1195
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16169,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1104,
+    "cache_read_input_tokens": 18682,
+    "cache_creation_input_tokens": 6654,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6654
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

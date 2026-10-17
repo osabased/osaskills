@@ -1,0 +1,71 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "Janitor|Trove|Maid"
+  ],
+  [
+   "Read",
+   "<runs>\\t-compare-haiku-new-1\\pesde.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "**Use Janitor.** The project already uses it: `CLAUDE.md` names it as the cleanup-ownership library, and `pesde.toml` pins it (`Janitor = \"=1.17.0\"`). Trove isn't a dependency. Adding it would give you two cleanup systems with different ownership rules, and nothing in the project needs that.\n\nFor UI code specifically:\n\n- **Vide-created effects and scopes clean up after themselves.** Don't add those to a Janitor, or add only an idempotent disposer, since Janitor's cleanup order is unspecified.\n- **Connections, tasks, and instances outside Vide's scopes** (`RunService`, remote listeners, `task.spawn` loops, instances you create by hand) go in a Janitor, typically one per screen or component. Add threads with `janitor:Add(thread, true)`.\n- **Use a separate Janitor for producers.** If a remote listener feeds a UI, clean the listener's Janitor before the UI's, so nothing fires into a half-torn-down view.\n\nVersion caveat: the `roblox-janitor` skill targets 1.18.3, but the project pins 1.17.0. I kept to the API the skill documents for the core calls (`Janitor.new`, `Add`, `Remove`, `Cleanup`, `Destroy`, `LinkToInstance`), but I couldn't check the 1.17.0 source from here, so confirm those calls against the installed package before relying on them. If you want the 1.18.3 skill's behavior, that's an upgrade through the `roblox-resource-acquisition` flow, and I'd leave the pin alone until you decide that.\n\nI haven't compared Trove's current API or version in this session, so I'm not claiming anything about its behavior beyond what it is.",
+ "cost": 0.0035817100000000005,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 12183,
+  "cache_read_input_tokens": 26471,
+  "output_tokens": 1760,
+  "output_tokens_details": {
+   "thinking_tokens": 878
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12183,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1097,
+    "cache_read_input_tokens": 17304,
+    "cache_creation_input_tokens": 4046,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4046
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

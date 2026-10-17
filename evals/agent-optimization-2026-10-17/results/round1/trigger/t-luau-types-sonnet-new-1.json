@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a variable's type inside a branch when the condition proves something about it. `typeof(x) == \"...\"` is one of the conditions it recognizes.\n\n```luau\nlocal function describe(value: string | number | nil)\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper()      -- value: string\n\telseif typeof(value) == \"number\" then\n\t\treturn value + 1          -- value: number\n\tend\n\treturn \"nothing\"              -- value: nil\nend\n```\n\n**How it works**\n- The checker narrows the variable by intersecting its declared type with what the comparison implies. In the `then` branch, `value` is `string`. In the `else` branch, `string` is removed from the union.\n- It works with `if`/`elseif`/`else`, `and`/`or`, `not`, and early returns. After `if typeof(x) ~= \"string\" then return end`, `x` is `string` for the rest of the scope.\n- `typeof(x) == \"nil\"` and `x == nil` both narrow, and truthiness (`if x then`) removes `nil` and `false`.\n\n**`type` vs `typeof`**\n- Both narrow the built-in tags: `\"string\"`, `\"number\"`, `\"boolean\"`, `\"nil\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"buffer\"`, and `\"vector\"`.\n- `typeof` also returns Roblox datatype names such as `\"Vector3\"`, `\"CFrame\"`, and `\"Instance\"`. It's the right one in Roblox code, since `type()` just returns `\"userdata\"` for those.\n\n**Limits**\n- The comparison string has to be a literal. `typeof(x) == someVariable` won't narrow.\n- It narrows `typeof(x)` on a local, a parameter, or a property path like `a.b`. A call such as `typeof(f())` isn't tracked, so store the result in a local first.\n- Narrowing doesn't survive writes to the variable or a function call that might mutate a table field. Property-path refinements are discarded after the path may have changed.\n- `typeof(x) == \"Instance\"` only tells you it's an Instance. To narrow to a class like `Part`, use `x:IsA(\"Part\")`. That narrows when `x` is an Instance-derived type.\n- For tables, `typeof(x) == \"table\"` narrows to the table members of a union, but it can't tell two table shapes apart. For that, check a discriminant field, such as `if msg.kind == \"hit\" then`, which refines tagged unions.\n- `any` doesn't narrow usefully in the old solver. It can become the checked type in the new solver, but don't rely on that. Prefer `unknown`, which forces you to refine before use:\n\n```luau\nlocal function parse(input: unknown): number\n\tif typeof(input) == \"number\" then\n\t\treturn input\n\telseif typeof(input) == \"string\" then\n\t\treturn tonumber(input) or 0\n\tend\n\treturn 0\nend\n```\n\nI haven't run these snippets through luau-lsp or the analyzer in this project. Run `bash scripts/check.sh` if you want to try them. Edge cases, especially around Roblox classes, differ between the old and new type solvers.",
+ "cost": 0.0439727,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7363,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1360,
+  "output_tokens_details": {
+   "thinking_tokens": 335
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7363,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1360,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7363,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7363
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

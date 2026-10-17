@@ -1,0 +1,86 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10342
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-sonnet-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's what I think you want. Correct me if I've got it wrong. You want a project-scoped `roblox-fusion` skill in `.claude/skills/`. It would follow the same contract as `roblox-vide` and `roblox-janitor`, so agents use Fusion's real API at one pinned version and don't mix in Vide or React idioms.\n\nTwo things block me from writing it yet:\n\n- **No source access.** The skill's rules say the API table must come from the pinned release's canonical source, not from memory. This session has no web tools, so I can't read the Fusion repo or docs. Fusion's API also changed a lot between 0.2 and 0.3 (`Value`/`Computed`/`Observer` became scopes, `scope:Value`, `scoped()`, and so on). Writing from memory risks teaching agents the wrong version.\n- **Fusion isn't in this project.** `pesde.toml` and the code don't use it, and the project's UI library is Vide. The skill would be advice-only, with nothing for the pin check to bind to.\n\nQuestions, with my recommendation first:\n\n1. **Version to pin.** I recommend Fusion 0.3.0, the current stable release. The other option is 0.2.x if you have legacy code on it. Is 0.3.0 right?\n2. **How the project declares it.** I recommend the Wally index package through pesde (`pesde-wally` profile), because the project already uses pesde. The alternatives are `pesde-git` or plain `wally`. Which should I use?\n3. **Source for the API.** I recommend that you paste or point me to the 0.3.0 docs or source, or enable a fetch tool. If you'd rather I write it from what I know, I'll mark the API table unverified, and I don't recommend that.\n4. **Scope of the skill.** I recommend `claude_scope: advice-only`, since no fixture runs. It would also include a routing note: use Vide for this project's UI, and use the Fusion skill only when Fusion is declared. Should it be advice-only, and should I add that note?\n5. **Catalog.** Should I also draft it for `osabased/osaskills` so other projects can clone it? I recommend not yet. We can propose it after the skill passes validation.\n\nOnce you answer, I'll write `SKILL.md`, `resource.yaml` and the references. Then I'll run `validate_skill.py` and the fresh-subagent behavior checks. For those I'd use Sonnet at medium effort, and I'll tell you before I spawn them.",
+ "cost": 0.0918977,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17315,
+  "cache_read_input_tokens": 44557,
+  "output_tokens": 1817,
+  "output_tokens_details": {
+   "thinking_tokens": 497
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17315,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1061,
+    "cache_read_input_tokens": 18851,
+    "cache_creation_input_tokens": 7631,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7631
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

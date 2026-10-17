@@ -1,0 +1,86 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ],
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-playtest-haiku-new-1\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ]
+ ],
+ "denials": [],
+ "result": "Bash is disabled in this session, so I couldn't run the skill's update check. That doesn't affect the answer. The steps below come from the skill's verification notes for Studio MCP play-tests. They're documented for October 2026, so check the server's tool list against them.\n\n**Steps to test the shop button:**\n\n1. **Confirm Studio has your current code.** In Edit mode, read the shop's script `Source` with `script_read` or `execute_luau`. If you use Rojo or Script Sync, make sure the dev build is being served or Script Sync is running. A commit hash doesn't tell you what Studio has loaded.\n2. **List the MCP tools** so you use the names your server actually exposes.\n3. **Start a play-test** with `start_stop_play`. Changes made during Play are discarded when it stops, so make code edits in Edit mode first.\n4. **Find the button path** with `search_game_tree`, for example `LocalPlayer.PlayerGui.<ShopGui>.<BuyButton>`.\n5. **Click it with real input** using `user_mouse_input` and that `instance_path`. Calling the button's handler directly only tests the handler, not the click.\n6. **Check the result on the server.** The purchase or grant usually happens server-side, so use `inspect_instance` on the Server datamodel (currency, inventory, leaderstats) and `get_console_output` for errors.\n7. **Stop the play session** when you're done. Only stop sessions you started.\n\n**Timing gotcha:** the first `execute_luau` after Play can return 7 to 15 seconds in, so short-lived UI may be gone by then. If you need to catch a brief state, have a dev-only module connect the button's `Activated` signal and append timestamped lines to a `StringValue` under `LocalPlayer`. Then read that value after the click. Don't `require` your game's modules from `execute_luau` during a play-test, because that creates a second copy with its own state.\n\n**Limits:** a play-test can't fully test real purchases. Marketplace prompts and mocked DataStores may behave differently from live, so expect some console noise and treat purchase results as unverified.\n\nIf you share the shop's LocalScript or ModuleScript and its ScreenGui path, I can tell you the exact `instance_path` and what to check on the server. Is the shop code in Studio only, or synced with Rojo or Script Sync?",
+ "cost": 0.00451152,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15112,
+  "cache_read_input_tokens": 47102,
+  "output_tokens": 2035,
+  "output_tokens_details": {
+   "thinking_tokens": 792
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15112,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1347,
+    "cache_read_input_tokens": 20465,
+    "cache_creation_input_tokens": 3814,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3814
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

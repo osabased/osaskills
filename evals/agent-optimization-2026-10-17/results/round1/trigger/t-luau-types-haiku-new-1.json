@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a value's type inside branches that check it with `typeof`, so you don't need casts to use it safely.\n\n```lua\n--!strict\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper() -- value: string here\n\telseif typeof(value) == \"number\" then\n\t\treturn tostring(value * 2) -- value: number here\n\telse\n\t\treturn \"nothing\" -- value: nil here\n\tend\nend\n```\n\n**How it works**\n\n- In the `then` branch, the checked variable has the narrowed type. In `else`, the type is the remaining union members.\n- `not`, `and`, `or`, and `~=` all participate. `typeof(x) ~= \"number\"` narrows in the `else` branch.\n- Early returns narrow the rest of the function:\n\n```lua\nlocal function double(value: string | number): number\n\tif typeof(value) ~= \"number\" then\n\t\treturn 0\n\tend\n\treturn value * 2 -- value: number from here on\nend\n```\n\n- Field access works too. `typeof(config.port) == \"number\"` narrows `config.port` in that block, as long as you don't reassign it in between.\n\n**Roblox specifics**\n\n- `typeof` on Roblox values returns datatype names, not just Lua primitives: `\"Vector3\"`, `\"CFrame\"`, `\"Color3\"`, `\"Instance\"`, and so on. Those checks refine too:\n\n```lua\nif typeof(target) == \"Instance\" then\n\t-- target: Instance\nend\n```\n\n- Checking `typeof(x) == \"Instance\"` only narrows to `Instance`. It doesn't tell you the class. Use `x:IsA(\"BasePart\")` at runtime, and cast with `:: BasePart` or a type guard if you need the specific type.\n- `typeof` returns `\"table\"` for every table, so it can't tell apart two table shapes. For that, use a discriminant field in a tagged union:\n\n```lua\ntype Ok = { kind: \"ok\", value: number }\ntype Err = { kind: \"err\", message: string }\ntype Result = Ok | Err\n\nlocal function show(r: Result): string\n\tif r.kind == \"ok\" then\n\t\treturn tostring(r.value) -- r: Ok\n\tend\n\treturn r.message -- r: Err\nend\n```\n\n**Limits**\n\n- Narrowing applies to locals and parameters. A variable that a closure might reassign can lose its narrowed type, so copy it into a local first.\n- Narrowing doesn't persist across yields or function calls for mutable table fields. Re-check after anything that could change the value.\n- `typeof` checks are runtime checks too. They narrow the type for the checker and also guard the code path at runtime.\n\nIf you paste a snippet that isn't narrowing the way you expect, I can look at why. I haven't checked these examples against the project's Luau version.",
+ "cost": 0.00264007,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8136,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1842,
+  "output_tokens_details": {
+   "thinking_tokens": 934
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8136,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1842,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8136,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8136
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

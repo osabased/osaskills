@@ -1,0 +1,67 @@
+{
+ "id": "t-neg-tween",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{lua,luau,rbxmx,rbxlx,json}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-sonnet-old-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "I couldn't find a GUI in the project. The only client script, `src/client/init.client.luau`, just prints `\"client\"`, and there are no GUI files. Before I write anything, I need a few answers.\n\n1. **Which GUI?** (Recommended: I create a new `ScreenGui` with a `Frame` in code and fade that in.) Or tell me the path or name of an existing GUI, for example `PlayerGui.MainMenu`.\n2. **Where should the script go?** (Recommended: `src/client/init.client.luau`, replacing the placeholder print.) Or a separate module you can call as `fadeIn(gui)`.\n3. **Duration and easing?** (Recommended: 0.5 seconds, `Quad`, `Out`.) Or give me your own values.\n4. **What should fade?** (Recommended: the root frame plus all descendants, including text and images, so nothing pops in.) Or only the root frame's background.\n5. **When should it fade in?** (Recommended: right when the GUI is created or the player loads.) Or on an event, such as a button click.\n\nSay \"go with the recommendations\" and I'll use the first option for each.",
+ "cost": 0.0437832,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8236,
+  "cache_read_input_tokens": 43172,
+  "output_tokens": 651,
+  "output_tokens_details": {
+   "thinking_tokens": 91
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8236,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 375,
+    "cache_read_input_tokens": 17254,
+    "cache_creation_input_tokens": 149,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 149
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

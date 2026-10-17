@@ -1,0 +1,67 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "Trove|Janitor"
+  ]
+ ],
+ "denials": [],
+ "result": "**Use Janitor.** The project already depends on it (`pesde.toml` pins `Janitor = \"=1.17.0\"`), and `CLAUDE.md` names it as the cleanup library. Trove isn't in the project, so adding it would mean a second cleanup library for the same job.\n\nFor UI code specifically:\n\n- **Vide scopes clean up their own effects.** Don't add every Vide effect to a Janitor. If you need to tear down a mounted tree yourself, add its mount disposer with `janitor:Add(dispose, true)`, and make `dispose` idempotent, since Janitor's cleanup order is unspecified.\n- **Use Janitor for your own connections, instances, and threads**, such as `RunService` or `UserInputService` connections, and threads you spawn (`janitor:Add(task.spawn(...), true)`).\n- **Keep cleanup callbacks non-throwing.** If one throws, the rest are skipped and later `Cleanup()` calls silently do nothing. Wrap risky callbacks in `pcall`.\n\nThe project pins Janitor 1.17.0, but the `roblox-janitor` skill targets 1.18.3. I haven't checked the 1.17.0 API, so confirm any specific method signature against the pinned source before relying on it. Keep the pin unless you want to upgrade through the `roblox-resource-acquisition` flow.",
+ "cost": 0.0034788400000000004,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 12113,
+  "cache_read_input_tokens": 26534,
+  "output_tokens": 1581,
+  "output_tokens_details": {
+   "thinking_tokens": 929
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12113,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 596,
+    "cache_read_input_tokens": 17367,
+    "cache_creation_input_tokens": 3913,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3913
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

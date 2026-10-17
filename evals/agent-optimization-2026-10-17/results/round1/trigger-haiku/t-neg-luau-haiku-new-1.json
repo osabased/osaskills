@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**Type refinement** means Luau narrows a variable's type inside a branch based on a check you wrote. The type checker does this for `typeof` checks, so a union-typed value can be used safely once you've confirmed which member it is.\n\n```lua\nlocal function describe(value: string | number)\n\tif typeof(value) == \"string\" then\n\t\t-- value is `string` here, so string methods are allowed\n\t\treturn value:upper()\n\tend\n\t-- value is `number` here: the else-branch gets the remainder of the union\n\treturn value * 2\nend\n```\n\nWithout the check, `value:upper()` and `value * 2` would both be type errors, because the checker can't know which member of `string | number` it is.\n\n### Common forms\n\n```lua\n-- Early return: value is narrowed for the rest of the function\nlocal function setSpeed(speed: number?)\n\tif typeof(speed) ~= \"number\" then\n\t\treturn\n\tend\n\t-- speed: number\n\thumanoid.WalkSpeed = speed\nend\n\n-- Combined with `and`: the right side sees the narrowed type\nif typeof(data) == \"table\" and data.name then\n\tprint(data.name)\nend\n\n-- Truthiness removes nil (and false) from a union\nlocal function greet(name: string?)\n\tif name then\n\t\treturn \"Hi \" .. name -- name: string\n\tend\n\treturn \"Hi\"\nend\n```\n\n### `typeof` vs `type`\n\nIn Roblox Luau, `typeof` returns the Roblox type for userdata-like values, while `type` returns `\"userdata\"`:\n\n```lua\ntypeof(Vector3.new()) -- \"Vector3\"\ntype(Vector3.new())   -- \"userdata\"\ntypeof(workspace)     -- \"Instance\"\n```\n\nPrefer `typeof` in Roblox code. It's the one the checker refines on for these values.\n\n### Narrowing Instances\n\n`typeof(x) == \"Instance\"` only narrows to `Instance`. To narrow to a class, use `IsA`, which the checker also refines on:\n\n```lua\nlocal function onTouched(part: BasePart?)\n\tif part and part:IsA(\"Model\") then\n\t\t-- not valid: BasePart and Model are unrelated, so this narrows to nothing useful\n\tend\nend\n\nlocal function weld(target: Instance)\n\tif target:IsA(\"BasePart\") then\n\t\t-- target: BasePart here\n\t\ttarget.Anchored = false\n\tend\nend\n```\n\n### Limits to know about\n\n- **Refinement is flow-sensitive.** It lasts only as long as the variable isn't reassigned on that path. If the variable is changed after the check, the checker stops trusting the earlier narrowing.\n- **Field access is less reliable than locals.** `if typeof(config.speed) == \"number\"` can narrow, but a function call in between can invalidate it. Copy to a local first:\n  ```lua\n  local speed = config.speed\n  if typeof(speed) == \"number\" then\n      -- reliable\n  end\n  ```\n- **Closures are conservative.** If a captured variable is reassigned anywhere, the checker won't carry an earlier refinement into a function defined inside the branch. Re-check inside the closure or bind the narrowed value to a new local.\n- **`typeof` doesn't check table shape.** `typeof(t) == \"table\"` narrows to a table type but says nothing about its fields. Use an explicit type annotation or a type guard function for structure.\n\n### Practical pattern\n\nFor values from untrusted sources, such as remote arguments or decoded data, check with `typeof` at the boundary and annotate the result. Downstream code then gets a precise type without repeated checks:\n\n```lua\ntype Payload = { amount: number, label: string }\n\nlocal function parsePayload(raw: unknown): Payload?\n\tif typeof(raw) ~= \"table\" then\n\t\treturn nil\n\tend\n\tlocal amount = raw.amount\n\tlocal label = raw.label\n\tif typeof(amount) ~= \"number\" or typeof(label) ~= \"string\" then\n\t\treturn nil\n\tend\n\treturn { amount = amount, label = label }\nend\n```\n\nNote that `unknown` is in Luau's newer type syntax. If your version of the type checker doesn't support it, use `any` for the parameter.",
+ "cost": 0.00294947,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8293,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2398,
+  "output_tokens_details": {
+   "thinking_tokens": 1057
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8293,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2398,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

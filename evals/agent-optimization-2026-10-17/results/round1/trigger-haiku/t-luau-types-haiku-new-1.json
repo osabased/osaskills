@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "In Luau, a `typeof` check narrows a variable's type inside the branch that the check guards. The type checker reads the condition and treats the variable as that type in the matching branch.\n\n```lua\n--!strict\nlocal function double(value: string | number): string | number\n\tif typeof(value) == \"number\" then\n\t\treturn value * 2 -- value is number here\n\tend\n\treturn value .. value -- value is string here: the else side keeps what's left\nend\n```\n\n**Key behaviors**\n\n- **Positive branch:** `if typeof(x) == \"number\" then` narrows `x` to `number`.\n- **Else branch:** the remaining union members are what's left. For `string | number`, the else branch sees `string`.\n- **Early return:** a guard clause narrows everything after it.\n  ```lua\n  local function setAge(age: any)\n  \tif typeof(age) ~= \"number\" then\n  \t\treturn\n  \tend\n  \t-- age is number from here on\n  end\n  ```\n- **Roblox instances:** `typeof` returns `\"Instance\"` for instances, not the class name. Check the class with `:IsA()` after the `typeof` check:\n  ```lua\n  if typeof(hit) == \"Instance\" and hit:IsA(\"BasePart\") then\n  \thit.Anchored = true -- hit is BasePart here\n  end\n  ```\n- **`type()` works too:** `type(x) == \"string\"` refines the same way. For Roblox values, `type()` returns `\"userdata\"`, so prefer `typeof` there.\n- **Truthiness and nil checks** also refine: `if x then` removes `nil` and `false` from a union, and `if x ~= nil then` removes `nil`.\n\n**Gotchas**\n\n- **Compare against a literal.** The narrowing only works when the string is a literal written in the condition. Storing the result first breaks it:\n  ```lua\n  local kind = typeof(x)\n  if kind == \"number\" then\n  \tx + 1 -- not narrowed: x is still the full union, so this is a type error\n  end\n  ```\n- **Reassignment resets narrowing.** After `x = something`, `x` takes the type of the new value, and earlier checks no longer apply to it.\n- **Use `--!strict`.** Without it, unannotated code is often `any`, and refinement has nothing to narrow from.\n- **Refinement doesn't check at runtime differently.** It only helps the type checker. The `typeof` call still runs, so the guard also protects you at runtime, but a wrong annotation won't be caught by the checker alone.\n\nIf you have a specific case where the type doesn't narrow as you expect, paste the code and I'll check which of these it is.",
+ "cost": 0.00267557,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8136,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1913,
+  "output_tokens_details": {
+   "thinking_tokens": 1060
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8136,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1913,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8136,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8136
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

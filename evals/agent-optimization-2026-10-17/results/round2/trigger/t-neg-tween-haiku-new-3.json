@@ -1,0 +1,83 @@
+{
+ "id": "t-neg-tween",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,rbxmx,rbxlx,project.json,server.lua,client.lua,json,txt,md}"
+  ],
+  [
+   "Grep",
+   "ScreenGui|Frame|TextLabel|TextButton|ImageLabel"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "I couldn't find the GUI, so I haven't written the animation yet.\n\n**What I think you want:** a client-side `TweenService` tween that takes a GUI from fully transparent to visible when the game starts or the GUI first appears.\n\n**What I found:** the project only has placeholder scripts (`src/client/init.client.luau`, `src/server/init.server.luau`, and an empty `src/shared/init.luau`). `default.project.json` maps those folders into `ReplicatedStorage` and `ServerScriptService`. No ScreenGui, Frame, or other UI is defined in the code, and there are no `.rbxm` or `.rbxl` files here.\n\nQuestions, with my recommended option first:\n\n1. **Which GUI?** Give me its name and where it lives. Is it a ScreenGui in Studio, or should I build one in code? If it's in Studio, tell me its path (for example `StarterGui.MainMenu`).\n2. **What should fade?** The whole ScreenGui (every descendant), or one root frame? Fading the whole tree is the simplest option and covers text, images, and strokes.\n3. **Duration and easing?** I'd use 0.5 seconds with `Quad` / `Out`.\n4. **When should it fade in?** On client start, when the player spawns, or from an event you name? I'd use client start.\n5. **Should it also fade the text and image transparency?** I'd fade `BackgroundTransparency`, `TextTransparency`, `ImageTransparency`, and `UIStroke.Transparency`, so the content fades along with the background.\n\nOnce you answer, I'll write the LocalScript or ModuleScript in `src/client`, using `TweenService` on each GUI element.",
+ "cost": 0.0041699400000000005,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13536,
+  "cache_read_input_tokens": 48514,
+  "output_tokens": 1954,
+  "output_tokens_details": {
+   "thinking_tokens": 727
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13536,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1084,
+    "cache_read_input_tokens": 21878,
+    "cache_creation_input_tokens": 825,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 825
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

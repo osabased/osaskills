@@ -1,0 +1,78 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ],
+  [
+   "Grep",
+   "pesde"
+  ]
+ ],
+ "denials": [],
+ "result": "No, not directly. Script Sync can't use a synced pesde install folder. This was verified in Studio 0.743 with pesde 0.7.4, per the skill's reference notes. I didn't re-test it here.\n\n**Why it fails**\n- **Dot-prefixed folders:** Script Sync skips directories whose names start with a dot, so `.pesde` never syncs.\n- **Link modules:** pesde's link modules require into `.pesde`, so the synced links break.\n- **Project files:** Script Sync ignores each package's `default.project.json`.\n- **Test runners:** Bundled runners such as `*.server.lua` would sync as Scripts that actually run.\n\n**What to do instead**\n1. Keep the packages folder outside your synced roots (`server/`, `shared/`, `client/`).\n2. Build the packages into a model with `rojo build` from the install folder.\n3. Insert that model into the place, for example under `ReplicatedStorage`.\n4. Rebuild and re-insert it after each `pesde install`.\n\nThis still doesn't need a Rojo project file for your code. Don't add one just for packages, because it invites `rojo serve` as a second sync system on the same content. The `rojo build` step only turns the install folder into a model.\n\n**Two caveats**\n- **Replication:** Anything under `ReplicatedStorage` reaches clients, so put server-only packages in `ServerStorage` or `ServerScriptService`.\n- **Studio-side data:** The package model exists only in Studio, so your disk-side checks won't see it. `luau-lsp` also won't resolve requires into it unless you give it a sourcemap.\n\nI haven't touched anything in your project. I can set up the package build step if you want it, but there are choices to make first. These are where the model goes in the DataModel, whether it's committed or rebuilt per install, and whether it's wired into a check command.",
+ "cost": 0.07292560000000001,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14528,
+  "cache_read_input_tokens": 45916,
+  "output_tokens": 1021,
+  "output_tokens_details": {
+   "thinking_tokens": 64
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14528,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 612,
+    "cache_read_input_tokens": 19798,
+    "cache_creation_input_tokens": 3897,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3897
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

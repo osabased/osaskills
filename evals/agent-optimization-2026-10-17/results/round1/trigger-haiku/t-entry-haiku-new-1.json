@@ -1,0 +1,79 @@
+{
+ "id": "t-entry",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-1\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "The client entrypoint is in the wrong place in the Rojo config, and it won't run where it is now.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Scripts under ReplicatedStorage never run. Because `src/client/init.client.luau` makes the folder itself a LocalScript, that LocalScript sits in ReplicatedStorage and stays idle. The server side is fine: `src/server` maps to `ServerScriptService.Server` and runs as a Script.\n\nThe client entrypoint belongs in `StarterPlayer.StarterPlayerScripts`, which runs once per player. The fix is in `default.project.json`:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n}\n```\n\nThe file itself can stay at `src/client/init.client.luau`. `src/shared` can remain under ReplicatedStorage, since both client and server need to require it from there.\n\nI haven't edited anything. Do you want me to make that change to `default.project.json`?",
+ "cost": 0.00417547,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12494,
+  "cache_read_input_tokens": 47557,
+  "output_tokens": 2401,
+  "output_tokens_details": {
+   "thinking_tokens": 1514
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12494,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1765,
+    "cache_read_input_tokens": 20936,
+    "cache_creation_input_tokens": 725,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 725
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

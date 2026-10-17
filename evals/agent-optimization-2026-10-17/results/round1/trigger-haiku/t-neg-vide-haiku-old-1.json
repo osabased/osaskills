@@ -1,0 +1,85 @@
+{
+ "id": "t-neg-vide",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a Vide component for an inventory list with a toggle button",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-vide"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-vide"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,wally.toml,*.project.json,CLAUDE.md,src/**/*.luau,src/**/*.lua}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-old-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.004189770000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15565,
+  "cache_read_input_tokens": 51117,
+  "output_tokens": 1130,
+  "output_tokens_details": {
+   "thinking_tokens": 610
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15565,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 315,
+    "cache_read_input_tokens": 24421,
+    "cache_creation_input_tokens": 311,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 311
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

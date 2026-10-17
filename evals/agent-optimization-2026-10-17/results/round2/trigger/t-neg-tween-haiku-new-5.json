@@ -1,0 +1,98 @@
+{
+ "id": "t-neg-tween",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "read:motion-studies"
+ ],
+ "reads": [
+  [
+   "motion-studies/SKILL.md",
+   3470
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-5\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-5\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Grep",
+   "ScreenGui|Frame|TextLabel|TweenService"
+  ],
+  [
+   "Glob",
+   "*.{rbxl,rbxlx,rbxm,rbxmx}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-5\\.claude\\skills\\motion-studies\\SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00364934,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12574,
+  "cache_read_input_tokens": 47644,
+  "output_tokens": 1315,
+  "output_tokens_details": {
+   "thinking_tokens": 262
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12574,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 614,
+    "cache_read_input_tokens": 21008,
+    "cache_creation_input_tokens": 733,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 733
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

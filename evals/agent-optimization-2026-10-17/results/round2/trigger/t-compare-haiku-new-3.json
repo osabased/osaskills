@@ -1,0 +1,75 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "Janitor|Trove|Maid"
+  ],
+  [
+   "Glob",
+   "**/pesde.toml"
+  ],
+  [
+   "Grep",
+   "Trove"
+  ]
+ ],
+ "denials": [],
+ "result": "**Use Janitor.** The project already uses it, and `CLAUDE.md` names it as the cleanup owner. Trove isn't declared in `pesde.toml` or anywhere else in the repo, so picking it would mean adding a second cleanup library and migrating what's already there.\n\n- **Janitor is already wired in.** `pesde.toml:16` pins `Janitor = \"=1.17.0\"`, and `pesde.lock` agrees.\n- **Trove is not in the project.** The `roblox-resource-acquisition` skill has no Trove guidance beyond listing it as a candidate, and I haven't checked Trove's API against a pinned version here. If you want to compare them properly, I can run the acquisition flow to clone Trove's source and check its API.\n- **The Janitor skill targets a different version.** The `roblox-janitor` skill is written for 1.18.3, but the project pins 1.17.0. I'll stick to API I can confirm at 1.17.0 and not rely on the skill's 1.18.3 details. Upgrading to 1.18.3 would be a separate decision.\n- **Vide already cleans up its own effects.** For connections created inside Vide components, Vide scopes handle cleanup. Janitor is for connections that live outside a Vide scope. Add any Vide mount disposer to Janitor as an idempotent callback, since Janitor's cleanup order is unspecified.\n\nWant me to check the Janitor 1.17.0 API for a specific piece of UI code?",
+ "cost": 0.00450091,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14546,
+  "cache_read_input_tokens": 49561,
+  "output_tokens": 2191,
+  "output_tokens_details": {
+   "thinking_tokens": 1170
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14546,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1139,
+    "cache_read_input_tokens": 23085,
+    "cache_creation_input_tokens": 628,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 628
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,110 @@
+{
+ "id": "t-onboard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "read:motion-studies"
+ ],
+ "reads": [
+  [
+   "motion-studies/SKILL.md",
+   3470
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\src\\shared\\init.luau"
+  ],
+  [
+   "Glob",
+   "{AGENTS.md,CLAUDE.md,README*,.claude/*.md,.claude/settings*.json,.gitignore,.stylua*,selene.toml,aftman.toml,rokit.toml,.luaurc,*.toml,*.json}"
+  ],
+  [
+   "Glob",
+   ".*"
+  ],
+  [
+   "Glob",
+   ".claude/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-new-2\\.claude\\skills\\motion-studies\\SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00413495,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13624,
+  "cache_read_input_tokens": 47755,
+  "output_tokens": 1864,
+  "output_tokens_details": {
+   "thinking_tokens": 412
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13624,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 531,
+    "cache_read_input_tokens": 21114,
+    "cache_creation_input_tokens": 1677,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1677
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

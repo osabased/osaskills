@@ -1,0 +1,94 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Glob",
+   "*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-old-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Bash",
+   "python \"<runs>/t-folders-haiku-old-4/.claude/skills/structure-roblox-projects/scripts/check_updates.py\""
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "result": "You're asking how to lay out the two containers for a new game. I'm treating this as general guidance, using this repo's current `default.project.json` as the worked example.\n\n**The rule:** `ServerScriptService` holds code and data clients must never see. `ReplicatedStorage` holds code both sides need, and everything in it reaches clients.\n\n**What this project already does:**\n\n```\nServerScriptService/\n  Server/            <- src/server   (init.server.luau = Script, RunContext Server)\n    Coins.luau       server-only ModuleScript\n    Round.luau       server-only ModuleScript\nReplicatedStorage/\n  Shared/            <- src/shared   (Signal.luau, used by both sides)\n  Client/            <- src/client   (init.client.luau = Script, RunContext Client)\n    UI/              Vide components\n    State/           Charm state\n  Packages/          <- roblox_packages\n```\n\nThis layout is sound:\n- `emitLegacyScripts: false` is set, so `init.client.luau` builds as a client `Script` in `ReplicatedStorage`. That is the supported way to run client code from there. Without the setting, it would build as a `LocalScript` and never run.\n- Server logic lives in `ServerScriptService`, so clients can't read or require it.\n\n**Guidelines for a new game:**\n\n1. **Server-only** (`ServerScriptService`): round logic, coin/economy writes, DataStore access, purchase handling, validation of client input. Keep authoritative state here.\n2. **Shared** (`ReplicatedStorage/Shared`): types, constants, Remote definitions (names, payload shapes), and pure utilities. Assume exploiters can read every module here. Never put secrets or balance-changing logic in it.\n3. **Client** (`ReplicatedStorage/Client` or `StarterPlayerScripts`): UI and input. Clients request actions through Remotes; they never set authoritative values.\n4. **Packages**: third-party libraries. They reach clients too, so only use libraries that are safe to expose.\n5. **ServerStorage** (not mapped here yet): server-only templates and assets that you clone into the world.\n\n**Two things to watch:**\n- Put each Remote's definition in `Shared` so the client and server agree on names and payloads. Validate every incoming payload on the server.\n- Don't `require` a server module from client code, and don't rely on a module's state being shared between server and client. Each environment gets its own copy.\n\nI couldn't check whether the skill's placement reference has anything newer, because reading it was denied and Bash is disabled in this session, so the update check was skipped. I didn't change any files. If you're planning a bigger restructure or a new Remote layer, tell me and I can draft it.",
+ "cost": 0.004541760000000001,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12386,
+  "cache_read_input_tokens": 47296,
+  "output_tokens": 3182,
+  "output_tokens_details": {
+   "thinking_tokens": 1824
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12386,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2282,
+    "cache_read_input_tokens": 20762,
+    "cache_creation_input_tokens": 791,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 791
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,894 @@
+{
+ "q-scriptsync": {
+  "R1": {
+   "criteria": {
+    "S1": [
+     false,
+     "Recommends pointing pesde's packages directory at shared/Packages inside a synced root, which fails because Script Sync skips .pesde and ignores package project files."
+    ],
+    "S2": [
+     false,
+     "Never mentions that a .client.luau Script in StarterPlayerScripts runs twice or proposes .local.luau."
+    ],
+    "S3": [
+     false,
+     "Only says package files should show in Explorer after a sync; never says disk edits reach Studio only while the place is open and syncing, or checks Studio has the new controller source."
+    ],
+    "S4": [
+     false,
+     "Proposes stylua and selene but no type check, and never says Instance requires need a generated sourcemap."
+    ],
+    "S5": [
+     true,
+     "Resets several times, then adds temporary prints to confirm exactly one handler fires per press."
+    ],
+    "S6": [
+     false,
+     "Proposes a minimal default.project.json for the synced code as a fallback and recommends approving it."
+    ],
+    "S7": [
+     false,
+     "Uses one module-level Janitor reused across characters (Cleanup at the next onCharacter, or an indexed Add) rather than one Janitor per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     false,
+     "Edits nothing and claims no runs, but states as fact that packages under shared/Packages reach Studio and can be required, which the ground truth says fails."
+    ]
+   },
+   "overall": 3
+  },
+  "R2": {
+   "criteria": {
+    "S1": [
+     false,
+     "Leaves how Janitor reaches Studio as an open question (a synced mapping or placing it by hand), with no working route and no reason why syncing the install folder fails."
+    ],
+    "S2": [
+     false,
+     "Does not mention the double run of a .client.luau in StarterPlayerScripts."
+    ],
+    "S3": [
+     false,
+     "Never says Studio must be open and syncing for the disk edit to land, and doesn't check the source before testing."
+    ],
+    "S4": [
+     false,
+     "Only stylua and selene; no type check and no mention of a sourcemap for Instance requires."
+    ],
+    "S5": [
+     true,
+     "Resets a few times and checks that one connection remains, counting with a temporary print; the 'new character moves' check alone would not prove it."
+    ],
+    "S6": [
+     true,
+     "Adds no Rojo project file and no rojo serve."
+    ],
+    "S7": [
+     false,
+     "One module-level Janitor cleaned at each CharacterAdded, not a Janitor per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     true,
+     "Says it edited nothing and claims no runs; proportional, though it asserts as fact that connections fire oldest-first, an order Roblox does not guarantee."
+    ]
+   },
+   "overall": 3
+  },
+  "R3": {
+   "criteria": {
+    "S1": [
+     true,
+     "Explains that Script Sync skips the .pesde dot-directory, keeps packages at the repo root, and inserts a rojo build model into ReplicatedStorage, rebuilt after each install."
+    ],
+    "S2": [
+     false,
+     "Flags the .client.luau double run only as a risk to watch for in the play-test and proposes neither .local.luau nor moving the client root."
+    ],
+    "S3": [
+     true,
+     "Says Studio must be open with sync running when the file changes, so it runs the bytes on disk."
+    ],
+    "S4": [
+     false,
+     "Proposes stylua and selene only; no type check or sourcemap handling for Instance requires."
+    ],
+    "S5": [
+     true,
+     "Puts a temporary print before the cooldown, respawns three times, presses once and expects one line instead of four."
+    ],
+    "S6": [
+     true,
+     "Uses rojo only to build the package model and says it is not a second sync system."
+    ],
+    "S7": [
+     false,
+     "One module-level Janitor whose indexed Add('Dash') replaces the old connection each respawn, not a Janitor per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     true,
+     "Claims nothing ran, edits nothing, and keeps the change small."
+    ]
+   },
+   "overall": 7
+  },
+  "R4": {
+   "criteria": {
+    "S1": [
+     true,
+     "Explains the dot-folder skip and the ignored package project files, installs outside the synced roots, and inserts a rojo build model rebuilt after each install."
+    ],
+    "S2": [
+     false,
+     "Notes that a .client.luau in StarterPlayerScripts runs twice but calls it a separate bug and proposes no .local.luau or ReplicatedStorage move."
+    ],
+    "S3": [
+     true,
+     "Says to first confirm Studio is running the on-disk bytes before the play-test."
+    ],
+    "S4": [
+     true,
+     "Proposes stylua and selene and says luau-lsp analyze can't resolve the Instance require without a generated sourcemap, reporting it as a named gap."
+    ],
+    "S5": [
+     true,
+     "Print before the cooldown, three resets, one press, expect one print, plus a cleanup print per respawn."
+    ],
+    "S6": [
+     true,
+     "No Rojo project for the synced code; rojo build only for the package model."
+    ],
+    "S7": [
+     true,
+     "Creates a Janitor per character (indexed in a parent so the previous one is destroyed), adds the connection, links it with LinkToInstance(character), and pins =1.18.3."
+    ],
+    "S8": [
+     true,
+     "Claims nothing ran, edits nothing, and offers a check script only as an optional extra."
+    ]
+   },
+   "overall": 8
+  },
+  "R5": {
+   "criteria": {
+    "S1": [
+     false,
+     "Recommends mapping pesde's packages folder into Studio through Script Sync, which fails on the .pesde dot-directory; never mentions a built model."
+    ],
+    "S2": [
+     false,
+     "No mention of the .client.luau double run."
+    ],
+    "S3": [
+     false,
+     "Only checks that the Janitor package exists after sync; never says edits reach Studio only while the place is open and syncing."
+    ],
+    "S4": [
+     false,
+     "stylua and selene only; no type check or sourcemap."
+    ],
+    "S5": [
+     true,
+     "Respawns, then adds a temporary counter to count handlers directly, although player:LoadCharacter() can't be called from the client in Play."
+    ],
+    "S6": [
+     true,
+     "No Rojo project or rojo serve."
+    ],
+    "S7": [
+     true,
+     "A new Janitor per character, connection added, LinkToInstance(character), version =1.18.3."
+    ],
+    "S8": [
+     true,
+     "Says plainly it couldn't run anything and hedges its packaging recommendation; proportional."
+    ]
+   },
+   "overall": 4
+  },
+  "R6": {
+   "criteria": {
+    "S1": [
+     false,
+     "Proposes a new synced packages/ root mapped to ReplicatedStorage.Packages, which fails on the .pesde dot-directory; no built model."
+    ],
+    "S2": [
+     false,
+     "No mention of the .client.luau double run."
+    ],
+    "S3": [
+     false,
+     "Checks only that the package appears after sync, not that the edited controller source reached Studio."
+    ],
+    "S4": [
+     false,
+     "stylua and selene only, called the only static checks; no type check or sourcemap."
+    ],
+    "S5": [
+     true,
+     "Respawns three or four times and confirms Move runs exactly once per press with a temporary print, though it writes Players:LoadCharacter(), which is a Player method."
+    ],
+    "S6": [
+     true,
+     "No Rojo project or rojo serve."
+    ],
+    "S7": [
+     false,
+     "One module-level Janitor cleaned at each respawn, not a Janitor per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     false,
+     "No runs or edits claimed, but presents a new synced packages root as the working route without hedging, which the ground truth says fails."
+    ]
+   },
+   "overall": 3
+  },
+  "R7": {
+   "criteria": {
+    "S1": [
+     false,
+     "Recommends a new synced folder for pesde output; the insert-by-hand option has no build or rebuild step, and it never explains why syncing fails."
+    ],
+    "S2": [
+     false,
+     "No mention of the .client.luau double run."
+    ],
+    "S3": [
+     false,
+     "Never addresses whether Studio has the new source before testing."
+    ],
+    "S4": [
+     false,
+     "stylua and selene only; no type check or sourcemap."
+    ],
+    "S5": [
+     true,
+     "Adds a temporary counter or print in the callback and respawns several times to confirm one listener."
+    ],
+    "S6": [
+     true,
+     "No Rojo project or rojo serve."
+    ],
+    "S7": [
+     false,
+     "One module-level Janitor cleaned at the start of onCharacter, not a Janitor per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     false,
+     "No runs or edits claimed, but recommends a synced pesde output folder as the working route without hedging, which the ground truth says fails."
+    ]
+   },
+   "overall": 3
+  },
+  "R8": {
+   "criteria": {
+    "S1": [
+     false,
+     "Recommends pesde output in shared/Packages inside a synced root; it flags that the .pesde relative requires may not survive, but offers no route outside the synced roots."
+    ],
+    "S2": [
+     false,
+     "No mention of the .client.luau double run."
+    ],
+    "S3": [
+     false,
+     "Checks for a require error at Play but never says edits reach Studio only while open and syncing."
+    ],
+    "S4": [
+     false,
+     "Says strict typing of the require is only checked in Studio; no sourcemap."
+    ],
+    "S5": [
+     true,
+     "Counter print, several respawns, one press must fire exactly once, plus a mid-spawn reset test."
+    ],
+    "S6": [
+     true,
+     "No Rojo project or rojo serve."
+    ],
+    "S7": [
+     false,
+     "One module-level Janitor with an indexed Add plus Remove on CharacterRemoving, not one per character; version pinned =1.18.3."
+    ],
+    "S8": [
+     true,
+     "Says it ran nothing and hedges the packaging step; the CLAUDE.md entry and catalog check are small extras."
+    ]
+   },
+   "overall": 5
+  }
+ },
+ "q-studioonly": {
+  "R1": {
+   "criteria": {
+    "T1": [
+     true,
+     "Step 2 asks the user to 'Save to Roblox with Notes' first because there is no Git and that version is the only way back."
+    ],
+    "T2": [
+     true,
+     "Flags that Live Scripting pushes each edit to the two collaborators within seconds and asks the user to tell them about the rename."
+    ],
+    "T3": [
+     true,
+     "Runs script_grep for GiveCoins across the whole place and also covers string access, copied aliases and modules required under another name."
+    ],
+    "T4": [
+     true,
+     "Ensures Edit mode before editing because play-test edits are discarded, and checks each path because multi_edit would create a stray script."
+    ],
+    "T5": [
+     true,
+     "Starts with list_roblox_studios, picks the window for place ID 1234567890 and uses its studio_id for every call."
+    ],
+    "T6": [
+     true,
+     "Greps again for GiveCoins, reads Rewards.Source back, play-tests the coin path with get_console_output, reports the static rung as not run, and refuses to require modules during Play."
+    ],
+    "T7": [
+     false,
+     "Never mentions Script Sync or moving to files as a later step."
+    ],
+    "T8": [
+     true,
+     "States 'none of this has been run', invents no results, and the plan stays a rename plan."
+    ]
+   },
+   "overall": 9
+  },
+  "R2": {
+   "criteria": {
+    "T1": [
+     false,
+     "No version-history save or other checkpoint is requested before editing."
+    ],
+    "T2": [
+     true,
+     "Asks the other two editors to hold edits to Rewards and its callers and waits for the user to confirm they are paused."
+    ],
+    "T3": [
+     true,
+     "Searches the whole DataModel for GiveCoins, including string forms and require chains that reach Rewards."
+    ],
+    "T4": [
+     false,
+     "Neither checks target paths before editing nor says to edit in Edit mode rather than during a play-test."
+    ],
+    "T5": [
+     false,
+     "Does not identify or confirm which Studio window or place it is editing."
+    ],
+    "T6": [
+     false,
+     "Re-searches, reads back and play-tests, but never says static checks are unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files as a later step."
+    ],
+    "T8": [
+     true,
+     "Says it can't call the tools and hasn't checked their names; no invented results."
+    ]
+   },
+   "overall": 4
+  },
+  "R3": {
+   "criteria": {
+    "T1": [
+     false,
+     "Keeps the original line text for manual restore and says it would leave the place unsaved; it asks for no version-history save."
+    ],
+    "T2": [
+     false,
+     "Notes that Team Create syncs live, but only re-reads scripts before editing and never asks about coordinating or Drafts."
+    ],
+    "T3": [
+     true,
+     "Text-searches all script sources for GiveCoins and covers string-indexed access, pcall references and require aliases."
+    ],
+    "T4": [
+     false,
+     "Re-reads each script before editing but never says to edit in Edit mode rather than during a play-test."
+    ],
+    "T5": [
+     false,
+     "Does not confirm which Studio window or place it is editing."
+    ],
+    "T6": [
+     false,
+     "Requires Rewards from a Luau snippet in play mode as a runtime check, and treats diagnostics as available 'if the server offers them' rather than reporting them unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says it can't see the tool list and describes tools by capability; nothing claimed as run."
+    ]
+   },
+   "overall": 3
+  },
+  "R4": {
+   "criteria": {
+    "T1": [
+     false,
+     "Relies on Studio's ChangeHistory undo for recovery instead of asking for a version-history save."
+    ],
+    "T2": [
+     true,
+     "Asks the user to confirm nobody is editing those scripts, because of the overwrite risk with two other editors."
+    ],
+    "T3": [
+     true,
+     "Searches every container for GiveCoins as plain text and checks the Rewards require sites."
+    ],
+    "T4": [
+     false,
+     "Neither checks paths before editing nor states that it edits in Edit mode."
+    ],
+    "T5": [
+     false,
+     "No step to identify the right Studio or place."
+    ],
+    "T6": [
+     false,
+     "Re-searches, reads back and play-tests, but doesn't report static checks as unavailable (it calls the grep its 'Static check')."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says 'I haven't made any changes' and invents no results."
+    ]
+   },
+   "overall": 3
+  },
+  "R5": {
+   "criteria": {
+    "T1": [
+     false,
+     "Only saves the place at the end; no checkpoint before editing."
+    ],
+    "T2": [
+     true,
+     "Asks the two other editors to avoid these scripts, or checks whether they have them open, and lists overwriting their work as a risk."
+    ],
+    "T3": [
+     true,
+     "Searches the whole DataModel for GiveCoins, including destructured requires and string uses."
+    ],
+    "T4": [
+     false,
+     "No pre-edit path check and no statement about editing in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not confirm which Studio or place it targets."
+    ],
+    "T6": [
+     false,
+     "Re-searches, rereads and play-tests with the Output window, but never reports static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Calls its tool names descriptions to confirm later and claims nothing ran."
+    ]
+   },
+   "overall": 4
+  },
+  "R6": {
+   "criteria": {
+    "T1": [
+     false,
+     "No version-history save or checkpoint before editing."
+    ],
+    "T2": [
+     true,
+     "Says Team Create edits go live for everyone and recommends asking the teammates first."
+    ],
+    "T3": [
+     true,
+     "Scans every script's Source for the plain string GiveCoins and also checks attributes and remote names."
+    ],
+    "T4": [
+     false,
+     "No path check before writing and no mention of editing in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not confirm which Studio or place it is editing."
+    ],
+    "T6": [
+     false,
+     "Re-runs the query, rereads and play-tests, but does not report static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Calls its tool names placeholders and edits nothing without approval."
+    ]
+   },
+   "overall": 4
+  },
+  "R7": {
+   "criteria": {
+    "T1": [
+     false,
+     "Names version history as a way back but never asks for a save before editing."
+    ],
+    "T2": [
+     false,
+     "Guards against teammates with a Source hash re-read but never asks the user to coordinate or about Drafts."
+    ],
+    "T3": [
+     true,
+     "Greps all LuaSourceContainers for GiveCoins, covering aliases, string access and pcall references."
+    ],
+    "T4": [
+     false,
+     "Re-reads each script before writing but doesn't say to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "No step to pick or confirm the right Studio or place."
+    ],
+    "T6": [
+     false,
+     "Offers calling require(Rewards).AwardCoins from the play-mode runner as a runtime check and assumes diagnostics tools are available."
+    ],
+    "T7": [
+     false,
+     "Says there is 'no Script Sync' but doesn't propose it as a later step."
+    ],
+    "T8": [
+     true,
+     "States the tool names come from memory and nothing has been run."
+    ]
+   },
+   "overall": 4
+  },
+  "R8": {
+   "criteria": {
+    "T1": [
+     false,
+     "Keeps the original source in its notes and names version history as a fallback, but asks for no save before editing."
+    ],
+    "T2": [
+     false,
+     "Says to publish or save so the other editors get the change and warns them only afterward, which misses that edits reach them live; it asks for no coordination first."
+    ],
+    "T3": [
+     true,
+     "Runs script_grep for GiveCoins across the whole place, covering string keys, local aliases and destructuring."
+    ],
+    "T4": [
+     false,
+     "Re-reads each script before multi_edit but never says to edit in Edit mode rather than during a play-test."
+    ],
+    "T5": [
+     true,
+     "Uses list_roblox_studios and selects the Studio running Sword Arena (place ID 1234567890)."
+    ],
+    "T6": [
+     false,
+     "Re-greps and play-tests with the console, but never reports static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files as a later step."
+    ],
+    "T8": [
+     true,
+     "Says the tool names are unverified and from memory, and reports no results."
+    ]
+   },
+   "overall": 5
+  },
+  "R9": {
+   "criteria": {
+    "T1": [
+     false,
+     "Calls version history the rollback path but never asks for a save before editing."
+    ],
+    "T2": [
+     true,
+     "Asks whether it can message the two Team Create editors first, because edits to scripts they have open can conflict."
+    ],
+    "T3": [
+     true,
+     "Script-greps the whole place for GiveCoins, covering aliases, string lookups and remote names, and also searches the instance tree."
+    ],
+    "T4": [
+     false,
+     "Edits one script at a time but neither checks paths nor says to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not pick or confirm the Studio window or place."
+    ],
+    "T6": [
+     false,
+     "Re-greps and play-tests with the console, but doesn't report static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "Mentions only that the code lives in Studio; no Script Sync or files as a later step."
+    ],
+    "T8": [
+     true,
+     "Says it can't call the MCP and hasn't checked tool names, and keeps the plan sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R10": {
+   "criteria": {
+    "T1": [
+     false,
+     "No checkpoint or version-history save before editing."
+    ],
+    "T2": [
+     true,
+     "Asks the two other editors to avoid those scripts and asks the user who should tell them."
+    ],
+    "T3": [
+     true,
+     "Searches every Script, LocalScript and ModuleScript, including scripts inside sword tools, for direct calls, require chains and string access."
+    ],
+    "T4": [
+     true,
+     "Reads the source of each matched script before editing and says it would edit 'while the place is not in Play mode'."
+    ],
+    "T5": [
+     false,
+     "Never confirms which Studio window or place it is editing."
+    ],
+    "T6": [
+     false,
+     "Assumes script analysis is available for syntax checks instead of reporting static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says it hasn't checked tool names or the place's contents and claims no results."
+    ]
+   },
+   "overall": 5
+  },
+  "R11": {
+   "criteria": {
+    "T1": [
+     false,
+     "No version-history save before editing."
+    ],
+    "T2": [
+     true,
+     "Asks whether the others are editing scripts that call GiveCoins and suggests giving them a heads-up."
+    ],
+    "T3": [
+     true,
+     "Scans .Source of every script for the literal GiveCoins, covering destructured imports, string lookups and require aliases."
+    ],
+    "T4": [
+     false,
+     "Re-reads each target before editing but doesn't say to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "No step to confirm the right Studio or place."
+    ],
+    "T6": [
+     false,
+     "Runs Luau in play mode that requires Rewards as a runtime check, and does not report static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Caveats the expected tool names and claims nothing ran."
+    ]
+   },
+   "overall": 4
+  },
+  "R12": {
+   "criteria": {
+    "T1": [
+     false,
+     "No checkpoint or version save before editing."
+    ],
+    "T2": [
+     true,
+     "Says changes go live for the two editors immediately and asks the user to tell them or confirm they aren't editing."
+    ],
+    "T3": [
+     true,
+     "Searches the source of all scripts for GiveCoins, including require results stored in locals and the name in strings."
+    ],
+    "T4": [
+     false,
+     "Re-reads each script before editing but never says to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not confirm which Studio or place it is editing."
+    ],
+    "T6": [
+     false,
+     "Treats script analysis as available 'if the Studio tooling offers' it rather than reporting static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says it can't reach the server and names operations, not results."
+    ]
+   },
+   "overall": 4
+  },
+  "R13": {
+   "criteria": {
+    "T1": [
+     false,
+     "Treats the hit list as the rollback reference; no version-history save is requested."
+    ],
+    "T2": [
+     true,
+     "Recommends coordinating with the two editors first, citing the overwrite risk from their unsaved edits."
+    ],
+    "T3": [
+     true,
+     "Searches the whole DataModel for GiveCoins, including require aliases and string references."
+    ],
+    "T4": [
+     false,
+     "No pre-edit path check and no mention of editing in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not identify the right Studio or place."
+    ],
+    "T6": [
+     false,
+     "Re-searches and play-tests, but doesn't reread edited sources at the verify step or report static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says it hasn't checked tool names and reports nothing as done."
+    ]
+   },
+   "overall": 4
+  },
+  "R14": {
+   "criteria": {
+    "T1": [
+     false,
+     "Keeps copies of the original sources for rollback but asks for no version-history save."
+    ],
+    "T2": [
+     true,
+     "Step 0 asks the other editors to avoid Rewards and its callers and to confirm they have no unsaved changes."
+    ],
+    "T3": [
+     true,
+     "Searches every script source for GiveCoins, including string references and Rewards[name] lookups."
+    ],
+    "T4": [
+     false,
+     "Uses exact-match replacements but neither checks paths nor says to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "No step to confirm the Studio window or place."
+    ],
+    "T6": [
+     false,
+     "Assumes Studio script analysis is available instead of reporting static checks as unavailable."
+    ],
+    "T7": [
+     false,
+     "No mention of Script Sync or files."
+    ],
+    "T8": [
+     true,
+     "Says the tool names are unconfirmed and nothing is edited yet."
+    ]
+   },
+   "overall": 4
+  },
+  "R15": {
+   "criteria": {
+    "T1": [
+     true,
+     "Step 5 asks the user to 'publish or save a Studio version-history point' before editing because there is no git."
+    ],
+    "T2": [
+     true,
+     "Asks whether the teammates are editing now, since Team Create edits merge live, and recommends telling them first."
+    ],
+    "T3": [
+     true,
+     "Greps the whole place for plain GiveCoins and runs an execute_luau scan of every LuaSourceContainer, covering string keys and modules required under another name."
+    ],
+    "T4": [
+     false,
+     "Re-reads each script before multi_edit but never says to edit in Edit mode."
+    ],
+    "T5": [
+     false,
+     "Does not pick or confirm the right Studio or place."
+    ],
+    "T6": [
+     false,
+     "Offers calling require(Rewards).AwardCoins from execute_luau in play mode as a check and labels its grep 'Verify statically' rather than reporting static checks unavailable."
+    ],
+    "T7": [
+     false,
+     "Notes there is no git or file copy but doesn't propose Script Sync as a later step."
+    ],
+    "T8": [
+     true,
+     "Says the tool names come from memory and claims no results."
+    ]
+   },
+   "overall": 6
+  },
+  "R16": {
+   "criteria": {
+    "T1": [
+     false,
+     "Records original lines for manual revert and explicitly won't save to Roblox; no checkpoint is requested."
+    ],
+    "T2": [
+     true,
+     "Asks whether the two editors have been told and recommends a heads-up because concurrent edits could conflict."
+    ],
+    "T3": [
+     true,
+     "Greps every script container for GiveCoins, the Rewards require path and string-based uses such as ['GiveCoins'] and FindFirstChild."
+    ],
+    "T4": [
+     true,
+     "Confirms edit mode, not Play, in step 1 and reads each target script before the targeted edits."
+    ],
+    "T5": [
+     true,
+     "Confirms that the open place is Sword Arena (1234567890) before working."
+    ],
+    "T6": [
+     false,
+     "Offers a play-mode Luau snippet that requires Rewards and calls AwardCoins, and treats diagnostics as available 'if the server exposes them'."
+    ],
+    "T7": [
+     false,
+     "Says there's no git or Script Sync but doesn't propose it as a later step."
+    ],
+    "T8": [
+     true,
+     "Caveats its tool names and claims nothing ran."
+    ]
+   },
+   "overall": 6
+  }
+ }
+}

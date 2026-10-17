@@ -1,0 +1,78 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "read:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/SKILL.md",
+   5477
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)janitor"
+  ],
+  [
+   "Read",
+   "<runs>\\t-pin-mismatch-haiku-new-5\\.claude\\skills\\roblox-janitor\\SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": "The mismatch is real. I checked the project files:\n\n- `pesde.toml:16` pins `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }`.\n- `pesde.lock:21` resolves it to `wally#howmanysmall/janitor@1.17.0 roblox`.\n- The `roblox-janitor` skill targets `=1.18.3`.\n\nThe skill's own rule for this case is: tell you, keep the project's pin, use only API I can confirm at 1.17.0, and stop where the task depends on behavior that might differ. I haven't changed anything.\n\nOptions:\n\n1. **Keep 1.17.0 (recommended).** Nothing in the project depends on 1.18.3, and changing the pin is a dependency change you should choose. I'd write Janitor code against the 1.17.0 source, but I can't fetch that source from here, so I'd have to confirm the API from the code already in the repo or a local copy. Until then, treat the skill's table as unverified for this version.\n2. **Upgrade to 1.18.3.** Do this through the `roblox-resource-acquisition` skill's upgrade flow, not by editing the pin directly. That flow also covers the Promise dependency versions the skill lists, which may change with it.\n3. **Leave the skill as is.** The skill's version-specific guidance will keep warning you on every Janitor task.\n\nWhich do you want? If you pick option 1, I can check which Janitor calls the code uses and whether any of them rely on behavior that differs between the two versions.",
+ "cost": 0.0034698700000000008,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11369,
+  "cache_read_input_tokens": 45447,
+  "output_tokens": 1482,
+  "output_tokens_details": {
+   "thinking_tokens": 625
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11369,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 724,
+    "cache_read_input_tokens": 18939,
+    "cache_creation_input_tokens": 1597,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1597
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

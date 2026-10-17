@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and change every reference so nothing still calls the old name. I'll treat this as a pure rename with no alias left behind and no behavior change.\n\nI can't reach the Studio MCP server from this session, so the tool names below are the operations I'd need. I'll confirm the exact names against the server's tool list when I can call it.\n\n## Plan\n\n1. **Locate the definition.** Read `ServerScriptService.Rewards` and check how `GiveCoins` is defined: a local function, a field on a returned module table (`Rewards.GiveCoins`), or a method (`function Rewards:GiveCoins`). The definition and the call syntax depend on this.\n\n2. **Find every reference across the whole DataModel.** Search the source of all Scripts, LocalScripts and ModuleScripts, not only the Rewards script. Look in ServerScriptService, ServerStorage, ReplicatedStorage, StarterPlayer, StarterPlayerScripts, StarterGui, and Workspace. Match these forms:\n   - `GiveCoins(`\n   - `.GiveCoins` and `:GiveCoins(`, including through a `require` result stored in a local\n   - the bare name in comments or strings\n\n   Record each hit as script path, line, and context. Hits in strings or remote names need a decision: a RemoteEvent named `\"GiveCoins\"` is a network contract, not the function, so I would leave it alone and tell you.\n\n3. **Coordinate before editing.** This place is Team Create with two other editors, so changes go live for them immediately. Before I edit, I'd ask you to tell the two of them I'm touching these scripts, or to confirm they aren't editing them now.\n\n4. **Edit the definition, then each caller.** Re-read each script's source immediately before changing it, so I don't overwrite a teammate's newer edit. Use targeted find-and-replace on the specific lines, not a whole-source rewrite. Don't add a `GiveCoins = AwardCoins` alias, since that would leave the old name in use.\n\n5. **Update comments only where they name the function.** Don't add a comment about the rename.\n\n## How I'd confirm it worked\n\n- **Search again:** a search of every script for `GiveCoins` should return zero hits, except any string or remote name you chose to keep. A search for `AwardCoins` should return the definition plus the same call sites found in step 2.\n- **Read back:** re-read each edited script and check the syntax by eye. If the Studio tooling offers script analysis or diagnostics, run it too.\n- **Playtest:** start a Play session, trigger a path that awards coins, and check the Output window for `attempt to call nil` or similar errors and confirm the coin balance changes.\n- **Report:** list every file I changed, the hits I left alone, and the playtest result. I won't publish the place without your confirmation.\n\n## Decisions for you\n\n- Should a string or RemoteEvent named `\"GiveCoins\"` be renamed too, or kept as a network contract? I'd keep it.\n- Should I coordinate with your two teammates first, or do you want me to go ahead and check for conflicts as I edit?",
+ "cost": 0.00293801,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8204,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2399,
+  "output_tokens_details": {
+   "thinking_tokens": 1340
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8204,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2399,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8204,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8204
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

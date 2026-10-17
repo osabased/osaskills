@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "bare",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and update every place that calls or references it, so nothing still uses the old name. I'm assuming no `GiveCoins` alias stays behind. Tell me if you want a temporary one for the other two editors' in-flight work.\n\nI can't see the Studio MCP server's tool list from here, so I'm describing tools by capability. In the session I'd list the server's tools first and use whatever it calls its script-read, script-search, script-edit, Luau-execute, play-mode and console-output tools. I wouldn't guess names. I'd use a script-edit tool for the edits, not blanket `Source` rewrites. In Team Create, a targeted edit is less likely to overwrite a teammate's concurrent change.\n\n**Plan**\n\n1. **Read the definition.**\n   - Read the source of `ServerScriptService.Rewards`.\n   - Note how `GiveCoins` is defined: `function Rewards.GiveCoins`, `Rewards.GiveCoins = function`, a `:` method, or a local that is exported.\n   - Note any internal calls inside the module.\n\n2. **Find every reference across the whole DataModel, not just ServerScriptService.**\n   - Run a text search for `GiveCoins` across all Script, LocalScript and ModuleScript sources in ServerScriptService, ServerStorage, ReplicatedStorage, StarterPlayer, StarterGui, StarterPack and Workspace.\n   - Also search for instances named `GiveCoins`, such as a RemoteEvent, BindableFunction or attribute.\n   - Look for indirect uses: string-indexed access like `Rewards[\"GiveCoins\"]`, `GiveCoins` built from concatenated strings, and `pcall(Rewards.GiveCoins, ...)`.\n   - Find the scripts that `require` Rewards, so I catch aliases like `local R = require(...)` and destructuring.\n\n3. **Triage and report before editing.**\n   - Sort the hits into real calls, definition, comments or strings, and same-named things unrelated to this function.\n   - Anything ambiguous goes to you, such as a Remote named `GiveCoins` that shares a name but isn't this function.\n   - Match whole words only, so something like `GiveCoinsToTeam` isn't touched.\n\n4. **Check for concurrent edits.**\n   - Because two others are editing, I'd re-read each script immediately before changing it.\n   - I'd keep the original text of every changed line so I can restore it by hand, since the MCP server gives me no undo.\n\n5. **Edit, with minimal diffs.**\n   - Rename the definition in `Rewards`.\n   - Update each caller's exact occurrence.\n   - Do this in one quick pass so teammates don't see a half-renamed state for long.\n\n6. **Verify.**\n   - **Search again.** `GiveCoins` should return only the hits I deliberately left, and `AwardCoins` should return the definition plus the expected number of callers.\n   - **Re-read.** Read back each edited script and compare it to the original to confirm only the name changed.\n   - **Static check.** Pull script diagnostics or analysis for the edited scripts, if the server offers them, and look for \"unknown member\" warnings.\n   - **Runtime check.** Start Play mode and read the console output for errors, such as `attempt to call a nil value`. I'd run a short Luau snippet in play mode that requires Rewards and asserts `type(Rewards.AwardCoins) == \"function\"` and `Rewards.GiveCoins == nil`. Then I'd exercise one real caller path, such as a coin pickup, if it can be triggered safely. Stop Play mode afterward.\n   - **Confirm.** I'd report the exact before and after counts and the console result.\n\n7. **Don't publish.** I'd leave the place unsaved and unpublished, and ask you before doing either. Team Create syncs edits live, so teammates will see the rename right away.\n\n**Questions for you, recommended answer first:**\n- Should I leave no alias, so any stale caller errors loudly? Or keep a temporary `GiveCoins = AwardCoins` alias?\n- Is the play-mode check OK? It could touch DataStore-backed coins if the caller path saves data. If that's a risk, I'd limit it to the static checks plus the `type()` assertion.",
+ "cost": 0.0566391,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7430,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2594,
+  "output_tokens_details": {
+   "thinking_tokens": 1134
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7430,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2594,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7430,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7430
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

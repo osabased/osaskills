@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau's type checker narrows a union type inside a branch that checks `typeof`. A value annotated as `string | number` is treated as just `number` in the `typeof(value) == \"number\"` branch, so you can use number operations without a warning.\n\n```luau\nlocal function describe(value: string | number | nil): string\n    if typeof(value) == \"number\" then\n        return `number: {value * 2}` -- value is number here\n    elseif typeof(value) == \"string\" then\n        return `string: {value:upper()}` -- value is string here\n    else\n        return \"nil\" -- value is nil here\n    end\nend\n```\n\n**Early-return narrowing.** Once a branch exits, the rest of the function sees the narrowed type. `error()` is typed as never returning, so it works too:\n\n```luau\nlocal function requireNumber(value: string | number): number\n    if typeof(value) ~= \"number\" then\n        error(\"expected number, got \" .. typeof(value))\n    end\n    return value + 1 -- value is number here\nend\n```\n\n**Combining checks.** Narrowing works with `and`, `or`, and `not`:\n\n```luau\nlocal function label(value: string | number | nil): string\n    if typeof(value) == \"string\" and #value > 0 then\n        return value -- value is string and non-empty\n    end\n    return \"fallback\"\nend\n```\n\n**Things to watch for:**\n\n- **`typeof` vs. `type`.** Luau also has `type()`, which works the same way for these checks. The difference is that `typeof` returns `\"Instance\"` for Roblox instances, while `type()` returns `\"userdata\"`.\n- **Instances.** `typeof` can't tell you which class an instance is. For that, call `:IsA(\"Part\")` at runtime, and use an annotation or cast if you need the checker to know the class.\n- **`typeof` in type position.** `typeof(x)` can also appear in a type annotation, where it means \"the type of the expression `x`.\" That's a different use from the runtime check.\n- **Narrowing needs a checkable value.** The checker can only narrow a local, a parameter, or a simple property path. If a value comes from a function call that returns a union, store it in a local before checking it.",
+ "cost": 0.0029245699999999996,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8301,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2345,
+  "output_tokens_details": {
+   "thinking_tokens": 1655
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8301,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2345,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8301,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8301
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

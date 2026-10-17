@@ -1,0 +1,86 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ],
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-studioonly-haiku-old-1\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ]
+ ],
+ "denials": [],
+ "result": "You can do this safely, but a Studio-only place has no diffs, no check command, and no guards, so the safety has to come from process. I'd pick one of two setups.\n\n**Option 1 (recommended): switch to Script Sync.** Studio writes the scripts to a folder that Git tracks. Claude edits files, Studio syncs them, and you get diffs, Git rollback, and the normal check command. The steps:\n1. Before enabling it, check the scripts for attributes and tags that Script Sync could change. Roblox documents this in its Script Sync guide.\n2. Sync the code folders into new, empty directories inside one Git repo.\n3. Commit the initial state.\n\nRoblox describes Script Sync as an extra feature for existing places, not a change to how the project is managed, so the place can stay as it is.\n\n**Option 2: stay Studio-only with the MCP.** If you keep the place as it is, these rules keep the risk down:\n- **Checkpoints:** before an edit that touches several scripts, save with **File > Save to Roblox with Notes**. Use **View Script History** or Version History to get back. Restoring creates a new version and doesn't publish it.\n- **Live edits:** Team Create's Live Scripting pushes Claude's `multi_edit` changes to your two collaborators within seconds. Tell them before Claude edits. Drafts mode would keep edits local, but how MCP edits interact with Drafts is untested, so don't rely on it without checking.\n- **Paths:** `multi_edit` creates a script when the path doesn't exist, so a typo adds a stray script. Claude should confirm the path first.\n- **Mode:** edit in Edit mode. Anything changed during a play-test is discarded when it stops.\n- **Tests:** Lest's Studio backend on a Team Create place joins the live session, which disconnects your own Studio, and any spec that writes to the place changes it for everyone. Run those specs against a saved place file instead.\n- **Play-tests:** Claude can drive them with `start_stop_play` and `user_mouse_input`. Don't have it `require` game modules from `execute_luau` during a play, since that creates a second copy with its own state.\n- **Local guide:** keep `CLAUDE.md` and a short project guide in a local folder, with place ID 1234567890 and the `studio_id` from `list_roblox_studios`, so Claude doesn't act on the wrong Studio window.\n\nWithout files, Claude can't run static checks, so every edit in this setup is verified only by a play-test.\n\nQuestions for you:\n1. Do you want Script Sync (recommended), or to stay Studio-only?\n2. Will your two collaborators agree to avoid editing while Claude is working in the place?\n\nI also couldn't run the skill's update check, since Bash is disabled in this session. That's why I skipped it.",
+ "cost": 0.00493952,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15491,
+  "cache_read_input_tokens": 47722,
+  "output_tokens": 2727,
+  "output_tokens_details": {
+   "thinking_tokens": 1297
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15491,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1955,
+    "cache_read_input_tokens": 20825,
+    "cache_creation_input_tokens": 3833,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3833
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,86 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-hitbox-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\" && python scripts/check_updates.py"
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ]
+ ],
+ "result": "**Recommendation: raycast it yourself.** Roblox already has the primitives, and I don't know of a hitbox module that's worth taking on as a dependency. I couldn't check current community options from here: the acquisition skill's reference files were blocked by a permission prompt and Bash is disabled this session. So I haven't verified any specific library's status, maintenance, or pin.\n\nWhat the engine gives you:\n\n- **Melee, arc or instant hits:** `workspace:GetPartBoundsInRadius` or `GetPartBoundsInBox` with an `OverlapParams` whose filter excludes the attacker's character. Check the arc or facing with a dot product on the results.\n- **Hitscan and line-of-sight:** `workspace:Raycast` with `RaycastParams`.\n- **Projectiles:** each `Heartbeat`, raycast from the last position to the new one. This stops fast projectiles from tunneling through thin parts. For a fat projectile, use `workspace:Spherecast`.\n- **Dedupe:** keep a set of hit humanoids per attack so one swing can't hit the same target twice.\n\nWhere a module would start to earn its place is if you need lag compensation, rewinding targets to the shooter's latency, or a lot of hitbox shapes and debug visualization. You don't need that yet.\n\nKeep the authority on the server. Run the hit checks there, have the client send only the intent (fire, swing, aim direction), and validate range, cooldown and line-of-sight on the server before applying damage. Cleanup for any per-attack connections or temporary parts can go through Janitor, which the project already has.\n\nNothing changed in the project. `pesde.toml` still pins Janitor at `=1.17.0`, and I didn't add a dependency or `CLAUDE.md` entry. If you want a specific module evaluated, name it, and I'll check it once I can read the skill references and run the checks.",
+ "cost": 0.0038899900000000003,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11775,
+  "cache_read_input_tokens": 46489,
+  "output_tokens": 2139,
+  "output_tokens_details": {
+   "thinking_tokens": 1032
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11775,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1248,
+    "cache_read_input_tokens": 19948,
+    "cache_creation_input_tokens": 994,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 994
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

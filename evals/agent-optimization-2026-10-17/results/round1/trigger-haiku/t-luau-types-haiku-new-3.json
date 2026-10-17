@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a value's type inside a branch once a `typeof` check has run, so you can use the value as the narrowed type without casting.\n\n```luau\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"number\" then\n\t\treturn `number, doubled: {value * 2}` -- value: number\n\telseif typeof(value) == \"string\" then\n\t\treturn `string, upper: {value:upper()}` -- value: string\n\telse\n\t\treturn \"nil\" -- value: nil\n\tend\nend\n```\n\n**Guard clauses** narrow the rest of the function, which avoids nesting:\n\n```luau\nlocal function greet(name: string?): string\n\tif typeof(name) ~= \"string\" then\n\t\treturn \"Hello, stranger\"\n\tend\n\n\treturn \"Hello, \" .. name -- name: string from here on\nend\n```\n\n**Combining checks** works with `and`, `or`, and `not`:\n\n```luau\nlocal function isPositiveNumber(value: unknown): boolean\n\treturn typeof(value) == \"number\" and value > 0 -- value: number on the right side of `and`\nend\n```\n\n**Narrowing on fields** works on property paths such as `obj.field`, as long as nothing reassigns that path between the check and the use.\n\n## What `typeof` can and can't tell apart\n\n`typeof` returns the Roblox type name, so it's good for primitives and Roblox value types:\n\n| Value | `typeof` result |\n|---|---|\n| `1`, `0.5` | `\"number\"` |\n| `\"hi\"` | `\"string\"` |\n| `true` | `\"boolean\"` |\n| `nil` | `\"nil\"` |\n| `{}` | `\"table\"` |\n| `function() end` | `\"function\"` |\n| `Vector3.zero` | `\"Vector3\"` |\n| `workspace.Part` | `\"Instance\"` |\n\nLimits to watch for:\n\n- **Tables all report `\"table\"`.** For a union like `Circle | Rect`, `typeof` can't separate the members. Discriminate on a literal field instead, such as `if typeof(shape) == \"table\" and shape.kind == \"circle\" then`. Luau narrows on literal-field tags in unions.\n- **Every Instance reports `\"Instance\"`.** To narrow to a specific class, use `:IsA(\"Part\")` or a `ClassName` check. Confirm the narrowing with your checker, because method-based checks are less reliable than `typeof` for narrowing.\n- **Reassignment resets narrowing.** After `value = something else`, Luau uses the declared type again.\n- **`type` vs `typeof`:** `type` returns the base Lua type, so an Instance reports `\"userdata\"`. Use `typeof` in Roblox code.\n\nIf you want, I can apply these patterns to a specific file in this project.",
+ "cost": 0.0028820699999999996,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8136,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2326,
+  "output_tokens_details": {
+   "thinking_tokens": 1435
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8136,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2326,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8136,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8136
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

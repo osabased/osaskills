@@ -1,0 +1,82 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Grep",
+   "GetDataStore|DataStoreService|ProfileStore"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ]
+ ],
+ "denials": [],
+ "result": "I can't add this guard yet, because the project has no DataStore name for it to protect. I searched for `GetDataStore`, `DataStoreService` and `ProfileStore` and found nothing in the project source. `src/server/init.server.luau` is the only server code. The project also has no check command or `scripts/` folder.\n\nI understand you want a check that fails if the DataStore name ever changes. A name change on a live game hides every existing player's data, so it's worth guarding. The guard stores a copy of the exact name line and fails on any difference. Changing the name on purpose then takes two edits.\n\nQuestions, with my recommendation first:\n\n1. **Which name should I lock, and where does it live?** I recommend a single `DATASTORE_NAME` constant in a server-only module, for example `src/server/DataConfig.luau`. I'd create it with the name you give me. If the DataStore code exists elsewhere, such as in Studio only, point me to it.\n2. **How should the guard run?** I recommend a small `scripts/check.sh` that runs the guard first, with the guard in its own `scripts/guards/datastore-name.py`. Add the check to `permissions.allow` in `.claude/settings.json`. I'd leave out hooks and CI for now. Say so if you want them too.\n3. **Do you use a library such as ProfileStore?** If so, I'd also lock its key prefix or store index. That guard would be pinned to the library version it was reviewed against.\n\nI'll build it once you answer. The failure message will name the rule, the file and line, and how to change the name on purpose. I'll also break-test it once by changing the name, confirming the check fails, and reverting.",
+ "cost": 0.0799251,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16373,
+  "cache_read_input_tokens": 45711,
+  "output_tokens": 985,
+  "output_tokens_details": {
+   "thinking_tokens": 133
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16373,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 627,
+    "cache_read_input_tokens": 19865,
+    "cache_creation_input_tokens": 5675,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5675
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

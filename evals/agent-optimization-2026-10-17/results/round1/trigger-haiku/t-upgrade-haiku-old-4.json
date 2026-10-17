@@ -1,0 +1,79 @@
+{
+ "id": "t-upgrade",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "[Vv]ide"
+  ],
+  [
+   "Glob",
+   "**/pesde.toml"
+  ],
+  [
+   "Grep",
+   "upgrade"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-haiku-old-4\\pesde.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: don't bump yet. Wait until you know what the release changes that you need.**\n\nI couldn't check the release itself. I have no web access here, so I don't know its version number or release notes. What I checked:\n\n- **Current pin:** `pesde.toml:17` pins Vide to git commit `5ed4c01940e6bd578fb83253cfbeda0a6c05177c`. The `roblox-vide` skill documents that commit as 0.4.1, so the project and the skill agree.\n- **Skill guidance:** The skill's setup notes say upstream `main` has unreleased commits after 0.4.1, including `create` types for `UIStroke`, `UIPadding` and `UISizeConstraint`. So the new release may overlap with work already on `main`, which is worth comparing against.\n- **Lock file:** `pesde.lock` resolves to a package key ending in `8890f50…`, not the `5ed4c01…` rev in `pesde.toml`. Probably that's just pesde's package-version naming, but confirm it before you upgrade.\n- **Upgrade rules:** The project's process says a newer release alone isn't a reason to upgrade. An upgrade should read the release notes between the two commits, update the pin and lock, rerun the affected checks (`bash scripts/check.sh`), re-review the guards tied to the old version, and re-clone the `roblox-vide` skill for the new pin.\n\nQuestions for you:\n\n1. **Which release?** Send me the tag or commit, or paste the release notes, and I'll compare them against the project's Vide usage in `src/client/UI` (`App.luau`, `CoinLabel.luau`).\n2. **Do you want the bump?** If yes, I'll run the upgrade flow and report the results. If you're only checking, I'll leave the pin alone.",
+ "cost": 0.00565151,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19969,
+  "cache_read_input_tokens": 50511,
+  "output_tokens": 2304,
+  "output_tokens_details": {
+   "thinking_tokens": 1076
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19969,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1214,
+    "cache_read_input_tokens": 23975,
+    "cache_creation_input_tokens": 5161,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5161
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

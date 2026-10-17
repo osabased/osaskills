@@ -1,0 +1,67 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "(?i)janitor"
+  ]
+ ],
+ "denials": [],
+ "result": "Your project has Janitor **1.17.0**. `pesde.toml` pins it with `=1.17.0` and `pesde.lock` agrees. The `roblox-janitor` skill is written for **1.18.3**. So the lock is consistent with the manifest, and it's the skill that's out of step with your project.\n\nI haven't changed anything. Your choices:\n\n1. **Keep 1.17.0 (my recommendation unless you need something from 1.18.x).** I'd use only the Janitor API I can confirm exists in 1.17.0, and stop and ask if a task depends on behavior that may differ between the two versions. The core calls (`Add`, `Remove`, `Cleanup`, `Destroy`, `LinkToInstance`) are likely the same, but I can't confirm that from the skill alone.\n2. **Upgrade to 1.18.3.** I'd use the upgrade flow in the `roblox-resource-acquisition` skill, which changes the pin in `pesde.toml`, refreshes `pesde.lock`, and runs `bash scripts/check.sh`. Once the pin matches, the skill's guidance applies directly.\n\nWhich do you want? If you're not sure, tell me what you're working on with Janitor and I'll say whether the version gap matters for it.",
+ "cost": 0.042693,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 8068,
+  "cache_read_input_tokens": 25730,
+  "output_tokens": 784,
+  "output_tokens_details": {
+   "thinking_tokens": 183
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8068,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 420,
+    "cache_read_input_tokens": 16563,
+    "cache_creation_input_tokens": 672,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 672
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

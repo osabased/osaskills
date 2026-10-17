@@ -1,0 +1,67 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "janitor"
+  ]
+ ],
+ "denials": [],
+ "result": "Nothing in the project is broken. `pesde.toml` and `pesde.lock` both pin Janitor to `=1.17.0`, and the `roblox-janitor` skill was written for `1.18.3`. The mismatch is between the skill and your project, not inside the project.\n\nWhat to do:\n\n1. **Keep the pin at 1.17.0 (my recommendation).** Don't edit `pesde.toml` or `pesde.lock` to match the skill. Until you decide otherwise, I'll write Janitor code against the 1.17.0 API and flag anything the skill describes that might differ from it.\n2. **Upgrade to 1.18.3 only if you want it.** Tell me and I'll follow the `roblox-resource-acquisition` upgrade flow: change the pin, reinstall, and check the lock. That changes your dependency, so I won't do it without your go-ahead.\n\nDo you want to stay on 1.17.0 for now, or upgrade?",
+ "cost": 0.0027560600000000003,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 9795,
+  "cache_read_input_tokens": 26566,
+  "output_tokens": 1062,
+  "output_tokens_details": {
+   "thinking_tokens": 524
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9795,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 557,
+    "cache_read_input_tokens": 17399,
+    "cache_creation_input_tokens": 1563,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1563
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

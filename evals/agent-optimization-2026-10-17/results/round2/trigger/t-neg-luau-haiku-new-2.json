@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a variable's type inside `if` branches that check it, so you can use a union value without casting. `typeof` is the most common check for this.\n\n## Basic narrowing\n\nIf the declared type is a union, a `typeof` check narrows it in each branch:\n\n```lua\ntype Value = number | string | nil\n\nlocal function describe(value: Value): string\n\tif value == nil then\n\t\treturn \"nothing\"\n\telseif typeof(value) == \"number\" then\n\t\treturn string.format(\"%.2f\", value) -- value: number\n\telse\n\t\treturn value -- value: string (nil and number have been ruled out)\n\tend\nend\n```\n\nThe `then` branch sees only the matching member of the union. The `else` branch sees what's left after removing it.\n\n## Early returns\n\nNarrowing also holds for code after an early exit:\n\n```lua\nlocal function scale(amount: number?): number\n\tif typeof(amount) ~= \"number\" then\n\t\treturn 1\n\tend\n\treturn amount * 2 -- amount: number\nend\n```\n\n## `typeof` vs. `type` for Roblox types\n\n`type()` returns `\"userdata\"` for Roblox values like `Vector3`, `CFrame`, and `Instance`. `typeof()` returns the specific name, so use it for Roblox types:\n\n```lua\nlocal function magnitudeOf(v: Vector3 | CFrame | number): number\n\tif typeof(v) == \"Vector3\" then\n\t\treturn v.Magnitude\n\telseif typeof(v) == \"CFrame\" then\n\t\treturn v.Position.Magnitude\n\tend\n\treturn v -- number\nend\n```\n\nFor `Instance` subclasses, `typeof(x) == \"Instance\"` only narrows to `Instance`. To narrow further, use `IsA`:\n\n```lua\nlocal function anchor(obj: Instance)\n\tif typeof(obj) == \"Instance\" and obj:IsA(\"BasePart\") then\n\t\tobj.Anchored = true -- obj: BasePart\n\tend\nend\n```\n\n## Other checks that refine\n\n- `x ~= nil` and `if x then` remove `nil` (and `false`).\n- Equality on a literal field discriminates tagged unions:\n\n```lua\ntype Shape = { kind: \"circle\", radius: number } | { kind: \"box\", size: Vector3 }\n\nlocal function area(s: Shape): number\n\tif s.kind == \"circle\" then\n\t\treturn math.pi * s.radius ^ 2 -- s is the circle variant\n\tend\n\treturn s.size.X * s.size.Z -- s is the box variant\nend\n```\n\n## Limits to keep in mind\n\n- Refinement applies to the variable in the scope where the check is made. Reassigning the variable resets its type to the declared type.\n- `typeof(t) == \"table\"` doesn't separate table types from each other. Use a tag field like `kind` for that.\n- `typeof` checks only help when the declared type is a union or `any`/`unknown`. If the annotation is already a single type, the check adds nothing for the type checker.\n\nI didn't open any files or run the type checker for this. The examples are written from the language rules, so run them through `luau-analyze` or your editor's LSP before relying on them in a project.",
+ "cost": 0.00301757,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8301,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2531,
+  "output_tokens_details": {
+   "thinking_tokens": 1528
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8301,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2531,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8301,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8301
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

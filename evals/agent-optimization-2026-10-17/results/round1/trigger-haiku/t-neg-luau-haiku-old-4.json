@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a union type inside a branch when you check it with `typeof`. The type checker treats the check as a fact about the variable for the rest of that block.\n\n```lua\ntype Input = string | number\n\nlocal function describe(value: Input): string\n\tif typeof(value) == \"string\" then\n\t\t-- value: string here, so string methods are allowed\n\t\treturn value:upper()\n\telse\n\t\t-- value: number here\n\t\treturn string.format(\"%.2f\", value)\n\tend\nend\n```\n\n**Early returns narrow the rest of the function.** The check doesn't have to be an `if/else`:\n\n```lua\nlocal function double(value: Input): number\n\tif typeof(value) ~= \"number\" then\n\t\treturn 0\n\tend\n\t-- value: number from here to the end of the function\n\treturn value * 2\nend\n```\n\n**Refinements combine with `and`, `or`, and `not`:**\n\n```lua\nlocal function clamp(value: Input?): number\n\tif value and typeof(value) == \"number\" then\n\t\t-- value: number (nil removed by truthiness, string removed by typeof)\n\t\treturn math.clamp(value, 0, 100)\n\tend\n\treturn 0\nend\n```\n\n**`typeof` vs `type`:** Both work for primitives (`\"string\"`, `\"number\"`, `\"boolean\"`, `\"nil\"`, `\"table\"`, `\"function\"`). For Roblox values they differ. `typeof` returns the Roblox type name, such as `\"Vector3\"`, `\"CFrame\"`, or `\"Instance\"`. `type` returns `\"userdata\"` for those. Use `typeof` in Roblox code so the checker can narrow them.\n\n```lua\ntype Target = Vector3 | CFrame\n\nlocal function toPosition(target: Target): Vector3\n\tif typeof(target) == \"CFrame\" then\n\t\treturn target.Position\n\tend\n\treturn target\nend\n```\n\n**Limits to know:**\n\n- **Tables all return `\"table\"`.** `typeof` can't tell two table shapes apart. Use a literal tag field instead (a tagged union):\n\n  ```lua\n  type Circle = { kind: \"circle\", radius: number }\n  type Square = { kind: \"square\", side: number }\n  type Shape = Circle | Square\n\n  local function area(shape: Shape): number\n  \tif shape.kind == \"circle\" then\n  \t\treturn math.pi * shape.radius ^ 2\n  \tend\n  \treturn shape.side ^ 2\n  end\n  ```\n\n- **Instances are `\"Instance\"` in `typeof`.** To narrow to a specific class, use `IsA`, which the checker also understands:\n\n  ```lua\n  local function hurt(object: Instance)\n  \tif object:IsA(\"Humanoid\") then\n  \t\t-- object is narrowed to Humanoid here\n  \t\tobject:TakeDamage(10)\n  \tend\n  end\n  ```\n\n- **Refinements only last where the check dominates the code.** If the variable is reassigned or captured by a closure that may run later, the narrowing can be lost. Copy it to a new local when that matters.\n\nTell me if you want this applied to a specific file in your project and I can check the refinements against your actual types.",
+ "cost": 0.00272117,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8359,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1915,
+  "output_tokens_details": {
+   "thinking_tokens": 926
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1915,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8359,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8359
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

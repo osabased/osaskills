@@ -1,0 +1,126 @@
+{
+ "id": "t-blink",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "set up Blink for networking in this pesde project",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/resource.yaml",
+   1750
+  ],
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-blink/references/setup.md",
+   847
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-blink-haiku-new-3\" && cat pesde.toml && echo ---LOCK--- && cat pesde.lock && echo ---RK--- && cat rokit.toml && echo ---CLAUDEMD--- && cat CLAUDE.md && echo ---CHECK--- && cat scripts/check.sh && echo ---SRC--- && cat default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-blink\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\pesde.lock"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\CLAUDE.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-blink-haiku-new-3\\rokit.toml"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0054680300000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19577,
+  "cache_read_input_tokens": 49553,
+  "output_tokens": 2113,
+  "output_tokens_details": {
+   "thinking_tokens": 631
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19577,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 751,
+    "cache_read_input_tokens": 23089,
+    "cache_creation_input_tokens": 5655,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5655
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

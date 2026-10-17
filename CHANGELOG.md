@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Lest's Studio backend on a Team Create place is documented from a test: it joins the live session, disconnects the user's own Studio from the place, and keeps whatever a spec changes. ([#59](https://github.com/osabased/osaskills/pull/59))
 - Script Sync guidance now says not to sync a pesde or Wally install folder, since dot-prefixed directories and package project files are skipped, and that Lest's Studio didn't run Script Sync in a test. ([#59](https://github.com/osabased/osaskills/pull/59))
 - Drafts mode is described as off by default, with an MCP edit seen reaching another session under Live Scripting. ([#59](https://github.com/osabased/osaskills/pull/59))
+- The description is shorter (990 to 971 characters) and now triggers on editing through the Studio MCP, not only testing. ([#62](https://github.com/osabased/osaskills/pull/62))
+- `ssa.md` has a table of contents. ([#62](https://github.com/osabased/osaskills/pull/62))
 
 ### 2026-10-16
 
@@ -219,6 +221,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - First version: SKILL.md, `practices.md`, `preference-wizard.md` and OpenAI agent metadata. ([69a3285](https://github.com/osabased/osaskills/commit/69a3285))
 
 ## roblox-resource-acquisition
+
+### 2026-10-17
+
+#### Changed
+
+- The description is shorter (1021 to 924 characters) and now covers writing a library skill and setting up a package. It drops the tool-setup clause (Rojo, Rokit, Selene, StyLua, Lune), so setting up a tool routes to structure-roblox-projects. ([#62](https://github.com/osabased/osaskills/pull/62))
 
 ### 2026-10-16
 

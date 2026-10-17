@@ -1,0 +1,83 @@
+{
+ "id": "t-tween",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "src/**/*.{luau,lua,server.luau,client.luau}"
+  ],
+  [
+   "Grep",
+   "ScreenGui|TweenService|Vide|Frame|CanvasGroup"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-4\\src\\client\\UI\\App.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-4\\src\\client\\UI\\CoinLabel.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-4\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "I found the GUI: a `HUD` ScreenGui built with Vide in `src/client/UI/App.luau`, containing one `Coins` TextLabel from `CoinLabel.luau`. I haven't written anything yet, because the fade's timing and feel are look decisions and your CLAUDE.md asks me to check those with you first.\n\n**What I think you want:** when the HUD first appears on the client, the `Coins` label fades from invisible to its current look (`BackgroundTransparency` 0.3, text fully opaque), driven by a `TweenService` tween. The ScreenGui has no transparency property of its own, so the fade has to go on the label.\n\nThree questions:\n\n1. **Duration:** 0.4 seconds (recommended), or a different length?\n2. **Easing:** Quad Out (recommended), Linear, or Sine Out?\n3. **Trigger:** fade in once when the HUD mounts (recommended), or wait for something else, such as the first round starting?\n\nOnce you answer, I'll write the tween, then run `bash scripts/check.sh` to verify it.",
+ "cost": 0.00426794,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11199,
+  "cache_read_input_tokens": 45854,
+  "output_tokens": 3138,
+  "output_tokens_details": {
+   "thinking_tokens": 2200
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2392,
+    "cache_read_input_tokens": 19388,
+    "cache_creation_input_tokens": 978,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 978
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

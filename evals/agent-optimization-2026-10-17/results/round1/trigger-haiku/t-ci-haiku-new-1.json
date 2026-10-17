@@ -1,0 +1,95 @@
+{
+ "id": "t-ci",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\wally.toml"
+  ],
+  [
+   "Glob",
+   "**/.github/**"
+  ],
+  [
+   "Glob",
+   "{rokit.toml,aftman.toml,.stylua.toml,stylua.toml,selene.toml,.luaurc,sourcemap.json,.git,Packages,ServerPackages,DevPackages}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.003722810000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12820,
+  "cache_read_input_tokens": 47571,
+  "output_tokens": 1365,
+  "output_tokens_details": {
+   "thinking_tokens": 240
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12820,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 699,
+    "cache_read_input_tokens": 20954,
+    "cache_creation_input_tokens": 1033,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1033
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

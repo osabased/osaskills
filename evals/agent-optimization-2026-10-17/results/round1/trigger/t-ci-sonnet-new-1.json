@@ -1,0 +1,94 @@
+{
+ "id": "t-ci",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   ".*/**"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-new-1\\wally.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "You want CI for this Rojo project. Here's what I found, and a few questions before I write anything.\n\n**What's in the project**\n- **Layout:** `default.project.json` maps `src/shared`, `src/client` and `src/server`.\n- **Packages:** `pesde.toml` has vide and blink, and `wally.toml` has Janitor, LemonSignal and Charm. Both package managers are in use.\n- **Missing:** there's no `rokit.toml`, `stylua.toml`, `selene.toml`, tests or `scripts/`, and the directory isn't a git repo.\n\n**What I plan to build:** one `scripts/check` command that runs restore, format, lint, types, a `rojo build` and a topology check, stopping at the first failure. A GitHub Actions workflow would run that same command on push and pull request. I'd also pin the tools in `rokit.toml`.\n\n**Questions** (my recommendation is first in each):\n1. **CI host:** GitHub Actions, or something else? I'm assuming GitHub because the pesde dependency points at GitHub.\n2. **Tools:** may I add `rokit.toml` pinning Rojo, StyLua, Selene, luau-lsp, pesde and Wally, with default `stylua.toml` and `selene.toml`? If you already have preferred versions or style (tabs or spaces, line width), tell me.\n3. **Scope:** do you want only the static checks (format, lint, types, build, topology), or also tests? There's no test runner yet, so I recommend static only for now.\n4. **Hooks:** should I also add the Claude Code `Stop` and `PostToolUse` hooks and a git `pre-push` hook, or just CI? I recommend CI plus the check script only.\n\n**Likely bug to confirm**\n`src/client/init.client.luau` is mapped into `ReplicatedStorage`. With Rojo's default settings that builds a `LocalScript`, which never runs there. Do you want me to add `\"emitLegacyScripts\": false` to the project file so it becomes a client `Script`? I won't change it unless you say so, because it changes runtime behavior.",
+ "cost": 0.1027596,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20395,
+  "cache_read_input_tokens": 52176,
+  "output_tokens": 1595,
+  "output_tokens_details": {
+   "thinking_tokens": 285
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20395,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 915,
+    "cache_read_input_tokens": 26335,
+    "cache_creation_input_tokens": 3227,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3227
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

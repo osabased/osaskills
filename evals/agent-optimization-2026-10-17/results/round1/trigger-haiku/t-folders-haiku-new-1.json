@@ -1,0 +1,98 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Glob",
+   "*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "Your project already follows the layout I'd recommend for a new game. Nothing needs to move. I haven't changed any files.\n\n**How `coin-run` is laid out now**\n\n- `default.project.json` maps `src/server` to `ServerScriptService/Server` and `src/client` and `src/shared` to `ReplicatedStorage/Client` and `ReplicatedStorage/Shared`.\n- `emitLegacyScripts: false` is set, so `init.server.luau` and `init.client.luau` build as `Script`s with `RunContext` Server and Client. A plain `LocalScript` in `ReplicatedStorage` never runs, so this setting matters.\n- Each side has one startup owner: the server `init.server.luau` starts `Coins` and `Round`, and the client `init.client.luau` mounts the UI.\n\n**Recommended layout for a new game**\n\n```text\nServerScriptService/\n  Server/           server entrypoint (init.server.luau) and server-only modules\n                    (rules, round state, rewards, DataStores, validation)\nServerStorage/\n  Assets/           templates and maps clients shouldn't receive\nReplicatedStorage/\n  Shared/           types, constants, and pure logic both sides run\n  Client/           entrypoint (init.client.luau) plus UI, input, camera\n  Remotes/          RemoteEvent / RemoteFunction, created by Rojo or a networking library\n  Packages/         dependencies\nReplicatedFirst/    only the loading-screen subset\n```\n\n**Rules that keep it safe and easy to work in**\n\n- **Authority stays on the server.** Anything secret, persistent, or affecting rewards goes in `ServerScriptService` or `ServerStorage`. Everything in `ReplicatedStorage` reaches clients, including module source.\n- **Validate every client-to-server Remote on the server:** type, range, ownership, and rate.\n- **Keep one startup owner per side,** as `coin-run` does. Don't have two scripts start the same feature.\n- **Shared modules must not require entrypoints.** Dependencies point toward `Shared` and the feature modules, never back up.\n- **Pick one grouping pattern and keep it.** Use feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) once you have several gameplay features. Keep flat runtime layers while the game is small, as it is now.\n\n**What I'd change in `coin-run` when the time comes**\n\nNothing is broken today. The first real addition should be a `Remotes` folder under `ReplicatedStorage`, mapped from `src/shared/Remotes` or a similar path, so the client-to-server surface is easy to find and review. Keep the current Vide UI under `Client` and the Charm state under `src/client/State`, as the project guide already says.\n\nDo you want me to set up any of this, such as a `Remotes` folder with a mapping in `default.project.json`, or a feature-first split of `Server` and `Client`?",
+ "cost": 0.0051121100000000004,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15010,
+  "cache_read_input_tokens": 47251,
+  "output_tokens": 3274,
+  "output_tokens_details": {
+   "thinking_tokens": 1625
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15010,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2184,
+    "cache_read_input_tokens": 20780,
+    "cache_creation_input_tokens": 3397,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3397
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

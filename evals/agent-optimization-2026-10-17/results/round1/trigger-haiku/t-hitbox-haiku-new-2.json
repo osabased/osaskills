@@ -1,0 +1,85 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-hitbox-haiku-new-2\" && cat pesde.toml 2>/dev/null; echo ---; ls src 2>/dev/null; echo ---; python \".claude/skills/roblox-resource-acquisition/scripts/check_updates.py\" 2>&1 | head -20"
+  ],
+  [
+   "Grep",
+   "(?i)hitbox|raycast|spherecast|blockcast|Touched|GetPartBoundsInBox|workspace:Blockcast|overlap"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-2\\src\\server\\Round.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00400379,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14576,
+  "cache_read_input_tokens": 46299,
+  "output_tokens": 1250,
+  "output_tokens_details": {
+   "thinking_tokens": 479
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14576,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 331,
+    "cache_read_input_tokens": 19821,
+    "cache_creation_input_tokens": 3922,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3922
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

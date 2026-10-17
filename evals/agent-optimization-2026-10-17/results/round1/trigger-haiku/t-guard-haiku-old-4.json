@@ -1,0 +1,88 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "GetDataStore|DataStoreService|ProfileStore"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "{*.project.json,default.project.json,src/**/*.{luau,lua,server.luau,client.luau},*.luau,*.lua,*.blink,rokit.toml,wally.toml,pesde.toml,apotheosis.toml}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00452523,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16869,
+  "cache_read_input_tokens": 48783,
+  "output_tokens": 1326,
+  "output_tokens_details": {
+   "thinking_tokens": 390
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16869,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 513,
+    "cache_read_input_tokens": 22095,
+    "cache_creation_input_tokens": 3941,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3941
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

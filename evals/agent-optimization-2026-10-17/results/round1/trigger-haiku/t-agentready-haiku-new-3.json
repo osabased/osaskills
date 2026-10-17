@@ -1,0 +1,99 @@
+{
+ "id": "t-agentready",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-agentready-haiku-new-3\" && pwd && ls -la && git status 2>&1 | head -5"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\wally.toml"
+  ],
+  [
+   "Glob",
+   "{.claude/*,.claude/*.*,*.md,*.toml,*.json,*.yml,*.yaml,.github/**/*,.vscode/*,.luaurc,.stylua*,selene*,aftman*,rokit*,*.lua*,scripts/**/*}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Glob",
+   "{.claude/*,.claude/settings*.json,CLAUDE.md,AGENTS.md,README*,Packages/**,DevPackages/**,ServerPackages/**,.github/**,.vscode/**,*.rbxl*,*.rbxlx,sourcemap.json,.gitignore,.luaurc,stylua.toml,.stylua.toml,selene.toml,rokit.toml,aftman.toml,.pesde/**}"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00416796,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13794,
+  "cache_read_input_tokens": 47906,
+  "output_tokens": 1859,
+  "output_tokens_details": {
+   "thinking_tokens": 366
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13794,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 443,
+    "cache_read_input_tokens": 21276,
+    "cache_creation_input_tokens": 1685,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1685
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

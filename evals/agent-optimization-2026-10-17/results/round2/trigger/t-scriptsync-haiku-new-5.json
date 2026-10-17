@@ -1,0 +1,63 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "{pesde.toml,rokit.toml,*.project.json,*packages*,packages/**,roblox_packages/**,Packages/**}"
+  ]
+ ],
+ "denials": [],
+ "result": "Yes, with a few constraints. Script Sync mirrors one folder on disk into one instance in Studio, so the packages folder can work, but it has to be mapped to the right place.\n\n- **Layout has to match.** pesde-installed packages require their dependencies by relative path (through `script.Parent` and the `_Index` folder). The Studio location you mount the folder at must have the same structure the install expects, or the requires will break.\n- **Shared and server packages need separate mounts.** If you install both, a server package mounted under `ReplicatedStorage` would replicate to every client. Server packages belong under `ServerScriptService`, and each mount needs its own sync root.\n- **Install before syncing.** `pesde install` has to have run so the folder exists on disk. Keep the installed packages out of git, since they're regenerated from `pesde.toml` and the lockfile.\n\nThis repo doesn't have a `pesde.toml` or packages folder yet. It only has `rokit.toml`, so pesde isn't set up here.\n\nBefore I set it up, I need two decisions from you, with my recommendations first:\n\n1. **Shared packages location:** `ReplicatedStorage.Packages` (recommended), or somewhere else?\n2. **Server packages location:** `ServerScriptService.ServerPackages` (recommended), or do you not need server-only packages?\n\nOnce you answer, I'll add the `pesde.toml`, the sync mapping, and a row in the `CLAUDE.md` sync-root table. I'd also run the `roblox-resource-acquisition` skill to confirm the pesde setup and install directory names against the current pesde docs, since I'm not certain of the exact defaults.",
+ "cost": 0.0036612300000000006,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 9867,
+  "cache_read_input_tokens": 26893,
+  "output_tokens": 2837,
+  "output_tokens_details": {
+   "thinking_tokens": 2125
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9867,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1564,
+    "cache_read_input_tokens": 17726,
+    "cache_creation_input_tokens": 1308,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1308
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

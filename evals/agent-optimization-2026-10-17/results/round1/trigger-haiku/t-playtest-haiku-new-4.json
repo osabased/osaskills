@@ -1,0 +1,82 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ],
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [],
+ "result": "To test a shop button in a play-test, click it with real input through the Studio MCP and check what happens on the server, not just that the handler runs.\n\n1. **Confirm Studio has your current code.** In Edit mode, read the button's handler module's `Source` with `execute_luau` or `script_read`. Uncommitted edits don't show up in Git, so this is the only way to know Studio has them.\n2. **Start the play-test** with `start_stop_play`. Changes made during Play are discarded when it stops, so make any edits first.\n3. **Find the button** with `search_game_tree` or `inspect_instance`, using a path like `LocalPlayer.PlayerGui.<ShopScreenGui>.<BuyButton>`. Shop GUIs are often created after the character spawns, so confirm it exists before clicking.\n4. **Click it with `user_mouse_input`** and the `instance_path`. This fires the button's `Activated` as a real click. Calling the handler directly only proves the handler, not that the button is wired up or visible.\n5. **Check the result.** Read `get_console_output` for errors from the client and server. Then inspect the state the purchase should change, such as currency on the server's `leaderstats`, or whether the item appears in the Backpack. Read server state from the Server datamodel, since the client copy can be wrong.\n6. **Record timing if the UI is short-lived.** Each `execute_luau` call takes seconds, and the first call after Play can return 7 to 15 seconds in, so a popup may be gone before you look. Run one `execute_luau` that connects the relevant signals and appends timestamped lines to a `StringValue` under `LocalPlayer`, then read it after the click.\n7. **Don't `require` the game's own modules from `execute_luau`** during the play-test. That creates a second copy of the module with its own state, and the errors it produces look like game bugs. Observe through the UI, the console and the Instance tree.\n8. **Stop the play session** when you're done, and only one you started.\n\nThe MCP tool names and behavior change, so list the server's tools first and check that they match these steps.\n\nBefore I write a specific script, I need a few details:\n- **How the project is synced:** Rojo, Script Sync, or Studio-only. If it's Studio-only, I'll need to read the place through the MCP rather than files.\n- **The shop's path:** the ScreenGui and button names, and whether the GUI is created at spawn or later.\n- **The purchase flow:** the handler's script path and the RemoteEvent or RemoteFunction it calls, if any, and which value should change when a purchase succeeds (for example, a `leaderstats` currency).",
+ "cost": 0.00436749,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14787,
+  "cache_read_input_tokens": 47049,
+  "output_tokens": 1878,
+  "output_tokens_details": {
+   "thinking_tokens": 672
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14787,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1436,
+    "cache_read_input_tokens": 20420,
+    "cache_creation_input_tokens": 3534,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3534
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

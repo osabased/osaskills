@@ -1,0 +1,88 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStoreService|GetDataStore|DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't changed anything yet, because this repo doesn't have a DataStore name to guard.\n\n**What I found**\n\n- The project is a small Rojo skeleton (`default.project.json`, plus `src/server`, `src/shared`, and `src/client`). `src/server/init.server.luau` only prints `\"server\"`, and `src/shared/init.luau` returns `{}`.\n- Nothing in the repo calls `DataStoreService` or `GetDataStore`. The only matches are in the `.claude/skills` docs.\n- There's no check script, no `scripts/` folder, and no git history, so there's no existing guard pattern to extend.\n\n**What I think you want:** a guard that fails the check if the DataStore name literal changes. This only works once the name exists in code. Right now it doesn't, so I'd be inventing the name.\n\n**Questions**\n\n1. **Where is the DataStore name?** Is it in a different folder or branch, or should I create the DataStore code now? If you're creating it now, what is the exact name? *(Recommended: point me at the existing code. If it's new, give me the exact string.)*\n2. **Guard form:** should the guard be a standalone script or a step in a check command? *(Recommended: a small `scripts/check_datastore_name.luau` or `.ps1` that keeps a copy of the exact name and fails with a message naming the file and line, then wire it into a `scripts/check` command. The repo has no check command yet, so this would add one.)*\n3. **Guard language:** Luau, PowerShell, or Python? *(Recommended: Luau, run by the project's Lune/Luau tooling if you have it. If not, PowerShell so it runs on Windows with no extra install.)*\n\nOnce you answer, I'll write the guard, add a break-test to confirm it fails on a changed name, and report the result.",
+ "cost": 0.00476269,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15770,
+  "cache_read_input_tokens": 48559,
+  "output_tokens": 2245,
+  "output_tokens_details": {
+   "thinking_tokens": 861
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15770,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1285,
+    "cache_read_input_tokens": 21929,
+    "cache_creation_input_tokens": 3008,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3008
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

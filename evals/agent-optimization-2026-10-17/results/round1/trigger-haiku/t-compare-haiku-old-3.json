@@ -1,0 +1,67 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "(?i)janitor|trove|maid"
+  ]
+ ],
+ "denials": [],
+ "result": "**Janitor.** The project already uses it: `CLAUDE.md` names Janitor for cleanup ownership, and `pesde.toml` pins it. Adding Trove would mean two cleanup libraries in one codebase for no gain. I didn't find Trove anywhere in the project.\n\nOne thing to check first: `pesde.toml` pins Janitor at `=1.17.0`, but the `roblox-janitor` skill targets 1.18.3. I'm keeping the project's pin. Before relying on any API detail from that skill, confirm it exists in 1.17.0. The general rules in the skill still hold at either version:\n\n- For custom connection objects (for example, from a signal library), pass the method name: `janitor:Add(conn, \"Disconnect\")`. Without it, cleanup silently skips the object.\n- Cleanup order is unspecified. If one callback throws, the rest are skipped, so wrap risky callbacks in `pcall`.\n- Janitor only cancels what you add to it. Add any threads you spawn.\n\nIf you want Trove's API compared in detail, or want the project moved to 1.18.3, tell me and I'll go through the `roblox-resource-acquisition` upgrade flow.",
+ "cost": 0.00326174,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 11535,
+  "cache_read_input_tokens": 26534,
+  "output_tokens": 1378,
+  "output_tokens_details": {
+   "thinking_tokens": 781
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11535,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 734,
+    "cache_read_input_tokens": 17367,
+    "cache_creation_input_tokens": 3335,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3335
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

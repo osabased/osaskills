@@ -1,0 +1,86 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Grep",
+   "Raycast|raycast|Hitbox|hitbox|Spherecast|GetPartBoundsInBox|GetPartBoundsInRadius"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: write it yourself with the engine's spatial queries.** I don't see a library that clearly beats them for coin-run, and adding a dependency here would be a poor trade.\n\n- **Pickups, zones, melee swings:** `workspace:GetPartBoundsInBox` or `GetPartBoundsInRadius` with `OverlapParams`. Run them on the server, on a fixed tick or on a cooldown. They're one call, with no cleanup or lifecycle to manage.\n- **Projectiles and hitscan:** `workspace:Raycast` (or `Spherecast`-style sweeps built from raycasts) with `RaycastParams`. Filter out the attacker's character and any non-collidable parts.\n- **Don't rely on `Touched` for gameplay hits.** It's unreliable for server-authoritative logic, so use the queries above.\n\nA library would only earn its place if you need something the built-ins don't give you, such as lag compensation, many simultaneous moving hitboxes with per-frame sweeps, or per-bone hit detection. If one of those is in the design, tell me and I'll compare candidates.\n\nTwo things I couldn't do here:\n\n- **No candidate comparison.** I only have local file tools in this session, so I couldn't check DevForum, the Wally or pesde indexes, or any repository. I won't name a hitbox package from memory, because I couldn't confirm its current version, maintenance, or license.\n- **Nothing was installed or changed.** This is an evaluation only. `pesde.toml` still has just Charm, Janitor and Vide, and no hitbox code exists in the project yet.\n\nTo pin this down, what kind of hit detection is it: coin pickup, melee, projectile, or something else? If it's one of the first three, the built-ins are enough and I can sketch the server module with `OverlapParams` and a cooldown.",
+ "cost": 0.00428711,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13570,
+  "cache_read_input_tokens": 46351,
+  "output_tokens": 2218,
+  "output_tokens_details": {
+   "thinking_tokens": 1032
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13570,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1323,
+    "cache_read_input_tokens": 19868,
+    "cache_creation_input_tokens": 2869,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2869
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

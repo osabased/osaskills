@@ -1,0 +1,86 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "cd \"~\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "result": "I couldn't load the project-specific guidance, so this answer is general. Two tool calls were blocked: Bash is disabled in this session, and reading the skill's `verification.md` and `studio-only.md` needs a permission I haven't been granted. I skipped the once-per-session update check for the same reason.\n\nThe general approach for a shop button:\n\n1. **Check the server side without the UI.** Find the RemoteEvent or RemoteFunction the button fires, and the server handler that validates the request and grants the item. Those handlers are where purchase logic belongs, so test them directly first.\n2. **Start a play-test through the MCP** and run a short test script in the session that calls the handler, or fires the button's `Activated` event. I'm not certain of the exact MCP tool names here, so check what your MCP exposes.\n3. **Assert the result**: the player's currency or inventory changed correctly, and an invalid request (wrong item, insufficient funds, a tampered payload) is rejected by the server.\n4. **Only then check the real click** by moving the mouse onto the button in the play-test, since a scripted call doesn't prove the GUI is wired or visible.\n\nIf you grant read access to the skill's `references/verification.md` and `references/studio-only.md`, I'll re-read them and give you the exact steps for your setup. Two questions that would sharpen the answer:\n\n- Is the shop code in Rojo files on disk, or only in Studio?\n- Which Studio MCP are you using, and what tools does it list?",
+ "cost": 0.0037697700000000004,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11912,
+  "cache_read_input_tokens": 47127,
+  "output_tokens": 1831,
+  "output_tokens_details": {
+   "thinking_tokens": 997
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11912,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1237,
+    "cache_read_input_tokens": 20498,
+    "cache_creation_input_tokens": 581,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 581
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

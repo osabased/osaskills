@@ -1,0 +1,97 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Glob",
+   "{client,shared,server}/**/*"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,rokit.toml,wally.toml,default.project.json,CLAUDE.md}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-1\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-1\\client\\Controller.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-1\\CLAUDE.md"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't edited anything. Here's the plan, plus one blocker that needs your decision.\n\n**What I found**\n- The project has no `pesde.toml`, `pesde.lock`, or `wally.toml`, and `rokit.toml` pins only StyLua and Selene. Janitor isn't installed yet, and pesde isn't pinned in `rokit.toml`.\n- The current `client/Controller.client.luau` never disconnects the `UserInputService.InputBegan` listener. Each respawn adds another listener. The dash cooldown (`lastDash`) hides the extra dashes, so the visible symptom is a leak, not double dashes.\n- Script Sync only maps `ServerScriptService.Server`, `ReplicatedStorage.Shared`, and `StarterPlayer.StarterPlayerScripts.Client`. pesde installs packages to a folder on disk that none of those roots cover, so `require(ReplicatedStorage.Packages.Janitor)` won't resolve in Studio as things stand.\n\n**Plan**\n1. **Install:** pin pesde in `rokit.toml`, run `pesde init` if needed, add `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }` with the `[wally_indices]` entry from the skill's setup reference, then run `pesde install`. Keep `pesde.lock`, which should resolve Janitor 1.18.3 and its Promise companions.\n2. **Make it reachable in Studio:** this depends on your choice below.\n3. **Wire it in:** keep one Janitor at module level. At the start of `onCharacter`, call `characterJanitor:Cleanup()`, then add the connection with `characterJanitor:Add(UserInputService.InputBegan:Connect(...))`. The default method for `RBXScriptConnection` is `Disconnect`, so no method argument is needed. Use `Cleanup`, not `Destroy`, so the same Janitor works for every respawn. No comments are needed.\n4. **Static checks:** after `rokit install`, run `stylua --check client` and `selene client`. There's no check script, so I'd run these directly and not add one.\n5. **Runtime check in Studio:** Play, respawn with Reset, and press dash once. A dash alone won't show the fix because of the cooldown. To confirm one listener, add a temporary counter or print in the `InputBegan` callback, respawn several times, then remove it.\n\n**Decisions for you (batched, recommendation first)**\n1. How should Janitor reach Studio?\n   - **A (recommended):** add a new synced folder for pesde's output, mapped to `ReplicatedStorage.Packages`, and add it to the CLAUDE.md sync table. This keeps the package versioned with pesde.\n   - **B:** insert the package into Studio by hand. It won't stay in sync with the lock.\n   - **C:** copy Janitor into `shared/`. This conflicts with the skill's rule against vendoring.\n2. Should I proceed with option A, and is pesde already installed on your machine, or should I pin it through rokit?",
+ "cost": 0.00679975,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 16307,
+  "cache_read_input_tokens": 76755,
+  "output_tokens": 5540,
+  "output_tokens_details": {
+   "thinking_tokens": 3733
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16307,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 4471,
+    "cache_read_input_tokens": 24988,
+    "cache_creation_input_tokens": 1070,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1070
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

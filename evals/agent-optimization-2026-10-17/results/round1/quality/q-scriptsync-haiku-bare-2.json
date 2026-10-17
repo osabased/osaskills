@@ -1,0 +1,97 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-2\\client\\Controller.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-2\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,rokit.toml,wally.toml,default.project.json,*.project.json,CLAUDE.md}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-bare-2\\rokit.toml"
+  ],
+  [
+   "Glob",
+   "{server,shared,client}/**/*"
+  ],
+  [
+   "Bash",
+   "pesde --version; rokit --version; where.exe pesde rokit 2>&1"
+  ]
+ ],
+ "denials": [],
+ "result": "**What I think you want:** Add Janitor as a pesde-managed dependency, then use it in `client/Controller.client.luau` so each character's dash `InputBegan` connection is cleaned up when that character is removed. I'm reading \"pesde\" as the package manager that installs Janitor from the Wally index. I'm not planning any change to dash behavior beyond the cleanup.\n\n## What I found\n\n- The repo has no `pesde.toml`, `pesde.lock`, `wally.toml`, or `*.project.json`. `rokit.toml` pins only `stylua` 2.3.1 and `selene` 0.29.0.\n- `onCharacter` connects `UserInputService.InputBegan` and never disconnects it. Every respawn adds another live handler that still points at the old humanoid.\n- Bash is disabled in this session, so I couldn't check whether pesde or rokit are installed, and I couldn't run anything. I relied on the Janitor skill (pinned 1.18.3) and didn't read Janitor's source.\n- The leak may be worse than wasted work. Handlers run in connection order, so the oldest handler runs first on each press. It sets the shared `lastDash` cooldown and calls `Move` on the dead humanoid, which blocks the live character's dash. This is my reading, not a tested result. The verification below checks it.\n\n## Install\n\n1. Add a `pesde.toml` at the repo root. It needs the package name, version, and a Roblox target, plus:\n   - `[dependencies]`: `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }`\n   - `[wally_indices]`: `default = \"https://github.com/UpliftGames/wally-index\"`\n2. Run `pesde install` and commit `pesde.lock`. Check that the lock resolves Janitor 1.18.3, `howmanysmall/typed-promise` 4.0.6, and `evaera/promise` 4.0.0. Those are the versions the skill recorded.\n3. Pin pesde itself in `rokit.toml` next to stylua and selene, if you want it managed the same way. I need the pesde version you use.\n4. **Blocker:** pesde writes packages to a folder that Script Sync doesn't sync. CLAUDE.md maps only `server/`, `shared/`, and `client/`. See question 1.\n\n## Wire-in\n\nUse one Janitor per character and link it to the character's destruction:\n\n```luau\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\n...\nlocal function onCharacter(character: Model)\n\tlocal humanoid = character:WaitForChild(\"Humanoid\") :: Humanoid\n\tlocal janitor = Janitor.new()\n\tjanitor:Add(UserInputService.InputBegan:Connect(function(input, processed)\n\t\t...\n\tend))\n\tjanitor:LinkToInstance(character)\nend\n```\n\n- `LinkToInstance` cleans up on the character's `Destroying`. Roblox destroys the old character on respawn, so this covers the case. It would miss a character that is only reparented to `nil`, which this code doesn't do. The alternative is `player.CharacterRemoving`. I'd use `LinkToInstance`.\n- `InputBegan` is an `RBXScriptConnection`, so Janitor's default method (`Disconnect`) applies and no method argument is needed.\n- Non-Janitor option: connect once outside `onCharacter` and look up the humanoid when a key is pressed. That removes the leak with no package. You asked for Janitor, so I'll keep to it unless you say otherwise.\n\n## Check that it works\n\n1. **Static:** `rokit install`, then `stylua --check client` and `selene client`. I didn't see a `stylua.toml` or `selene.toml` in the root, so selene may not know the Roblox globals. Check that before trusting its output.\n2. **Resolve:** after Script Sync, confirm `ReplicatedStorage.Packages.Janitor` exists and the require loads without error.\n3. **Reproduce the bug first:** in Play mode, press dash, then reset the character with `player:LoadCharacter()` and press dash again. My prediction is that the second dash does nothing on the new character. Confirm or rule this out before changing code.\n4. **Verify the fix:** after the same respawns, each press should move the current character. A stale connection shouldn't block a dash. To count handlers directly, add a temporary counter and remove it afterward.\n\n## Questions\n\n1. **How should pesde's packages reach `ReplicatedStorage`?** Script Sync only maps three roots, and I'm not sure it supports a second mapping.\n   - (a) Map pesde's packages folder to `ReplicatedStorage.Packages` in Studio's Script Sync setup. This is my recommendation: generated code stays out of the source roots.\n   - (b) Copy Janitor under `shared/`. This vendors generated code, which the skill advises against.\n   - (c) Something you already use. Tell me what it is.\n2. **Which pesde version should I pin in `rokit.toml`?** Or should I skip pinning pesde?\n\nOnce you answer, I'll write `pesde.toml`, make the controller change, and run the static checks I can run here.",
+ "cost": 0.009061439999999999,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 16520,
+  "cache_read_input_tokens": 77214,
+  "output_tokens": 9969,
+  "output_tokens_details": {
+   "thinking_tokens": 7512
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16520,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 8537,
+    "cache_read_input_tokens": 25390,
+    "cache_creation_input_tokens": 881,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 881
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

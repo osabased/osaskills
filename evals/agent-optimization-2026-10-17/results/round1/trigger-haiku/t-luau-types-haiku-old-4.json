@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**Type refinement** means the type checker narrows a variable's type inside a branch once a runtime check has ruled some possibilities out. `typeof` is the most common check for this.\n\n### Basic narrowing\n\n```luau\nlocal function describe(value: number | string | nil): string\n\tif typeof(value) == \"number\" then\n\t\t-- value: number\n\t\treturn string.format(\"%.2f\", value)\n\telseif typeof(value) == \"string\" then\n\t\t-- value: string\n\t\treturn value:upper()\n\telse\n\t\t-- value: nil\n\t\treturn \"missing\"\n\tend\nend\n```\n\nEach branch sees only the members of the union that the check allows. The `else` branch gets whatever is left.\n\n### Early return narrows the rest of the function\n\n```luau\nlocal function double(value: number | string): number\n\tif typeof(value) ~= \"number\" then\n\t\terror(\"expected a number\")\n\tend\n\t-- value: number from here on\n\treturn value * 2\nend\n```\n\nAny path that exits (`return`, `error`, `continue`, `break`) lets the checker keep the narrowed type for the code after the `if`.\n\n### Combining checks\n\n`and`, `or`, and `not` narrow too:\n\n```luau\nlocal function label(value: string | number?): string\n\tif value and typeof(value) == \"number\" then\n\t\t-- value: number (nil is already excluded by the truthiness check)\n\t\treturn \"n=\" .. value\n\tend\n\treturn \"other\"\nend\n```\n\n### Narrowing table types\n\n`typeof(x) == \"table\"` only tells you it's a table, not which one. For a union of table shapes, use a literal field as a discriminant:\n\n```luau\ntype Circle = { kind: \"circle\", radius: number }\ntype Rect = { kind: \"rect\", width: number, height: number }\n\nlocal function area(shape: Circle | Rect): number\n\tif shape.kind == \"circle\" then\n\t\treturn math.pi * shape.radius ^ 2 -- shape: Circle\n\tend\n\treturn shape.width * shape.height -- shape: Rect\nend\n```\n\nLiteral string types act as tags, so this is the Luau equivalent of a tagged union.\n\n### Things to watch for\n\n- **`typeof` vs `type`**: `typeof` honors a metatable's `__type` field, which matters for Roblox datatypes (`Vector3`, `CFrame`, `Instance`). `type` returns only the basic Lua type (`\"userdata\"` for all of them). Use `typeof` for refinement.\n- **Refinement is flow-based, not persistent.** It applies only where the checker can prove the check happened on that path. Re-checking after an intervening assignment is required if the variable changes.\n- **Optional fields are not refined by a parent check.** `if typeof(obj.field) == \"number\"` narrows `obj.field`, but it does not prove `obj` itself is non-nil. Check `obj` first.\n- **Checks with `==` against a literal are the reliable form.** Comparing `typeof(x)` to a variable rather than a string literal will not narrow.\n- **Roblox types**: `typeof(x) == \"Instance\"` and `typeof(x) == \"Vector3\"` should narrow, but confirm this with luau-lsp on your Luau version before depending on it.\n\nIf you want, paste a function from your code and I can show where narrowing does or doesn't apply, using `luau-lsp` or `--!strict` as the checker.",
+ "cost": 0.00274517,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8199,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2027,
+  "output_tokens_details": {
+   "thinking_tokens": 958
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2027,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

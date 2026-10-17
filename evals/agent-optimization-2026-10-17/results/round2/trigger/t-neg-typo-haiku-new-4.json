@@ -1,0 +1,71 @@
+{
+ "id": "t-neg-typo",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "fix the typo 'recieve' in the comments under src/server",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "recieve"
+  ],
+  [
+   "Glob",
+   "src/server/**/*"
+  ],
+  [
+   "Grep",
+   "recieve"
+  ]
+ ],
+ "denials": [],
+ "result": "I found no \"recieve\" in `src/server`, so I made no changes.\n\n`src/server` contains one file, `init.server.luau`, and a case-insensitive search of the working directory found no \"recieve\" in it or anywhere else. If the typo is in a different folder, or you meant another spelling, tell me the path and I'll fix it.",
+ "cost": 0.0025730400000000004,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8925,
+  "cache_read_input_tokens": 44444,
+  "output_tokens": 686,
+  "output_tokens_details": {
+   "thinking_tokens": 212
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8925,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 192,
+    "cache_read_input_tokens": 17805,
+    "cache_creation_input_tokens": 287,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 287
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

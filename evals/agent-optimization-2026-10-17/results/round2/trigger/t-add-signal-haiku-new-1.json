@@ -1,0 +1,107 @@
+{
+ "id": "t-add-signal",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\scripts\\check_guards.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\src\\server\\Coins.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00584611,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20089,
+  "cache_read_input_tokens": 53371,
+  "output_tokens": 2588,
+  "output_tokens_details": {
+   "thinking_tokens": 1232
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20089,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1417,
+    "cache_read_input_tokens": 26894,
+    "cache_creation_input_tokens": 2362,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2362
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

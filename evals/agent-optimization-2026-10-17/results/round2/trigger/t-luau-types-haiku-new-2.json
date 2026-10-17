@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Type refinement means the type checker narrows a variable's type inside a branch that has already tested it. `typeof` is one of the checks it understands, so inside the branch the variable has the narrower type.\n\n```luau\nlocal function describe(value: string | number | Vector3): string\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper() -- value: string\n\telseif typeof(value) == \"number\" then\n\t\treturn tostring(value + 1) -- value: number\n\telse\n\t\treturn `{value.X}, {value.Y}, {value.Z}` -- value: Vector3\n\tend\nend\n```\n\nWithout the checks, `value:upper()` and `value + 1` would be type errors because the union includes types that don't support those operations.\n\n**Key points**\n\n- **The check must be on the variable itself.** `typeof(value) == \"string\"` refines `value`. A check on a related expression, such as `typeof(other) == \"string\"`, does not refine `value`.\n- **Narrowing applies in the taken branch only.** After the `if` block, the type goes back to the full union unless every path has narrowed it.\n- **Early returns narrow the rest of the function.** This is the common pattern:\n\n  ```luau\n  local function setName(name: string?)\n  \tif typeof(name) ~= \"string\" then\n  \t\treturn\n  \tend\n  \tprint(name:upper()) -- name: string from here on\n  end\n  ```\n\n- **`typeof` vs `type`.** At runtime, `typeof` gives Roblox-aware names such as `\"Instance\"`, `\"Vector3\"`, and `\"CFrame\"`, while `type` returns `\"userdata\"` for all of them. Use `typeof` for Roblox values.\n- **`nil` is handled.** `typeof(x) == \"nil\"` and `x == nil` both narrow optionals like `string?`.\n- **Instances need a class check.** `typeof(x) == \"Instance\"` only narrows to `Instance`, which doesn't have `Anchored` or `Velocity`. The checker also understands `x:IsA(\"BasePart\")`, which narrows to `BasePart`:\n\n  ```luau\n  local function freeze(obj: Instance)\n  \tif obj:IsA(\"BasePart\") then\n  \t\tobj.Anchored = true -- obj: BasePart\n  \tend\n  end\n  ```\n\n- **`any` isn't narrowed.** `any` already allows everything, so the checker has nothing to narrow.\n- **Checks combine.** `and`, `or`, and `not` work, so `if typeof(v) == \"table\" and v.kind == \"circle\" then` narrows `v` in the branch.\n\n**Runtime vs. compile time:** The check runs at runtime and guards real behavior. The narrowing happens only in the type checker, and it trusts your check. If you use `:: any` casts or `assert` in unusual ways, the checker may not follow the narrowing as you expect.\n\nIf you're looking at a specific error or a file in this project, send it over and I can explain what the checker is inferring at that point.",
+ "cost": 0.00298657,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8141,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2533,
+  "output_tokens_details": {
+   "thinking_tokens": 1569
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8141,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2533,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8141,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8141
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

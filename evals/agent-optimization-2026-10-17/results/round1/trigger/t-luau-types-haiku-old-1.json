@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau's type checker narrows a union type inside branches that test it with `typeof`. Inside the branch, the variable has only the members that match the test.\n\n```luau\n--!strict\ntype Value = number | string | { id: number }\n\nlocal function describe(v: Value): string\n\tif typeof(v) == \"number\" then\n\t\treturn `number {v + 1}` -- v: number\n\telseif typeof(v) == \"string\" then\n\t\treturn `string {#v}` -- v: string\n\telse\n\t\treturn `table {v.id}` -- v: { id: number }\n\tend\nend\n```\n\n**Early-return guards** narrow the rest of the function, not just a branch:\n\n```luau\nlocal function double(v: number | string): number\n\tif typeof(v) ~= \"number\" then\n\t\treturn 0\n\tend\n\treturn v * 2 -- v: number from here on\nend\n```\n\n**Combining checks** works with `and`, `or`, and `not`:\n\n```luau\nif typeof(v) == \"table\" and v.id ~= nil then\n\tprint(v.id) -- v is the table member, and v.id is valid\nend\n```\n\n**Nil checks** are a refinement too. `if x then` removes `nil` from `x`'s type.\n\n**Discriminated unions** narrow on a literal field, which is often better than `typeof` for tables:\n\n```luau\ntype Result = { ok: true, value: number } | { ok: false, err: string }\n\nlocal function show(r: Result)\n\tif r.ok then\n\t\tprint(r.value) -- r: { ok: true, value: number }\n\telse\n\t\tprint(r.err) -- r: { ok: false, err: string }\n\tend\nend\n```\n\n**Roblox specifics:**\n- `typeof(x)` returns Roblox's type names, such as `\"Instance\"`, `\"Vector3\"`, and `\"CFrame\"`. `type(x)` returns `\"userdata\"` for all of them, so prefer `typeof` for Roblox values.\n- `typeof(x) == \"Instance\"` narrows to `Instance`. For class-specific narrowing, `x:IsA(\"BasePart\")` also refines the type in Luau.\n\n**Limits to know:**\n- A reassignment inside the branch drops the refinement for that variable. Narrow into a new local when the value changes.\n- `any` doesn't narrow usefully. If a value is `any`, annotate it or check it into a typed local.\n- Refinement is a compile-time view. The check still runs at runtime, and a wrong annotation (for example, a `--!nonstrict` value) can still crash at runtime. Use `--!strict` to get the checks.\n\nIf you want, I can show where these patterns would apply in the coin-run code, such as the round or state modules.",
+ "cost": 0.00292117,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8199,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2379,
+  "output_tokens_details": {
+   "thinking_tokens": 1532
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2379,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

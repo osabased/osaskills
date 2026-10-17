@@ -1,0 +1,67 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "(?i)janitor"
+  ]
+ ],
+ "denials": [],
+ "result": "The skill is pointing at a real mismatch, and I haven't changed anything.\n\n- `pesde.toml:16` pins `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }`.\n- `pesde.lock:21-22` resolves that to `1.17.0`.\n- The `roblox-janitor` skill documents `1.18.3`.\n\nThe skill's API notes may not match what's actually in your 1.17.0 package, so I'd keep the pin and check against the code you have.\n\n**What I'd do now:**\n\n1. **Keep `=1.17.0`.** Don't edit the pin to match the skill. The skill is the thing that's out of date for your project.\n2. **Confirm the API against 1.17.0.** Read the Janitor source that pesde installed for 1.17.0 (under your packages directory) and check any methods the skill describes that your code depends on. Stick to what you can confirm there.\n3. **Stop where behavior might differ.** If the task depends on something that changed between 1.17.0 and 1.18.3, I'll flag it instead of guessing from the skill.\n\n**Your options if you want the skill's version:**\n\n- **Upgrade to 1.18.3:** that's a version bump, so it goes through the `roblox-resource-acquisition` upgrade flow. It would change `pesde.toml` and `pesde.lock` and may change behavior, so I'd confirm with you before doing it.\n- **Downgrade the skill:** have `roblox-resource-acquisition` retarget `roblox-janitor` to 1.17.0. That leaves your dependency alone.\n\nI'd recommend keeping 1.17.0 for now and only upgrading if you have a reason to want 1.18.3's changes. Which way do you want to go? If you want the upgrade, I'll run the flow and confirm the diff before writing it.",
+ "cost": 0.00286463,
+ "turns": 2,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 9741,
+  "cache_read_input_tokens": 26503,
+  "output_tokens": 1302,
+  "output_tokens_details": {
+   "thinking_tokens": 488
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9741,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 790,
+    "cache_read_input_tokens": 17336,
+    "cache_creation_input_tokens": 1572,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1572
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

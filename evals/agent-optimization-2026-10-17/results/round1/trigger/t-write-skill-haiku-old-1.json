@@ -1,0 +1,98 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10342
+  ],
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7072
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Glob",
+   "**/{pesde.toml,pesde.lock,SKILL.md}"
+  ],
+  [
+   "Glob",
+   ".claude/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't written the skill yet. Three things need your answer first.\n\n**What I think you want:** a `roblox-fusion` skill that tells agents how to use Fusion correctly, based on a specific pinned Fusion release. The project doesn't use Fusion yet. Its UI library is Vide (`pesde.toml` pins `vide` to a commit, and `CLAUDE.md` routes UI work to `roblox-vide`).\n\n**What's blocking me:**\n\n- **No file-writing tool here.** This session has no Write, Edit or shell tool loaded, so I can't create the skill files.\n- **No Fusion source to ground the API.** The library-skill process requires every API entry to come from the pinned source. I have no web fetch in this session, and I won't write the API table from memory.\n- **No pin.** The project doesn't declare Fusion, so the skill would be advice-only until someone adopts it.\n\n**Questions, batched with my recommendation first:**\n\n1. **Scope:** Should Fusion be adopted into this project, or is this a reference skill while Vide stays the UI library?\n   - *Recommended:* reference only. The skill is advice-only, and `pesde.toml` doesn't change.\n2. **Version:** Which Fusion release should the skill target?\n   - *Recommended:* the latest 0.3.x release, unless you use another. Give me the release tag, or a local copy of its source or docs, so the API table is grounded.\n3. **Location:** Where should the skill live?\n   - *Recommended:* project-scoped at `.claude/skills/roblox-fusion/`, following the `roblox-resource-acquisition` template.\n   - Alternatives: the shared catalog in `osabased/osaskills`, or user-wide under `~/.claude/skills/`.\n\nOnce you answer, enable file writes (or tell me the path to write to) and I'll write `SKILL.md`, `resource.yaml` and the references, then run `validate_skill.py` on it. The skill won't appear until a new session.",
+ "cost": 0.00680541,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20950,
+  "cache_read_input_tokens": 49381,
+  "output_tokens": 4242,
+  "output_tokens_details": {
+   "thinking_tokens": 2939
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20950,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2519,
+    "cache_read_input_tokens": 22839,
+    "cache_creation_input_tokens": 7278,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7278
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

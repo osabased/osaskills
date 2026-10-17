@@ -1,0 +1,83 @@
+{
+ "id": "t-add-signal",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,json,toml,sh,py}"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-old-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-old-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-old-1\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "A signal library is already in the project, so I haven't added anything.\n\n`src/shared/Signal.luau` is the vendored module that `CLAUDE.md` describes. It has:\n- `Signal.new()`\n- `:Connect(callback)`, which returns a connection with `:Disconnect()`\n- `:Fire(...)`, which runs each callback in its own `task.spawn`\n- `:DisconnectAll()`\n\nNothing uses it yet. `Round.luau` and `Coins.luau` don't require it, and `Coins.add` changes balances without announcing it.\n\nWhat I think you want is for modules to start firing custom events through that existing `Signal`. The most natural first case is `Coins.Changed`, fired from `Coins.add`. Which of these do you mean?\n\n1. **Wire it in (my recommendation):** add `Coins.Changed: Signal<Player, number>`, fired from `Coins.add` with the player and new balance. I'd leave `Round` alone unless you want round events too.\n2. **Add round events as well:** `Round.Started` and `Round.Ended`, fired in `Round.play`.\n3. **Change `Signal.luau` itself.** It has no `Once`, `Wait` or `Destroy`, and `DisconnectAll` doesn't make it Janitor-friendly. If you want those, tell me which.\n4. **Something else:** for example, you may have expected a package or a different API.\n\nIf it's option 1 or 2, tell me what the events should be called and what data they carry. Those names are the public API other modules will depend on.",
+ "cost": 0.062154,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11503,
+  "cache_read_input_tokens": 44900,
+  "output_tokens": 1164,
+  "output_tokens_details": {
+   "thinking_tokens": 112
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11503,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 570,
+    "cache_read_input_tokens": 19138,
+    "cache_creation_input_tokens": 1532,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1532
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

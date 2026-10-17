@@ -1,0 +1,90 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Bash",
+   "python .claude/skills/structure-roblox-projects/scripts/check_updates.py"
+  ]
+ ],
+ "denials": [],
+ "result": "For a new Roblox game, I'd keep the split by where code runs, then by feature inside each side. This repo already follows that split, so here's the layout plus how it maps onto the current `src/` tree.\n\n**Containers**\n\n| Container | Holds | Why |\n| --- | --- | --- |\n| `ServerScriptService` | Server entrypoint and server-only modules: rounds, coins, economy, validation, DataStores | Clients can't read it. Anything authoritative or secret goes here. |\n| `ServerStorage` | Server-only assets and templates | Clients can't see or clone them. |\n| `ReplicatedStorage/Shared` | Types, constants, pure logic both sides need (e.g. `Signal`) | Everything here is readable by clients, so no secrets. |\n| `ReplicatedStorage/Client` | Client-only modules: UI, input, camera, client state | Clients need it, and the server doesn't. Module source is visible to clients either way. |\n| `ReplicatedStorage/Remotes` | `RemoteEvent` / `RemoteFunction` instances, or ones your networking library creates | One place to find every entry point between the two sides. |\n| `ReplicatedStorage/Packages` | Installed packages | Keeps dependencies out of your code folders. |\n| `ReplicatedFirst` | Only the loading-screen subset | Keep it small; it delays everything else. |\n\nDon't put `LocalScript`s in `ReplicatedStorage`; they never run there. Use a `Script` with `RunContext = Client` if the client entrypoint lives there, as this repo does.\n\n**Entrypoints**\n\nUse one startup owner per runtime: one server script and one client script. Each requires its feature modules explicitly, so an agent can see what starts and in what order.\n\n**Grouping**\n\nUse feature folders (`Server/Rounds`, `Server/Coins`, `Client/HUD`, `Shared/Types`) once the game has several systems. Keep it flat while it's small. Pick one pattern and stick with it.\n\n**This repo**\n\nPer `default.project.json`:\n- `src/server` → `ServerScriptService/Server`. `init.server.luau` is the server entrypoint, and `Coins.luau` and `Round.luau` are feature modules beside it.\n- `src/client` → `ReplicatedStorage/Client`. `init.client.luau` is the client entrypoint, with `UI/` and `State/` (Charm, per `CLAUDE.md`).\n- `src/shared` → `ReplicatedStorage/Shared`. `Signal.luau` lives here because both sides use it.\n- `roblox_packages` → `ReplicatedStorage/Packages`.\n\nTwo things to add as the game grows:\n- A `Remotes` folder under `ReplicatedStorage`, so every client-to-server entry point is in one place. Validate every payload on the server (type, range, ownership, rate).\n- A `ServerStorage` mapping (for example `assets/` → `ServerStorage/Assets`) if you have templates or server-only assets.\n\nI didn't change anything. I also couldn't run the skill's update check, since Bash is disabled in this session. If you want, I can add the Remotes and ServerStorage mappings to `default.project.json` and the matching folders under `src/`, or do a more detailed layout for a specific feature, like the round loop or coin economy.",
+ "cost": 0.00578869,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17643,
+  "cache_read_input_tokens": 50199,
+  "output_tokens": 3515,
+  "output_tokens_details": {
+   "thinking_tokens": 1936
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17643,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2608,
+    "cache_read_input_tokens": 23728,
+    "cache_creation_input_tokens": 3082,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3082
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

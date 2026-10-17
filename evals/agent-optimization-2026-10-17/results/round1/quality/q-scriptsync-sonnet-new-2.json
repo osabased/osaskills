@@ -1,0 +1,106 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-janitor",
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ],
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-new-2\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ],
+  [
+   "Glob",
+   "{client,server,shared}/**/*"
+  ],
+  [
+   "Glob",
+   "{rokit.toml,pesde.*,*.toml,*.lock}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-new-2\\client\\Controller.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-sonnet-new-2\\rokit.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "**What I understand you want:** add Janitor (pinned 1.18.3) through pesde, and use it in `client/Controller.client.luau` so each character's `InputBegan` dash connection is disconnected when the player respawns. At the moment every respawn adds another connection, and each one keeps its own dead `humanoid` alive. This is a plan only, and I haven't edited any files.\n\n## What I found\n\n- The project has no `pesde.toml`, no lockfile and no `Packages` folder. `rokit.toml` pins only StyLua and selene, so pesde isn't pinned either.\n- Script Sync can't sync pesde's install folder. It skips dot-directories, which is where `.pesde` lives, and pesde's link modules require into `.pesde`. So the packages can't go under `shared/` or `client/`.\n- The install folder has to stay outside the synced roots and reach Studio as a built model. That needs `rojo build`, and Rojo isn't pinned either. It would be used only to build the model, not as a second sync system.\n\n## Decisions I need from you\n\n1. **Tooling pins (recommended: add them).** Add `pesde` and `rojo` to `rokit.toml`, pinned to versions I'll look up. The skill reviewed pesde 0.7.4.\n2. **How the packages reach Studio (recommended: a built model).** Run `rojo build` on the install folder to produce `Packages.rbxm`, which you insert once into `ReplicatedStorage.Packages` in Studio. You'd rebuild and re-insert it after each install. The alternative is to copy the Janitor module into Studio by hand, which is worse. This choice affects how the place is set up, so it's yours to make.\n3. **Where to keep the package files.** I'd put `pesde.toml`, `pesde.lock` and `Packages/` at the repo root, outside the synced directories. I'd also keep `Packages.rbxm` outside them, since it is inserted into Studio by hand.\n\n## Install\n\n1. Pin the tools in `rokit.toml`, then run `rokit install`.\n2. Run `pesde init` for a Roblox target, then add Janitor:\n   ```toml\n   [dependencies]\n   Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }\n\n   [wally_indices]\n   default = \"https://github.com/UpliftGames/wally-index\"\n   ```\n3. Run `pesde install`, which writes `pesde.lock`. Later restores use `pesde install --locked`.\n4. Check that the lock resolves `howmanysmall/janitor@1.18.3`, `howmanysmall/typed-promise` 4.0.6 and `evaera/promise` 4.0.0.\n5. Build `Packages.rbxm` from the install folder with `rojo build`. Insert it into `ReplicatedStorage` in Studio, and confirm the Janitor module and its Promise companions are present. The package's own Rojo project is named `janitor` in lowercase, so I'd check the built tree before writing the require path.\n\n## Wire-in\n\nThe change in `Controller.client.luau` is small:\n\n- Add `local Janitor = require(ReplicatedStorage.Packages.Janitor)`, using the path the built model actually has.\n- Create one `Janitor.new()` at the top of the script.\n- In `onCharacter`, add the `InputBegan` connection with `janitor:Add(connection, \"Disconnect\", \"Dash\")`. Reusing the index `\"Dash\"` cleans up the previous character's connection right before the new one is stored. That means no explicit `Cleanup` call is needed. I'd also consider `janitor:LinkToInstance(character)`, so the connection goes as soon as the character is destroyed.\n- Leave `lastDash` and the dash logic as they are. The cooldown stays shared across respawns, as it is today.\n\nFor a single connection, a plain `local dashConnection` that you disconnect before reconnecting would work. I'll use Janitor as you asked.\n\n## Checks\n\nThere is no check script yet, so I'd run the tools directly:\n\n1. `stylua --check` and `selene` on `client/`. `rokit.toml` pins both.\n2. A play-test in Studio. The shared cooldown hides duplicate connections, because extra handlers return early. So you can't see the leak by pressing dash. Instead, I'd add a temporary `print` at the top of the `InputBegan` handler, before the cooldown check. Respawn three times and press dash once. It should print one line, where the unfixed code prints four. Then remove the print.\n3. Confirm the dash still works after a respawn, and that there are no \"doesn't have method\" warnings or errors from Janitor or Promise in the output.\n4. Confirm Studio runs the bytes on disk: Studio must be open with sync running when the file changes.\n\n## Risks\n\n- This is a `.client.luau` under `StarterPlayerScripts`, so it's a `Script` with `RunContext = Client`. Per the skill, such scripts run twice there, once as the original and once as a clone. If that happens here, the current code already double-connects, and the print test would show two lines even after the fix. I'd check this during the play-test and raise it with you rather than guess.\n- The built model is a manual step. If it's missing in Studio, the require fails at startup, so the guide should record it.\n\nWhich options do you want for 1–3? Once you answer, I'll start with the install.",
+ "cost": 0.1325635,
+ "turns": 12,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 21409,
+  "cache_read_input_tokens": 84015,
+  "output_tokens": 3851,
+  "output_tokens_details": {
+   "thinking_tokens": 1154
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21409,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2757,
+    "cache_read_input_tokens": 30418,
+    "cache_creation_input_tokens": 742,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 742
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

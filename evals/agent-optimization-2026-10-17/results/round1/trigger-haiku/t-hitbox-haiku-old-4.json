@@ -1,0 +1,86 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-old-4\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Grep",
+   "(?i)hitbox|raycast|spherecast|blockcast|collision"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: write it yourself.** I didn't find anything in the project that already handles hit detection (no hitbox, raycast or collision code in `src/`), and nothing in `pesde.toml` covers it. Roblox's built-in queries cover most of what a hitbox needs, and a dependency would add a pinned library, a skill clone and a `CLAUDE.md` entry for a small amount of code.\n\n**Built-in options:**\n- `workspace:Raycast` for a single line, such as a hitscan shot.\n- `workspace:Spherecast` / `workspace:Blockcast` for a thicker sweep, such as a melee swing or a projectile moving between frames.\n- `workspace:GetPartBoundsInBox` / `GetPartBoundsInRadius` for overlap checks, such as an area attack.\n- `OverlapParams` to exclude the attacker's own character and filter by collision group.\n\n**Third-party:** I know of community modules like RaycastHitboxV4 on the DevForum, but I couldn't check their current version, maintenance or license from here. I'd only evaluate one if the hitbox shape gets complicated (multi-part rigs with per-frame sampling, for example).\n\n**Caveat:** this is an evaluation-only answer. I used only the project's manifest and source and my own knowledge of Roblox APIs. I didn't check any library's live source, release notes or DevForum threads, and I didn't install or change anything.\n\nOne question before I'd build it: what are the hitboxes for? Melee swings, projectiles, or instant hit-scan shots? The answer changes which query to use. Also, should hits be validated on the server? For a Roblox game, it should be.",
+ "cost": 0.00420485,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13553,
+  "cache_read_input_tokens": 46465,
+  "output_tokens": 2058,
+  "output_tokens_details": {
+   "thinking_tokens": 949
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13553,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1190,
+    "cache_read_input_tokens": 19924,
+    "cache_creation_input_tokens": 2796,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2796
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

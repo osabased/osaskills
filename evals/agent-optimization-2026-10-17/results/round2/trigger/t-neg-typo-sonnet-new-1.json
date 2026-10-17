@@ -1,0 +1,71 @@
+{
+ "id": "t-neg-typo",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "fix the typo 'recieve' in the comments under src/server",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "recieve"
+  ],
+  [
+   "Grep",
+   "recieve"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ]
+ ],
+ "denials": [],
+ "result": "I didn't change anything, because \"recieve\" doesn't appear anywhere in the project. A case-insensitive search of `src/server` found nothing, and neither did a search of the whole project directory.\n\n`src/server` has only one file, `init.server.luau`. Maybe the typo is in a different spelling, such as \"recieved\" or \"recieving\". Those would still have matched, since they contain \"recieve\" or similar. Or it may be in a different directory or project. If you tell me where to look, I'll fix it.",
+ "cost": 0.0431025,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8141,
+  "cache_read_input_tokens": 42765,
+  "output_tokens": 625,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8141,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 161,
+    "cache_read_input_tokens": 16902,
+    "cache_creation_input_tokens": 406,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 406
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

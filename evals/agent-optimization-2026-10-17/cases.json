@@ -1,0 +1,300 @@
+[
+ {
+  "id": "t-entry",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should my client entrypoint script go in this project?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-glob",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-onboard",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-remote",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-agentready",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-ci",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "set up CI for my Rojo project",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-playtest",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-guard",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "add a guard so nobody changes the DataStore name",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-tween",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-luau",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-typo",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "fix the typo 'recieve' in the comments under src/server",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-vide",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a Vide component for an inventory list with a toggle button",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-scriptsync",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+  "scaffold": "sync",
+  "max_turns": 3
+ },
+ {
+  "id": "t-studioonly",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+  "scaffold": "studio",
+  "max_turns": 3
+ },
+ {
+  "id": "t-add-signal",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "add a signal library to this game so modules can fire custom events",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-compare",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-hitbox",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-blink",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "set up Blink for networking in this pesde project",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-upgrade",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "Vide has a new release, should we bump our pinned version?",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-pin-mismatch",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-write-skill",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-fix-skill",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "the roblox-vide skill told me to use show() the wrong way, fix the skill",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-use-janitor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "use our Janitor to clean up this tween when the frame is destroyed",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-folders",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-tween",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "t-luau-types",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ]
+ },
+ {
+  "id": "q-scriptsync",
+  "suite": "srp",
+  "kind": "quality",
+  "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+  "scaffold": "sync",
+  "max_turns": 15
+ },
+ {
+  "id": "q-studioonly",
+  "suite": "srp",
+  "kind": "quality",
+  "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+  "scaffold": "studio",
+  "max_turns": 15
+ }
+]

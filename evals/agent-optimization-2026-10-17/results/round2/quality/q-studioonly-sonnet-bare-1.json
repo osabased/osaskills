@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "bare",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename `GiveCoins` to `AwardCoins` in the `Rewards` module under `ServerScriptService`, and update every caller in the place. The old name should be gone afterward, and behavior should be unchanged.\n\n**Caveat on tool names:** I can't see the MCP server's tool list from here, so the names below are the ones I expect. Step 1 is to list the real tools and map each step onto them. If the server has no script-search tool, I'd do the search in step 2 by running Luau through its generic code-execution tool.\n\n**Questions for you (my recommendation first):**\n1. Should I remove `GiveCoins` outright, or leave a temporary `GiveCoins = AwardCoins` alias? I recommend removing it, since the search in step 2 should find every caller. The catch is that your two collaborators may have callers I can't see yet. If you're unsure, keep the alias for now and I'll remove it in a follow-up.\n2. Have the other two editors been told, and should I wait for them to publish or save? I recommend a heads-up first, because Team Create merges script edits and a concurrent edit to the same script could conflict.\n\n**Plan**\n\n1. **Discover tools and check state.** Run the server's tool listing. Then read the Studio mode and confirm it's edit mode, not Play, and that the open place is Sword Arena (1234567890).\n2. **Find everything that references the name.**\n   - Use script search or grep for `GiveCoins` across every script container: `ServerScriptService`, `ServerStorage`, `ReplicatedStorage`, `StarterPlayerScripts`, `StarterGui`, `StarterPack`, `Workspace`, and `ReplicatedFirst`.\n   - Search for the module path (`require(...Rewards)`) so I find callers that alias the module and call it under a different local name.\n   - Search for string-based uses: `[\"GiveCoins\"]`, `:FindFirstChild(\"GiveCoins\")`, `GetAttribute`, and `RemoteEvent`/`BindableFunction` instances named `GiveCoins`. These are the usual way a plain rename breaks something.\n   - Search for `AwardCoins` too, to make sure the new name doesn't already exist or collide.\n3. **Read and record.** Read the full source of `Rewards` and each caller. Save the list of script paths and line numbers, plus the original text of each line I'll change, so I can revert by hand. There's no git or Script Sync, so this record is the only undo besides Studio's own history.\n4. **Decide on any instances named `GiveCoins`.** If a RemoteEvent or similar is named `GiveCoins`, I'd stop and ask you before renaming it. That's a wire-level change and would also touch client code.\n5. **Edit the definition.** In `Rewards`, change the definition (`function Rewards.GiveCoins(...)` or `Rewards.GiveCoins = function`) and any internal self-references to `AwardCoins`. I'd use a precise line-range or multi-edit tool, not a whole-script overwrite, so a collaborator's concurrent edits elsewhere in the script aren't clobbered.\n6. **Edit each caller.** Apply the same targeted edit, one script at a time. Only change real references to this module's function. I'd skip any unrelated `GiveCoins` in comments, in other modules, or in other tables.\n7. **Verify statically.**\n   - Re-run the step 2 searches. `GiveCoins` should return zero hits, or exactly the alias line if you chose to keep one.\n   - Search for `AwardCoins` and check that the hit count equals the definition plus the callers I changed.\n   - Read back each edited script and compare it against the saved originals. The only differences should be the renamed identifier.\n   - Check script editor diagnostics, if the server exposes them, for new \"unknown member\" warnings.\n8. **Verify at runtime.**\n   - Read the console output first so I can tell which errors are new.\n   - Start a Play session and trigger a coin award by running the actual code path, such as the in-game action that grants coins. Alternatively, run a small Luau snippet in play mode that requires `Rewards` and calls `AwardCoins`.\n   - Read the console output again. I'm looking for no `attempt to call a nil value` or `GiveCoins is not a valid member` errors, and for the coin total to change as before.\n   - Stop the Play session so Studio is back in edit mode.\n9. **Report.** I'd give you the list of scripts changed with line numbers, the before and after search counts, the runtime result, and anything I couldn't check. For example, a caller that only runs on a rarely hit path would be flagged as unexercised, not called verified.\n\nI wouldn't publish or save to Roblox, since that's outward-facing and affects your collaborators. I'd leave that to you.",
+ "cost": 0.0504691,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7430,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1977,
+  "output_tokens_details": {
+   "thinking_tokens": 385
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7430,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1977,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7430,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7430
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

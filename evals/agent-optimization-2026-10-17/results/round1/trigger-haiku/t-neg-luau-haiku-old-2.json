@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Type refinement means Luau narrows a value's type inside a branch once a check proves what it is. `typeof` checks are the most common way to trigger that narrowing.\n\n**The basic idea**\n\nIf a variable is annotated as a union like `string | number`, Luau doesn't know which member it holds until you check. Inside `if typeof(value) == \"string\" then`, the type checker treats `value` as `string`. In the `elseif` or `else` branch, it's narrowed to the remaining members.\n\n```lua\n--!strict\nlocal function describe(value: string | number | boolean | nil): string\n\tif typeof(value) == \"string\" then\n\t\treturn \"string of length \" .. #value\n\telseif typeof(value) == \"number\" then\n\t\treturn string.format(\"number %.2f\", value)\n\telseif value == nil then\n\t\treturn \"nil\"\n\tend\n\n\t-- Only boolean is left here\n\treturn tostring(value)\nend\n```\n\n**Early returns narrow the rest of the function**\n\nA guard that returns or errors narrows everything after it:\n\n```lua\nlocal function magnitudeOf(value: Vector3 | number): number\n\tif typeof(value) == \"number\" then\n\t\treturn value\n\tend\n\n\t-- value is Vector3 from here on\n\treturn value.Magnitude\nend\n```\n\n**Roblox types**\n\n`typeof` returns Roblox-aware names: `\"Vector3\"`, `\"CFrame\"`, `\"Instance\"`, `\"Color3\"`, and so on. Use `typeof` rather than `type`, because `type` returns `\"userdata\"` for most of these.\n\nFor instances, `typeof(x) == \"Instance\"` narrows to `Instance`. Checking the class with `:IsA` also narrows in the typechecker, so you can combine them:\n\n```lua\nlocal function weldedTo(inst: Instance | nil): BasePart?\n\tif typeof(inst) == \"Instance\" and inst:IsA(\"BasePart\") then\n\t\treturn inst\n\tend\n\treturn nil\nend\n```\n\n**Other refinements that work the same way**\n\n- Truthiness: `if value then` removes `nil` and `false`.\n- Equality on literal types: if a union uses string literals, such as `{kind: \"circle\", radius: number} | {kind: \"box\", size: Vector3}`, then `if shape.kind == \"circle\"` narrows the whole table.\n- `and` / `or` short-circuits narrow the right-hand side, as in `typeof(x) == \"table\" and x.name`.\n\n**Pitfalls**\n\n- **Reassignment drops the narrowing.** If you assign a different type to the variable after the check, the earlier narrowing no longer applies.\n- **Field paths are less reliable.** Narrowing on `self.target` or `config.value` can be fragile. Copy the value into a local first:\n  ```lua\n  local target = self.target\n  if typeof(target) == \"Instance\" then\n  \t-- narrowed reliably\n  end\n  ```\n- **Enable `--!strict`.** Without it, the checker is much more permissive and refinements catch fewer mistakes.\n- **Narrowing doesn't validate at runtime.** It only helps the type checker. Values that come from remote events, DataStores, or JSON still need the runtime checks, and `typeof` is what provides them.",
+ "cost": 0.00328817,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8359,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 3049,
+  "output_tokens_details": {
+   "thinking_tokens": 2009
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3049,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8359,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8359
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

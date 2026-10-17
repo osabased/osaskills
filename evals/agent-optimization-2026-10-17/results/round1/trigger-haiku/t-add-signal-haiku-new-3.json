@@ -1,0 +1,95 @@
+{
+ "id": "t-add-signal",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\src\\server\\Coins.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\scripts\\check_guards.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-3\\pesde.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't changed anything yet, because the library you asked for is already in the repo.\n\n`src/shared/Signal.luau` is a vendored signal module. It has `Signal.new()`, `Connect` (returns a `Connection` with `Disconnect`), `Fire`, and `DisconnectAll`, and the project's `CLAUDE.md` documents it as the in-runtime event library. Nothing requires it yet. `Round.luau` and `Coins.luau` connect only to Roblox's built-in events, so no module fires a custom event today.\n\nI think you want modules to be able to fire custom events, and the existing `Signal` is the way to do it. Two things I'd flag in it first:\n- Connecting the same function twice registers it once, so one `Disconnect` removes both connections.\n- `Fire` runs callbacks with `task.spawn`, so a callback still runs if it was disconnected after `Fire` was called.\n\nQuestions, with my recommendation first:\n\n1. **Which library?** Use the vendored `Signal` (matches `CLAUDE.md`, no new dependency). Or add a package such as LemonSignal or GoodSignal through pesde. I recommend the vendored one.\n2. **Where should events be used?** Options: (a) `Round` fires `RoundStarted` and `RoundEnded`, and `Coins` or the UI listens; (b) only add the module and a short usage example, with no call sites; (c) something else you have in mind.\n3. **Fix the two `Signal` quirks?** Dedupe-free connections and the post-disconnect `Fire` behavior. I recommend keeping the module as is unless you need the change, since it's vendored.\n\nOnce you answer, I'll make the change and run `bash scripts/check.sh`. If `rokit`, `pesde`, or `rojo` isn't installed here, I'll say so and check the edits by reading them.",
+ "cost": 0.00635998,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20441,
+  "cache_read_input_tokens": 53268,
+  "output_tokens": 3477,
+  "output_tokens_details": {
+   "thinking_tokens": 1845
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20441,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2218,
+    "cache_read_input_tokens": 26796,
+    "cache_creation_input_tokens": 2812,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2812
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,110 @@
+{
+ "id": "t-ci",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ],
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4112
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-3\\wally.toml"
+  ],
+  [
+   "Grep",
+   ".*"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Bash",
+   "cd \"~/.claude/skills/structure-roblox-projects\" 2>/dev/null || cd \".claude/skills/structure-roblox-projects\"; python scripts/check_updates.py; echo \"---\"; for t in rojo rokit pesde wally stylua selene; do printf \"%s: \" $t; (command -v $t || echo missing); done"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0057176300000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19331,
+  "cache_read_input_tokens": 50483,
+  "output_tokens": 2692,
+  "output_tokens_details": {
+   "thinking_tokens": 1367
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19331,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1570,
+    "cache_read_input_tokens": 23858,
+    "cache_creation_input_tokens": 4640,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4640
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

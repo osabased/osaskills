@@ -1,0 +1,82 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ],
+  [
+   "Grep",
+   "pesde"
+  ],
+  [
+   "Glob",
+   "*"
+  ]
+ ],
+ "denials": [],
+ "result": "No, not directly. Syncing the install folder doesn't work with pesde.\n\n- **Dot-folders are skipped.** pesde's real packages live in `.pesde/`, and Script Sync ignores directories whose names start with a dot.\n- **The link modules break.** pesde's link modules sit in the visible packages folder and `require` into `.pesde`. Those requires fail in Studio.\n- **`default.project.json` is ignored.** Script Sync doesn't read each package's `default.project.json`, which pesde and Wally packages rely on.\n- **Test runners would run.** Any bundled test runners such as `*.server.lua` would sync as live Scripts.\n\nI haven't run this on your setup. The skill's notes say it was verified in Studio 0.743 with pesde 0.7.4.\n\n**What to do instead:** keep packages outside the three synced roots (`server/`, `shared/`, `client/`). Build them into a model with `rojo build` from the install folder, and bring that model into Studio. Rebuild it after each `pesde install`. Rojo would only build the packages model here. It wouldn't sync your code, so Script Sync stays your only live sync.\n\nThis project has no `pesde.toml` or Rojo setup yet. To set it up, I'd need to add a `pesde.toml` with the Roblox target and a small project file for the package build. Want me to?",
+ "cost": 0.0852505,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17950,
+  "cache_read_input_tokens": 45885,
+  "output_tokens": 885,
+  "output_tokens_details": {
+   "thinking_tokens": 46
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17950,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 446,
+    "cache_read_input_tokens": 19774,
+    "cache_creation_input_tokens": 7343,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7343
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

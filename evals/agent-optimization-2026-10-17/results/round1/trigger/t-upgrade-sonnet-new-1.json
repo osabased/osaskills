@@ -1,0 +1,94 @@
+{
+ "id": "t-upgrade",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   5148
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "vide"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-upgrade-sonnet-new-1/.claude/skills/roblox-resource-acquisition\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-sonnet-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Grep",
+   "Upgrade, replace or remove"
+  ],
+  [
+   "Grep",
+   "vide|5ed4c01"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.075464,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14417,
+  "cache_read_input_tokens": 45040,
+  "output_tokens": 1328,
+  "output_tokens_details": {
+   "thinking_tokens": 375
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14417,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 447,
+    "cache_read_input_tokens": 19340,
+    "cache_creation_input_tokens": 4244,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4244
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

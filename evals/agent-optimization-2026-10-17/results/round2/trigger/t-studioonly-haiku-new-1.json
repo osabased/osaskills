@@ -1,0 +1,78 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-studioonly-haiku-new-1/.claude/skills/structure-roblox-projects\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**What I think you want:** a way for Claude to read and edit this game's scripts through the Studio MCP without overwriting your two teammates' work or breaking the live game. You're asking how, not asking me to change anything yet.\n\n**Recommendation: move the code to files first with Script Sync.** Studio-only editing through MCP has real gaps. There's no diff, no Git revert, no formatter or linter, and no check that runs before an edit lands. Roblox's Script Sync (an existing feature, not a project migration) syncs scripts to a folder you can put in Git. Then the usual review and checks apply. You set it up in Studio: check scripts for attributes and tags first, sync the code folders into new empty directories in one repo, and commit. Moving to Rojo is a bigger later step.\n\n**If you keep it Studio-only, these safeguards matter most:**\n\n- **Live Scripting is the main risk.** With Team Create, an agent edit shows up in your teammates' sessions within seconds. Turn on **Drafts mode** so edits stay local until someone commits. I can't confirm how MCP edits behave under Drafts, so test it on a copy first.\n- **Save a checkpoint before any multi-script edit.** Use **File > Save to Roblox with Notes**. Restoring an old version creates a new version and doesn't publish it.\n- **Check paths before writing.** `multi_edit` creates a script if the path doesn't exist, so a typo adds a stray script.\n- **Edit in Edit mode, not during a play-test.** Changes made during a play-test are discarded when it stops.\n- **Tell your teammates** before the agent edits a shared script, so nobody is editing the same file at the same time.\n- **Keep the guide local.** Put `CLAUDE.md` and a short project guide in a local folder, with the place name and ID (1234567890). Use the `studio_id` from `list_roblox_studios` so the agent doesn't pick the wrong Studio window.\n- **Testing:** the agent can't see Studio's Script Analysis window through MCP, and a test run may see the live session rather than a saved copy. Ask someone to save before a test and confirm the test sees the current edit.\n\n**Questions for you (recommended option first):**\n\n1. Do you want to move to Script Sync now, or keep the place Studio-only for the time being?\n2. Should Claude be allowed to write to the live Team Create session directly, or should every write wait for your approval per script?\n3. Should Drafts mode be on for all agent sessions? I'd recommend yes until we've tested how MCP edits behave under it.\n4. Which scripts or folders are in scope for the first task? If you tell me, I can list what the agent may read and edit.",
+ "cost": 0.004275650000000001,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13679,
+  "cache_read_input_tokens": 47875,
+  "output_tokens": 2121,
+  "output_tokens_details": {
+   "thinking_tokens": 814
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13679,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1293,
+    "cache_read_input_tokens": 21037,
+    "cache_creation_input_tokens": 1809,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1809
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

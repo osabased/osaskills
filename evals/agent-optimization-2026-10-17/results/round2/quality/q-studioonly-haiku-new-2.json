@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename `GiveCoins` to `AwardCoins` in `ServerScriptService.Rewards`, with no behavior change, and update every reference so nothing still calls the old name.\n\nI can't call the Studio MCP server from this session, so I haven't checked its exact tool names. Each step below names the kind of tool I'd use. I'd confirm the real names against the connected server's tool list before running anything.\n\n## Plan\n\n**1. Read the definition.** Open `ServerScriptService.Rewards` in full. Note whether it's a `Script` or a `ModuleScript`, and how `GiveCoins` is defined: `local function`, `function M.GiveCoins`, `function M:GiveCoins`, or a table field. The definition form determines what the callers look like.\n\n**2. Find every reference.** Search the whole DataModel for `GiveCoins`, not just the usual service folders. Cover:\n- `Rewards.GiveCoins(` and `Rewards:GiveCoins(`, in any script type\n- `require` aliases, where the module is stored in a local under a different name\n- string references such as `\"GiveCoins\"` in Remotes, BindableFunctions, Attributes, or name lookups\n- `ServerStorage`, `Workspace`, `StarterPlayer`, and `ReplicatedStorage`, not just `ServerScriptService`\n\nRecord the full list of file paths and line numbers before editing. This is the checklist for step 5 and the rollback reference.\n\n**3. Check for concurrent edits.** Team Create means two other people may have unsaved edits in these scripts. Before writing, confirm with them that none of the affected scripts are being edited. Otherwise an edit from me could overwrite their work.\n\n**4. Rename the definition.** Change only the identifier. Keep the signature, body, and return values the same. Update a comment only if it names the function.\n\n**5. Update each caller.** Edit each file from the step 2 list, changing only the identifier, and re-read each edited region afterward to confirm it. Keep method-call vs. dot-call syntax intact, since `:` passes `self` and `.` doesn't.\n\n**6. Verify.**\n- Search the DataModel for `GiveCoins`. It should return zero hits.\n- Search for `AwardCoins`. It should match exactly the list from step 2, plus the definition.\n- Run a short Luau check in Studio: `require` the module (if it's a ModuleScript), confirm `typeof(Rewards.AwardCoins) == \"function\"` and `Rewards.GiveCoins == nil`.\n- Play-test once and trigger a reward path. Confirm the coin balance changes and the output log has no errors about nil or missing functions.\n\n**7. Report.** List each changed script with its path, the lines changed, and the verification results. If anything from the step 2 list was skipped, say so.\n\n## Decisions for you\n\n1. **Keep a `GiveCoins` alias that forwards to `AwardCoins`?** I'd recommend **no**. We're updating every caller in one pass, so an alias only hides a missed caller. Say yes if something outside this place depends on the old name.\n2. **Proceed now or coordinate with the two editors first?** I'd recommend **coordinate first**, because of the overwrite risk in step 3. Tell me when it's clear and I'll start.",
+ "cost": 0.0033293100000000003,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8583,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 3030,
+  "output_tokens_details": {
+   "thinking_tokens": 1937
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8583,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3030,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8583,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8583
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

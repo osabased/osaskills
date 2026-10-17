@@ -1,0 +1,98 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.{json,toml,luau,md}"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-folders-haiku-new-2\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.004976050000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17624,
+  "cache_read_input_tokens": 50165,
+  "output_tokens": 1898,
+  "output_tokens_details": {
+   "thinking_tokens": 1169
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17624,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 928,
+    "cache_read_input_tokens": 23689,
+    "cache_creation_input_tokens": 3102,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3102
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

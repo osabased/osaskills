@@ -1,0 +1,74 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [],
+ "result": "You want Claude to read and edit the scripts in Sword Arena (place 1234567890) through the Studio MCP, without making a bad edit that you can't undo, while two other people are editing the same Team Create place.\n\n**Recommendation: move the scripts into files with Script Sync, then commit them to Git.** Studio-only work is much riskier. Without files there's no diff, no Git revert, no check command, and no guard that fails an edit before it lands. Recovery depends on Studio's version history. Script Sync is a Studio setting, so you turn it on yourself. It doesn't change how the game is structured. Once the code is synced, the normal review and check tooling applies to it. Before you enable it, check the scripts for attributes and tags that Script Sync could affect.\n\n**If you keep the place Studio-only for now:**\n\n- **Guide files:** keep `CLAUDE.md` and any project notes in a local folder that Claude starts from, and name the place ID there. If two Studio windows have the same name, the MCP's `list_roblox_studios` reports a `studio_id` for each. Use that ID to target the right window.\n- **Checkpoints:** before a multi-script edit, have someone save with **File > Save to Roblox with Notes**. In Team Create, **View Script History** lists earlier versions of a script. Restoring a version creates a new version and doesn't publish it.\n- **Live Scripting:** by default, edits show up in your teammates' sessions within seconds. Drafts mode keeps edits local until you commit them, but I can't confirm how MCP edits behave under Drafts, so don't rely on that until someone tests it.\n- **Wrong paths:** `multi_edit` creates a script if the path doesn't exist, so a typo adds a stray script. Check the path first.\n- **Edit mode only:** Changes made during a play-test are discarded when it stops.\n- **Tests:** Roblox's docs don't say whether a command-line run sees your latest save or your latest publish. Save first, then confirm a test run sees your edit before trusting it.\n- **Testing:** Static checks aren't available in this setup, so I'd report them as not run.\n\nI haven't changed anything. The Studio MCP tools aren't in this session's tool list, so I haven't been able to check the place from here. Do you want me to write the notes file for the project now, or to start with the Script Sync setup steps?",
+ "cost": 0.00401121,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13439,
+  "cache_read_input_tokens": 47781,
+  "output_tokens": 1690,
+  "output_tokens_details": {
+   "thinking_tokens": 623
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13439,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1000,
+    "cache_read_input_tokens": 20943,
+    "cache_creation_input_tokens": 1663,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1663
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

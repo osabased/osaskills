@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "## Type refinement with `typeof`\n\nLuau narrows a value's type inside a branch when you check it with `typeof`. If you have a union like `number | string`, the checker treats the value as `number` in the `typeof(x) == \"number\"` branch and as `string` in the matching branch. You don't need casts.\n\n```lua\nlocal function describe(value: number | string | { number })\n    if typeof(value) == \"number\" then\n        return value * 2 -- value: number\n    elseif typeof(value) == \"string\" then\n        return #value -- value: string\n    else\n        return #value -- value: { number }\n    end\nend\n```\n\n### Early-return guards\n\nFor an `unknown` or union parameter, a guard that returns early narrows everything after it:\n\n```lua\nlocal function double(value: unknown): number?\n    if typeof(value) ~= \"number\" then\n        return nil\n    end\n    return value * 2 -- value: number\nend\n```\n\n### Combining with `and` / `or`\n\nRefinements apply to the right side of `and`, so you can check a type and then use its methods in one condition:\n\n```lua\nlocal function anchorIfPart(x: Instance | number)\n    if typeof(x) == \"Instance\" and x:IsA(\"BasePart\") then\n        x.Anchored = true -- x: BasePart\n    end\nend\n```\n\n`typeof` only returns broad categories (`\"Instance\"`, `\"table\"`, `\"Vector3\"`, and so on). Use `:IsA()` or `:ClassName` to narrow Roblox instances further.\n\n### Roblox and engine types\n\n`typeof` also works for Roblox value types, which makes unions of them easy to split:\n\n```lua\nlocal function toWorld(v: Vector3 | CFrame)\n    if typeof(v) == \"CFrame\" then\n        return v.Position\n    end\n    return v -- v: Vector3\nend\n```\n\n### Other narrowing forms\n\n- **Truthiness** removes `nil` and `false`: `if value then ... end` gives `value` a non-optional type inside the block.\n- **Equality with literals** works for string-literal unions: `if mode == \"fast\" then` narrows `mode`.\n- **`type()`** behaves like `typeof` for Lua primitives. For Roblox objects, prefer `typeof`.\n\n### Practical notes\n\n- Refinement is local to the code path. It is lost if the variable is reassigned to a different type later in the same scope, so narrow again after reassignment.\n- For table fields such as `t.x`, copy the value into a local before narrowing. The local is easier to reason about and to read.\n- Narrowing tells the type checker what to accept. It doesn't validate data at runtime across a network boundary. If the value came from a RemoteEvent or DataStore, the `typeof` check is what guarantees safety, so keep it even when the annotation says the type is already known.",
+ "cost": 0.00286117,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8359,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2195,
+  "output_tokens_details": {
+   "thinking_tokens": 1291
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2195,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8359,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8359
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

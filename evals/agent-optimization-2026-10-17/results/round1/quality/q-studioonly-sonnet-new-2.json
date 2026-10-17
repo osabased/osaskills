@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and update every place that calls or references it. You want no leftover references and no behavior change.\n\n**Questions (my recommendation first):**\n1. Should I remove `GiveCoins` outright, or leave a temporary `GiveCoins = AwardCoins` alias? I recommend removing it, so nothing stale remains. The catch is that a teammate's unsaved or unseen caller would then break.\n2. Are your two teammates editing scripts right now? I recommend you tell them first, because Team Create edits merge live and I can't see their open work.\n\n**Caveat on tool names:** I can't call the MCP server from here, so these names come from memory of Roblox's Studio MCP. Step 0 confirms them.\n\n**Plan**\n\n0. **Confirm the tools.** List the server's available tools. I expect script reading, grep and search, multi-edit, `execute_luau`, play-mode control and console output. If a name differs, I'd use the closest equivalent.\n1. **Read the module.** Use the script-read tool on `ServerScriptService.Rewards`. This confirms it's a ModuleScript and shows how `GiveCoins` is defined (`function Rewards.GiveCoins`, `Rewards:GiveCoins`, or a table field). It also shows whether the module calls itself internally.\n2. **Find every reference.** Run script grep across the whole place, including ServerStorage, ReplicatedStorage, StarterPlayer, StarterGui and Workspace. I'd search for `GiveCoins` as a plain string, not just `.GiveCoins(`. Then I'd run a second search with `execute_luau` that walks every `LuaSourceContainer` and records the script path, line number and line text. That covers anything the grep misses. The string search also catches:\n   - `Rewards[\"GiveCoins\"]`\n   - `:FindFirstChild(\"GiveCoins\")`\n   - RemoteEvent, BindableEvent or attribute names containing `GiveCoins`\n   - comments and docs\n3. **Classify the hits.**\n   - Real callers of the Rewards function.\n   - Unrelated same-named things, such as a different module's `GiveCoins` or a RemoteEvent name. I'd list these and leave them alone unless you say otherwise.\n   - Callers that import the module under another variable name, found by checking which scripts `require` Rewards.\n4. **Show you the hit list** with paths and lines before editing, since this touches shared code.\n5. **Save a rollback point.** There's no git or file copy for this place. I'd print the original source of each affected script into the chat, and you'd publish or save a Studio version-history point.\n6. **Edit.**\n   - Use the multi-edit tool with exact-string replacements per script, starting with the definition in Rewards and then each caller.\n   - Replace only whole-word matches of the Rewards function. Don't do a blind global replace.\n   - Re-read each script right before editing it, in case a teammate changed it.\n7. **Verify statically.**\n   - Re-run the grep and the `execute_luau` scan. `GiveCoins` should have zero hits, apart from any unrelated ones I left on purpose.\n   - Grep for `AwardCoins` and check that the count equals the definition plus all callers.\n   - Re-read each edited script to check the syntax is intact.\n8. **Verify at runtime.**\n   - Start a play session, then read the console output.\n   - Look for errors such as `attempt to call a nil value` or `GiveCoins is not a valid member`.\n   - Trigger a coin award through the normal path, either by playing it or by calling `require(Rewards).AwardCoins(...)` from `execute_luau` in play mode. Check that the player's coin value changes.\n   - Stop the session.\n9. **Report back.** I'd list the files and lines changed, the unrelated `GiveCoins` hits I skipped, the verification results, and anything I couldn't check. For example, a caller that only runs in some game state would need a manual test.\n\n**What would count as done:** zero remaining references to the old name, a clean console during a play test, and a coin award that works.",
+ "cost": 0.0502831,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7801,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1810,
+  "output_tokens_details": {
+   "thinking_tokens": 427
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7801,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1810,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7801,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7801
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

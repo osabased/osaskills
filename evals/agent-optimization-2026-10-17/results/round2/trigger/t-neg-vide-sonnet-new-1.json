@@ -1,0 +1,69 @@
+{
+ "id": "t-neg-vide",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a Vide component for an inventory list with a toggle button",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-vide"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-vide"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ]
+ ],
+ "denials": [],
+ "result": "I read this as a reusable Vide component, `Inventory`, that shows a list of items and has a button that opens and closes the list. It would be built on the Vide 0.4.1 API and be easy to drop into a ScreenGui or a UI Labs story.\n\nYour instructions say to ask before choosing anything that changes how it looks or reads. The project has no existing UI to copy, so these are open. My recommendation is first in each:\n\n1. **Item display:** (a) name plus quantity, like \"Potion ×3\", (b) name only, (c) icon, name and quantity.\n2. **Toggle button label:** (a) \"Inventory (N)\", with N the item count, (b) a fixed \"Inventory\", (c) \"Show\" / \"Hide\" depending on state.\n3. **Initial state:** (a) open, (b) closed.\n4. **Look:** (a) plain, neutral dark panel, with a `ScrollingFrame` for long lists, (b) bare default Roblox styling, (c) something else you describe.\n5. **Placement:** (a) a self-contained component that takes `items` as a Vide source prop, with the parent deciding where it goes, (b) it also creates its own ScreenGui and anchors to a screen corner.\n6. **File location and extras:** (a) `src/client/Inventory.luau` only, (b) that plus a UI Labs story.\n\nTell me which options you want, for example \"all defaults\", and I'll write it.",
+ "cost": 0.0661322,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 13882,
+  "cache_read_input_tokens": 25862,
+  "output_tokens": 801,
+  "output_tokens_details": {
+   "thinking_tokens": 234
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13882,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 569,
+    "cache_read_input_tokens": 16695,
+    "cache_creation_input_tokens": 6354,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6354
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a union type inside a branch when you test it with `typeof`. The checker treats the value as the narrowed type in that branch, so you don't need casts.\n\n```luau\ntype Input = string | number | { string }\n\nlocal function describe(value: Input): string\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper() -- value: string\n\telseif typeof(value) == \"number\" then\n\t\treturn tostring(value * 2) -- value: number\n\telse\n\t\treturn table.concat(value, \", \") -- value: { string }\n\tend\nend\n```\n\n**Common forms**\n\n- **Positive check:** `if typeof(x) == \"number\" then ... end` narrows `x` to `number` inside the block.\n- **Negative check:** `if typeof(x) ~= \"number\" then return end` narrows `x` to everything except `number` for the rest of the function.\n- **Short-circuit:** `typeof(x) == \"Vector3\" and x.Magnitude > 1` works because the right side of `and` sees the narrowed type.\n- **Optional values:** for `string?`, a `typeof(x) == \"string\"` check also removes `nil`.\n\n**`typeof` vs `type`**\n\n- `type(x)` returns Lua's basic type: `\"number\"`, `\"string\"`, `\"table\"`, `\"userdata\"`, and so on. Every Roblox object type (`Instance`, `Vector3`, `CFrame`) reports as `\"userdata\"`.\n- `typeof(x)` returns the Roblox type name: `\"Instance\"`, `\"Vector3\"`, `\"CFrame\"`, `\"EnumItem\"`, and so on. Use it when your union contains Roblox types.\n\n```luau\nlocal function offset(target: Instance | Vector3): Vector3\n\tif typeof(target) == \"Vector3\" then\n\t\treturn target -- Vector3\n\tend\n\treturn target.Position -- Instance\nend\n```\n\nNarrowing is also not the same as a runtime guarantee of which class an `Instance` is. `typeof(x) == \"Instance\"` gives you `Instance`, not `Part`. To narrow further, you can check `x:IsA(\"Part\")`, but confirm in your Luau version that `IsA` narrows the type. If it doesn't, cast with `(x :: Part)` after the check.\n\n**Things that break narrowing**\n\n- **Reassignment:** once you assign a new value to the variable, the earlier check no longer applies. Narrowing is recomputed from the new assignment.\n- **Upvalues in closures:** Luau is conservative with variables captured by a closure that can run later, so narrowing a captured variable inside the closure can be lost. Copy it to a local first: `local v = value; if typeof(v) == ...`.\n- **Table fields:** `if typeof(t.x) == \"number\"` narrows only while `t.x` isn't written to in the same branch. Store it in a local when you need it reliably.\n- **Generics:** `T` has no concrete set of types to narrow, so `typeof` checks on it mostly give you a narrowed-but-still-generic result.\n\nTypes are erased at runtime, so the `typeof` check is what actually protects you. The type annotation only tells the checker what to expect, so keep the check in code paths that receive data from outside your own code: remotes, `DataStore` values, and `JSONDecode` output.\n\nI answered from general Luau knowledge and didn't open this project's code or check its Luau version, so the `IsA` narrowing point is the one to verify locally.",
+ "cost": 0.0030260699999999996,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8136,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2614,
+  "output_tokens_details": {
+   "thinking_tokens": 1490
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8136,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2614,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8136,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8136
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

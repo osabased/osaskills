@@ -1,0 +1,102 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Glob",
+   "*.project.json"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-folders-haiku-old-3\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-old-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-old-3\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "For a new game, I'd keep the layout you already have: one startup script per side, with server code in `ServerScriptService` and client and shared code in `ReplicatedStorage`. Your project already matches this, and it's the layout I'd recommend.\n\n```text\nServerScriptService/\n  Server/           Script (RunContext = Server), from src/server/init.server.luau\n    Coins, Round      server-only modules: state, rules, DataStores, validation\nServerStorage/      (add when needed) server-only assets and templates\nReplicatedStorage/\n  Client/           Script (RunContext = Client), from src/client/init.client.luau\n    UI/, State/       client-only modules\n  Shared/           modules both sides require: types, constants, pure logic, Signal\n  Packages/         Wally/pesde packages (Vide, Charm, Janitor)\n  Remotes/          (add when needed) RemoteEvents/RemoteFunctions, or a networking library's declarations\nReplicatedFirst/    (only if you need a loading screen)\n```\n\nWhy this works:\n\n- **One startup owner per side.** `init.server.luau` and `init.client.luau` are the only places that start anything, so an agent can find what runs and in what order. Your `Server` script already does this: it requires `Coins` and `Round` and calls `Coins.start()`.\n- **The client entrypoint can live in `ReplicatedStorage`.** With `emitLegacyScripts: false` (which your `default.project.json` sets), `init.client.luau` becomes a `Script` with `RunContext = Client`. That's the supported way to run client code from `ReplicatedStorage`. A plain `LocalScript` there would never run.\n- **Keep authority on the server.** Coin balances and round state belong in `ServerScriptService`. The client sees them only through Remotes, so the server should check type, range, ownership and rate on every client-to-server payload. Anything in `ReplicatedStorage` is readable by clients, including module source, so don't put secrets, DataStore code or purchase validation there.\n- **Shared code stays in `Shared`.** Only put modules there that both sides really need. Each side gets its own copy of a module's state, so don't rely on a module keeping shared state across the server/client boundary.\n\nTwo ways to grow it:\n\n- **Runtime layers** (the current `Server`/`Client`/`Shared` split) suit a small game. Keep this until you have several features.\n- **Feature folders** (`Server/Combat`, `Client/Combat`, `Shared/Combat`) suit a bigger game. Switch when one feature spans several files, and move the whole layout at once rather than mixing both.\n\nPick one pattern and keep it, because whatever pattern the code shows is the one an agent will copy.\n\nI haven't changed any files. If you tell me the first few features, I can sketch the Remotes and the module list for each side.",
+ "cost": 0.00506738,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15165,
+  "cache_read_input_tokens": 47228,
+  "output_tokens": 3123,
+  "output_tokens_details": {
+   "thinking_tokens": 1468
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15165,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1944,
+    "cache_read_input_tokens": 20694,
+    "cache_creation_input_tokens": 3638,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3638
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

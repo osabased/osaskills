@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and change every reference to it across the place so nothing still calls the old name. Nothing is edited until you approve.\n\nI can't see the Studio MCP tools from this session, so the tool names below are placeholders. I'd confirm the real names with ToolSearch once the server is reachable.\n\n## Plan\n\n1. **Read the definition.** Use the MCP script-read tool to get `Rewards`' Source. Check whether it's a ModuleScript returning a table with a `GiveCoins` field, or a standalone function, and whether it's exported under other names too.\n\n2. **Find every reference.** Run a Luau query through the MCP execute tool that walks `game:GetDescendants()` in ServerScriptService, ServerStorage, ReplicatedStorage, StarterPlayer, StarterPlayerScripts, StarterCharacterScripts, and Workspace. For each Script, LocalScript, and ModuleScript, it checks `Source` for the plain string `GiveCoins` and returns path, line number, and the matching line. Also check attributes and remote or bindable names, since a string like `\"GiveCoins\"` can be a caller too.\n\n3. **Check for collisions.** Before editing, ask the two Team Create collaborators to avoid those scripts for the duration. Team Create edits go live for everyone immediately, so this matters.\n\n4. **Show the diff, then edit.** Present the full list of hits and the exact before/after lines. After approval:\n   - Rename the definition to `AwardCoins`.\n   - Rewrite callers with whole-word matching only (for example `%f[%w_]GiveCoins%f[^%w_]`), so names like `GiveCoinsButton` are left alone.\n   - Apply each change with the MCP script-write tool, one script at a time.\n\n5. **Confirm it worked.**\n   - Re-run the step 2 query. It should return zero `GiveCoins` hits, except any string you chose to keep.\n   - Re-read each edited script and confirm the new name is there.\n   - Start a playtest with the MCP playtest tool. Check that the output window has no errors from `Rewards` or its callers, then trigger a caller path (for example, a kill or a purchase) and confirm coins change as before.\n   - Report the changed files with line numbers, plus any hits I left alone and why.\n\n## Questions for you\n\n1. **Keep a `GiveCoins` alias?** I recommend no. All callers are updated in this pass, so an alias just hides anything missed. Keeping one only helps if something outside the place calls it.\n2. **Check with teammates first, or edit immediately?** I recommend asking them first, since Team Create changes are live for everyone.",
+ "cost": 0.00297101,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8204,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2465,
+  "output_tokens_details": {
+   "thinking_tokens": 1553
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8204,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2465,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8204,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8204
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

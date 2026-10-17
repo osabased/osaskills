@@ -1,0 +1,78 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Glob",
+   "*"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's how to play-test a shop button through the Studio MCP. The steps come from the skill's verification notes, which were observed in October 2026. Tool names change, so list the server's tools first and recheck anything that doesn't match.\n\n1. **Confirm Studio has your latest code.** In Edit mode, read the changed module's `Source` with `execute_luau` or `script_read`. A commit hash won't show uncommitted edits. If you use Rojo or Script Sync, make sure it's running.\n\n2. **Start the play-test** with `start_stop_play`. Don't edit anything during Play, because those changes are discarded when it stops.\n\n3. **Find the button.** Use `search_game_tree` and `inspect_instance` on the Client datamodel. The path will look like `LocalPlayer.PlayerGui.<ShopGui>.<Button>`. Check that it exists, is visible, and is in the right place.\n\n4. **Click it with real input.** Call `user_mouse_input` with that `instance_path` and a click. This fires the button's `Activated` event. Calling the handler directly from `execute_luau` only tests the handler, not the button.\n\n5. **Check the result.**\n   - Use `get_console_output` on both Client and Server for errors. Expect some Studio noise, such as mocked DataStores.\n   - Use `inspect_instance` to see what changed: the shop frame opening, a purchase prompt, currency or inventory values.\n   - If the button triggers a purchase, the server should validate it. Check the server console and the resulting state.\n\n6. **Catch short-lived UI.** The first `execute_luau` after Play takes about 7–15 seconds, and each call takes a few seconds. A flash or toast will be gone before you look. Instead, run one `execute_luau` that connects the relevant signals. Connections outlive the call. Have them append timestamped lines to a `StringValue` under `LocalPlayer`, then click the button and read the value afterward.\n\n7. **Stop the session** with `start_stop_play`, but only if you started it.\n\n**Pitfalls**\n- Don't `require` the game's own modules from `execute_luau` during Play. That builds a second copy with its own state, and its errors look like real bugs. Observe through the UI, the console and the Instance tree.\n- `screen_capture` only works in Edit mode, so you can't take screenshots mid-play.\n- Studio's Lest backend runs in Edit mode, where scripts don't run. It can't test button clicks. You need a play-test for that.\n- A single-client play-test doesn't cover multiplayer ordering or latency. For that, use Studio's multi-client test.\n\nThis directory only contains skill files, not your project. If you tell me your GUI and button names, I can write out the exact click and verification sequence. If you'd like me to drive the play-test, tell me, and I'll check that the Studio MCP server is connected.",
+ "cost": 0.08139740000000001,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15977,
+  "cache_read_input_tokens": 45574,
+  "output_tokens": 1292,
+  "output_tokens_details": {
+   "thinking_tokens": 85
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15977,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 979,
+    "cache_read_input_tokens": 19655,
+    "cache_creation_input_tokens": 5489,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5489
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

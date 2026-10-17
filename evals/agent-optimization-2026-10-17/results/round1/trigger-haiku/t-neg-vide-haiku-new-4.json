@@ -1,0 +1,89 @@
+{
+ "id": "t-neg-vide",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a Vide component for an inventory list with a toggle button",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:roblox-vide"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "roblox-vide"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-new-4\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-new-4\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-new-4\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-vide-haiku-new-4\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's what I think you want: a Vide component under `src/client` that shows an inventory list, with a button that toggles the list open and closed, mounted in the player's `PlayerGui`.\n\nI checked the Vide pin. `pesde.toml` has Vide at `5ed4c01940e6bd578fb83253cfbeda0a6c05177c`, which is the 0.4.1 commit the skill covers. The project has no existing Vide code, so there's no style to match yet.\n\nBefore I write it, I need a few answers. Your rules say to wait on anything that affects look or copy.\n\n1. **What does the toggle control?**\n   - a. Show/hide the list (recommended, the most likely reading)\n   - b. Switch between list and grid views\n   - c. Show all items or only a filtered subset (for example, equipped items)\n2. **What should the button say?**\n   - a. \"Inventory\", with the same label in both states (recommended)\n   - b. \"Show\" / \"Hide\" depending on state\n   - c. Something else (tell me the text)\n3. **Where should the panel sit on screen?**\n   - a. Top-left, under the button (recommended)\n   - b. Top-right\n   - c. Centered\n4. **What does each row show?**\n   - a. Item name only (recommended)\n   - b. Item name and count, such as \"Potion x3\"\n5. **Where do the items come from?**\n   - a. A hardcoded placeholder list inside the component, so you can swap in real data later (recommended)\n   - b. A Charm atom, since Charm is already in `wally.toml`\n   - c. Server data sent over the network\n\nOnce you pick, I'll write the component and the client entry point, and I'll note which Vide APIs I used and anything I couldn't verify by running it. I can't run Studio here, so the check will be by reading the code.",
+ "cost": 0.00524844,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16353,
+  "cache_read_input_tokens": 50874,
+  "output_tokens": 2937,
+  "output_tokens_details": {
+   "thinking_tokens": 1658
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16353,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1651,
+    "cache_read_input_tokens": 24244,
+    "cache_creation_input_tokens": 1276,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1276
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

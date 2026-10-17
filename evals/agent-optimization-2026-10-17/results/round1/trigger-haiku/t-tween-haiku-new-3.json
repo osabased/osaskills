@@ -1,0 +1,87 @@
+{
+ "id": "t-tween",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "TweenService|TweenInfo|ScreenGui|GuiObject|Vide\\.create"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-3\\src\\client\\UI\\App.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-3\\src\\client\\UI\\CoinLabel.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-3\\src\\server\\Round.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.004580860000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13649,
+  "cache_read_input_tokens": 48296,
+  "output_tokens": 2735,
+  "output_tokens_details": {
+   "thinking_tokens": 1963
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13649,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1788,
+    "cache_read_input_tokens": 21835,
+    "cache_creation_input_tokens": 981,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 981
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

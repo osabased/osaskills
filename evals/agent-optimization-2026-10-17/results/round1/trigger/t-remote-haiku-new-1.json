@@ -1,0 +1,92 @@
+{
+ "id": "t-remote",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "RemoteEvent|RemoteFunction|shop|Shop|purchase|Purchase"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "result": "Short answer: put the RemoteEvents in `ReplicatedStorage`, declared in `default.project.json` so Rojo creates them, and have the server treat every purchase request as untrusted. The shop code doesn't exist yet, so this is a plan, not a review of existing code.\n\n**Where the RemoteEvents go**\n\nYour project maps `ReplicatedStorage/Shared` to `src/shared`, which is the right place for the shop catalog (names, prices, item IDs) that both sides read. The remotes need a home that both sides can reach, and declaring them in the project file avoids a race where the client looks for them before the server creates them. Add a `Remotes` folder to the tree:\n\n```json\n\"ReplicatedStorage\": {\n  \"Shared\": { \"$path\": \"src/shared\" },\n  \"Client\": { \"$path\": \"src/client\" },\n  \"Packages\": { \"$path\": \"Packages\" },\n  \"Remotes\": {\n    \"$className\": \"Folder\",\n    \"PurchaseItem\": { \"$className\": \"RemoteEvent\" }\n  }\n}\n```\n\nThe client then uses `ReplicatedStorage.Remotes.PurchaseItem` directly. Keep the remote names as constants in `src/shared` so they aren't typed as strings in two places.\n\n**How the server should validate a purchase**\n\nThe client should send only an intent, such as `itemId`. It should never send a price, a balance, or an \"owned\" flag. The server does everything else:\n\n1. **Check the arguments.** `typeof(itemId) == \"string\"`, and the ID exists in the shared catalog. Use the `player` argument from `OnServerEvent`, never a player value sent in the payload.\n2. **Look up the price on the server.** Read it from the catalog table, not from the request.\n3. **Check state.** The player's profile or data must be loaded, the item must not already be owned if it's one-time, and the balance must cover the price.\n4. **Debounce.** Keep a per-player timestamp and drop requests that arrive too fast.\n5. **Deduct and grant with no yield in between.** Check and change the data in one synchronous block, so two rapid requests can't both pass the balance check.\n6. **Reply.** Return success or failure to the client with a second event or a `RemoteFunction`, so the UI can respond.\n\nA sketch of the core handler:\n\n```luau\nlocal ReplicatedStorage = game:GetService(\"ReplicatedStorage\")\nlocal Catalog = require(ReplicatedStorage.Shared.Catalog)\n\nReplicatedStorage.Remotes.PurchaseItem.OnServerEvent:Connect(function(player, itemId)\n\tif typeof(itemId) ~= \"string\" then return end\n\n\tlocal item = Catalog[itemId]\n\tlocal data = getData(player)\n\tif not item or not data then return end\n\tif data.Owned[itemId] or data.Coins < item.Price then return end\n\n\tdata.Coins -= item.Price\n\tdata.Owned[itemId] = true\nend)\n```\n\n`getData` is a placeholder for however you load player data, and the debounce and reply are left out. This is a sketch, not finished code.\n\n**If the shop uses Robux**\n\nDon't grant items from the client's `PromptPurchaseFinished` event. Grant them in `MarketplaceService.ProcessReceipt` on the server, and record processed purchase IDs in the player's data so a retried receipt doesn't grant twice.\n\n**One problem I noticed in the current setup**\n\n`src/client` is mapped under `ReplicatedStorage`, and `init.client.luau` is a LocalScript. LocalScripts don't run from `ReplicatedStorage`; they only run when they're under `StarterPlayerScripts`, `StarterGui`, `StarterCharacterScripts`, or similar. Right now `print(\"client\")` won't run. Move the client mapping to `StarterPlayer/StarterPlayerScripts`, and keep shared modules in `ReplicatedStorage`.\n\nI didn't open the `structure-roblox-projects` placement reference because reading it was denied. I can make these edits if you want, starting with the project file and the client mapping. Do you want the shop to use in-game currency, Robux, or both? That decides whether the server needs the `ProcessReceipt` path.",
+ "cost": 0.00533286,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13262,
+  "cache_read_input_tokens": 48086,
+  "output_tokens": 4398,
+  "output_tokens_details": {
+   "thinking_tokens": 2295
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13262,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3476,
+    "cache_read_input_tokens": 21452,
+    "cache_creation_input_tokens": 977,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 977
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}
