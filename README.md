@@ -71,6 +71,8 @@ The Roblox workflow skills track the latest stable release of every tool and lib
 
 The plugin has no fixed version, so each commit is a new version. Turn on auto-update for this marketplace in `/plugin` → Marketplaces to receive merged updates automatically.
 
+[CHANGELOG.md](./CHANGELOG.md) lists notable changes to the two Roblox workflow skills and their library catalog. A pull request that changes either skill or a library skill adds an entry to it.
+
 ## Scripts
 
 Instruction-only skills need no setup. The Roblox resource checkers need Python 3.11+ and PyYAML. With [uv](https://docs.astral.sh/uv/) you don't need to install anything first:

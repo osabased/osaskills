@@ -45,7 +45,7 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
    - Run this skill's tests (`python -m pytest -q` in this folder).
    - Make a fixture project in the temporary directory whose manifest and lock pin the new version, and confirm `scripts/clone_children.py --project FIXTURE --status` reports the skill's `declared` as `PASS`.
    - When the API or behavior changed, give a fresh subagent a realistic task with the updated skill and check that it uses the new API correctly.
-6. **Record it.** Set `reviewed` and `reviewed_on` in `versions.json`.
+6. **Record it.** Set `reviewed` and `reviewed_on` in `versions.json`, and add an entry dated today under this skill in `CHANGELOG.md` at the repository root.
 7. **Open the PR** with `gh pr create`. Use the title `Update <name> to <version>` and include in the body:
    - the old and new versions with release links;
    - what changed upstream that matters;
