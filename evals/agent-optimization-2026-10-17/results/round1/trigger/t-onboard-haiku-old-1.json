@@ -1,0 +1,87 @@
+{
+ "id": "t-onboard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/.*"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "{src,server,client,shared,ReplicatedStorage,ServerScriptService,StarterPlayer,packages,scripts,lib,modules}/**/*"
+  ],
+  [
+   "Glob",
+   "*.{json,toml,lock,yaml,yml,md,txt,project.json,rbxl,rbxlx}"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Glob",
+   "{*.project.json,default.project.json,wally.toml,pesde.toml,rokit.toml,aftman.toml,selene.toml,stylua.toml,.stylua.toml,.luaurc,.luau-lsp*,foreman.toml,wally.lock,pesde.lock,README*,CLAUDE.md,AGENTS.md,.gitignore,.github/**/*,.vscode/**/*,.cursor/**/*,.mcp.json,.claude/settings*.json,.claude/*.md,.cl"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00494536,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19451,
+  "cache_read_input_tokens": 48056,
+  "output_tokens": 1148,
+  "output_tokens_details": {
+   "thinking_tokens": 324
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19451,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 522,
+    "cache_read_input_tokens": 21357,
+    "cache_creation_input_tokens": 7261,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7261
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

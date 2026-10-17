@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a value's type inside the branches of a `typeof` check, so you can use type-specific operations without casts. The checker understands the narrowing from the condition itself.\n\n**Basic narrowing**\n\n```luau\nlocal function describe(value: string | number)\n    if typeof(value) == \"string\" then\n        print(value:upper()) -- value is string here\n    else\n        print(value * 2) -- value is number here\n    end\nend\n```\n\nWithout the check, `value:upper()` and `value * 2` would both be type errors, because the union could be either type.\n\n**Early return**\n\nNegating the check and returning early narrows the rest of the function:\n\n```luau\nlocal function double(value: number | string): number\n    if typeof(value) ~= \"number\" then\n        return 0\n    end\n    return value * 2 -- value is number from here on\nend\n```\n\n**Optionals and `nil`**\n\n`typeof` works with `nil` too, and so does plain truthiness:\n\n```luau\nlocal function greet(name: string?): string\n    if typeof(name) == \"string\" then\n        return \"Hello, \" .. name\n    end\n    return \"Hello, stranger\"\nend\n```\n\n**Refinement in `and` / `or`**\n\nThe narrowing also applies to the right side of `and`, which is useful for guarding a comparison:\n\n```luau\nlocal function isPositiveNumber(value: number | string): boolean\n    return typeof(value) == \"number\" and value > 0\nend\n```\n\n**Roblox types**\n\nRoblox datatypes like `Vector3`, `CFrame`, and `Color3` report their own names through `typeof`, so you can narrow to them directly:\n\n```luau\nlocal function toVector(value: Vector3 | CFrame): Vector3\n    if typeof(value) == \"CFrame\" then\n        return value.Position\n    end\n    return value\nend\n```\n\nInstances all report `\"Instance\"`, so `typeof` alone can't tell a `Part` from a `Model`. For that you check the class at runtime with `:IsA` and cast when you need the specific type:\n\n```luau\nlocal function anchorIfPart(instance: Instance)\n    if instance:IsA(\"BasePart\") then\n        (instance :: BasePart).Anchored = true\n    end\nend\n```\n\n**`type()` vs `typeof()`**\n\n`type()` is the older function. For Roblox datatypes it returns `\"userdata\"`, so prefer `typeof()` in Roblox code.\n\n**Common gotchas**\n\n- Refinement only lasts as long as the variable isn't reassigned. If you reassign it inside the branch, the checker re-evaluates from the new value.\n- Narrowing works on locals and parameters. If a value comes back from a table field or a function call, store it in a local first so the checker can narrow it.\n- `assert(typeof(x) == \"string\")` also narrows for the rest of the scope, which is a clean way to fail fast on unexpected input.",
+ "cost": 0.0029575699999999996,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8301,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2411,
+  "output_tokens_details": {
+   "thinking_tokens": 1494
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8301,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2411,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8301,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8301
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

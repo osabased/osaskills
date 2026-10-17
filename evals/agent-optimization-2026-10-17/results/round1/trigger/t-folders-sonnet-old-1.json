@@ -1,0 +1,90 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-sonnet-old-1\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "This project already has a layout that follows the standard pattern, so I'd keep it and extend it. Here is the recommended structure and how it compares with what you have.\n\n## Recommended layout\n\n```text\nReplicatedStorage/\n  Shared/       modules both sides run: types, constants, pure logic, Signal\n  Client/       client-only modules (UI, input, camera) plus the client entrypoint\n  Packages/     pesde packages\n  Remotes/      RemoteEvents/Functions, if you aren't using a networking library\nServerScriptService/\n  Server/       server entrypoint plus server-only modules (rounds, coins, data)\nServerStorage/\n  Assets/       server-only templates and assets\n```\n\n## Rules behind it\n\n- **Placement decides security.** Everything in `ReplicatedStorage` is readable by clients, including module source. Put DataStores, validation, purchases and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **One entrypoint per side.** Use one server `Script` and one client `Script` that explicitly `require` feature modules. Nothing else should start features, because independent scripts run in a nondeterministic order.\n- **Client entrypoint.** The client entrypoint should be a `Script` with `RunContext = Client` in `ReplicatedStorage`. A `LocalScript` there never runs.\n- **Grouping.** Group by feature (`Server/Round`, `Client/Round`, `Shared/Round`) once you have more than a few modules. Until then, a flat list per side is fine.\n- **Remotes.** For every client-to-server remote, the server must validate type, range, ownership and rate. Treat each one as attack surface.\n- **Dependencies.** Entrypoints depend on feature modules and shared code. Modules should never `require` an entrypoint.\n\n## How `coin-run` compares\n\n- **Mappings.** `default.project.json` maps `src/shared`, `src/client` and `src/server` into `ReplicatedStorage` and `ServerScriptService`. This matches the pattern.\n- **Script classes.** `\"emitLegacyScripts\": false` is set. `init.client.luau` therefore builds a `Script` with `RunContext = Client`, so it runs from `ReplicatedStorage/Client`. `init.server.luau` runs from `ServerScriptService/Server`.\n- **Missing pieces.** There is no `ServerStorage` mapping and no `Remotes` location yet. Add them when you first need server-only assets or remotes.\n\nSay so if you want the missing mappings added. Before I do, I need to know whether you'll use a networking library such as Blink or ByteNet or plain `RemoteEvent`s, since that decides whether `Remotes/` is needed.",
+ "cost": 0.0728965,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13435,
+  "cache_read_input_tokens": 45545,
+  "output_tokens": 1459,
+  "output_tokens_details": {
+   "thinking_tokens": 150
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13435,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 946,
+    "cache_read_input_tokens": 19784,
+    "cache_creation_input_tokens": 2818,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2818
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

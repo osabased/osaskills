@@ -1,0 +1,89 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-2\\rokit.toml"
+  ],
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,wally.toml,client/**,shared/**,server/**,*.project.json,default.project.json}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-2\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-2\\client\\Controller.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "You want Janitor installed through pesde, used to disconnect the `InputBegan` dash listener in `client/Controller.client.luau` on every respawn, and verified. I haven't edited anything.\n\n## What's there now\n\n- `client/Controller.client.luau` connects `UserInputService.InputBegan` inside `onCharacter` and never disconnects it. Each respawn adds another listener, and the old ones keep referencing dead humanoids.\n- There is no `pesde.toml`, `pesde.lock`, or `wally.toml`. `rokit.toml` pins only `stylua` and `selene`. So nothing declares Janitor yet.\n- There is no Rojo project. Script Sync only maps `ServerScriptService.Server`, `ReplicatedStorage.Shared`, and `StarterPlayer.StarterPlayerScripts.Client`. Nothing currently maps a packages folder into `ReplicatedStorage`.\n\n## Plan\n\n**1. Install**\n- Add pesde to `rokit.toml`. I haven't picked a version. I'd check the current release first.\n- Create `pesde.toml` with `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }` and `[wally_indices] default = \"https://github.com/UpliftGames/wally-index\"`, as in the roblox-janitor setup reference.\n- Run `pesde install`. Confirm `pesde.lock` resolves Janitor to `1.18.3`, `howmanysmall/typed-promise` to `4.0.6`, and `evaera/promise` to `4.0.0`.\n\n**2. Get the package into Studio**\nThis is the blocker. Pesde installs into a packages folder, and Script Sync won't copy it into the place unless that folder is a synced root. I'd add a `ReplicatedStorage.Packages` ↔ `packages/` root in CLAUDE.md, then point the pesde install output there. The alternative is copying Janitor into `shared/`, which skips pesde entirely.\n\n**3. Wire it in**\nKeep the behavior the same and only change the cleanup:\n\n```luau\nlocal Janitor = require(ReplicatedStorage.Packages.Janitor)\n\nlocal characterJanitor = Janitor.new()\n\nlocal function onCharacter(character: Model)\n\tcharacterJanitor:Cleanup()\n\tlocal humanoid = character:WaitForChild(\"Humanoid\") :: Humanoid\n\tcharacterJanitor:Add(UserInputService.InputBegan:Connect(function(input, processed)\n\t\t-- unchanged body\n\tend))\nend\n```\n\n`Add` already defaults to `\"Disconnect\"` for an `RBXScriptConnection`, so the method argument is optional. The `require` path depends on how step 2 lands in Studio.\n\n**4. Check**\n- Run `rokit install`, then `stylua --check client` and `selene client`. There is no check script, so these are the only static checks.\n- Play-test in Studio. Confirm `ReplicatedStorage.Packages.Janitor` appears after sync and the script doesn't error on require.\n- Call `Players:LoadCharacter()` from the command bar three or four times. After each one, press the dash key once and confirm `Humanoid:Move` runs exactly once. For a direct count, add a temporary print and remove it afterward.\n- Watch the output for \"doesn't have method\" warnings from Janitor.\n\n## Decisions for you\n\n1. **Packages location:** Add a synced `ReplicatedStorage.Packages` root and install there (recommended), or copy Janitor into `shared/` and skip pesde?\n2. **Pesde version:** Should I use the latest pesde release, or do you have a version in mind?\n\nThe dash behavior doesn't change, so no end-user decision is needed for the fix itself.",
+ "cost": 0.00676675,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 16208,
+  "cache_read_input_tokens": 78085,
+  "output_tokens": 5487,
+  "output_tokens_details": {
+   "thinking_tokens": 3680
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16208,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 4601,
+    "cache_read_input_tokens": 25409,
+    "cache_creation_input_tokens": 550,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 550
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

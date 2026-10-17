@@ -1,0 +1,95 @@
+{
+ "id": "t-onboard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "{src/**,*.project.json,*.toml,*.json,*.md,*.luau,*.lua,*.blink,*.yaml,*.yml,*.rbxl*,*.rbxm*,*.story*}"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-onboard-haiku-old-1\" && ls -la && find . -path ./.claude -prune -o -type f -print | head -200"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-haiku-old-1\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00383356,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12871,
+  "cache_read_input_tokens": 48176,
+  "output_tokens": 1554,
+  "output_tokens_details": {
+   "thinking_tokens": 368
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12871,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 671,
+    "cache_read_input_tokens": 21477,
+    "cache_creation_input_tokens": 561,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 561
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

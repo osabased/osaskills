@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a variable's type inside a branch when the branch condition tests it with `typeof` (or `type`). The type checker treats the variable as the narrowed type inside the branch, so you can use it without errors.\n\n```luau\n--!strict\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"number\" then\n\t\treturn string.format(\"%.2f\", value) -- value: number\n\telseif typeof(value) == \"string\" then\n\t\treturn value:upper() -- value: string\n\tend\n\treturn \"nothing\" -- value: nil\nend\n```\n\n**Where narrowing applies**\n\n- `if` / `elseif` branches, including `and` / `or` short-circuits: `if typeof(x) == \"string\" and #x > 0 then`\n- Negation: `if typeof(x) ~= \"number\" then return end`. After an early return like this, `x` is narrowed to `number` for the rest of the function.\n- Optional values: `typeof(x) == \"nil\"` removes `nil` from a union.\n\n**Roblox types**\n\n`typeof` is the right check for Roblox values. `typeof(part)` returns `\"Instance\"`, and `typeof(Vector3.new())` returns `\"Vector3\"`. `type()` returns `\"userdata\"` for both, so it doesn't distinguish them well. To narrow an instance to a specific class, check with `:IsA(...)`. Recent Luau versions refine on that too, but confirm it in strict mode for your Luau version.\n\n**Gotchas**\n\n- **Aliases don't narrow.** Storing the result of `typeof` in a variable and checking that variable does not narrow the original:\n  ```luau\n  local kind = typeof(value)\n  if kind == \"string\" then\n  \tvalue:upper() -- error: value may still be number or nil\n  end\n  ```\n  Check `typeof(value)` directly.\n- **`typeof` can't narrow a table to a shape.** `typeof(x) == \"table\"` only tells you it's a table. Use a discriminated union instead, where a literal field picks the variant:\n  ```luau\n  type Result = { ok: true, value: number } | { ok: false, error: string }\n\n  local function unwrap(result: Result): number\n  \tif result.ok then\n  \t\treturn result.value -- narrowed to the ok variant\n  \tend\n  \terror(result.error) -- narrowed to the error variant\n  end\n  ```\n- **Narrowing needs a stable variable.** It applies to locals, parameters, and constant field paths like `t.field`. It doesn't carry across function calls or reassignments in closures, so re-check after anything that could change the value.\n\nUse `--!strict` at the top of a file to get these checks reported as errors rather than silently widened to `any`.",
+ "cost": 0.0031021700000000004,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8359,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2677,
+  "output_tokens_details": {
+   "thinking_tokens": 1801
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2677,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8359,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8359
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

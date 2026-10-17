@@ -1,0 +1,87 @@
+{
+ "id": "t-add-signal",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*ignal*"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-new-1\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-new-1\\src\\server\\Round.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-sonnet-new-1\\src\\server\\Coins.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "The game already has a Signal library, so I haven't changed anything.\n\n`src/shared/Signal.luau` is a small typed module with `Signal.new()`, `:Connect(callback)` (returns a connection with `:Disconnect()`), `:Fire(...)` and `:DisconnectAll()`. Callbacks run through `task.spawn`. Nothing else in `src/` requires it yet, so no module fires custom events today.\n\nWhat did you mean by the request? These are the options I see, with my recommendation first:\n\n1. **Use the existing Signal in the game.** For example, `Coins.Changed` fires `(player, balance)` from `Coins.add`, and `Round` gets `Started` and `Ended` signals. The `CoinLabel` UI could then read from those events. This is my recommendation, since it's what \"modules can fire custom events\" most likely means.\n2. **Improve the Signal module itself.** The current version has no `Once` or `Wait`. It also runs callbacks in `task.spawn` with no ordering, and `Connect` on the same callback twice yields one connection.\n3. **Swap it for a package.** LemonSignal and GoodSignal are in the skills catalog. You'd need to confirm this one, because `CLAUDE.md` says Signal is a vendored module and not a package.\n\nIf it's option 1, which events do you want, and should they be server-only or also reach the client through remotes? Events that cross to the client change what end users see, so I'll wait for your answer.",
+ "cost": 0.0575211,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10403,
+  "cache_read_input_tokens": 43771,
+  "output_tokens": 1152,
+  "output_tokens_details": {
+   "thinking_tokens": 121
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10403,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 557,
+    "cache_read_input_tokens": 18067,
+    "cache_creation_input_tokens": 1503,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1503
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,91 @@
+{
+ "id": "t-add-signal",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "add a signal library to this game so modules can fire custom events",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "Signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-4\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-4\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-4\\scripts\\check_guards.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-add-signal-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/t-add-signal-haiku-new-4\" && (which rokit stylua selene pesde rojo 2>&1; python scripts/check_guards.py; echo \"guards exit: $?\"; grep -rn \"Signal\" src --include=*.luau | grep -v \"src/shared/Signal.luau\"; echo \"usages above (none expected)\")"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0064042299999999995,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19671,
+  "cache_read_input_tokens": 53443,
+  "output_tokens": 3870,
+  "output_tokens_details": {
+   "thinking_tokens": 2822
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19671,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2674,
+    "cache_read_input_tokens": 26971,
+    "cache_creation_input_tokens": 1867,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1867
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

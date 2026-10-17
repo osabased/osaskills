@@ -1,0 +1,82 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ],
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [],
+ "result": "You can test it end to end with the Studio MCP: edit mode to confirm the code, Play, a real click, then read the results. I haven't run anything against your place yet. I need the button's instance path to do that.\n\n**1. Confirm Studio has your current code.** In Edit mode, read the shop script's `Source` with `execute_luau` or `script_read`. A commit hash doesn't tell you what Studio is running if you have uncommitted edits.\n\n**2. Find the button.** Use `search_game_tree` to locate it, probably under `StarterGui` or `PlayerGui`. Then use `inspect_instance` to confirm it's a `TextButton` or `ImageButton` and to check its `Visible` and `Active` properties.\n\n**3. Start Play.** Call `start_stop_play`. Play-test edits are discarded when it stops, so make any code changes in Edit mode first.\n\n**4. Click it with real input.** Call `user_mouse_input` with the button's path, for example `LocalPlayer.PlayerGui.ShopGui.OpenButton`. This fires `Activated` the way a player's click would. Calling the handler directly only proves the handler, not the button.\n\n**5. Check what happened.**\n- Use `get_console_output` on both the Client and Server datamodels for errors.\n- Use `inspect_instance` to confirm the shop UI opened or the expected change appeared.\n- For a purchase or any other server-side effect, check the server result. The client shouldn't be the source of truth.\n\n**6. Timing.** The first `execute_luau` after Play can take 7 to 15 seconds, so short-lived UI may be gone by the time you look. If you need to observe a fast response, have one `execute_luau` connect the button's `Activated` signal and append timestamped lines to a `StringValue` under `LocalPlayer`. Read that value afterward.\n\n**Avoid:** don't `require` your shop modules from `execute_luau` during Play. That creates a second copy with its own state, and the errors it produces look like game bugs.\n\n**7. Stop Play.** Call `start_stop_play` again. Only stop sessions you started.\n\nTo go further, tell me:\n- The button's instance path, or the shop GUI name.\n- Whether the code is in Rojo, Script Sync, or Studio-only. This decides whether I can add a repeatable test or only do a manual play-test.\n- Whether the shop has a server handler that should validate the click, so I can check that path too.",
+ "cost": 0.00450888,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14946,
+  "cache_read_input_tokens": 47208,
+  "output_tokens": 2094,
+  "output_tokens_details": {
+   "thinking_tokens": 951
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14946,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1559,
+    "cache_read_input_tokens": 20513,
+    "cache_creation_input_tokens": 3600,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3600
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

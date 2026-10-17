@@ -1,0 +1,86 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ],
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Bash",
+   "python \"<runs>\\t-studioonly-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\scripts\\check_updates.py\""
+  ]
+ ],
+ "denials": [],
+ "result": "You want Claude to read and edit the Sword Arena scripts through Studio MCP without breaking the game or stepping on your two co-editors.\n\nStudio-only is the hardest setup for this. The MCP gives Claude live reads of a place that others can change at the same moment, and there is no diff, Git, or check command to catch mistakes before they land.\n\n## Recommended path: move the code to Script Sync\n\nScript Sync mirrors the scripts to files, so Claude gets diffs, Git history, and a check command. You set it up once in Studio:\n\n1. Before you turn it on, check the scripts for attributes and tags. The [Script Sync docs](https://create.roblox.com/docs/scripting/sync) describe how to do this.\n2. Sync the code folders into new, empty directories inside one Git repo, then commit.\n3. Claude edits the files, and Studio applies them.\n\nIf you'd rather keep the place Studio-only, the safeguards below still apply.\n\n## Safeguards for a Studio-only place\n\n- **Checkpoints:** before any edit that touches several scripts, save with notes (**File** > **Save to Roblox with Notes**). Restoring a version in **View Script History** creates a new version and doesn't publish it.\n- **Live edits:** Live Scripting pushes each edit to your co-editors within seconds. Ask whether Drafts mode is on. MCP edits under Drafts are untested, so I wouldn't rely on that until we've checked.\n- **Edit mode only:** a play-test discards changes made during it.\n- **Check paths first:** `multi_edit` creates a script when the path doesn't exist, so a typo leaves a stray script behind.\n- **Publishing stays with you:** Claude should not publish.\n- **Coordinate with co-editors:** agree on who is editing which scripts while Claude is working.\n- **Keep a guide:** a local `CLAUDE.md` with the place name, place ID (1234567890), and the `studio_id` from `list_roblox_studios`, since two Studio windows can share a name.\n\n## Testing limits\n\n- No static checks or CI run without files.\n- The Lest Studio backend joins the live Team Create session, which disconnects your own Studio. Warn me before any run, and run specs that change the place against a place file instead.\n- For play-tests, use `start_stop_play`. Don't `require` the game's own modules from `execute_luau` during a play-test, since that builds a second copy with its own state.\n\n## Questions for you\n\n1. Should I set up Script Sync first? I recommend yes.\n2. Is Drafts mode on for your team?\n3. Can your two co-editors agree to pause while Claude edits, or do you want Claude to work on a separate copy?",
+ "cost": 0.00494451,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15589,
+  "cache_read_input_tokens": 47761,
+  "output_tokens": 2697,
+  "output_tokens_details": {
+   "thinking_tokens": 1289
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15589,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1784,
+    "cache_read_input_tokens": 20930,
+    "cache_creation_input_tokens": 3826,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3826
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

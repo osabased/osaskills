@@ -1,0 +1,90 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-4\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "(?i)hitbox|raycast|spherecast|boxcast|workspace:Raycast|Blockcast"
+  ],
+  [
+   "Bash",
+   "python \"<runs>\\t-hitbox-haiku-new-4\\.claude\\skills\\roblox-resource-acquisition\\scripts\\check_updates.py\""
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: raycast yourself.** Roblox's built-in cast and overlap queries cover most hitbox needs, and a library would add a dependency you'd have to pin, audit and keep current for little gain.\n\n- `workspace:Raycast` for single-line hits (hitscan, line of sight).\n- `workspace:Spherecast` and `workspace:Blockcast` for swept volumes, such as a sword swing or a thrown object that shouldn't tunnel through thin parts.\n- `workspace:GetPartBoundsInRadius` and `workspace:GetPartBoundsInBox` for \"what's inside this area right now\" checks.\n\nPut the hit logic on the server and treat client hit reports as requests to validate. That matters more than which query you pick.\n\nI didn't evaluate outside modules. This session has no web access and Bash is disabled, so I couldn't check DevForum threads, release notes or current versions. I also didn't run the update check. I'd only look at a hitbox module if you need something the built-ins don't give you, such as oriented-box-vs-oriented-box tests on rotated models at high entity counts. Even then, I'd check it against the hard gates in the acquisition reference (fit, evaluability, safety, license) before adopting it.\n\nIf you do write the hitbox code, use Janitor for its connections and threads. Heads-up: the project's `pesde.toml` pins Janitor `=1.17.0`, but the `roblox-janitor` skill targets 1.18.3. Use only API you can confirm at 1.17.0.\n\nWhat kind of hitbox do you need: melee swings, projectiles, or area/AoE? That decides which of the built-in queries fits.",
+ "cost": 0.0044433300000000005,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13804,
+  "cache_read_input_tokens": 46343,
+  "output_tokens": 2437,
+  "output_tokens_details": {
+   "thinking_tokens": 1151
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13804,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1334,
+    "cache_read_input_tokens": 19865,
+    "cache_creation_input_tokens": 3106,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3106
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

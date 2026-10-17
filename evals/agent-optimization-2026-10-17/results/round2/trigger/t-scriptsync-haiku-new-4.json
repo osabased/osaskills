@@ -1,0 +1,82 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "{pesde.toml,rokit.toml,*.project.json,default.project.json,server/**,shared/**,client/**}"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**No, not directly.** Script Sync doesn't handle a pesde packages folder. Syncing it would break the requires that pesde's link modules use.\n\n- pesde's link modules `require` into a `.pesde` directory. Script Sync skips directories whose names start with a dot, so those requires fail.\n- Script Sync also ignores each package's `default.project.json`, and it syncs bundled test runners such as `*.server.lua` as Scripts that run. Both cause problems.\n- The fix is to keep packages out of the synced roots (`server/`, `shared/`, `client/`). Then get them into the place another way.\n\nOptions for getting packages into the place:\n\n1. **Build a model with Rojo and insert it in Studio.** Run `rojo build` on the install folder after each `pesde install`. This is the approach the skill recommends. It adds Rojo to the toolchain, though, and this project currently uses only Script Sync.\n2. **Use Studio's own package linking.** Packages sync, but Script Sync doesn't write `PackageLink` to disk, so this needs a check in Studio first.\n3. **Add a Rojo project for the packages folder only.** This is the riskiest option. A project file invites `rojo serve`, which is a second sync system on the same content.\n\nI can't tell which applies yet. This repo has `rokit.toml` but no `pesde.toml` or packages folder, so I didn't find the packages folder here. Two questions:\n\n- Where is your pesde packages folder, and is it inside this repo?\n- Are you open to adding Rojo just for packages (option 1), or would you rather stay Script-Sync-only and use Studio's package linking (option 2)?\n\nI couldn't run the skill's update check because Bash is disabled in this session.",
+ "cost": 0.00462004,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15357,
+  "cache_read_input_tokens": 47954,
+  "output_tokens": 2137,
+  "output_tokens_details": {
+   "thinking_tokens": 1247
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15357,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1253,
+    "cache_read_input_tokens": 21061,
+    "cache_creation_input_tokens": 3463,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3463
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

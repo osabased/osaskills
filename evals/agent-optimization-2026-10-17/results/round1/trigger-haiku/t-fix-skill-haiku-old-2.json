@@ -1,0 +1,107 @@
+{
+ "id": "t-fix-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-vide skill told me to use show() the wrong way, fix the skill",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-vide/SKILL.md",
+   7099
+  ],
+  [
+   "roblox-vide/references/api-and-lifecycle.md",
+   7481
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/roblox-vide/**"
+  ],
+  [
+   "Grep",
+   "show\\("
+  ],
+  [
+   "Read",
+   "<runs>\\t-fix-skill-haiku-old-2\\.claude\\skills\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-fix-skill-haiku-old-2\\.claude\\skills\\roblox-vide\\references\\api-and-lifecycle.md"
+  ],
+  [
+   "Grep",
+   "\\bshow\\b"
+  ],
+  [
+   "Glob",
+   "**/{show,vide,init}.luau"
+  ],
+  [
+   "Glob",
+   "**/*vide*/**/*.luau"
+  ]
+ ],
+ "denials": [
+  [
+   "Glob",
+   "**/*vide*/**/*.luau"
+  ]
+ ],
+ "result": null,
+ "cost": 0.004558320000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16194,
+  "cache_read_input_tokens": 45292,
+  "output_tokens": 1732,
+  "output_tokens_details": {
+   "thinking_tokens": 616
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16194,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 635,
+    "cache_read_input_tokens": 18743,
+    "cache_creation_input_tokens": 6618,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6618
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

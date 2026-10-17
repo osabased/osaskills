@@ -1,0 +1,76 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{pesde.toml,rokit.toml,*.project.json,*packages*}"
+  ],
+  [
+   "Grep",
+   "(?i)script.?sync|roblox_packages|pesde_packages|packages"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**Not directly.** Script Sync can't read a pesde install folder, so don't point a synced root at it.\n\n- **Dot-folders are skipped.** pesde's link modules `require` into `.pesde`, and Script Sync ignores directories whose names start with a dot. Those requires fail in Studio.\n- **Project files are ignored.** Script Sync also ignores each package's `default.project.json`.\n- **Bundled test scripts run.** It syncs things like `*.server.lua` from packages as Scripts, so they would execute in the place.\n\nKeep packages outside the three synced roots (`Server`, `Shared`, `Client`). Your repo has no `pesde.toml` yet, so there's no packages folder to sync today.\n\nIf you need the packages inside Studio, you have two options:\n\n1. **Build a model with Rojo and insert it manually.** Run `rojo build` on the install folder, then insert the model into `ReplicatedStorage.Packages`. Rebuild after each `pesde install`. This needs a Rojo project file, which this repo doesn't have. The skill notes that adding one just for a sourcemap also brings in a second sync system, so weigh that first.\n2. **Keep packages out of Studio's synced tree.** Install them with pesde for type checking and tooling, and let Studio's place hold only the code you own. Use this if you only need the types.\n\nOption 1 is the only one that gets the packages into Studio. Do you want to add Rojo for that, or keep the packages out of the place?",
+ "cost": 0.00477187,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16196,
+  "cache_read_input_tokens": 49057,
+  "output_tokens": 2083,
+  "output_tokens_details": {
+   "thinking_tokens": 1272
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16196,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1103,
+    "cache_read_input_tokens": 22164,
+    "cache_creation_input_tokens": 3199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

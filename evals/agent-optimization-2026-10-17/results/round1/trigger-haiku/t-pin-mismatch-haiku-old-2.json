@@ -1,0 +1,71 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "[Jj]anitor"
+  ],
+  [
+   "Glob",
+   "**/pesde.{toml,lock}"
+  ]
+ ],
+ "denials": [],
+ "result": "Your `pesde.toml` and `pesde.lock` agree with each other. Both pin Janitor to `=1.17.0` (`pesde.toml:16`, `pesde.lock:21-22`). The mismatch is between your project and the `roblox-janitor` skill, which targets 1.18.3. The lock itself isn't broken.\n\nThe skill's own guidance says to keep the project's pin and not change it to fit the skill. I haven't changed anything. Two ways forward:\n\n1. **Stay on 1.17.0 (recommended unless you want the 1.18.3 changes).** I'd use the skill for general cleanup patterns, but check each Janitor call against 1.17.0 before relying on it. Anything the skill says that's specific to 1.18.3 may not apply. Nothing is blocked.\n2. **Upgrade to 1.18.3.** This changes `pesde.toml` and `pesde.lock`, so I'd follow the `roblox-resource-acquisition` upgrade flow and run `bash scripts/check.sh` afterward.\n\nWhich do you want? Also, is there a Janitor task in front of you right now? If so, I can work on it under option 1 while you decide on the upgrade.",
+ "cost": 0.00321546,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 10192,
+  "cache_read_input_tokens": 26566,
+  "output_tokens": 1822,
+  "output_tokens_details": {
+   "thinking_tokens": 1086
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10192,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 948,
+    "cache_read_input_tokens": 17399,
+    "cache_creation_input_tokens": 1960,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1960
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

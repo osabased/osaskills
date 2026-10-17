@@ -1,0 +1,89 @@
+{
+ "id": "q-scriptsync",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "This place syncs with Studio through Script Sync (see CLAUDE.md). I want to add Janitor with pesde and use it in client/Controller.client.luau so the dash input connection is cleaned up when the character respawns. Plan how you'd install it, wire it in, and check that it works. Reply in chat only; don't edit files.",
+ "scaffold": "sync",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-janitor"
+ ],
+ "reads": [
+  [
+   "roblox-janitor/references/setup.md",
+   1057
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-1\\client\\Controller.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-1\\rokit.toml"
+  ],
+  [
+   "Skill",
+   "roblox-janitor"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,pesde.lock,wally.toml,default.project.json,shared/**/*.luau,server/**/*.luau}"
+  ],
+  [
+   "Read",
+   "<runs>\\q-scriptsync-haiku-new-1\\.claude\\skills\\roblox-janitor\\references\\setup.md"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't edited anything. Here's the plan.\n\n**What I think you want:** add Janitor as a pinned pesde dependency, then use it in `client/Controller.client.luau` so the dash `InputBegan` connection is disconnected when the character respawns.\n\n**What I found**\n\n- The project has no `pesde.toml` or `pesde.lock`. `rokit.toml` pins only StyLua and Selene.\n- The current code adds a new `InputBegan` connection on every `CharacterAdded` and never disconnects the old ones. Connections fire in the order they were made, so the oldest one runs first. It captures the old `humanoid`, sets `lastDash`, and calls `Move` on a destroyed humanoid. The newer connections then hit the cooldown and return. If `Config.DASH_COOLDOWN` is above 0 (I haven't checked `shared/Config.luau`), dash may do nothing after the first respawn. The Janitor change should fix that, so I'll confirm it in testing.\n\n**1. Install**\n\n- Run `pesde init`, then add `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.18.3\" }` with the Wally index in `[wally_indices]`. Run `pesde install`, then commit `pesde.lock`.\n- Confirm the lock resolves `wally#howmanysmall/janitor@1.18.3`. It should also pull in `typed-promise` 4.0.6 and `evaera/promise` 4.0.0.\n- Add pesde to `rokit.toml` so everyone uses the same version. That's a `rokit add` with the pesde release I pick, which I'll confirm before running it.\n- Open question: pesde writes packages to disk, but Script Sync only maps the three roots in CLAUDE.md. Before I choose a require path, I need to know how `Janitor` gets under `ReplicatedStorage` in Studio. Either a synced root covers the package output, or it gets placed by hand. I'll check the structure skill's guidance for this before writing the require.\n\n**2. Wire it in**\n\nUse one Janitor for the character and clean it on each respawn. This is the change I'd make:\n\n```luau\nlocal Janitor = require(<path to package>)\n\nlocal characterJanitor = Janitor.new()\n\nlocal function onCharacter(character: Model)\n\tcharacterJanitor:Cleanup()\n\tlocal humanoid = character:WaitForChild(\"Humanoid\") :: Humanoid\n\tcharacterJanitor:Add(UserInputService.InputBegan:Connect(function(input, processed)\n\t\t-- same body as now\n\tend))\nend\n```\n\n- `Add` defaults to `\"Disconnect\"` for an `RBXScriptConnection`, so the method argument can be omitted.\n- Alternative: `characterJanitor:LinkToInstance(character)` cleans up on `Destroying` instead of on `CharacterAdded`. I prefer the explicit `Cleanup()`. It ties cleanup to the respawn event you named, and it doesn't rely on `Destroying` firing.\n- `lastDash` and the dash logic stay the same.\n\n**3. Verify**\n\n- Static: run `stylua --check client shared server` and `selene client shared server`. There's no check script yet, so these run by hand.\n- Studio play test: dash once and confirm the character moves. Reset the character a few times, dash again, and confirm the new character moves. Before the change, I expect the dash to fail after the first reset. Use a temporary print or a Studio command-bar check, then remove it.\n- Janitor check: after several resets, the Janitor should hold one connection. If `Janitor` isn't exposed, I'll count with a temporary print.\n- Confirm `pesde.lock` shows 1.18.3 and that `pesde install --locked` restores it on a clean checkout.\n\n**Behavior change:** this is a bug fix. Dash after a respawn should work where it currently may not. It doesn't change the dash look, the copy, or the cooldown, so I didn't need to ask about it.\n\n**Needs your call**\n\n1. Janitor placement: should I wire it so pesde output lands under `ReplicatedStorage` (requires a Script Sync mapping change), or place it by hand in Studio?\n2. Cleanup style: explicit `Cleanup()` on `CharacterAdded` (my recommendation) or `LinkToInstance(character)`?",
+ "cost": 0.008681069999999999,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 26260,
+  "cache_read_input_tokens": 43547,
+  "output_tokens": 5986,
+  "output_tokens_details": {
+   "thinking_tokens": 3865
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26260,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 4783,
+    "cache_read_input_tokens": 25160,
+    "cache_creation_input_tokens": 1100,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1100
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

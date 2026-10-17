@@ -1,0 +1,90 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's the layout I'd use, and it's close to what coin-run already has.\n\n```text\nReplicatedStorage/\n  Client/        client-only code (UI, input, camera); init.client.luau is the entrypoint\n  Shared/        types, constants, pure logic and Signal that both sides use\n  Remotes/       RemoteEvents, or whatever your networking library creates\n  Packages/      pesde output\nServerScriptService/\n  Server/        server-only code; init.server.luau is the entrypoint\nServerStorage/\n  Assets/        server-only templates and models\n```\n\n**Rules that drive this**\n- **Anything in `ReplicatedStorage` is readable by every client, including module source.** Keep secrets, DataStores, purchase handling, validation and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **Use one entrypoint per side.** The server `Script` and the client `Script` require feature modules explicitly, so it's obvious what starts and in what order. Add separate Init/Start phases only if ordering between features starts to matter.\n- **Client entrypoints should be `Script`s with `RunContext = Client`.** A `LocalScript` never runs from `ReplicatedStorage`.\n- **Put code in `Shared` only if both sides actually use it.** A ModuleScript's state is separate on the server and on each client, so `Shared` holds code and constants, not shared state.\n- **Treat every client-to-server Remote as attack surface.** The server checks type, range, ownership and rate on each call.\n- **Group by feature once the game grows.** Use `Server/Combat`, `Client/Combat` and `Shared/Combat` if you work by gameplay capability. Keep flat lists per side until then.\n- **Reserve `ReplicatedFirst` for the loading screen.**\n\n**How coin-run compares**\n- `default.project.json` already maps `src/shared`, `src/client` and `roblox_packages` into `ReplicatedStorage`, and `src/server` into `ServerScriptService`. It sets `emitLegacyScripts: false`, which is what makes `init.client.luau` run from `ReplicatedStorage`.\n- It has no `Remotes` folder or `ServerStorage` mapping yet. Add them when the game needs them, for example `ServerStorage/Assets` mapped from an `assets/` folder.\n- Its client state lives in `src/client/State`, matching the Charm convention in `CLAUDE.md`.\n\nIf you want me to add the Remotes or ServerStorage mappings, I'd first need to know whether you want a plain `Remotes` folder or a networking library such as Blink or ByteNet.",
+ "cost": 0.0734152,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13358,
+  "cache_read_input_tokens": 45412,
+  "output_tokens": 1543,
+  "output_tokens_details": {
+   "thinking_tokens": 262
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13358,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1048,
+    "cache_read_input_tokens": 19709,
+    "cache_creation_input_tokens": 2816,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2816
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

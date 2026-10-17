@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I understand you want:** rename `GiveCoins` to `AwardCoins` in `ServerScriptService.Rewards` and update every caller, with no behavior change. I can't call the Studio MCP server from this session, so this is the plan I'd run once it's available. The tool names below are from memory of Roblox's Studio MCP. I'd check them against the live tool list first and substitute the real names if they differ.\n\n**Questions before I start** (my recommendation first):\n1. Should the rename be clean, with no `GiveCoins` alias left behind? Two teammates are editing in Team Create, so an alias would only help if one of them has unpublished code that still calls the old name. If you'd rather keep one, I'd add a one-line `GiveCoins = AwardCoins` alias and remove it later.\n2. If a RemoteEvent, attribute, or DataStore key is also named `GiveCoins`, should I leave it alone? I'd leave it alone, because renaming those changes client or saved-data behavior, not just code.\n\n**Plan**\n1. **Check the target.** Use the instance-inspection or game-tree search tool to confirm `ServerScriptService.Rewards` exists and what class it is. Read its source with the script-read tool. Confirm that `GiveCoins` is defined once and see how it's exposed, for example `function Rewards.GiveCoins`, `Rewards:GiveCoins`, or a local function in a returned table.\n2. **Find every reference.** Run the script-search or grep tool, or `execute_luau` over `game:GetDescendants()`, for `GiveCoins` in all `LuaSourceContainer`s. That covers ServerScriptService, ReplicatedStorage, StarterPlayerScripts, StarterGui, ServerStorage, Workspace and the rest. The search needs to catch:\n   - direct calls (`Rewards.GiveCoins(...)`, `Rewards:GiveCoins(...)`)\n   - aliases (`local give = Rewards.GiveCoins`)\n   - string access (`Rewards[\"GiveCoins\"]`, `:GetAttribute(\"GiveCoins\")`)\n   - pcall or task.spawn passing the function by reference\n   - comments and docs\n   \n   I'd write the result as a list of script path, line, and match, and show it to you before editing anything.\n3. **Classify each hit.** Sort the hits into real callers, string or Remote/attribute uses, and comments. I'd handle the string and Remote hits per your answer to question 2.\n4. **Reduce edit conflicts.** Since two people share this place, I'd record each script's `Source` hash or length before editing. Immediately before each write I'd re-read the script and edit only if it's unchanged. If a teammate changed it, I'd re-read and re-apply.\n5. **Edit.** Use the multi-edit or script-edit tool with exact-string replacements. Rename the definition first, then each caller, with one edit per script. I wouldn't use a blind global find-and-replace, so `GiveCoinsToTeam` and similar names stay untouched.\n6. **Verify statically.** Re-run the step 2 search. Expected result: zero `GiveCoins` hits except any I deliberately left (Remote names and so on), and `AwardCoins` hits matching the definition plus the callers I counted. I'd also check that script-analysis or diagnostics tools report no new errors on the edited scripts.\n7. **Verify at runtime.** Read the console output tool first to get a clean baseline. Then start a play session with the play-mode tool and trigger a real reward path, or call `require(Rewards).AwardCoins` from the play-mode script runner. Read the console and stop play. Passing means:\n   - `AwardCoins` runs and the player's coins change as expected.\n   - There are no \"attempt to call a nil value\" errors or `GiveCoins is not a valid member` warnings.\n8. **Report.** I'd give you the list of scripts changed with before and after line counts, anything deliberately left unchanged, and what I couldn't verify. Callers in code paths I couldn't trigger would go in that last group.\n\n**Limits:** Studio edits aren't in git and there's no Script Sync. I'd save the step 2 list and the original sources somewhere outside the place before editing. Studio's undo history or Team Create version history is then the only other way back.",
+ "cost": 0.0511611,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7808,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1895,
+  "output_tokens_details": {
+   "thinking_tokens": 462
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7808,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1895,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7808,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7808
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "## Type refinement with `typeof`\n\nWhen you check a value with `typeof(x) == \"...\"`, Luau's type checker narrows `x` to the matching member of its union type inside that branch. Your code gets the specific type without a cast. This is static analysis only. At runtime `typeof` still runs as normal.\n\n### Basic narrowing\n\n```lua\ntype Value = number | string | {name: string}\n\nlocal function describe(value: Value): string\n    if typeof(value) == \"number\" then\n        return `number: {value * 2}` -- value: number\n    elseif typeof(value) == \"string\" then\n        return `string: {value:upper()}` -- value: string\n    else\n        return `name: {value.name}` -- value: {name: string}\n    end\nend\n```\n\nWithout the checks, `value * 2` and `value:upper()` would be type errors, because the checker can't assume which member of the union `value` is.\n\n### Early return\n\nRefinement also works after a guard clause, so the rest of the function sees the narrowed type:\n\n```lua\nlocal function shout(name: string?): string\n    if typeof(name) ~= \"string\" then\n        return \"anonymous\"\n    end\n    return name:upper() -- name: string\nend\n```\n\n### `and` / `or` short-circuiting\n\nThe right side of `and` sees the refined type:\n\n```lua\nlocal function nameLength(value: string | {name: string}): number\n    return typeof(value) == \"table\" and #value.name or #value\nend\n```\n\n### Checking Roblox types\n\n`typeof` also returns Roblox type names such as `\"Vector3\"`, `\"CFrame\"`, and `\"Instance\"`, and refinement works for those:\n\n```lua\nlocal function toWorld(input: Vector3 | CFrame): Vector3\n    if typeof(input) == \"CFrame\" then\n        return input.Position\n    end\n    return input\nend\n```\n\n`typeof` returns `\"Instance\"` for every Instance, though, so it can't tell a `Part` from a `Model`. Use `IsA` for that, which the checker does not narrow the same way:\n\n```lua\nlocal function anchor(object: Instance)\n    if object:IsA(\"BasePart\") then\n        object.Anchored = true\n    end\nend\n```\n\n### Tagged unions\n\nTwo table types can't be told apart with `typeof`, because both return `\"table\"`. Give each variant a literal field and check that field instead. Luau narrows on it:\n\n```lua\ntype Shape =\n    | {kind: \"circle\", radius: number}\n    | {kind: \"square\", side: number}\n\nlocal function area(shape: Shape): number\n    if shape.kind == \"circle\" then\n        return math.pi * shape.radius ^ 2 -- radius is available here\n    end\n    return shape.side ^ 2 -- narrowed to the square variant\nend\n```\n\n### Optional values\n\n`nil` is part of most optionals, so a truthiness check also narrows:\n\n```lua\nlocal function show(label: string?)\n    if label then\n        print(label:upper()) -- label: string\n    end\nend\n```\n\n### Things to watch for\n\n- **`typeof` vs `type`:** For Lua primitives they return the same result. For Roblox types, `typeof` gives the Roblox name (`\"Vector3\"`, `\"Instance\"`), while `type` returns `\"userdata\"`. Prefer `typeof` in Roblox code.\n- **Only comparisons with literals refine.** `local kind = typeof(x); if kind == \"number\"` loses the refinement in most cases, so compare directly.\n- **Negation has to be explicit.** `if typeof(x) ~= \"number\" then return end` narrows `x` to `number` after the block. The `else` side of `==` gives you the remaining union members.",
+ "cost": 0.00301197,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8293,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2523,
+  "output_tokens_details": {
+   "thinking_tokens": 1351
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8293,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2523,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,87 @@
+{
+ "id": "t-agentready",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   ".claude/*"
+  ],
+  [
+   "Glob",
+   "**/*.{project.json,toml,lock,sh,ps1,py,luau,lua,json,yaml,yml,md}"
+  ],
+  [
+   "Glob",
+   "*.*"
+  ],
+  [
+   "Glob",
+   ".claude/*.*"
+  ],
+  [
+   "Glob",
+   ".claude/skills/*"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00504715,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19508,
+  "cache_read_input_tokens": 47945,
+  "output_tokens": 1331,
+  "output_tokens_details": {
+   "thinking_tokens": 384
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19508,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 580,
+    "cache_read_input_tokens": 21249,
+    "cache_creation_input_tokens": 7426,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7426
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

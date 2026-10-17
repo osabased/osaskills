@@ -1,0 +1,92 @@
+{
+ "id": "t-glob",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Grep",
+   "globIgnorePaths|Preview"
+  ],
+  [
+   "Glob",
+   "src/client/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-glob-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ],
+  [
+   "Glob",
+   "**/Preview"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00345834,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11533,
+  "cache_read_input_tokens": 46764,
+  "output_tokens": 1367,
+  "output_tokens_details": {
+   "thinking_tokens": 794
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11533,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 577,
+    "cache_read_input_tokens": 20126,
+    "cache_creation_input_tokens": 574,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 574
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

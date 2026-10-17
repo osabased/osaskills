@@ -1,0 +1,82 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ],
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's what I think you're asking: how to set up Claude to edit the scripts in place 1234567890 through the Studio MCP server, with a way to recover if an edit goes wrong. I haven't changed anything yet.\n\nStudio-only editing has no diff, no Git revert, no formatter or linter, and no guard that fails an edit before it lands. Recovery depends on Studio's version history. So there are two reasonable setups.\n\n**Option A (recommended): Script Sync.** Turn on Script Sync in Studio and sync the code folders to a local Git repo. Then every edit becomes a file change you can diff, revert, and run through a check command and guards. Studio stays the place where you play-test. Before you switch, check whether any scripts have attributes or tags that Script Sync would change.\n\n**Option B: stay Studio-only.** This is the setup for keeping the place as it is. Use these rules:\n\n1. **Keep the guide outside Studio.** Put `CLAUDE.md` and a short project guide in a local folder that Claude starts in. Include the place name and ID 1234567890. Pass the `studio_id` from `list_roblox_studios`, because two Studio windows can share a name.\n2. **Checkpoint before multi-script edits.** Ask a collaborator to run **File > Save to Roblox with Notes** first. If something breaks, use **View Script History** on the script to open an earlier version. Restoring creates a new version and doesn't publish it.\n3. **Check paths before every `multi_edit`.** It creates a script when the path doesn't exist, so a typo leaves a stray script behind.\n4. **Edit in Edit mode only.** Changes made during a play-test are discarded when it stops.\n5. **Verify with play-tests.** Confirm Studio is running the new code by reading the changed module's `Source` before you press Play. Click buttons with `user_mouse_input`, not by calling their handlers. Read results from the console or a `StringValue` the test writes to. Don't `require` the game's modules from `execute_luau` during a play-test, since that creates a second copy with its own state.\n6. **Report the static checks as not run.** Without files there's no linter, type check, or CI.\n\n**Team Create concerns**\n\n- **Live Scripting is on by default.** Each MCP edit reaches your two collaborators within seconds. Tell them before the agent starts editing, and agree on when it's safe to work.\n- **Drafts mode is untested with MCP.** It would keep edits local until committed, but Claude can't read its state and I haven't verified how MCP edits interact with it. Please don't rely on it until we test it.\n- **Lest's Studio backend joins the live session.** That disconnects your own Studio from the place, and anything a spec creates stays in the shared place. Run any spec that changes the place against a separate place file.\n\n**Questions for you**\n\n1. Option A (Script Sync to Git) or Option B (Studio-only)? I recommend A.\n2. If Option B, will your two collaborators agree to save with notes before each agent edit session?\n3. Do you want me to test whether Drafts mode works with MCP edits, using a throwaway script in the place? This would change the shared place, so only do it if your collaborators know.",
+ "cost": 0.00474303,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15365,
+  "cache_read_input_tokens": 47893,
+  "output_tokens": 2381,
+  "output_tokens_details": {
+   "thinking_tokens": 890
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15365,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1728,
+    "cache_read_input_tokens": 20996,
+    "cache_creation_input_tokens": 3536,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3536
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

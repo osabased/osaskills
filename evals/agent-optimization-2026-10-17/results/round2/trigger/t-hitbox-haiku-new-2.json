@@ -1,0 +1,82 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: write it yourself.** Nothing in this project's dependencies covers hitboxes, and I didn't find a clear reason to add one.\n\n- **What's already here:** `pesde.toml` declares only Charm, Janitor and Vide. Janitor handles cleanup of the connections and temporary parts a hitbox creates.\n- **Built-in APIs cover the geometry:** `Workspace:GetPartBoundsInBox` and `GetPartBoundsInRadius` for area or melee hits, `OverlapParams` to filter out the attacker and other ignored instances, and `Workspace:Raycast` or the sweep-cast APIs for projectiles, which can tunnel through thin parts if you only check once per frame.\n- **Server authority:** the hit test should run on the server, with the client only sending intent. A third-party module would add trust questions you'd still need to review.\n- **Size:** a basic hitbox is a few dozen lines. A module would add a dependency and a version pin to maintain for a small amount of code.\n\nI didn't survey outside modules. I have no web access in this session, so I can't check current releases, DevForum threads or license terms. If you want a library anyway, I can run a proper comparison, but it would be evaluation only and wouldn't change the project.\n\nWhat kind of hitbox do you need? Melee swings, projectiles or area effects (like a pickup radius) lead to different designs, and the answer could change if you need the hits to be rewindable for latency.",
+ "cost": 0.00401899,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13278,
+  "cache_read_input_tokens": 46329,
+  "output_tokens": 1799,
+  "output_tokens_details": {
+   "thinking_tokens": 933
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13278,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1136,
+    "cache_read_input_tokens": 19846,
+    "cache_creation_input_tokens": 2599,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2599
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

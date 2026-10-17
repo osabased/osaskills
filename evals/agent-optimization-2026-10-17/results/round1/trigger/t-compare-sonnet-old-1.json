@@ -1,0 +1,62 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Use Janitor. The project already depends on it, and CLAUDE.md names it as the cleanup owner. Trove does the same job, so adding it would give you two cleanup libraries and two sets of habits for no gain.\n\nIn Vide code, the split is:\n- **Inside a Vide component or effect:** use `cleanup(...)` and let Vide's scope handle teardown. Janitor isn't meant for that.\n- **Outside Vide's reactive scope:** use Janitor. That covers things like a controller or service that connects to `RunService`, remotes, or a custom `Signal`. Create it with `Janitor.new()`, `:Add` the connections, and call `:Destroy()` when the owner goes away.\n\n`pesde.toml` pins Janitor to `=1.17.0`, but the janitor skill targets 1.18.3. I'm keeping your pin. The core methods (`Add`, `Remove`, `Cleanup`, `Destroy`, `LinkToInstance`) are what I'd expect at both versions, but I haven't checked them against 1.17.0. If you want 1.18.3, say so and I'll go through the upgrade flow.\n\nIf you have a specific component with leaking connections, tell me which one and I'll look at it.",
+ "cost": 0.0396587,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7427,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 903,
+  "output_tokens_details": {
+   "thinking_tokens": 496
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7427,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 903,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7427,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7427
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

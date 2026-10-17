@@ -1,0 +1,123 @@
+{
+ "id": "t-agentready",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects",
+  "read:motion-studies"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ],
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4112
+  ],
+  [
+   "motion-studies/SKILL.md",
+   3470
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\wally.toml"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-sonnet-new-1\\.claude\\skills\\motion-studies\\SKILL.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0997162,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20233,
+  "cache_read_input_tokens": 48722,
+  "output_tokens": 1390,
+  "output_tokens_details": {
+   "thinking_tokens": 242
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20233,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 743,
+    "cache_read_input_tokens": 22868,
+    "cache_creation_input_tokens": 6532,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6532
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

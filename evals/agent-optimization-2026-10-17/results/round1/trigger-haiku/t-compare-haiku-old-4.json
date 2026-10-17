@@ -1,0 +1,82 @@
+{
+ "id": "t-compare",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "(?i)janitor|trove|maid|vide|charm|signal"
+  ],
+  [
+   "Read",
+   "<runs>\\t-compare-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: keep Janitor.** Your project already uses it for cleanup, and `CLAUDE.md` assigns it that role. Adding Trove would mean a second cleanup library and migrating existing code for no clear gain.\n\nThis is an evaluation only. I made no changes to the project.\n\n**What the project already has**\n- `pesde.toml:16` pins `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }`.\n- `CLAUDE.md` lists Janitor for cleanup ownership. Under the choosing rules, a resource the project already prefers stays unless it fits the task poorly. I found no sign that it does.\n- Trove isn't in any manifest I checked.\n\n**Criteria applied**\n- **Fit:** Janitor covers connections, instances, threads and callbacks, which is what the UI code needs.\n- **Integration cost:** Janitor is already installed, pinned and documented in `CLAUDE.md`. Trove would need a new dependency, a pin, a library skill and a `CLAUDE.md` entry.\n- **Overlap with Vide:** Vide's scopes clean up reactive children when their owner unmounts. Use Janitor for connections and instances that live outside a Vide scope. The `roblox-janitor` skill description says it isn't for Vide scope cleanup. Using both is fine if the boundary is clear.\n\n**Strongest alternative and its tradeoff:** Trove. Its tradeoff is migration cost and a second cleanup library, with no capability Janitor lacks for this code. I could not check Trove's current version, API or release notes. This environment has no web access, so that claim is unverified.\n\n**Uncertainties**\n- The project pins Janitor `1.17.0`, but the `roblox-janitor` skill targets `1.18.3`. Check any API from that skill against 1.17.0 before relying on it. I did not change the pin.",
+ "cost": 0.00451718,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13613,
+  "cache_read_input_tokens": 47048,
+  "output_tokens": 2647,
+  "output_tokens_details": {
+   "thinking_tokens": 1560
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13613,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1555,
+    "cache_read_input_tokens": 20514,
+    "cache_creation_input_tokens": 2266,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2266
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

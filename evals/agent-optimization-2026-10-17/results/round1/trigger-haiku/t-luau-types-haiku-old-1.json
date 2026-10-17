@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a union type inside a branch when a `typeof` check (or `type`) rules members in or out. The checked variable gets the narrowed type in that branch, so you can use type-specific operations without casts.\n\n```lua\ntype Coins = number | string\n\nlocal function describe(value: Coins): string\n\tif typeof(value) == \"number\" then\n\t\t-- value: number here, so arithmetic is allowed\n\t\treturn `{value * 2} coins`\n\telse\n\t\t-- value: string here\n\t\treturn value:upper()\n\tend\nend\n```\n\n**Early returns narrow the rest of the function.** This is the common pattern:\n\n```lua\nlocal function addCoins(amount: number?, base: number): number\n\tif typeof(amount) ~= \"number\" then\n\t\treturn base\n\tend\n\t-- amount: number from here on, not number?\n\treturn base + amount\nend\n```\n\n**Narrowing works in compound conditions.** `and`, `or`, and `not` all refine:\n\n```lua\nif typeof(value) == \"string\" and #value > 0 then\n\t-- value: string, and non-empty\nend\n```\n\n**`nil` is the usual case.** `typeof(x) == \"nil\"` works, and so does plain truthiness (`if x then`), which removes `nil` and `false` from an optional type.\n\n**Instances need `typeof` first, then `IsA`.** `typeof` returns `\"Instance\"` for any Roblox instance, so it can't tell a `Part` from a `Model`. Luau also narrows on `:IsA`:\n\n```lua\nlocal function getCoinValue(instance: Instance): number\n\tif typeof(instance) == \"Instance\" and instance:IsA(\"IntValue\") then\n\t\treturn instance.Value\n\tend\n\treturn 0\nend\n```\n\n**Tables don't narrow by \"class\".** `typeof(t) == \"table\"` only proves it's a table. To separate table shapes, use a discriminant field (a literal-typed `kind` key) or an equality check, which narrows singleton types:\n\n```lua\ntype Pickup = { kind: \"coin\", value: number } | { kind: \"gem\", rarity: string }\n\nlocal function score(p: Pickup): number\n\tif p.kind == \"coin\" then\n\t\treturn p.value -- p is the coin variant here\n\tend\n\treturn 10\nend\n```\n\n**`typeof` vs `type`.** `type` returns `\"userdata\"` for Roblox values like `Vector3` and `Instance`, while `typeof` returns the Roblox type name. Both refine, but `typeof` is the one to use for Roblox types.\n\n**Limits to watch:**\n- Narrowing applies to local variables and parameters. Refinements can be lost after a function call that might reassign a captured upvalue, so copy to a local first when that matters.\n- Refinement is per branch. Don't assume a narrowed type persists into a closure defined inside the branch if the variable is reassigned later.\n\nI haven't run any of these snippets through `luau-analyze` or the project's checks, so treat the examples as illustrative until you run them in your setup.",
+ "cost": 0.00259617,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8199,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1729,
+  "output_tokens_details": {
+   "thinking_tokens": 767
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1729,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

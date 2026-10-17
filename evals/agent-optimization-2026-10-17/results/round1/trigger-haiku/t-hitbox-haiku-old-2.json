@@ -1,0 +1,77 @@
+{
+ "id": "t-hitbox",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\t-hitbox-haiku-old-2\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "(?i)hitbox|raycast|spherecast|blockcast|GetPartBoundsInBox|GetPartBoundsInRadius|workspace:Raycast"
+  ]
+ ],
+ "denials": [],
+ "result": "**Recommendation: write it yourself with Roblox's built-in queries.** I didn't find a hitbox library in this project's catalog, so there's no library skill to clone and nothing to install.\n\n- **Your project has no hitbox code yet**, and `pesde.toml` declares only Charm, Janitor and Vide. Nothing you already depend on covers this.\n- **Built-in APIs cover most cases.** `workspace:Raycast` handles instant hit checks, `Spherecast`/`Blockcast` handle thick or moving shapes like melee swings, and `GetPartBoundsInRadius`/`GetPartBoundsInBox` handle \"what's near this point\" checks such as coin pickup. Use `Touched` only for simple pickups, since it misses fast-moving parts.\n- **Community hitbox modules** would mostly wrap these same calls. I didn't check any current module's maintenance or API, so I can't vouch for one. Treat any module as unverified until you read its source and test it in Studio.\n- **Keep hit detection on the server.** Clients can send the request, but the server should run the cast and decide the hit, using the player's position and a time limit to block cheating.\n\nTo give a firmer answer, I need to know what the hitboxes are for: **melee attacks, projectiles, coin pickup, or something else?** If it's many moving hit volumes that need per-part tracking, a library becomes more worth considering.\n\nThis was an evaluation only. I made no changes to the project and installed nothing. I ran the once-per-session update check, but its output didn't come through, so I haven't confirmed whether any library in the catalog has a newer release.",
+ "cost": 0.0037981700000000005,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11570,
+  "cache_read_input_tokens": 46507,
+  "output_tokens": 2037,
+  "output_tokens_details": {
+   "thinking_tokens": 1017
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11570,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1218,
+    "cache_read_input_tokens": 19966,
+    "cache_creation_input_tokens": 771,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 771
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

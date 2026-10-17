@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau uses `typeof` checks to **refine** a variable's type. Inside a branch where the check passed, the type checker treats the variable as the narrower type, so you can use type-specific operations without casts.\n\n## The basic idea\n\nTake a value that could be one of several types:\n\n```luau\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"string\" then\n\t\t-- value is `string` here, so string methods type-check\n\t\treturn value:upper()\n\telseif typeof(value) == \"number\" then\n\t\t-- value is `number` here\n\t\treturn tostring(value * 2)\n\telse\n\t\t-- value is `nil` here\n\t\treturn \"nothing\"\n\tend\nend\n```\n\nWithout the checks, `value:upper()` and `value * 2` would be errors, because the union might not contain a string or number.\n\n## Early-return guards\n\nRefinement also works after an early return. The rest of the function sees the narrowed type:\n\n```luau\nlocal function greet(name: string?): string\n\tif typeof(name) ~= \"string\" then\n\t\treturn \"Hello, stranger\"\n\tend\n\n\t-- name is `string` for the rest of the function\n\treturn \"Hello, \" .. name\nend\n```\n\nThis is the most common pattern for validating input at the top of a function.\n\n## Inside expressions\n\nRefinement applies to `and` and `or` expressions too:\n\n```luau\nlocal function toNumber(input: string | number): number\n\treturn if typeof(input) == \"number\" then input else tonumber(input) or 0\nend\n```\n\n## `type` vs `typeof`\n\nBoth refine, but they differ in what they return for Roblox types:\n\n- `type(v)` returns Lua's basic types. `Vector3` values report `\"userdata\"`.\n- `typeof(v)` returns Roblox-aware names. `Vector3` values report `\"Vector3\"`, and Instances report `\"Instance\"`.\n\nUse `typeof` in Roblox code unless you specifically need Lua's `type`.\n\n## Instances need `IsA`\n\n`typeof(x) == \"Instance\"` narrows to a general `Instance`, not to a specific class. To get `Part` or `Model` methods, check the class:\n\n```luau\nlocal function moveIfPart(target: Instance)\n\tif target:IsA(\"BasePart\") then\n\t\t-- target is narrowed to BasePart here\n\t\ttarget.Anchored = false\n\tend\nend\n```\n\n## Things to watch for\n\n- **Refinements last only within their scope.** If you reassign the variable, the refinement no longer applies and the type returns to the declared union.\n- **Truthiness also refines.** `if value then` removes `nil` (and `false`) from an optional type, but it does not tell you which non-nil type you have. Use `typeof` when the union has several non-nil members.\n- **Declare the union honestly.** Refinement only helps when the annotation includes the types you check for. If you annotate `value: any`, every branch just gives you `any` back.\n\nIf you have a specific function or type error you're working through, paste it and I can show how the refinement would narrow it.",
+ "cost": 0.00294707,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8301,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2390,
+  "output_tokens_details": {
+   "thinking_tokens": 1436
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8301,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2390,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8301,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8301
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

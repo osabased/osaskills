@@ -1,0 +1,89 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ],
+  [
+   "structure-roblox-projects/references/migration.md",
+   4136
+  ],
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\q-studioonly-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-studioonly-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\migration.md"
+  ],
+  [
+   "Read",
+   "<runs>\\q-studioonly-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ]
+ ],
+ "denials": [],
+ "result": "**What I think you want:** rename `GiveCoins` to `AwardCoins` in `ServerScriptService.Rewards`, and update every caller so nothing still calls the old name. I'm assuming this is a pure rename with no behavior change, and that `GiveCoins` shouldn't stay as an alias. Tell me if you want an alias kept for a while.\n\nI couldn't call the MCP from here, so none of this has been run. The tool names come from the project's Studio-only guidance. I'd list the server's tools first and adjust if any name differs.\n\n## Plan\n\n**0. Setup and safety**\n1. `list_roblox_studios`: find the window for place ID 1234567890 and use its `studio_id` for every later call. Two windows can share a name.\n2. Ask you to save a version first (**File > Save to Roblox with Notes**). The place has no Git, and Team Create's Live Scripting pushes each edit to your two collaborators within seconds. That version is the only way back.\n3. Ask you to tell your collaborators about the rename. Their open scripts could reintroduce the old name.\n4. Make sure Studio is in Edit mode, not a play-test, because edits made during a play-test are discarded.\n\n**1. Find the definition**\n5. `search_game_tree` for `ServerScriptService.Rewards`, to confirm its path and class.\n6. `script_read` on it. I'd check how `GiveCoins` is defined (`function Rewards.GiveCoins`, `Rewards:GiveCoins` or `Rewards.GiveCoins = ...`) and what else the module does with the name. That covers its own internal calls, exported type annotations and comments.\n\n**2. Find every caller**\n7. `script_grep` across the whole place for `GiveCoins`, case-sensitive, with no path filter. This is the caller list.\n8. Look for references a plain name search can miss:\n   - String or dynamic access, such as `Rewards[\"GiveCoins\"]`, `require(...)[name]` or a table of handler names.\n   - Aliases that copy the function, such as `local give = Rewards.GiveCoins`. The grep finds these, but I'd follow where the alias is used.\n   - A RemoteEvent, RemoteFunction or BindableEvent that happens to be named `GiveCoins`. `search_game_tree` finds these, since grep reads only script source. They are separate from the function, so I'd leave them alone unless you say otherwise.\n   - Attributes or tags holding the name, via `inspect_instance` on suspicious instances.\n   - Other scripts that `require` Rewards under a different local name. I'd grep for `require(...Rewards)` to catch these.\n9. Sort the hits into real callers, comments or strings, and unrelated matches such as a different module's `GiveCoins`. I'd show you that list before editing.\n\n**3. Edit**\n10. For each script, `script_read` just before the edit, because collaborators may have changed it. Then `multi_edit` with exact old and new strings, which fails if the text doesn't match.\n11. Edit the definition in `Rewards` and every real caller, batched per script. I'd check each path before editing, since `multi_edit` creates a script if the path doesn't exist and a typo would add a stray one.\n12. Leave unrelated matches and any separate Remote names alone.\n\n**4. Confirm it worked**\n1. **Static check:** `script_grep` for `GiveCoins` again. The expected result is zero hits, except any I deliberately left, which I'd list. Then `script_grep` for `AwardCoins` and compare the count with the definition plus caller list.\n2. **Live source check:** `execute_luau` in Edit mode to read `Rewards.Source` and confirm Studio holds the new name. This also proves I'm editing the live place, not a stale copy.\n3. **Runtime check:** `execute_luau` in Edit mode to check that `require(Rewards).AwardCoins` is a function and `GiveCoins` is `nil`.\n4. **Play-test:** `start_stop_play`, then trigger the path that awards coins, such as a kill or pickup. I'd use `user_mouse_input` if it goes through UI, or whatever the game does naturally. Then `get_console_output` on the Server and Client. I'd look for \"attempt to call a nil value\" or an unknown-member error mentioning `GiveCoins`. I wouldn't `require` the game's modules from `execute_luau` during Play, since that creates a second copy with its own state. I'd stop only the session I started.\n5. **Report:** I'd say exactly which of these ran. The place has no check command, linter or Script Analysis through the MCP, so the static type-check rung would be reported as not run. If a caller sits on a path I couldn't trigger, such as a rare event, I'd name it as untested instead of calling the rename verified.\n\n**Rollback:** if something breaks and can't be fixed forward, restore the version you saved in step 2. Restoring creates a new version and doesn't publish it.\n\nDo you want any of these handled differently: keep a temporary `GiveCoins` alias, include a same-named Remote in the rename, or skip the play-test?",
+ "cost": 0.09451309999999999,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15872,
+  "cache_read_input_tokens": 47831,
+  "output_tokens": 2623,
+  "output_tokens_details": {
+   "thinking_tokens": 483
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15872,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2024,
+    "cache_read_input_tokens": 20521,
+    "cache_creation_input_tokens": 5102,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5102
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

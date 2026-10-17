@@ -1,0 +1,92 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't changed anything yet, because I can't find the DataStore name in this project.\n\n**What I found:** This is a small Roblox project (`arena`). `src/server/init.server.luau` only prints `\"server\"`, `src/shared/init.luau` returns `{}`, and `src/client/init.client.luau` only prints `\"client\"`. Nothing in the repo calls `DataStoreService` or defines a store name. The only DataStore mentions are in the skill docs.\n\n**What I think you want:** a check that fails whenever the DataStore name differs from a recorded value, so changing it has to be a deliberate, two-place edit. The project has no check script yet, so I'd create one.\n\nI need a few answers first:\n\n1. **What is the DataStore name, and where should it live?** Recommended: a new `src/server/Data/Config.luau` that returns the name, plus the same literal in the guard script. If the DataStore already exists in another project or branch, tell me where and I'll read the name from there.\n2. **Should the guard also fail at runtime?** Recommended: no. The check script and CI are enough, and a runtime assert would only run in Studio or live servers. Say yes if you also want a runtime assert in the server code.\n3. **Which check should fail?** Recommended: a `scripts/check` script (bash, run through Git Bash on Windows) that compares the name against the recorded literal and fails with a message naming the file and how to change it on purpose. I'd also wire it into a Claude Code `Stop` hook and CI. Say no if you only want the script.\n\nOnce you answer, I'll add the config module, the guard, and a check that fails when the name changes. I'll also run it once with a deliberate change to confirm it fails, then revert.",
+ "cost": 0.00497135,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16057,
+  "cache_read_input_tokens": 48635,
+  "output_tokens": 2546,
+  "output_tokens_details": {
+   "thinking_tokens": 1107
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16057,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1332,
+    "cache_read_input_tokens": 22005,
+    "cache_creation_input_tokens": 3219,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3219
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

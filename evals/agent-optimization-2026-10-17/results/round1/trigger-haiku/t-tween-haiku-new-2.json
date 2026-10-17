@@ -1,0 +1,83 @@
+{
+ "id": "t-tween",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,server.luau,client.luau,json,toml}"
+  ],
+  [
+   "Grep",
+   "ScreenGui|TweenService|Frame|vide\\.create|TextLabel"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-2\\src\\client\\UI\\App.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-2\\src\\client\\UI\\CoinLabel.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-tween-haiku-new-2\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "I found the GUI: it's the `HUD` ScreenGui in `src/client/UI/App.luau`, which contains one `Coins` TextLabel (`src/client/UI/CoinLabel.luau`). Here's what I understand you want: when the HUD mounts, it fades in with TweenService, going from invisible to its normal appearance.\n\nOne detail shapes the implementation: a ScreenGui has no transparency property of its own, so the tween has to run on the label's `BackgroundTransparency` and `TextTransparency`. Any future children would need the same treatment.\n\nBefore I write it, I need your call on the parts that change how it looks. Per your CLAUDE.md, I'll wait for your answers:\n\n1. **Duration:** 0.5 seconds (recommended), or something else?\n2. **Easing:** `Quad` with `Out` (recommended), `Linear`, or another style?\n3. **Start delay:** none (recommended), or a short pause after mount before the fade begins?\n4. **Scope:** fade only the Coins label, which is the only element right now (recommended), or the whole HUD including anything added later?\n5. **Trigger:** fade once on mount (recommended), or also replay it when the HUD is shown again?\n\nReply with \"recommended\" to accept all five, or give the numbers you want changed. Once I have your answers, I'll write the code and run `bash scripts/check.sh`.",
+ "cost": 0.0037665300000000006,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10776,
+  "cache_read_input_tokens": 45423,
+  "output_tokens": 2313,
+  "output_tokens_details": {
+   "thinking_tokens": 1343
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10776,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1554,
+    "cache_read_input_tokens": 18962,
+    "cache_creation_input_tokens": 981,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 981
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

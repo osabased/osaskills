@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "# Type refinement with `typeof` in Luau\n\nRefinement means the type checker narrows a variable's type inside a branch, based on a condition you've tested. A `typeof(x) == \"...\"` check is one of the main ways to trigger it.\n\n## Basic example\n\n```luau\nlocal function describe(value: string | number | nil)\n    if typeof(value) == \"string\" then\n        return value:upper()       -- value: string\n    elseif typeof(value) == \"number\" then\n        return value + 1           -- value: number\n    else\n        return \"nothing\"           -- value: nil\n    end\nend\n```\n\nInside each branch, the union is cut down to the members that could pass the test. The `else` branch gets whatever is left over.\n\n## What it narrows\n\n- **Primitives:** `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"function\"`, `\"table\"`, `\"thread\"`, `\"buffer\"`, `\"userdata\"`.\n- **Roblox types:** `\"Vector3\"`, `\"CFrame\"`, `\"Instance\"`, `\"EnumItem\"` and so on. This is the main reason to prefer `typeof` over `type`. `type(v3)` returns just `\"userdata\"`, while `typeof(v3)` returns `\"Vector3\"`.\n\n```luau\nlocal function move(target: Vector3 | CFrame | BasePart)\n    if typeof(target) == \"Vector3\" then\n        return target\n    elseif typeof(target) == \"CFrame\" then\n        return target.Position\n    else\n        return target.Position     -- target: BasePart\n    end\nend\n```\n\n## Other ways to refine\n\n```luau\nif x then end                      -- truthiness: removes nil and false\nif x ~= nil then end               -- removes nil\nif typeof(x) ~= \"string\" then\n    return                         -- early exit\nend\n-- x is string from here on\n\nassert(typeof(x) == \"number\")      -- refines for the rest of the scope\n```\n\nEarly returns, `error()` and `assert` all narrow the code that follows.\n\nFor Roblox class hierarchies, `typeof(x) == \"Instance\"` only gets you to `Instance`. To narrow further, use `x:IsA(\"BasePart\")`, which the checker also understands as a refinement.\n\n## Gotchas\n\n- **The comparison must be a string literal.** `typeof(x) == kind`, where `kind` is a variable, doesn't refine.\n- **The call has to be inline.** `local t = typeof(x); if t == \"string\" then` won't narrow `x`.\n- **Refinements are invalidated by reassignment.** Assigning to the variable resets its type. Refinements on table fields like `self.value` are fragile too, so copy to a local first: `local v = self.value`.\n- **`any` isn't narrowed in a useful way.** Refining `any` with `typeof` gives you the tested type inside the branch, but nothing is checked on the way in. Use a real union type where you can.\n- **Closures don't inherit refinements.** If you refine a mutable local and then capture it in a function, the checker may treat it as the declared type inside the closure. Bind the refined value to a new `local` first.\n\n## Pattern: validating untrusted input\n\nThis works well for remote arguments, where the values arrive as `unknown`:\n\n```luau\nremote.OnServerEvent:Connect(function(player, amount: unknown)\n    if typeof(amount) ~= \"number\" then\n        return\n    end\n    -- amount: number\n    giveCoins(player, math.clamp(amount, 0, 100))\nend)\n```\n\nTyping the parameter as `unknown` forces you to refine it before use, which the checker enforces.",
+ "cost": 0.0470627,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7583,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1581,
+  "output_tokens_details": {
+   "thinking_tokens": 403
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7583,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1581,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7583,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7583
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

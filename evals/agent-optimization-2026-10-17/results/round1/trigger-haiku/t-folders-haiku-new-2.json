@@ -1,0 +1,98 @@
+{
+ "id": "t-folders",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "src/**/*"
+  ],
+  [
+   "Glob",
+   "*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-folders-haiku-new-2\\src\\server\\init.server.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "Here's how I'd lay out a new game, using this repo's current layout as the base. I'm reading \"new game\" as a layout guide for future work, not a change to existing files. Nothing in the repo changed.\n\n```text\nReplicatedStorage/\n  Shared/     types, constants, pure logic both sides run (Signal lives here)\n  Client/     client entrypoint (init.client.luau) + UI/, State/\n  Remotes/    RemoteEvents/RemoteFunctions, once the game needs them\n  Packages/   packages (roblox_packages)\nServerScriptService/\n  Server/     server entrypoint (init.server.luau) + Coins, Round, domain modules\nServerStorage/\n  Assets/     server-only templates and models\nReplicatedFirst/  only if you add a loading screen\n```\n\nWhy it's shaped this way:\n\n- **One entrypoint per runtime.** `Client` and `Server` each have one startup script, so you can see what starts and in what order. Feature modules get required from there.\n- **Client code can sit in `ReplicatedStorage`.** With `emitLegacyScripts: false` (already set in `default.project.json`), `init.client.luau` builds as a `Script` with `RunContext = Client`, so it runs from `ReplicatedStorage`. A `LocalScript` placed there would never run.\n- **Secrets and authority stay server-side.** DataStores, purchases, and validation go in `ServerScriptService` or `ServerStorage`. Anything in `ReplicatedStorage` is readable by clients, including module source.\n- **Remotes get their own folder.** Every client-to-server remote needs server-side checks on type, range, ownership, and rate. A named folder makes those easy to find and review.\n- **Shared modules stay pure.** Types, constants, and logic both sides run go in `Shared`. Don't require server modules from the client, or the reverse.\n\nGrowing the layout: keep the runtime-layer style (flat `Server/` and `Client/`) while the game is small. Switch to feature folders (`Server/Combat`, `Client/Combat`, `Shared/Combat`) once a few features each have several modules. Pick one style and keep it, so new code follows the pattern already there.\n\nTwo things to decide before you build it out:\n\n1. Is this layout for this repo, or a separate project? If it's separate, I'd scaffold it with the same Rojo setup.\n2. Does the game need a loading screen? That decides whether `ReplicatedFirst` is worth adding.",
+ "cost": 0.00492581,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14827,
+  "cache_read_input_tokens": 47081,
+  "output_tokens": 2978,
+  "output_tokens_details": {
+   "thinking_tokens": 1567
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14827,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2002,
+    "cache_read_input_tokens": 20610,
+    "cache_creation_input_tokens": 3384,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3384
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

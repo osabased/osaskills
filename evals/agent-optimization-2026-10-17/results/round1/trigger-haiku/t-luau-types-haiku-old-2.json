@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a value's type inside a branch that checks it with `typeof`. Outside that branch, the value keeps its declared type.\n\n```luau\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"number\" then\n\t\treturn `number: {value * 2}` -- value is number here, so arithmetic type-checks\n\telseif typeof(value) == \"string\" then\n\t\treturn `string: {value:upper()}` -- value is string here\n\tend\n\treturn \"nothing\" -- value is nil here\nend\n```\n\nWithout the checks, `value * 2` and `value:upper()` would be errors, because the type of `value` is the union `string | number | nil`.\n\n**Where refinement applies**\n\n- **`if` / `elseif` / `else`:** each branch sees the narrowed type. The `else` branch sees the type with the checked cases removed.\n- **Early return:** narrowing persists for the rest of the function after a guard clause.\n  ```luau\n  local function parse(input: unknown): number?\n  \tif typeof(input) ~= \"string\" then\n  \t\treturn nil\n  \tend\n  \treturn tonumber(input) -- input is string from here on\n  end\n  ```\n- **`and` / `or` expressions:** the right side of `and` sees the narrowed type.\n  ```luau\n  local name = typeof(data) == \"table\" and data.Name or \"unknown\"\n  ```\n- **`unknown`:** `typeof` is the usual way to make an `unknown` value usable. Using it before a check is an error.\n\n**`typeof` vs `type`**\n\n- `type(x)` returns Lua's basic type names: `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"userdata\"`.\n- `typeof(x)` returns Roblox's names, such as `\"Instance\"`, `\"Vector3\"`, `\"CFrame\"`, `\"EnumItem\"`, and `\"RBXScriptConnection\"`.\n\nBoth narrow in Luau. Use `typeof` in Roblox code so that Roblox types are distinguishable from one another. `type` reports all of them as `\"userdata\"`.\n\n**Limits**\n\n- **Instances:** `typeof(x) == \"Instance\"` narrows to `Instance`, but it does not narrow to `BasePart` or `Model`. Checking `x:IsA(\"BasePart\")` at runtime is correct, but the static type stays `Instance`. You then need a cast, such as `(x :: BasePart).Anchored`, or a typed helper that returns the subclass.\n- **Tables:** `typeof(x) == \"table\"` only narrows to \"some table\". It does not tell you the table's shape. Use an explicit type for the table, or a guard function, to narrow further.\n- **Mutable state:** narrowing applies to locals and to property access in the current flow. If a function call or reassignment could change the value, don't rely on an earlier check still holding. Re-check or store the value in a local.\n\nIf you have a specific function that is producing type errors after a `typeof` check, paste it and I'll look at why the narrowing isn't taking effect.",
+ "cost": 0.0029016700000000003,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8199,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2340,
+  "output_tokens_details": {
+   "thinking_tokens": 1329
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2340,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

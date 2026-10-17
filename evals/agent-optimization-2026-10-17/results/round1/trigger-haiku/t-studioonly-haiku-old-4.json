@@ -1,0 +1,78 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Bash",
+   "python \"<runs>\\t-studioonly-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\scripts\\check_updates.py\""
+  ]
+ ],
+ "denials": [],
+ "result": "You want Claude to edit the game's Studio-only scripts through the Studio MCP without leaving them open to a bad edit, a stray script, or a teammate's surprise. Here's how I'd set it up.\n\n**Recommended: move the code to Script Sync first.** It gives you files, so you get Git history, diffs, and a place for checks. Roblox describes it as an extra feature for existing places, so the place stays the same. In Studio:\n\n1. Check scripts for attributes and tags before changing anything, since Script Sync can change how they behave.\n2. Sync the code folders to new, empty directories inside one Git repo.\n3. Commit the synced state as your baseline.\n\nOnce that's done, Claude can work from files, and you can review every change with `git diff` before it's published.\n\n**If the place must stay Studio-only**, these rules keep the risk down:\n\n- **Keep the guide local.** Put `CLAUDE.md` and a short project guide in a folder Claude starts in, with the place name and ID. Pass the `studio_id` from `list_roblox_studios` so it doesn't edit the wrong Studio window.\n- **Checkpoint before big edits.** Ask a teammate to run **File > Save to Roblox with Notes** first. Restoring from **View Script History** creates a new version and doesn't publish, so it's reversible.\n- **Watch for live edits.** Team Create's Live Scripting pushes each edit to your two collaborators within seconds. Either tell them before an edit session or ask whether to turn on Drafts mode. I don't know how MCP edits behave under Drafts, so don't rely on it without testing.\n- **Check paths.** `multi_edit` creates a script if the path doesn't exist, so a typo adds a stray script.\n- **Edit in Edit mode.** Changes made during a play-test are discarded when it stops.\n- **No static checks.** Without files there's no formatter, linter, or type check, so every change is verified only by reading it and by play-testing.\n\n**Rules for the code itself**, whichever route you take:\n\n- Put secrets, DataStore logic, purchases, and authoritative state in `ServerScriptService` or `ServerStorage`. Everything in `ReplicatedStorage` and `ReplicatedFirst` reaches clients.\n- Validate every client-to-server payload on the server.\n- A `LocalScript` only runs under a player or in `ReplicatedFirst`. Putting one in `ReplicatedStorage` means it never runs.\n\nI couldn't run the skill's update check because the Bash tool is disabled in this session. That doesn't affect the advice above.\n\nDo you want to go with Script Sync? If so, I can write the project guide and the pre-sync checklist next. Otherwise I'll write the local-only version of the guide.",
+ "cost": 0.00439975,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13748,
+  "cache_read_input_tokens": 47905,
+  "output_tokens": 2341,
+  "output_tokens_details": {
+   "thinking_tokens": 1023
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13748,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1491,
+    "cache_read_input_tokens": 21008,
+    "cache_creation_input_tokens": 1907,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1907
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

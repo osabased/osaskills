@@ -1,0 +1,102 @@
+{
+ "id": "t-remote",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{lua,luau,json,blink,toml}"
+  ],
+  [
+   "Grep",
+   "(?i)(shop|purchase|remoteevent|RemoteEvent|MarketplaceService)"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-2\\src\\shared\\init.luau"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-remote-haiku-old-2\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ]
+ ],
+ "denials": [],
+ "result": "There's no shop code in the repo yet. The project is a Rojo project (`arena`) with three mapped folders, so this answer is based on the layout and the Roblox guidance, not existing shop code.\n\n**Where the RemoteEvents go**\n\nPut them in a dedicated `Remotes` folder under `ReplicatedStorage`, which both sides can see. Map it in `default.project.json`:\n\n```json\n\"Remotes\": { \"$path\": \"src/remotes\" }\n```\n\nThen declare each event as a `src/remotes/PurchaseItem.model.json` file (`className: \"RemoteEvent\"`), so the events are versioned and created the same way on every run. The client should `WaitForChild` them, and the server owns the handler.\n\nDon't put the purchase handler anywhere a client can run it. It belongs in `ServerScriptService/Server`, for example `src/server/Shop.luau`, required from the server entrypoint.\n\n**One existing problem to fix first**\n\n`src/client/init.client.luau` is mapped to `ReplicatedStorage/Client`. Rojo 7 builds `*.client.luau` as a `LocalScript` by default, and a `LocalScript` in `ReplicatedStorage` never runs. Either set `\"emitLegacyScripts\": false` in the project file (so it becomes a `Script` with `RunContext = Client`, which runs from `ReplicatedStorage`), or move the client entrypoint to `StarterPlayerScripts`. I haven't changed anything.\n\n**How the server should validate purchases**\n\n1. Never trust the client's price, item data or currency. The client sends only an item ID; the server looks it up in its own catalog.\n2. Type-check the payload and reject unknown IDs.\n3. Check ownership, funds and any level or stock requirements against server-side state.\n4. Deduct currency and grant the item in one synchronous block, with no yield between the check and the change, so two requests can't both spend the same balance.\n5. Rate-limit each player's purchase requests.\n6. Use the `Player` argument from the event, never a player ID sent in the payload.\n7. Send the result back to the client, and let the UI update from server state.\n8. For Robux purchases, don't trust `PromptProductPurchaseFinished` on the client. Grant items in `MarketplaceService.ProcessReceipt` on the server, keyed by the receipt's purchase ID so a retry doesn't grant twice.\n\n**Questions before I build this**\n\n1. Is the shop paid in in-game currency, Robux (developer products), gamepasses, or a mix? This decides whether item 8 applies.\n2. Are items stackable, or can a player own each one only once?\n3. Should the catalog (names, prices, descriptions) live in `src/shared` so the client can display it? My recommendation: yes, with the server re-reading prices from that same table, so the client can display them but never sends them.\n4. Should I also fix the client entrypoint issue above?",
+ "cost": 0.00586104,
+ "turns": 11,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15887,
+  "cache_read_input_tokens": 48154,
+  "output_tokens": 4403,
+  "output_tokens_details": {
+   "thinking_tokens": 2491
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15887,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3085,
+    "cache_read_input_tokens": 21454,
+    "cache_creation_input_tokens": 3600,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3600
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

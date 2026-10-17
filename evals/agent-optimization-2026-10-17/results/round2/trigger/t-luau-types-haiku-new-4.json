@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a union type inside a branch when you check it with `typeof`. The checker then treats the variable as the narrower type in that branch, so you can use type-specific operations without casting.\n\n```lua\ntype Input = string | number | nil\n\nlocal function describe(value: Input): string\n\tif typeof(value) == \"string\" then\n\t\t-- value is string here, so string methods type-check\n\t\treturn value:upper()\n\telseif typeof(value) == \"number\" then\n\t\t-- value is number here\n\t\treturn string.format(\"%.2f\", value)\n\telse\n\t\t-- value is nil here\n\t\treturn \"none\"\n\tend\nend\n```\n\nThings to know:\n\n- **Use `typeof` for primitives, and `type` for the rest.** `typeof` is Roblox's version and returns `\"Instance\"` for instances, where `type` returns `\"userdata\"`. The refinement works with either check, but `typeof` is the usual choice in Roblox code.\n- **Refinement also works after an early return.** If a branch returns or errors, the code after it sees the narrowed type:\n  ```lua\n  local function scale(value: number | string): number\n  \tif typeof(value) ~= \"number\" then\n  \t\tvalue = tonumber(value) or 0\n  \tend\n  \treturn value * 2 -- value is number on every path here\n  end\n  ```\n- **Narrowing works with `and`, `or`, and `not`.** `typeof(x) == \"table\" and x.Name` is safe because `x.Name` is only evaluated when `x` is a table.\n- **Instances need a second check.** `typeof(x) == \"Instance\"` narrows to `Instance`, but the checker does not narrow on `x:IsA(\"BasePart\")`. Add a cast after the check:\n  ```lua\n  if typeof(obj) == \"Instance\" and obj:IsA(\"BasePart\") then\n  \tlocal part = obj :: BasePart\n  \tpart.Anchored = true\n  end\n  ```\n- **Narrowing is per-path and resets on reassignment.** If you assign a new value of a wider type to the variable, the narrowing no longer applies.\n\nIf you want, I can look at a specific file in `coin-run` where a union type is being checked and show where refinement would or would not apply.",
+ "cost": 0.00250257,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8141,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1565,
+  "output_tokens_details": {
+   "thinking_tokens": 865
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8141,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1565,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8141,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8141
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

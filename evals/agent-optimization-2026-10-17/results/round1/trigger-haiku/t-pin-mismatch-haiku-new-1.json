@@ -1,0 +1,71 @@
+{
+ "id": "t-pin-mismatch",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "janitor"
+  ],
+  [
+   "Glob",
+   "**/{pesde.toml,pesde.lock,*.lock}"
+  ]
+ ],
+ "denials": [],
+ "result": "The skill is pinned to Janitor 1.18.3, but your project is on 1.17.0. I checked both files and they agree with each other:\n\n- `pesde.toml:16` declares `Janitor = { wally = \"howmanysmall/janitor\", version = \"=1.17.0\" }`\n- `pesde.lock:21-22` resolves it to `wally#howmanysmall/janitor@1.17.0`\n\nSo the mismatch is between the skill and the project, not inside the project. Nothing is broken yet, but the skill's API notes may not match what 1.17.0 actually does.\n\nWhat I'd do:\n\n1. **Keep the pin at 1.17.0.** Don't change `pesde.toml` to fit the skill.\n2. **Use Janitor only through API I can confirm at 1.17.0.** Before relying on a specific behavior, such as how `Add` handles custom objects or how `Destroy` behaves, I'd check the 1.17.0 source rather than trust the skill. Until the package is installed locally, I can't read that source.\n3. **Stop where a task depends on behavior that might differ.** I'd tell you before going ahead in those cases.\n\nYour choice, since it's a dependency decision:\n\n- **A (recommended): stay on 1.17.0.** I follow the 1.17.0 source and treat the skill as advisory. This is the lowest-risk option.\n- **B: upgrade to 1.18.3.** I'd use the `roblox-resource-acquisition` upgrade flow, which changes `pesde.toml` and `pesde.lock` and needs a `scripts/check.sh` run afterward. It's your call whether 1.18.3 is worth the churn.\n\nWhich do you want? I haven't changed anything yet.",
+ "cost": 0.00343273,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 11704,
+  "cache_read_input_tokens": 26503,
+  "output_tokens": 1653,
+  "output_tokens_details": {
+   "thinking_tokens": 729
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11704,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 873,
+    "cache_read_input_tokens": 17336,
+    "cache_creation_input_tokens": 3535,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3535
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

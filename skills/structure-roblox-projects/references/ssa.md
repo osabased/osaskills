@@ -2,6 +2,16 @@
 
 A fixed compatibility contract for projects that deliberately use Single Script Architecture on ModuleLoader 4.0.0. It is not a default for new projects. Recognize it by a `Server/` or `Client/` root whose entrypoint calls `ModuleLoader.Start(...)` on that root; then confirm the loader's actual identity, version and configuration before relying on the rules below, since a matching call alone doesn't prove this version. Feature work reads the feature contract; changing the loader, entrypoints, discovery settings or pin is infrastructure work and reads the rest.
 
+## Contents
+
+- [Feature contract](#feature-contract)
+- [Loader pin](#loader-pin)
+- [Resulting DataModel and bootstrap](#resulting-datamodel-and-bootstrap)
+- [Failure semantics](#failure-semantics)
+- [Validation](#validation)
+- [Migration and upgrade](#migration-and-upgrade), including [3.0.4 to 4.0.0](#from-304-to-400)
+- [Pinned evidence](#pinned-evidence)
+
 ## Feature contract
 
 | Boundary | Under | Holds |

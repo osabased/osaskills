@@ -1,0 +1,71 @@
+{
+ "id": "t-neg-tween",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{lua,luau,rbxmx,rbxlx,json}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-sonnet-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-sonnet-new-1\\default.project.json"
+  ]
+ ],
+ "denials": [],
+ "result": "I couldn't find a GUI in this project. `src/client/init.client.luau` only contains `print(\"client\")`, and there are no ScreenGui definitions or `.rbxmx` files. If the GUI is in Studio only, I can't see it from here.\n\nBefore I write anything, I need a few answers:\n\n1. **Which GUI should fade in?** Either tell me its name and where it lives (for example, `PlayerGui.MainMenu`), or paste its hierarchy. If you want me to build a placeholder GUI, say so.\n2. **How should the fade work?** I recommend a `CanvasGroup` root. One tween on `GroupTransparency` fades every child together. The alternative is to tween each element's `BackgroundTransparency`, `TextTransparency` and `ImageTransparency` separately. That works with a plain `Frame` but takes more code.\n3. **What timing and easing do you want?** I recommend 0.4s with `Enum.EasingStyle.Quad` and `Enum.EasingDirection.Out`. I need to know if you want something different.\n4. **When should it fade in?** I recommend as soon as the client script runs. Other options are on a button press or on a remote event.\n\nI'll put the code in `src/client/init.client.luau` unless you want a separate module.",
+ "cost": 0.0462043,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8455,
+  "cache_read_input_tokens": 43023,
+  "output_tokens": 807,
+  "output_tokens_details": {
+   "thinking_tokens": 88
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8455,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 463,
+    "cache_read_input_tokens": 17163,
+    "cache_creation_input_tokens": 459,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 459
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

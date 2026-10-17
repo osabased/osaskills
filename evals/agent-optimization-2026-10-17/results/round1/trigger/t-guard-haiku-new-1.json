@@ -1,0 +1,92 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStoreService|GetDataStore|DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't changed anything yet, because I can't build this guard from what's in the repo.\n\n**What I think you want:** a check that fails whenever the DataStore name literal changes from its current value, so a change is deliberate and not accidental.\n\n**What I found:**\n- No DataStore code exists yet. `src/` has only placeholder files (`print(\"server\")`, `print(\"client\")`, `return {}`), and nothing references `DataStoreService` or a store name.\n- There's no check script, `scripts/` folder, or CI config to hang a guard on.\n\nSo the guard needs a name to pin, and the name isn't in this repo. Please answer these, with my recommendation first:\n\n1. **What is the exact DataStore name?** If the game is live, it must match what existing player data was saved under. Also tell me whether a DataStore module already exists elsewhere (another branch, or a Studio-only place) that I should move into this repo.\n2. **Where should the name live?** I recommend a server-only module, `ServerScriptService/Server/DataStoreConfig.luau`, that returns the name as a constant. DataStores belong on the server, and this keeps the name out of replicated containers.\n3. **How should the guard be enforced?** I recommend a guard step in a new `scripts/check.sh`, run by a git `pre-push` hook and CI, so it catches humans and agents alike. It compares the name in the config module against a copy pinned in the script, and fails with a message saying to change both on purpose. The alternative is a runtime `assert` in Studio, which only catches the problem during play-testing, not at commit time. Creating `check.sh` and the hook is a bigger change than the guard itself. Do you want that, or just the guard script?\n\nOnce you give me the name and pick options 2 and 3 (or your own), I'll make the changes and break-test the guard once, as the project's checks reference recommends.",
+ "cost": 0.00512265,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15973,
+  "cache_read_input_tokens": 48545,
+  "output_tokens": 2884,
+  "output_tokens_details": {
+   "thinking_tokens": 1363
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15973,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1746,
+    "cache_read_input_tokens": 21923,
+    "cache_creation_input_tokens": 3217,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3217
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

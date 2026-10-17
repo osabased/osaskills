@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a variable's type inside a branch that checks `typeof`. The declared type is `string | number`, and the checker treats it as `string` in the `string` branch and as `number` in the `number` branch.\n\n```lua\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper() -- value: string\n\telseif typeof(value) == \"number\" then\n\t\treturn tostring(value * 2) -- value: number\n\tend\n\treturn \"none\" -- value: nil\nend\n```\n\n**Early returns narrow the rest of the function.** After a guard that returns or errors, the checker knows the remaining code only sees the values that passed:\n\n```lua\nlocal function parse(input: string | number): number\n\tif typeof(input) == \"number\" then\n\t\treturn input\n\tend\n\t-- input: string from here on\n\treturn tonumber(input) or 0\nend\n```\n\n**Conditions combine.** `and`, `or`, and `not` narrow as you'd expect:\n\n```lua\nif typeof(value) == \"number\" and value > 0 then\n\t-- value: number, and safe to compare\nend\n```\n\n**`typeof` vs `type`.** `type` returns the basic Lua type (`\"userdata\"` for Roblox values). `typeof` returns the Roblox type name (`\"Vector3\"`, `\"CFrame\"`, `\"Instance\"`). Both are understood by the checker, but `typeof` is what you usually want in Roblox code.\n\n**Instances need a second check.** `typeof(x)` returns `\"Instance\"` for every Instance, so it can't tell a Part from a Script. The checker doesn't narrow on `IsA`, so you typically cast after the check:\n\n```lua\nif typeof(obj) == \"Instance\" and obj:IsA(\"BasePart\") then\n\tlocal part = obj :: BasePart\n\tpart.Anchored = true\nend\n```\n\n**Tagged unions narrow on equality.** For tables with a discriminator field, comparing that field refines the table type:\n\n```lua\ntype Ok = { kind: \"ok\", value: number }\ntype Err = { kind: \"err\", message: string }\ntype Result = Ok | Err\n\nlocal function show(r: Result): string\n\tif r.kind == \"ok\" then\n\t\treturn tostring(r.value) -- r: Ok\n\tend\n\treturn r.message -- r: Err\nend\n```\n\n**Limits to keep in mind:**\n- Narrowing lasts only as long as the variable isn't reassigned. Assigning to it resets it to the declared type.\n- `any` doesn't narrow usefully, so a value typed `any` stays `any` after a `typeof` check. Give it a real annotation instead.\n- Narrowing is a compile-time view. It doesn't change runtime behavior, and a wrong cast with `::` will not be caught at runtime.\n\nRun `bash scripts/check.sh` in this repo to type-check your changes. I didn't open any project files for this answer; the examples are general Luau.",
+ "cost": 0.0029150700000000005,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8141,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2390,
+  "output_tokens_details": {
+   "thinking_tokens": 1443
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8141,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2390,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8141,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8141
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a value's type inside a branch when you check it with `typeof`, so you can use the value as the narrower type without casting.\n\n## Basic narrowing\n\nSuppose a parameter is a union of types:\n\n```lua\n--!strict\nlocal function format(value: string | number | nil): string\n\tif typeof(value) == \"number\" then\n\t\treturn string.format(\"%.2f\", value) -- value: number\n\telseif value == nil then\n\t\treturn \"none\"\n\telse\n\t\treturn value -- value: string\n\tend\nend\n```\n\nInside the `if`, Luau treats `value` as `number`. In the `elseif`, `nil` is already excluded, so the remaining type is `string`. Calling `value:upper()` in the `if` branch would be a type error.\n\n## Early return narrows the rest of the function\n\nChecking the negative case and returning early narrows the code that follows:\n\n```lua\nlocal function double(input: any): number\n\tif typeof(input) ~= \"number\" then\n\t\treturn 0\n\tend\n\treturn input * 2 -- input: number\nend\n```\n\nThis is the most common pattern for values that arrive as `any`.\n\n## Things to know\n\n- **`typeof` vs `type`:** `typeof` returns Roblox types such as `\"Instance\"`, `\"Vector3\"`, and `\"CFrame\"`. `type` returns only the basic Lua types (`\"table\"`, `\"userdata\"`, and so on). Use `typeof` in Roblox code.\n- **Refinements combine:** `and`, `or`, `not`, `==`, `~=`, and truthiness checks all narrow. For example, `if typeof(x) == \"string\" and #x > 0 then` is valid.\n- **Instances:** `typeof(x) == \"Instance\"` narrows to `Instance`, not to a specific class. For class-specific code, check with `x:IsA(\"BasePart\")` and confirm the narrowing in strict mode.\n- **Only the checker sees it:** refinements exist for the type checker. Without `--!strict` (or `--!nonstrict` in some cases), Luau does not report the mismatches they prevent.\n- **No user-defined guards:** Luau has no TypeScript-style `x is T` predicates. Narrowing works only through built-in checks like `typeof`, `type`, `== nil`, and truthiness.\n- **Narrowing works best on locals and parameters.** Refinements on table fields and across function calls are less reliable, so copy the field into a local before checking it.\n- **Boundary data:** values from `RemoteEvent` arguments, DataStores, and attributes are not checked against your annotations at runtime. Checking with `typeof` at the boundary is the usual way to make the rest of your code safe.",
+ "cost": 0.0030159699999999998,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8293,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2531,
+  "output_tokens_details": {
+   "thinking_tokens": 1669
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8293,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2531,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

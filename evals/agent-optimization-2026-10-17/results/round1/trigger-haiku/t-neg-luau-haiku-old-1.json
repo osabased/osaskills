@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "## Type refinement with `typeof`\n\nLuau's type checker narrows a value's type inside a branch once a `typeof` check has run. This lets you work with a union type without casting.\n\n```luau\nlocal function describe(value: string | number | nil)\n\tif typeof(value) == \"string\" then\n\t\t-- value: string\n\t\treturn \"text of length \" .. #value\n\telseif typeof(value) == \"number\" then\n\t\t-- value: number\n\t\treturn \"number \" .. value * 2\n\telse\n\t\t-- value: nil\n\t\treturn \"nothing\"\n\tend\nend\n```\n\nInside each branch, the checker knows which member of the union `value` is, so `#value` is valid only in the string branch and `value * 2` only in the number branch.\n\n### Common patterns\n\n**Early return.** The narrowing persists for the rest of the function:\n\n```luau\nlocal function greet(name: string?)\n\tif typeof(name) ~= \"string\" then\n\t\treturn \"Hello, stranger\"\n\tend\n\t-- name: string from here on\n\treturn \"Hello, \" .. name\nend\n```\n\n**Combining checks with `and` / `or`.** The right side of `and` sees the narrowing from the left side:\n\n```luau\nif typeof(x) == \"number\" and x > 0 then\n\t-- x: number, and x > 0 is safe to evaluate\nend\n```\n\n**`not` and `~=`** flip the branches, so the `else` branch gets the remaining types.\n\n**`type()` works too.** For primitives, `type(x)` and `typeof(x)` return the same strings and both refine. Use `typeof` in Roblox code, since it respects `__type` metatable names.\n\n### Where it stops\n\n- **Instances.** `typeof(inst) == \"Instance\"` narrows to `Instance`, not to `Part` or `Model`. Use `inst:IsA(\"Part\")` to check the class at runtime, then a type assertion (`inst :: Part`) so the checker knows the type.\n- **Tables.** `typeof(t) == \"table\"` narrows to the table type, but it doesn't tell you which table shape you have. For that, check a field or use separate types with a tag field and branch on it.\n- **`any`.** Narrowing from `any` is limited, so annotate the value or assert it with `::` where you need stronger types.\n- **Assignments.** Narrowing is about what the checker can prove at that point. If you reassign the variable after the check, it no longer holds, so check again after reassignment.\n\n### Why it matters\n\nRefinement lets you write one function that accepts a union, such as `string | number`, and the checker verifies every branch. You get the same safety as separate overloads without needing casts or duplicated code.",
+ "cost": 0.0027526700000000005,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8359,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1978,
+  "output_tokens_details": {
+   "thinking_tokens": 1139
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8359,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1978,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8359,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8359
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

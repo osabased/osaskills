@@ -1,0 +1,74 @@
+{
+ "id": "t-studioonly",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+ "scaffold": "studio",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-studioonly-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "denials": [],
+ "result": "You're asking how to let Claude edit the game's scripts through the Studio MCP server without stepping on you or your two Team Create collaborators. Here's what I'd recommend.\n\n**Biggest risk: live edits reach collaborators immediately.** With Live Scripting on, an MCP edit shows up in everyone's session within seconds. Drafts mode keeps edits local until committed, but how MCP edits interact with drafts isn't documented, so don't rely on it without testing. Confirm with your collaborators before Claude makes a multi-script change.\n\n**Recommended setup:**\n\n1. **Move to Script Sync first.** It syncs the scripts to files in a Git repo, so Claude gets diffs, revert, and a check command. Check scripts for attributes and tags before you change anything, because the sync can alter how they behave. You do this in Studio, and it's a one-time setup. Moving to Rojo later is a bigger migration, so only do that if you need it.\n2. **Keep a guide in a local folder** with `CLAUDE.md` and the place name and ID. Since two Studio windows can share a name, pass the `studio_id` that `list_roblox_studios` reports for place 1234567890.\n3. **Save a checkpoint before big edits.** Use **File > Save to Roblox with Notes** so there's a version to return to. Restoring creates a new version and doesn't publish it.\n4. **Edit in Edit mode, not during a play-test.** Changes made during a play-test are discarded when it stops.\n5. **Check the path before `multi_edit`.** It creates a script when the path doesn't exist, so a typo leaves a stray script behind.\n\n**Without Script Sync,** the static checks can't run, so the agent can only verify through live reads and play-tests. Say so in the report, and treat each edit as unverified until someone plays the game.\n\n**Question for you:** do you want to set up Script Sync? If so, I'd first list which scripts have attributes or tags so we can check them before the switch. I haven't checked the MCP tool names against your live server, so the first session should confirm `list_roblox_studios` and `script_read` respond before any edit.",
+ "cost": 0.00386624,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13235,
+  "cache_read_input_tokens": 47714,
+  "output_tokens": 1483,
+  "output_tokens_details": {
+   "thinking_tokens": 528
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13235,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1018,
+    "cache_read_input_tokens": 20817,
+    "cache_creation_input_tokens": 1585,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1585
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

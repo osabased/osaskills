@@ -1,0 +1,126 @@
+{
+ "id": "t-agentready",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ],
+  [
+   "structure-roblox-projects/references/project-guide.md",
+   5999
+  ],
+  [
+   "structure-roblox-projects/references/rojo.md",
+   5855
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "{*.json,*.toml,*.md,*.luau,*.yaml,*.ps1,*.py,.claude/*.json,.claude/*.md,.github/**,src/**}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "python \"<runs>\\t-agentready-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\scripts\\check_updates.py\""
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\project-guide.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0048417600000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16404,
+  "cache_read_input_tokens": 47736,
+  "output_tokens": 2166,
+  "output_tokens_details": {
+   "thinking_tokens": 546
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16404,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 801,
+    "cache_read_input_tokens": 21098,
+    "cache_creation_input_tokens": 4473,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4473
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

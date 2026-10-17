@@ -1,0 +1,82 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/{pesde.toml,rokit.toml,roblox_packages/**,packages/**,*.project.json}"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-1\\rokit.toml"
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ]
+ ],
+ "result": "Probably yes, but I couldn't confirm the details. Reading the skill's reference file was denied, so this answer is from general knowledge of Script Sync and should be checked in Studio.\n\n**What I'd expect Script Sync to do:**\n- It maps one folder on disk to one DataModel location. Your repo already uses three roots: `server/` → `ServerScriptService.Server`, `shared/` → `ReplicatedStorage.Shared`, and `client/` → `StarterPlayer.StarterPlayerScripts.Client`. A packages folder would need a fourth mapping, such as `roblox_packages/` → `ReplicatedStorage.Packages`, added in Studio's Script Sync settings.\n- Luau files become scripts and folders become `Folder` instances. Relative `require`s between packages keep working as long as the folder structure is mirrored exactly, which a whole-folder mapping does.\n- Non-script files (JSON, text, and similar) are likely not synced, so anything a package reads from disk at runtime won't arrive.\n\n**Things to check for pesde specifically:**\n- pesde installs `.luau` files and nested folders such as `_Index`, which holds each package's dependencies. Mapping the whole packages folder, not individual packages, is the safe choice.\n- Packages belong in `ReplicatedStorage`, since both server and client scripts usually need them. Don't map them into `ServerScriptService`, which clients can't read.\n- Each Luau environment runs its own copy of a ModuleScript, so package state isn't shared between server and client.\n\n**The repo's current state:**\n- There is no `pesde.toml` and no packages folder yet, so there's nothing to sync until you run `pesde install`. Once you do, I can check the installed layout against the mapping.\n- `rokit.toml` pins only StyLua and Selene. pesde isn't pinned here, so you'd need to add it to Rokit or document how to install it.\n\nIf you want a firmer answer, you can grant read access to the skill's `references/script-sync.md`, or do a quick test in Studio: map the folder, sync a package, and confirm that a `require` between two packages resolves.",
+ "cost": 0.00444605,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12880,
+  "cache_read_input_tokens": 48445,
+  "output_tokens": 2770,
+  "output_tokens_details": {
+   "thinking_tokens": 1657
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12880,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1500,
+    "cache_read_input_tokens": 21552,
+    "cache_creation_input_tokens": 495,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 495
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

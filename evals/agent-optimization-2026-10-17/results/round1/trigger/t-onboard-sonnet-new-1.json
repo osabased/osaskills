@@ -1,0 +1,106 @@
+{
+ "id": "t-onboard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/project-guide.md",
+   5999
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\project-guide.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-onboard-sonnet-new-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Glob",
+   "*"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't saved anything yet. The structure skill says to show a guide before writing it, so the draft is below for your review.\n\n## Overview\n\nThis is a very early Rojo project named `arena`. There are three stub files and no game logic.\n\n| Filesystem | DataModel | Contents |\n| --- | --- | --- |\n| `src/shared/init.luau` | `ReplicatedStorage.Shared` | A ModuleScript that returns `{}` |\n| `src/client/init.client.luau` | `ReplicatedStorage.Client` | `print(\"client\")` |\n| `src/server/init.server.luau` | `ServerScriptService.Server` | `print(\"server\")` |\n| `Packages/` | `ReplicatedStorage.Packages` | Mapped in `default.project.json`, but the folder doesn't exist yet |\n\nThe dependencies are declared in two manifests:\n- **`wally.toml`** (realm `shared`): Janitor 1.18.3, LemonSignal 2.0.0 and Charm 0.11.1.\n- **`pesde.toml`** (Roblox target): Vide, pinned to a commit. Blink 0.18.9 is a dev dependency with the `lune` target.\n\n`.claude/skills/` holds the `roblox-*` library skills, `roblox-resource-acquisition`, `structure-roblox-projects` and `motion-studies`. These are agent tooling, not game code.\n\nI found no `CLAUDE.md`, no tool pins such as `rokit.toml`, `stylua.toml` or `selene.toml`, no check script, no CI or hooks, and no tests. There are also no `.blink` schemas, Remotes, persistence or UI yet.\n\n**Two problems to know about**\n1. **The client script won't run.** `src/client` is mapped into `ReplicatedStorage`, and `default.project.json` doesn't set `\"emitLegacyScripts\": false`. Rojo therefore builds `init.client.luau` as a `LocalScript`, and a `LocalScript` in `ReplicatedStorage` never runs. `print(\"client\")` will never print.\n2. **The build will probably fail.** `Packages/` doesn't exist, and nothing says whether Wally or pesde should populate it. Running both into the same folder is likely to cause conflicts.\n\n## Draft guide for future agents\n\nThe draft goes in `.claude/roblox/project.md`. A managed pointer block goes in the root `CLAUDE.md`, and that file doesn't exist yet.\n\n```markdown\n# arena: Roblox project guide\n\nRojo project (`default.project.json`, checked 2026-10-17). Code is authored on disk and synced with Rojo; Studio holds no authoritative scripts.\n\n## Filesystem to DataModel\nSource: `default.project.json`\n- `src/shared` -> ReplicatedStorage.Shared (ModuleScript; reaches clients, so no secrets)\n- `src/client` -> ReplicatedStorage.Client (`init.client.luau`)\n- `src/server` -> ServerScriptService.Server (`init.server.luau`; server-only)\n- `Packages` -> ReplicatedStorage.Packages (generated; not committed)\n\n## Startup\n- Server: `src/server/init.server.luau` runs as a Script in ServerScriptService.\n- Client: `src/client/init.client.luau` only runs if the project sets `\"emitLegacyScripts\": false` (Script with RunContext=Client). With the default it is a LocalScript in ReplicatedStorage and never runs.\n- No loader yet. If you add one, use the `roblox-bootstrapper` skill.\n\n## Dependencies (two managers, one target folder, unresolved)\n- `wally.toml`: Janitor, LemonSignal, Charm (pinned).\n- `pesde.toml`: Vide (git rev), Blink (dev, lune).\n- Library guidance: `.claude/skills/roblox-<name>/SKILL.md`. Read it before using the library; follow its pin.\n\n## Rules\n- Validate every client-to-server payload on the server.\n- ModuleScript state is per environment (server, each client); it is never shared.\n- Shared code goes in `src/shared`; server-only logic and secrets stay in `src/server`.\n- Network code goes through Blink (`roblox-blink`) once added.\n\n## Verification\n- No check command, CI or tests exist. Do not report any check as passed.\n- Reachable today: `rojo build -o arena.rbxl` (needs `Packages/`), then a Studio play-test.\n- Not verifiable offline: startup, rendering, input, multiplayer.\n\n## By task\nLibrary work -> the matching `roblox-*` skill. Placement or Rojo questions -> `structure-roblox-projects`.\n```\n\n## Questions\n\nPlease confirm these before I save anything:\n1. **Client entrypoint (recommended: set `\"emitLegacyScripts\": false` in the project file).** The alternative is to move the client into `StarterPlayerScripts`.\n2. **Package manager (recommended: keep one).** That means one tool filling `Packages/`, and I'd drop the other manifest. Which one do you want?\n3. **Save location.** Can I write `.claude/roblox/project.md` and add the managed pointer block to a new root `CLAUDE.md`?\n4. **Extra setup.** Do you want me to also propose a check command, tool pins and guards? I'd keep that as a separate proposal and not add it unasked.",
+ "cost": 0.11918799999999999,
+ "turns": 12,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20628,
+  "cache_read_input_tokens": 48740,
+  "output_tokens": 3179,
+  "output_tokens_details": {
+   "thinking_tokens": 454
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20628,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2201,
+    "cache_read_input_tokens": 22883,
+    "cache_creation_input_tokens": 6912,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6912
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

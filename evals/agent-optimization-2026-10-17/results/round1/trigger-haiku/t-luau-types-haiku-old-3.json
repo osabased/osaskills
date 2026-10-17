@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Luau narrows a variable's type inside a branch that checks it with `typeof`. Given `x: string | number`, `typeof(x) == \"string\"` makes `x` a `string` inside that branch, and the other branch sees `number`.\n\n```luau\ntype Value = string | number | { code: number }\n\nlocal function describe(value: Value): string\n\tif typeof(value) == \"string\" then\n\t\treturn value -- string\n\telseif typeof(value) == \"number\" then\n\t\treturn tostring(value) -- number\n\telse\n\t\treturn \"code \" .. value.code -- narrowed to { code: number }\n\tend\nend\n```\n\n**Key behaviors:**\n\n- **`else` gets the remainder.** After excluding `string` and `number`, only the table type is left.\n- **Early returns narrow the rest of the function.** After `if typeof(name) ~= \"string\" then return ... end`, `name` is a `string` for everything below.\n- **Works with `and` / `or` / `not`.** `if typeof(v) == \"table\" and v.name then` is safe because the `and` short-circuits after the type check.\n- **`typeof` is the usual choice in Roblox code.** It returns Roblox types such as `\"Instance\"`, `\"Vector3\"`, and `\"CFrame\"`, where plain `type` returns `\"userdata\"` for them.\n\n**Limits to know about:**\n\n- **`typeof` can't tell apart two table types.** Both `{ x: number }` and `{ name: string }` report `\"table\"`. For those, use a tag field and compare it, which narrows the union:\n\n  ```luau\n  type Ok = { kind: \"ok\", data: string }\n  type Err = { kind: \"err\", message: string }\n\n  local function show(r: Ok | Err)\n  \tif r.kind == \"ok\" then\n  \t\tprint(r.data) -- Ok\n  \telse\n  \t\tprint(r.message) -- Err\n  \tend\n  end\n  ```\n\n- **Refinement applies most reliably to locals and parameters.** If you check a field such as `self.target`, copy it into a local first, then check the local.\n- **Narrowing doesn't survive reassignment or function calls that might change the value.** Check again after you reassign the variable, or store the value in a new local.\n\nI haven't checked this project's code, so these examples are general Luau behavior. If you want, I can look for `typeof` checks in `src/` and point out where the narrowing is useful or where it's missing.",
+ "cost": 0.00259817,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8199,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1733,
+  "output_tokens_details": {
+   "thinking_tokens": 966
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8199,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1733,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8199,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8199
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

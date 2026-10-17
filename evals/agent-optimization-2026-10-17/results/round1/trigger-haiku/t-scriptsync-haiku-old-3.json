@@ -1,0 +1,67 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "{pesde.toml,rokit.toml,*.project.json,Packages/**,roblox_packages/**}"
+  ],
+  [
+   "Grep",
+   "packages|Packages|pesde"
+  ]
+ ],
+ "denials": [],
+ "result": "**Probably not as a plain folder sync, and I haven't verified the details in this Studio version.**\n\nScript Sync maps each synced directory to a DataModel root, like the three in this repo's CLAUDE.md. Pointing a fourth root at pesde's output folder (for example `ReplicatedStorage.Packages`) is the natural approach, but a few things could break it:\n\n- **Folder structure.** pesde's Roblox output is a nested tree (wrapper modules, `_Index`-style package folders). The repo's Roblox skills say to map `roblox_packages` with pesde's official Rojo scripts and to check the sourcemap before choosing a require path. Script Sync doesn't read `*.project.json`, so it may not build that tree the same way.\n- **Require paths.** Packaged modules often `require` siblings by relative path (`script.Parent...`). If Studio's hierarchy differs from what pesde expects, requires fail at runtime.\n- **Per-machine setup.** The root mapping lives in Studio, not in the repo, so every developer would have to configure it. Unless it's written down in CLAUDE.md, it won't travel with the project.\n- **Repo state.** This repo has `rokit.toml` but no `pesde.toml` or `pesde.lock` yet, so I can't check your package target setting.\n\n**Simplest reliable path:** keep Rojo-style mapping for packages, or test Script Sync with one small package first. Install it, sync, and confirm `require` resolves at runtime in a play-test.\n\nIf you share your `pesde.toml` (or tell me where you want packages to land, such as `ReplicatedStorage.Packages` vs. server-only), I can write the mapping notes into CLAUDE.md or set up the Rojo project. I'd only be guessing about the exact Script Sync behavior until we test it in Studio.",
+ "cost": 0.004365620000000001,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 13276,
+  "cache_read_input_tokens": 26952,
+  "output_tokens": 2881,
+  "output_tokens_details": {
+   "thinking_tokens": 2086
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13276,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1636,
+    "cache_read_input_tokens": 17785,
+    "cache_creation_input_tokens": 4658,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4658
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

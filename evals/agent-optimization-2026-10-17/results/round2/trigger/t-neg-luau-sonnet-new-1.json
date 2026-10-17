@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "# Luau type refinement with `typeof`\n\nLuau's type checker narrows a variable's type inside a branch when a condition proves something about it. `typeof(x) == \"...\"` is one of the main ways to trigger that.\n\n## Basic narrowing\n\n```lua\nlocal function describe(value: string | number)\n    if typeof(value) == \"string\" then\n        return value:upper()      -- value: string\n    else\n        return value + 1          -- value: number\n    end\nend\n```\n\nInside the `if`, `value` is `string`. In the `else`, the checker removes `string` from the union, leaving `number`.\n\n## `type` vs `typeof`\n\n- `type(x)` returns only the base Lua types: `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"userdata\"`, `\"vector\"`, `\"buffer\"`.\n- `typeof(x)` returns the same names, but for Roblox types it also returns specific names such as `\"Instance\"`, `\"Vector3\"`, `\"CFrame\"`, `\"Color3\"`, `\"EnumItem\"` and `\"RBXScriptSignal\"`.\n\nBoth refine in the type checker. Use `typeof` when you need to tell Roblox userdata types apart:\n\n```lua\nlocal function getPosition(target: Vector3 | CFrame | BasePart): Vector3\n    if typeof(target) == \"Vector3\" then\n        return target\n    elseif typeof(target) == \"CFrame\" then\n        return target.Position\n    else\n        return target.Position   -- BasePart\n    end\nend\n```\n\n## Refining `Instance`\n\n`typeof(x) == \"Instance\"` narrows an `unknown` or `any`-ish value to `Instance`. It doesn't narrow to a subclass. For that you use `IsA`, which the checker also understands:\n\n```lua\nlocal function onTouched(obj: unknown)\n    if typeof(obj) == \"Instance\" and obj:IsA(\"BasePart\") then\n        obj.Anchored = true       -- obj: BasePart\n    end\nend\n```\n\n## Narrowing `unknown`\n\n`unknown` is the safe type for untrusted data, such as remote arguments. You can't use it until you refine it:\n\n```lua\nremote.OnServerEvent:Connect(function(player, payload: unknown)\n    if typeof(payload) ~= \"table\" then\n        return\n    end\n    -- payload: table\nend)\n```\n\nThe early-return form works because code after the `return` only runs when the check passed. Narrowing persists for the rest of the scope.\n\n## Optionals\n\n```lua\nlocal function greet(name: string?)\n    if typeof(name) == \"string\" then\n        print(\"Hi \" .. name)      -- name: string\n    end\nend\n```\n\n`if name then` is usually simpler here. `typeof(name) == \"nil\"` also works if you want to be explicit.\n\n## Combining conditions\n\n- `and` and `or` refine as you'd expect: `typeof(x) == \"number\" and x > 0`.\n- `not` and `~=` flip the refinement.\n- Early `return`, `error` or `continue` refine the code that follows.\n\n## Limitations\n\n1. **Mutable state isn't tracked across calls.** Refinements on table fields (`self.value`) can be invalidated by calls in between. Copy to a local first:\n   ```lua\n   local v = self.value\n   if typeof(v) == \"string\" then ... end\n   ```\n2. **Captured variables.** Refinement of an upvalue that's reassigned elsewhere may not carry into closures. Use a local copy.\n3. **Aliased checks don't refine.** `local isStr = typeof(x) == \"string\"; if isStr then` won't narrow `x`. The comparison must appear in the condition itself.\n4. **Table shapes aren't distinguished.** `typeof(x) == \"table\"` doesn't tell you which table type you have. For unions of tables, use a tag field (discriminated union):\n   ```lua\n   type Shape = { kind: \"circle\", radius: number } | { kind: \"rect\", w: number, h: number }\n\n   local function area(s: Shape)\n       if s.kind == \"circle\" then\n           return math.pi * s.radius ^ 2\n       else\n           return s.w * s.h\n       end\n   end\n   ```\n5. **Custom type names.** `typeof` returns a string. You can't compare against your own Luau type aliases, only the built-in names above.\n\n## Rule of thumb\n\nUse `typeof` to refine primitives and Roblox datatypes. Use `IsA` for `Instance` subclasses. Use a `kind` tag for unions of tables. Assign to a local before refining anything that might change.",
+ "cost": 0.046490699999999996,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7525,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1547,
+  "output_tokens_details": {
+   "thinking_tokens": 30
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7525,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1547,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7525,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7525
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

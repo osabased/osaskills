@@ -1,0 +1,84 @@
+{
+ "id": "t-upgrade",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)vide"
+  ],
+  [
+   "Glob",
+   "**/{pesde.toml,pesde.lock,*.lock}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-haiku-new-1\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Grep",
+   "(?i)upgrade|refresh|pin"
+  ]
+ ],
+ "denials": [],
+ "result": "**Short answer: I wouldn't bump on the release alone. I need the new version's release notes before deciding.**\n\nI understand the question as: should the project move its Vide pin from the 0.4.1 commit to the new release?\n\nWhat I checked:\n\n- **Current pin:** `pesde.toml` pins Vide to git commit `5ed4c01940e6bd578fb83253cfbeda0a6c05177c`. `pesde.lock` resolves it to `centau/vide@0.0.0-8890f5044158a71592249e2d91646715b98ca4aa`. The `roblox-vide` skill says this commit is 0.4.1, and the manifest and lock agree with it.\n- **New release:** I can't see it from here. I have no web or shell access in this session, and you didn't give me the version number. So I haven't read its changelog or diffed its API.\n\nThe project's own process says a newer release alone isn't a reason to upgrade. Before changing the pin, an upgrade has to:\n\n1. Read the release notes between 0.4.1 and the new version.\n2. Rerun the checks that touch Vide, including `bash scripts/check.sh`.\n3. Re-review any guards pinned to the old version.\n4. Re-clone the `roblox-vide` skill for the new pin. Until then it documents 0.4.1 only.\n\nMy recommendation: hold the pin unless the release notes show a fix or feature you need. Vide changes can alter UI behavior, and the project's rules ask you to decide anything that affects end-user behavior or look. If you want to go ahead, a bump is a reasonable choice, but only with the checks above.\n\nTo continue, I need one of these from you:\n\n- the new version number, or a link to its release notes (paste the text if I can't open the link), and whether you want the bump now, or\n- a decision to keep 0.4.1 for now.\n\nI'll then go through the upgrade steps and report what I could and couldn't verify.",
+ "cost": 0.00665926,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 23969,
+  "cache_read_input_tokens": 50786,
+  "output_tokens": 2714,
+  "output_tokens_details": {
+   "thinking_tokens": 1304
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 23969,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1231,
+    "cache_read_input_tokens": 24308,
+    "cache_creation_input_tokens": 8828,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8828
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

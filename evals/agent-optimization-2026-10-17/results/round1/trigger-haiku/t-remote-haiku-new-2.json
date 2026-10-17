@@ -1,0 +1,96 @@
+{
+ "id": "t-remote",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*.{luau,lua,json,toml,blink,md}"
+  ],
+  [
+   "Grep",
+   "RemoteEvent|RemoteFunction|Shop|shop|purchase"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-2\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "The project has no shop code yet, so this is a recommendation, not a description of existing code.\n\n**Where the RemoteEvents go**\n\nPut them in `ReplicatedStorage`, under a `Remotes` folder. Clients can only see and fire instances replicated to them, and `default.project.json` already maps `ReplicatedStorage` as the shared container. Two options:\n\n- **Declare them in `default.project.json`** so they're versioned with the code:\n  ```json\n  \"Remotes\": {\n    \"Shop\": {\n      \"PurchaseRequest\": { \"$className\": \"RemoteEvent\" },\n      \"PurchaseResult\": { \"$className\": \"RemoteEvent\" }\n    }\n  }\n  ```\n  Put this under `ReplicatedStorage`. I haven't run `rojo build` to confirm the sync result.\n- **Create them in server code at startup**, which avoids a project-file entry but moves the contract out of the source tree.\n\nUse one request remote (client to server) and one result remote (server to client). Avoid a `RemoteFunction` for purchases: a client that never returns from `InvokeServer` can stall the server thread that handles it.\n\nKeep the item IDs in a shared module (`src/shared`) so client and server use the same names. The catalog with prices must live on the server, in `src/server`.\n\n**How the server should validate a purchase**\n\nRun these checks in order on every `PurchaseRequest`, and treat the client's arguments as untrusted:\n\n1. **Shape:** the `itemId` is a string. Reject anything else.\n2. **Catalog:** the ID exists in the server's catalog. Take the price from the server catalog, never from the client.\n3. **Rate:** a per-player cooldown or debounce, so spam can't flood the handler.\n4. **Ownership:** for one-time items, reject if the player already owns it.\n5. **Funds:** check and deduct the balance on the server, in the same step as the grant, so a failed step can't leave a partial state.\n6. **Grant:** apply the item on the server, then send `PurchaseResult` with the outcome. The client updates its UI only from this reply.\n\nIf the shop sells for Robux, the flow changes: the client prompts with `MarketplaceService:PromptProductPurchase`, and the grant happens only in `MarketplaceService.ProcessReceipt` on the server. It must be idempotent, storing processed `PurchaseId`s, because Roblox can call it more than once. The client's \"purchase complete\" signal is never proof of payment.\n\n**Questions before I write it**\n\n1. **Currency:** is the shop paid in in-game currency (coins) or Robux? The validation above differs a lot between the two.\n2. **Blink:** `pesde.toml` lists Blink as a dev dependency, but no generated networking module exists in `src/`. Do you want to use Blink for these remotes, or plain `RemoteEvent`s as above?\n3. **Scope:** should I write the remotes, the server handler, and a check script for accepted and rejected inputs now, or only the layout?",
+ "cost": 0.00593277,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17127,
+  "cache_read_input_tokens": 49177,
+  "output_tokens": 4030,
+  "output_tokens_details": {
+   "thinking_tokens": 2031
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17127,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2775,
+    "cache_read_input_tokens": 22543,
+    "cache_creation_input_tokens": 3751,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3751
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

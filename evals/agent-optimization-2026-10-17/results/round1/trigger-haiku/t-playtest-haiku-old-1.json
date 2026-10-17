@@ -1,0 +1,86 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Bash",
+   "python \"~\\.claude\\skills\\structure-roblox-projects\\scripts\\check_updates.py\""
+  ]
+ ],
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ]
+ ],
+ "result": "I couldn't finish checking this against the skill's guide. Reading its reference files and running its update check were both blocked (read permission was denied and Bash is disabled this session), so what follows is general guidance and not checked against your project or the Studio MCP's current tool list.\n\n**General approach for testing a shop button in a play-test:**\n\n1. **Check where the button's script runs.** A `LocalScript` that handles the click must sit under the player's `PlayerGui` (usually via `StarterGui`), `PlayerScripts`, or the character. A `LocalScript` in `ReplicatedStorage` never runs.\n2. **Keep the purchase logic on the server.** The click should fire a RemoteEvent or RemoteFunction, and a `Script` in `ServerScriptService` should validate the request and grant the item. Don't trust the client to grant anything.\n3. **Start a play-test through the MCP.** Use the Studio MCP's play-test or run tool to start a session, then find the button and trigger its click. Some MCP setups can only read output, so you may need to watch the server's `print` or `warn` output to confirm the purchase went through.\n4. **Check the result on the server.** Read the player's currency or inventory, or the granted item, and confirm it changed. Checking the UI alone can hide a server-side bug.\n5. **Stop the play-test** and check for leftover errors in the output.\n\nI haven't confirmed the exact MCP tool names or parameters, so check the tool list in your session before relying on them. If you share the button's script and where it sits in the explorer tree, I can point out any placement or Remote problems. Once read access is granted, I can also pull the skill's verification guide for the full play-test steps.",
+ "cost": 0.0037471100000000005,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12129,
+  "cache_read_input_tokens": 47271,
+  "output_tokens": 1696,
+  "output_tokens_details": {
+   "thinking_tokens": 766
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12129,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 951,
+    "cache_read_input_tokens": 20576,
+    "cache_creation_input_tokens": 720,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 720
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,84 @@
+{
+ "id": "t-guard",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   5956
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't changed anything yet, because I need the DataStore name before I can write the guard.\n\n**What I think you want:** a check that fails whenever the DataStore name in the code differs from a pinned copy, so renaming it on a live game requires a deliberate two-edit change. \"Nobody\" includes teammates and CI, so this should run in the project's check command, not only as an agent hook.\n\n**What I found:** this repo has no DataStore code yet. `src/` has only `print(\"server\")` in `src/server/init.server.luau`, and nothing in the project mentions a DataStore name. The only DataStore references are in the `structure-roblox-projects` skill docs, which recommend this kind of guard. There's also no check script, no `scripts/` folder, and no git repo.\n\nI need answers to these before I can proceed:\n\n1. **What is the exact DataStore name?** This is required. If you don't have one yet, tell me what the name should be and I'll use it as the initial value.\n2. **Does the DataStore module exist yet, or should I create it?** Recommended: I create a small `src/server` data module that holds the name, plus the guard that pins a copy of it. Alternative: I write only the guard, and you add the DataStore later.\n3. **Where should the guard run?** Recommended: a `scripts/check` script that runs the guard, with `pre-push` and CI calling it too. Alternative: only a Claude Code hook, which would stop agent edits but not teammates or Studio.\n4. **Should the guard also pin a ProfileStore key prefix or other save-key settings?** Recommended: no, just the DataStore name for now.",
+ "cost": 0.00475504,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15673,
+  "cache_read_input_tokens": 48584,
+  "output_tokens": 2268,
+  "output_tokens_details": {
+   "thinking_tokens": 1062
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15673,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1373,
+    "cache_read_input_tokens": 21954,
+    "cache_creation_input_tokens": 2886,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2886
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

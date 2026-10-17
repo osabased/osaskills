@@ -1,0 +1,102 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10342
+  ],
+  [
+   "roblox-vide/SKILL.md",
+   7099
+  ],
+  [
+   "roblox-vide/resource.yaml",
+   1695
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-2\\.claude\\skills\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-2\\.claude\\skills\\roblox-vide\\resource.yaml"
+  ]
+ ],
+ "denials": [],
+ "result": "I read the repo's library-skill contract and the Vide skill as a model. I want to check a few things with you before writing this, because the skill has to match a specific Fusion version.\n\n**What I think you want:** a Claude Code skill named something like `roblox-fusion` that teaches agents the Fusion UI API and its lifecycle correctly at one pinned version, written to the same contract as `roblox-vide`.\n\n**Why I'm pausing:**\n- This project doesn't declare Fusion. `pesde.toml` has Charm, Janitor and Vide only, and the UI here is Vide.\n- The contract requires every API claim to come from reviewed source at an exact commit. I have no web access here and there's no Fusion source in the repo, so I can't verify the API. Writing it from memory would produce the wrong guidance the skill is meant to prevent.\n\n**Questions, recommended option first:**\n\n1. **Version:** Which Fusion version or commit should the skill pin? Fusion 0.3 (the `scoped` API) is my recommendation for new code. If you give me a local clone or the commit you use, I can review that source and write the API table from it.\n2. **Location:** Should the skill go in this project's `.claude/skills/roblox-fusion/` (recommended, since the project doesn't use Fusion, so it would be advice-only here), in `~/.claude/skills/` for all projects, or proposed to the osaskills catalog? The catalog option means a pull request, which I'll only open with your go-ahead.\n3. **Adoption:** Are you planning to move UI from Vide to Fusion, or is this for other projects? If you're considering a switch, I'd rather you decide that before I write anything project-facing.\n4. **Failure modes (optional):** What have agents gotten wrong with Fusion so far? Knowing that lets me write the test cases to target it.\n\nOnce you answer 1 and 2, I'll write the skill, run the repo's validator, and test it with fresh subagents.",
+ "cost": 0.00755179,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 22605,
+  "cache_read_input_tokens": 49569,
+  "output_tokens": 5069,
+  "output_tokens_details": {
+   "thinking_tokens": 3570
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22605,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2719,
+    "cache_read_input_tokens": 23090,
+    "cache_creation_input_tokens": 8682,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8682
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

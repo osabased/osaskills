@@ -1,0 +1,111 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   6898
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/resource.yaml",
+   1695
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{pesde.toml,pesde.lock,*.project.json}"
+  ],
+  [
+   "Glob",
+   ".claude/skills/**/SKILL.md"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-4\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-4\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Glob",
+   "**/writing-library-skills.md"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ]
+ ],
+ "denials": [
+  [
+   "Grep",
+   "(?i)fusion"
+  ]
+ ],
+ "result": null,
+ "cost": 0.005576380000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15802,
+  "cache_read_input_tokens": 47238,
+  "output_tokens": 3886,
+  "output_tokens_details": {
+   "thinking_tokens": 2660
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15802,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 726,
+    "cache_read_input_tokens": 20759,
+    "cache_creation_input_tokens": 4210,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4210
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,71 @@
+{
+ "id": "t-neg-typo",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "fix the typo 'recieve' in the comments under src/server",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "recieve"
+  ],
+  [
+   "Glob",
+   "**/server*"
+  ],
+  [
+   "Grep",
+   "recieve"
+  ]
+ ],
+ "denials": [],
+ "result": "I found no instances of \"recieve\" (case-insensitive) under `src/server`, so I changed nothing. A search of the whole working directory also found none, and there are no files or folders named `server*` in it.\n\nThe working directory is `<runs>\\t-neg-typo-sonnet-old-1`. Is `src/server` in a different directory, or is the typo spelled differently, for example \"recieved\" or \"reciever\"? My search would have matched those too, since it matches any text containing \"recieve\".",
+ "cost": 0.04147820000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8027,
+  "cache_read_input_tokens": 42882,
+  "output_tokens": 507,
+  "output_tokens_details": {
+   "thinking_tokens": 0
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8027,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 187,
+    "cache_read_input_tokens": 16961,
+    "cache_creation_input_tokens": 233,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 233
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

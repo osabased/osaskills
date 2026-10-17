@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename `GiveCoins` to `AwardCoins` in the `Rewards` script in ServerScriptService, change every place that calls it, and leave the rest of the place working. This is a rename only, so I don't see any end-user behavior, look, or copy changing.\n\nI can't call the Studio MCP tools from here, so this plan is what I'd run once you give me the go-ahead from a session that has them. I haven't checked the exact MCP tool names or their schemas. I'd confirm those from the tool list before the first call.\n\n## Plan\n\n**1. Tell the other two editors.** This is Team Create, so I'd ask them to hold edits to `Rewards` and any caller scripts until I finish. Otherwise a concurrent edit could overwrite the rename or leave a caller pointing at a name that no longer exists.\n\n**2. Find every reference.** I'd search the whole DataModel, not just the obvious folders, for `GiveCoins`. That covers ServerScriptService, ServerStorage, ReplicatedStorage, StarterPlayer (StarterPlayerScripts and StarterCharacterScripts), StarterGui, Workspace, and ReplicatedFirst. I'd search for:\n- `GiveCoins` as a plain identifier and as a method call (`:GiveCoins(`)\n- string forms like `\"GiveCoins\"`, which could be a `:FindFirstChild` lookup, a remote name, or a table key\n- `require` chains that reach `Rewards`, since those callers may use `.GiveCoins` on the returned table\n\nI'd list each hit with its script path and line before editing anything.\n\n**3. Read the current state.** I'd read `Rewards` in full and each caller, so I know the function's exact definition, its signature, and how it's exported. I'd also check whether `AwardCoins` already exists anywhere, so the rename can't collide with it.\n\n**4. Edit `Rewards`.** I'd rename the function definition and its export to `AwardCoins`, keeping the signature and body the same. I wouldn't keep a `GiveCoins` alias unless you want one, since you asked for a rename.\n\n**5. Edit each caller.** I'd update each call site to `AwardCoins`, changing only the identifier. If a caller passes the name as a string, I'd change that too only when it refers to this function, not to an unrelated remote or child with the same name.\n\n**6. Confirm the rename worked:**\n- Search the DataModel for `GiveCoins` again. The expected result is zero hits. Any remaining hit gets reviewed by hand.\n- Search for `AwardCoins` and check the count matches the number of definition and call sites from step 2.\n- Read `Rewards` and every edited script back and check for syntax problems and leftover references.\n- Run a Play test through the MCP and trigger a coin award. Then check the Output window for `attempt to call nil` or other errors from the renamed call.\n\n**7. Report back.** I'd list every file changed, the before and after names, anything I skipped or was unsure about, and the result of each check. Then I'd tell the other editors they can resume.\n\n## Questions before I start\n\n1. **Old name kept as an alias?** My recommendation is no. Keeping `GiveCoins` as a forwarding alias would make the rename safer for anything I miss, but it leaves the old name in the code.\n2. **Are string references in scope?** My recommendation is yes, but only where they point to this function. Remotes or children that happen to share the name stay as they are.\n\nOnce you answer those and confirm the other editors are paused, I can start from step 1.",
+ "cost": 0.00285821,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8205,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2239,
+  "output_tokens_details": {
+   "thinking_tokens": 1069
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8205,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2239,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8205,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8205
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

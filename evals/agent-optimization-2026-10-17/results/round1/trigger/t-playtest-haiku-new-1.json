@@ -1,0 +1,86 @@
+{
+ "id": "t-playtest",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   4870
+  ],
+  [
+   "structure-roblox-projects/references/studio-only.md",
+   3838
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\studio-only.md"
+  ],
+  [
+   "Glob",
+   "**/*{shop,Shop,SHOP}*"
+  ]
+ ],
+ "denials": [],
+ "result": "You can click the button with real input through the Studio MCP during a play-test, then check what happened in the UI and console. I couldn't find any shop files in this working directory, so the steps below are general. The exact paths depend on your project.\n\n1. **Confirm Studio has your current code.** In Edit mode, read the shop script's `Source` with `script_read`, or with `execute_luau`. Changes made during a play-test are discarded when it stops, so make edits in Edit mode first.\n2. **Find the button.** Use `search_game_tree` to get its path, probably under `StarterGui.<ScreenGui>.<ShopButton>`. Use `inspect_instance` to confirm it's visible and enabled.\n3. **Start Play.** Call `start_stop_play`. The first `execute_luau` after Play can take 7 to 15 seconds, so wait before you query anything.\n4. **Click it with real input.** Call `user_mouse_input` with `instance_path` set to `LocalPlayer.PlayerGui.<ScreenGui>.<ShopButton>`. This fires `Activated` the way a player's click does. Calling the handler directly only tests the handler.\n5. **Check the result.**\n   - Use `screen_capture`? No: it only works in Edit mode. Check the UI with `inspect_instance` instead (for example, that the shop frame opened or a currency label changed).\n   - Read `get_console_output` for both the Client and Server datamodels. Some console noise from mocked DataStores is normal.\n   - Don't `require` your game's modules from `execute_luau` during Play. That creates a second copy with its own state, and the errors will look like game bugs.\n6. **Stop Play** with `start_stop_play` when you're done. Only stop sessions you started.\n\nIf the state change is too quick to inspect, use a single `execute_luau` call that connects the button's `Activated` and writes timestamped lines to a `StringValue` under `LocalPlayer`. Connections outlive the call, so you can read the log after clicking.\n\nTo tailor this, I need a few details:\n\n1. **Where does the shop code live?** Studio-only, Script Sync, or Rojo? I recommend telling me the setup so I can point to the right files and checks.\n2. **What's the button's path?** For example, `StarterGui.ShopGui.BuyButton`. If you don't know it, I can have you run `search_game_tree`.\n3. **What should a click produce?** A purchase, a shop window opening, a currency change, or something else? That tells us what to check after the click.",
+ "cost": 0.00457372,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15002,
+  "cache_read_input_tokens": 47022,
+  "output_tokens": 2205,
+  "output_tokens_details": {
+   "thinking_tokens": 1016
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15002,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1543,
+    "cache_read_input_tokens": 20393,
+    "cache_creation_input_tokens": 3776,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3776
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

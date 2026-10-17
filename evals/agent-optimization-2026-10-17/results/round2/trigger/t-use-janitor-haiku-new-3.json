@@ -1,0 +1,87 @@
+{
+ "id": "t-use-janitor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "use our Janitor to clean up this tween when the frame is destroyed",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "TweenService|:Create\\(|Tween"
+  ],
+  [
+   "Grep",
+   "Janitor"
+  ],
+  [
+   "Glob",
+   "src/**/*.{luau,lua}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-use-janitor-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-use-janitor-haiku-new-3\\src\\client\\UI\\CoinLabel.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-use-janitor-haiku-new-3\\src\\client\\UI\\App.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.0031594700000000006,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10924,
+  "cache_read_input_tokens": 45857,
+  "output_tokens": 1031,
+  "output_tokens_details": {
+   "thinking_tokens": 245
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10924,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 222,
+    "cache_read_input_tokens": 19370,
+    "cache_creation_input_tokens": 721,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 721
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

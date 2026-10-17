@@ -1,0 +1,90 @@
+{
+ "id": "t-remote",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.{project.json,luau,lua,blink}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-sonnet-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-sonnet-new-1\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "You're asking where the shop's RemoteEvents should live and how the server should check a purchase. The project is a bare skeleton with no networking library and no Remotes yet, so I'm answering for that. I only read the project config and entrypoints; I haven't changed anything.\n\n## Where the RemoteEvents go\n\nPut them in `ReplicatedStorage/Remotes`, which is the default for a project that hasn't picked a layout. Both sides can see that folder, and the server must create the Remotes before any client waits on them.\n\n`default.project.json` maps only `Shared`, `Client` and `Packages` into `ReplicatedStorage`, so there's no `Remotes` folder yet. You have two options:\n\n- **Plain instances:** have the server entrypoint create the Remotes at startup, and have the client `WaitForChild` them. This avoids Rojo-managed `.rbxm` or model files.\n- **A networking library:** Blink generates the Remotes from a schema and gives you typed payloads. If you want that, I can set it up with the `roblox-blink` skill. I'd recommend it once the shop has more than two or three Remotes.\n\nKeep the shop surface small:\n\n- `Shop.Purchase`: a `RemoteFunction`, or an event plus a result event. Its payload is `{ itemId: string }`.\n- `Shop.Sync`: server to client, to push the updated inventory and currency.\n\nThe server owns the catalog and prices. Put the catalog in `ServerScriptService/Server`, not `Shared`. If the client needs prices to display, send a display-only copy.\n\n## How the server validates a purchase\n\nThe client sends only an item ID and never a price, quantity or currency amount. On every call the server should:\n\n1. **Check the type:** `itemId` must be a string with a sane length.\n2. **Look it up:** the ID must exist in the server-side catalog, and the item must be currently for sale.\n3. **Check the player:**\n   - They don't already own it, if it's a one-time item.\n   - They meet any level or unlock requirement.\n   - They can afford it, using the server's own record of their balance.\n4. **Rate-limit per player:** throttle calls and ignore any call that arrives while the player's previous purchase is still processing.\n5. **Do the transaction:**\n   - Deduct the currency and grant the item in one step.\n   - Persist it, and roll back if the save fails.\n   - Don't yield between the affordability check and the deduction, or two rapid calls can both pass the check.\n6. **Reply with a result:** send a success or failure code. The client only updates its UI from that reply or from `Shop.Sync`, never optimistically.\n\nFor Robux purchases, don't trust a client \"I bought it\" message. Use `MarketplaceService.ProcessReceipt` on the server, grant the item there, and return `PurchaseGranted` only after the grant is saved. The receipt handler needs to be idempotent, so record the receipt ID.\n\n## A problem in the current client setup\n\n`src/client/init.client.luau` is mapped into `ReplicatedStorage`. With default Rojo settings it builds as a `LocalScript`, and a `LocalScript` in `ReplicatedStorage` never runs. Either set `\"emitLegacyScripts\": false` in the project file or move the client entrypoint into `StarterPlayerScripts`. Check this before you test any shop UI.\n\n## What I need from you\n\nIf you want me to build this, I need two answers:\n\n1. **Plain Remotes or Blink?** I recommend Blink.\n2. **Currency type:** is the shop in in-game currency, Robux, or both? That decides whether the `ProcessReceipt` path is needed.",
+ "cost": 0.0784113,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13618,
+  "cache_read_input_tokens": 45573,
+  "output_tokens": 1937,
+  "output_tokens_details": {
+   "thinking_tokens": 191
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13618,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1337,
+    "cache_read_input_tokens": 19715,
+    "cache_creation_input_tokens": 3070,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3070
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

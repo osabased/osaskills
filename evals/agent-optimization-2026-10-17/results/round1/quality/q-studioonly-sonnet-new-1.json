@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I understand you want:** rename `GiveCoins` to `AwardCoins` in `ServerScriptService.Rewards`, update every caller, and confirm that nothing still references the old name. No alias or compatibility shim is planned unless you want one.\n\n**Caveat on tool names:** I can't see the MCP tool list from here. The names below are the ones I expect from Roblox's Studio MCP server, and I'd check them against the real list before the first call.\n\n## Plan\n\n1. **Confirm the tools.** List the server's tools and map each step below to the real name. I expect something like a Luau runner (`execute_luau`), a script reader, a script editor (`multi_edit` or `set_script_source`), a tree search, a console reader, and play-mode control.\n\n2. **Read `Rewards`.** Read its full source. Check whether it is a ModuleScript and how `GiveCoins` is defined: `function Rewards.GiveCoins`, `Rewards:GiveCoins`, a local function that gets exported, or a table field.\n\n3. **Find every reference, read-only.** Run Luau through the MCP that walks `game` and scans `.Source` for scripts. This covers ServerScriptService, ReplicatedStorage, StarterPlayer, StarterGui, ServerStorage and Workspace. It searches for the literal `GiveCoins` and reports the script's full path, line number and line text. It is read-only.\n   - The search is deliberately broad, not just `Rewards.GiveCoins(`. It also catches destructured imports (`local GiveCoins = Rewards.GiveCoins`), string lookups (`Rewards[\"GiveCoins\"]`), RemoteEvent or BindableEvent names, attributes, and comments.\n   - I'd also search for `require(...Rewards)` so I know which scripts use the module even if they alias it.\n\n4. **Triage the hits.** Sort them into (a) the definition, (b) real callers, and (c) lookalikes, such as an unrelated `GiveCoins` on another module or a remote with that name. I'd only rename (a) and (b). If any hit is a remote or string key that crosses the client/server boundary, I'd stop and show you before touching it.\n\n5. **Check for collisions and live editors.** Confirm `AwardCoins` doesn't already exist in `Rewards`. Team Create has two other editors, so I'd re-read each target script immediately before editing it. If a script's source differs from what step 3 saw, I'd stop for that script.\n\n6. **Edit.** Change the definition first, then each caller. These are minimal exact-string edits, one script per call, with no whole-source rewrites, so concurrent edits by others are less likely to be clobbered.\n\n7. **Verify.**\n   - **Static:** rerun the step 3 scan. Expect zero `GiveCoins` hits except the lookalikes I deliberately left, and the expected `AwardCoins` count (the definition plus every caller).\n   - **Per-script:** re-read each edited script and check that only the intended lines changed.\n   - **Runtime:** start a play session. Run Luau in play mode that requires `Rewards` and asserts `type(Rewards.AwardCoins) == \"function\"` and `Rewards.GiveCoins == nil`. Trigger one real caller path if there's an easy one, such as a kill or pickup. Then read the console output and look for \"attempt to call a nil value\" or \"is not a valid member\" errors. Stop the play session afterwards.\n\n8. **Report.** List each script changed, the before and after count of references, the play-test result, and anything I left alone and why.\n\n## Questions\n\n1. Should the old `GiveCoins` name be removed completely (my recommendation, since you asked for a rename and the scan catches the callers), or kept briefly as a deprecated alias so a teammate's unsaved or in-progress script doesn't break?\n2. Are any of the others currently editing scripts that call it? If so, a heads-up before I edit is probably worth it.",
+ "cost": 0.0486631,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7801,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1648,
+  "output_tokens_details": {
+   "thinking_tokens": 343
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7801,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1648,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7801,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7801
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

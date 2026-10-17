@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "Refinement narrows a variable's type inside a branch based on a check you wrote. `typeof` is the check Roblox code uses most.\n\n```lua\nlocal function describe(value: string | number | nil): string\n\tif typeof(value) == \"number\" then\n\t\t-- value: number here\n\t\treturn string.format(\"%.2f\", value)\n\telseif typeof(value) == \"string\" then\n\t\t-- value: string here\n\t\treturn value:upper()\n\telse\n\t\t-- value: nil here\n\t\treturn \"none\"\n\tend\nend\n```\n\nWithout the checks, `value` has the full union type, so `value:upper()` and `string.format` would be type errors.\n\n## The main forms\n\n**Equality on `typeof`.** `typeof(x) == \"number\"` narrows `x` to `number` in the true branch and removes `number` from it in the false branch.\n\n**Inequality and early return.** Narrowing also works after a guard clause, which is the common pattern in functions:\n\n```lua\nlocal function double(value: number | string): number\n\tif typeof(value) ~= \"number\" then\n\t\terror(\"expected a number\")\n\tend\n\t-- value: number from here on\n\treturn value * 2\nend\n```\n\n`error` never returns, so the rest of the function sees the narrowed type.\n\n**Combining checks.** `and` and `or` narrow in the right-hand operand and the whole condition:\n\n```lua\nif typeof(value) == \"string\" and #value > 0 then\n\t-- value: string, non-empty\nend\n```\n\n**Truthiness and nil.** `if x then` removes `nil` and `false`. `if x == nil then` narrows to `nil`. These combine with `typeof` the same way.\n\n## `typeof` vs `type`\n\n| Function | Instance | Vector3 | Table | Function |\n|---|---|---|---|---|\n| `type(x)` | `\"userdata\"` | `\"userdata\"` | `\"table\"` | `\"function\"` |\n| `typeof(x)` | `\"Instance\"` | `\"Vector3\"` | `\"table\"` | `\"function\"` |\n\nUse `typeof` in Roblox code. It distinguishes Roblox types that `type` lumps together as `\"userdata\"`.\n\n## Limits to know about\n\n- **`typeof(x) == \"Instance\"` does not narrow to a class.** It tells Luau the value is an Instance, but not that it is a `BasePart`. Use a cast after an `IsA` check:\n\n  ```lua\n  if typeof(x) == \"Instance\" and x:IsA(\"BasePart\") then\n  \tlocal part = x :: BasePart\n  \tpart.Anchored = true\n  end\n  ```\n\n  `x:IsA` is a runtime check. Luau does not treat it as a refinement, so the cast is what gives you the stronger type.\n\n- **Refinements apply to locals and parameters.** They are reliable for those, but a value that is reassigned or captured by a closure can lose its narrowing. If a check seems to stop working, copy the value into a new `local` first.\n\n- **Refinement is a static aid, not a runtime guarantee.** Type annotations are erased at runtime, so a `typeof` check is the only thing that protects you from bad input at the boundary, such as remote arguments or data read from a DataStore. Check values from outside your code at runtime; don't rely on the annotations.\n\nIf you want, I can apply this to a specific function in the repo, for example a remote handler that receives untrusted arguments.",
+ "cost": 0.00281907,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8141,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 2198,
+  "output_tokens_details": {
+   "thinking_tokens": 1121
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8141,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2198,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 8141,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8141
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,58 @@
+{
+ "id": "t-neg-luau",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "!structure-roblox-projects",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "# Type refinement with `typeof` in Luau\n\nLuau's type checker narrows a variable's type inside a branch when the condition proves something about it. `typeof(x) == \"...\"` is one of the main ways to do this.\n\n## Basic example\n\n```lua\nlocal function describe(value: string | number | nil)\n    if typeof(value) == \"string\" then\n        return value:upper()      -- value: string\n    elseif typeof(value) == \"number\" then\n        return value + 1          -- value: number\n    else\n        return \"nothing\"          -- value: nil\n    end\nend\n```\n\nInside each branch, the checker replaces the declared union with the narrower type. The `else` branch gets the complement, whatever is left of the union.\n\n## Where it works\n\n- **`if`/`elseif`/`else`** branches, as above.\n- **Early exits** narrow the rest of the scope:\n  ```lua\n  if typeof(id) ~= \"number\" then\n      error(\"id must be a number\")\n  end\n  print(id + 1) -- id: number\n  ```\n- **`and`/`or` expressions**:\n  ```lua\n  local n = typeof(x) == \"number\" and x or 0\n  ```\n- **`unknown` and `any` inputs**: refining `unknown` is the safe way to validate untrusted data, such as remote arguments:\n  ```lua\n  local function handle(payload: unknown)\n      if typeof(payload) == \"table\" then\n          -- payload: table\n      end\n  end\n  ```\n  `unknown` forbids use until you narrow it. `any` bypasses the checker entirely.\n\n## `typeof` vs `type`\n\nBoth refine for Luau's built-in type names: `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"userdata\"`, `\"buffer\"` and `\"vector\"`.\n\nThey differ at runtime on Roblox datatypes. `type(Vector3.zero)` returns `\"userdata\"`, while `typeof(Vector3.zero)` returns `\"Vector3\"`. `typeof` is also the one that returns `\"Instance\"`, `\"CFrame\"`, `\"EnumItem\"` and so on.\n\nI'm less sure how far the checker narrows on those Roblox-specific strings, and it may vary between the old and new solvers. For `Instance` subclasses, the reliable pattern is `:IsA()`, which narrows to the class in the new solver:\n\n```lua\nif typeof(obj) == \"Instance\" and obj:IsA(\"BasePart\") then\n    obj.Anchored = true\nend\n```\n\n## Limitations\n\n- **The string must be a literal.** `typeof(x) == expected`, where `expected` is a variable, does not refine.\n- **Refinement doesn't persist through mutation.** Narrowing a table field like `t.value` can be invalidated by a function call that might modify `t`. Copy it to a local first:\n  ```lua\n  local v = t.value\n  if typeof(v) == \"string\" then ... end\n  ```\n- **Only the tested variable is narrowed.** Refining `a` says nothing about `b`.\n- **Reassigning the variable** inside the branch resets its type to the declared one.\n- **Table shapes** need more than `typeof(x) == \"table\"`. That only gives you `table`. To get a specific shape, check fields individually or cast with `::` after your own validation.\n\n## Related refinements\n\n- `if x then` (truthiness) removes `nil` and `false`.\n- `x ~= nil` removes `nil`.\n- `x == \"literal\"` narrows to a singleton string type.\n- `assert(typeof(x) == \"string\")` narrows the rest of the scope.\n\nI can write a small test file for the Luau analyzer if you'd like to see how it behaves on your setup, especially for the Roblox-specific types.",
+ "cost": 0.047678700000000004,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7517,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1669,
+  "output_tokens_details": {
+   "thinking_tokens": 430
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7517,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1669,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7517,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7517
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

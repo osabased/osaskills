@@ -1,0 +1,79 @@
+{
+ "id": "t-entry",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "The client entrypoint is in the wrong place. `src/client` is mapped to `ReplicatedStorage.Client`, and LocalScripts under ReplicatedStorage never run. Roblox only runs a LocalScript when it sits under `StarterPlayer.StarterPlayerScripts`, `StarterGui`, `StarterCharacterScripts`, or a similar container. The `print(\"client\")` in `src/client/init.client.luau` would never fire.\n\nThe server side is fine. `src/server` maps to `ServerScriptService.Server`, and Server scripts run from there.\n\nThe fix is to give the client entrypoint its own source folder and map that folder to `StarterPlayerScripts`, and keep `src/client` for modules that the client shares. Shared client modules stay in `ReplicatedStorage.Client`, so the entry can `require` them. I'd change `default.project.json` like this:\n\n```json\n{\n  \"name\": \"arena\",\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Client\": { \"$path\": \"src/client\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } },\n    \"StarterPlayer\": {\n      \"StarterPlayerScripts\": {\n        \"Client\": { \"$path\": \"src/client-entry\" }\n      }\n    }\n  }\n}\n```\n\nThen move `src/client/init.client.luau` to `src/client-entry/init.client.luau`. The folder name is my suggestion; any name works as long as the `$path` matches.\n\nI haven't made these changes. Should I move the file and update the project file? I'd also add a `require` of `ReplicatedStorage.Client` from the entry so the wiring is visible, though that's optional.",
+ "cost": 0.00426066,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12511,
+  "cache_read_input_tokens": 47586,
+  "output_tokens": 2564,
+  "output_tokens_details": {
+   "thinking_tokens": 1425
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12511,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1919,
+    "cache_read_input_tokens": 20957,
+    "cache_creation_input_tokens": 721,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 721
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

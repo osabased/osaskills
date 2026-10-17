@@ -1,0 +1,88 @@
+{
+ "id": "t-upgrade",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-vide/references/setup.md",
+   1487
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "vide"
+  ],
+  [
+   "Glob",
+   "**/{pesde.toml,pesde.lock,wally.toml,wally.lock}"
+  ],
+  [
+   "Bash",
+   "curl -s https://api.github.com/repos/centau/vide/releases?per_page=5 | head -c 4000; echo; echo ---; git ls-remote --tags https://github.com/centau/vide 2>&1 | tail -n 15; echo ---; git ls-remote https://github.com/centau/vide HEAD 2>&1"
+  ],
+  [
+   "Grep",
+   "(?i)upgrade|refresh|pin"
+  ],
+  [
+   "Read",
+   "<runs>\\t-upgrade-haiku-new-1\\.claude\\skills\\roblox-vide\\references\\setup.md"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.00419881,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13987,
+  "cache_read_input_tokens": 49131,
+  "output_tokens": 1819,
+  "output_tokens_details": {
+   "thinking_tokens": 811
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13987,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 703,
+    "cache_read_input_tokens": 22658,
+    "cache_creation_input_tokens": 496,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 496
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

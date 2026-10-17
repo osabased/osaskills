@@ -1,0 +1,84 @@
+{
+ "id": "t-write-skill",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "roblox-resource-acquisition",
+ "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10342
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)fusion|vide|charm"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-write-skill-haiku-new-1\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Grep",
+   "(?i)fusion"
+  ]
+ ],
+ "denials": [],
+ "result": "I haven't written anything yet. Before I start, I want to check two things with you, because the answers change where the skill goes and what it can say.\n\n**What I think you want:** a Claude skill for Roblox's Fusion UI library, with its API, lifecycle, and common mistakes, so agents that touch Fusion code use it correctly.\n\n**What I found:**\n- This project doesn't use Fusion. `pesde.toml` has no Fusion entry, and nothing in the repo mentions it. `CLAUDE.md` names Vide for UI and Charm for client state, and a `roblox-vide` skill already exists.\n- The project's skill guide says a library skill has to be grounded in the reviewed source at one exact pinned version. I can't write an accurate Fusion skill from memory, and I don't know which version you use.\n\n**Questions, recommended option first:**\n\n1. **Which project should the skill serve?**\n   - (a) A Fusion project you have elsewhere. I'd write the skill there, or as a user-wide skill in `~/.claude/skills/` so it's available everywhere. This is my recommendation if this repo stays on Vide.\n   - (b) Add Fusion to this project alongside or in place of Vide. That changes the UI architecture, so it needs your explicit go-ahead.\n2. **Which Fusion version?** Give me the version or the pin you use (for example, a `pesde.toml` entry or a git commit). If you don't have one, I'll use the latest release I can confirm from its source and say which version it is.\n3. **Where is the Fusion source?** A local path or repo URL works. Without source to check, I'd be guessing at API details.\n4. **Should I also propose it to the shared catalog** (`osabased/osaskills`) so other projects can clone it? This needs a push and a pull request, so I'd only do it with your approval.\n\nOnce you answer, I'll write the skill, check it with the repo's validator (`validate_skill.py`), and then run `bash scripts/check.sh`, since it's a repo change.",
+ "cost": 0.00556567,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18120,
+  "cache_read_input_tokens": 49457,
+  "output_tokens": 2893,
+  "output_tokens_details": {
+   "thinking_tokens": 1517
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18120,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1592,
+    "cache_read_input_tokens": 22973,
+    "cache_creation_input_tokens": 4314,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4314
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

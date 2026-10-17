@@ -1,0 +1,105 @@
+{
+ "id": "t-agentready",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "{*.project.json,*.toml,*.json,*.yaml,*.yml,*.md,*.luau,*.lua,*.py,scripts/**,src/**,.github/**}"
+  ],
+  [
+   "Bash",
+   "python .claude/skills/structure-roblox-projects/scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-agentready-haiku-old-2\\src\\shared\\init.luau"
+  ]
+ ],
+ "denials": [],
+ "result": null,
+ "cost": 0.005216190000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19150,
+  "cache_read_input_tokens": 50809,
+  "output_tokens": 1755,
+  "output_tokens_details": {
+   "thinking_tokens": 454
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19150,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 778,
+    "cache_read_input_tokens": 24113,
+    "cache_creation_input_tokens": 4204,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4204
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

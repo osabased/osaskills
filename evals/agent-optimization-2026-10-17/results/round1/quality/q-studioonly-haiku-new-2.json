@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I think you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and change every reference to it in the place so nothing still calls the old name. Nothing is edited yet.\n\nI can't confirm the exact Studio MCP tool names from this session because they aren't loaded here. The names below are what I'd expect, and I'd check them against the connected server's tool list before the first call.\n\n## Plan\n\n**0. Coordinate with the two other editors.** Team Create has no lock, so ask them to avoid editing `Rewards` and its callers until the rename is done, and to confirm they have no unsaved script changes.\n\n**1. Confirm what `Rewards` is.** Read its source and class (Script or ModuleScript). This decides whether `GiveCoins` is a module export (`Rewards.GiveCoins`) or a local function, and that changes which callers to look for.\n\n**2. Inventory every reference.** Search the whole DataModel for `GiveCoins` as text, in all script sources. Cover:\n- `ServerScriptService`, `ServerStorage`, `ReplicatedStorage`, `StarterPlayer`, `StarterGui`, `Workspace`, `ReplicatedFirst`, and any Tool or Part containing scripts.\n- String references too: RemoteEvent/BindableEvent names, attributes, and `Rewards[name]` lookups, which a plain name search can miss.\n\nRecord the results as a table of script path, line, and snippet, and keep a copy of each original source for rollback.\n\n**3. Edit the definition first.** Use a targeted find-and-replace on the exact old text, not a full-source overwrite. A full overwrite could wipe a teammate's concurrent edit. Each replacement must match exactly once.\n\n**4. Edit each caller** the same way, using the table from step 2.\n\n**5. Decide on a backward-compatible alias.** My recommendation is no alias, so a later search for `GiveCoins` comes back clean. This is a code decision, not end-user behavior, so I'll follow it unless you want a temporary alias.\n\n**6. Verify.**\n- Re-search the place for `GiveCoins`. Expect zero hits, apart from anything intentionally left and listed.\n- Search for `AwardCoins`. Expect the definition plus every caller from step 2.\n- Re-read each edited script to check the syntax and that it reads cleanly. Check the Studio script analysis or error output for new errors.\n- Run an edit-mode check that `Rewards.AwardCoins` is a function and `Rewards.GiveCoins` is nil, if `Rewards` is a ModuleScript. Confirm this doesn't have side effects first.\n- Play-test the coin-award path. Read the console output for errors, and confirm the coin total changes as expected.\n\n**7. Report back** with the list of changed scripts and line numbers, the verification results, and anything I couldn't check. Ask your teammates to confirm their Studio sees the new names.\n\n## Risks and open items\n- Callers in other places in the same universe, or in server-side data that stores the function name, won't appear in this place's search. Tell me if any exist.\n- Studio MCP edits can't be rolled back atomically. If something breaks partway, I'd restore from the step 2 copies.\n- Publishing the place is outward-facing, so I won't publish without your explicit go-ahead.\n\n**Questions before I start:**\n1. Is `Rewards` a Script or a ModuleScript? (I can find this in step 1 if you'd rather I check.)\n2. Do you want no alias for `GiveCoins`? I recommend none.\n3. Should I wait for your teammates to confirm they've paused, or proceed once you've told them?",
+ "cost": 0.0032979100000000003,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 8576,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 2970,
+  "output_tokens_details": {
+   "thinking_tokens": 1745
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8576,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2970,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 8576,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8576
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

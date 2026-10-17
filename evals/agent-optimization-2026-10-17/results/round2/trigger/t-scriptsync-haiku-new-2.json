@@ -1,0 +1,71 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "{pesde.toml,rokit.toml,*packages*,*Packages*}"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,luau,lua}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-2\\rokit.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "Probably yes, but I haven't verified it, and this repo doesn't have a pesde setup yet to test against.\n\n- **Current state:** `rokit.toml` pins only StyLua and Selene. There is no `pesde.toml` and no packages folder, so there's nothing to sync today.\n- **How it would fit:** Script Sync works from the three roots in the CLAUDE.md table. A packages folder would need its own root, such as `ReplicatedStorage.Packages` mapped to a `packages/` directory, so it lands in a fixed place in the DataModel. Pick a directory name and a DataModel target, then add the row to CLAUDE.md.\n- **Things I'm not sure about:** pesde writes Roblox packages as module scripts, sometimes as folders with an `init.luau`. Script Sync may not map that layout the same way Rojo does. Also, pesde's install directory is configured in `pesde.toml`, so the folder name should match that setting.\n\nTo settle it, run `pesde install` in a test copy, sync the folder, and check that the packages show up as ModuleScripts in the expected container and that `require` resolves. If you want, I can add the `pesde.toml` and the new root entry once you tell me the folder name and the DataModel location you want.",
+ "cost": 0.00332306,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 9642,
+  "cache_read_input_tokens": 45506,
+  "output_tokens": 1878,
+  "output_tokens_details": {
+   "thinking_tokens": 1227
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9642,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1060,
+    "cache_read_input_tokens": 18613,
+    "cache_creation_input_tokens": 196,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 196
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

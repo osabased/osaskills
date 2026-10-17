@@ -1,0 +1,62 @@
+{
+ "id": "t-luau-types",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "!roblox-resource-acquisition",
+ "prompt": "explain Luau type refinement with typeof checks",
+ "max_turns": 3,
+ "scaffold": "coin",
+ "clones": [
+  "roblox-vide",
+  "roblox-janitor"
+ ],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "## What refinement does\n\nLuau narrows a variable's type inside a branch when the condition proves something about it. With `typeof(x) == \"string\"`, `x` is `string` in the `then` branch. In the `else` branch, `string` is removed from the type.\n\n```lua\nlocal function describe(value: string | number | nil)\n\tif typeof(value) == \"string\" then\n\t\treturn value:upper()\n\telseif typeof(value) == \"number\" then\n\t\treturn value + 1\n\tend\n\treturn value -- nil here\nend\n```\n\n## `typeof` vs `type`\n\n- `type(x)` returns only the base Lua names: `\"nil\"`, `\"boolean\"`, `\"number\"`, `\"string\"`, `\"table\"`, `\"function\"`, `\"thread\"`, `\"userdata\"`, `\"buffer\"`, `\"vector\"`.\n- `typeof(x)` also returns Roblox datatype names, such as `\"Vector3\"`, `\"CFrame\"`, `\"Instance\"`, `\"EnumItem\"`, `\"RBXScriptSignal\"`.\n\nBoth refine the same way. Use `typeof` when you need to distinguish Roblox types.\n\n```lua\nlocal function toPosition(v: Vector3 | CFrame | BasePart)\n\tif typeof(v) == \"Vector3\" then\n\t\treturn v\n\telseif typeof(v) == \"CFrame\" then\n\t\treturn v.Position\n\tend\n\treturn v.Position -- BasePart\nend\n```\n\n## `unknown`\n\n`unknown` forces you to refine before use, and `typeof` is the usual way. `any` turns checking off, so it never refines.\n\n```lua\nlocal function parse(input: unknown): number?\n\tif typeof(input) == \"number\" then\n\t\treturn input\n\telseif typeof(input) == \"string\" then\n\t\treturn tonumber(input)\n\tend\n\treturn nil\nend\n```\n\n## Other refinements\n\n| Condition | Effect |\n|---|---|\n| `if x then` | removes `nil` and `false` |\n| `if x ~= nil then` | removes `nil` |\n| `typeof(x) == \"nil\"` | narrows to `nil` |\n| `x:IsA(\"Part\")` | narrows an `Instance` to `Part` |\n| `a == b` with a literal | narrows to the singleton type |\n\nEarly returns refine the rest of the function:\n\n```lua\nlocal function run(callback: (() -> ())?)\n\tif typeof(callback) ~= \"function\" then\n\t\treturn\n\tend\n\tcallback() -- () -> ()\nend\n```\n\n## Limits\n\n1. **The comparison must be a string literal.** `typeof(x) == expectedName` refines nothing.\n2. **Tables only narrow to \"some table\".** `typeof(x) == \"table\"` doesn't prove a shape, and Luau has no user-defined type predicates. After the check, cast with `::` and accept that it's unchecked:\n   ```lua\n   if typeof(x) == \"table\" then\n   \tlocal config = x :: Config\n   end\n   ```\n3. **Assignment resets refinement.** If you reassign the variable, or a table field like `t.x`, the narrowing is gone. Function calls between check and use can also invalidate refinement of fields.\n4. **Closures are conservative.** A refinement on a mutable local often doesn't carry into a closure that captures it. Copy the refined value into a new `local` first.\n5. **`typeof(x) == \"Instance\"` only tells you it's an Instance.** For a specific class, use `:IsA()`.\n6. **Solver differences.** The new type solver handles refinement of `unknown`, tables, and fields better than the old one. Check which one your Studio or luau-lsp setup uses if a narrowing doesn't behave as expected.",
+ "cost": 0.048692700000000005,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7368,
+  "cache_read_input_tokens": 9167,
+  "output_tokens": 1830,
+  "output_tokens_details": {
+   "thinking_tokens": 642
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7368,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1830,
+    "cache_read_input_tokens": 9167,
+    "cache_creation_input_tokens": 7368,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7368
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

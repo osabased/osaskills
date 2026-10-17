@@ -1,0 +1,86 @@
+{
+ "id": "t-entry",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6173
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.{json,lua,luau,toml}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-sonnet-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-sonnet-old-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "denials": [],
+ "result": "Your client entrypoint is already in a reasonable place, `src/client/init.client.luau`, but as configured it won't run.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo builds `init.client.luau` as a `LocalScript` unless the project sets `\"emitLegacyScripts\": false`, and yours doesn't. A `LocalScript` in `ReplicatedStorage` never runs, so `print(\"client\")` will never print.\n\n**Recommended fix:** add `\"emitLegacyScripts\": false` at the top level of `default.project.json`, next to `\"name\"`.\n- `init.client.luau` then builds as a `Script` with `RunContext = Client`. That is Roblox's current recommendation for client entrypoints in `ReplicatedStorage`.\n- `init.server.luau` becomes a `Script` with `RunContext = Server`, which still runs from `ServerScriptService`.\n- The layout stays as it is: the entrypoint is `ReplicatedStorage.Client`, and client-only modules sit under it as children.\n\n**Alternative:** if you'd rather have a separate `ClientMain` script next to a `Client/` modules folder, I'd restructure `src/client` and the mapping. That is more churn for no functional gain.\n\n**Other option:** to keep `LocalScript`s, map the entrypoint into `StarterPlayer/StarterPlayerScripts` instead. That would mean splitting the entrypoint from the modules.\n\nWant me to add the `emitLegacyScripts` line?",
+ "cost": 0.0732308,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13784,
+  "cache_read_input_tokens": 45928,
+  "output_tokens": 1349,
+  "output_tokens_details": {
+   "thinking_tokens": 391
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13784,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 847,
+    "cache_read_input_tokens": 20017,
+    "cache_creation_input_tokens": 2934,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2934
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

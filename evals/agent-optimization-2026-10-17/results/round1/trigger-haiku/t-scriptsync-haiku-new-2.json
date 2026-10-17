@@ -1,0 +1,86 @@
+{
+ "id": "t-scriptsync",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure-roblox-projects",
+ "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+ "scaffold": "sync",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/script-sync.md",
+   8037
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{pesde.toml,rokit.toml,*.project.json,default.project.json,roblox_packages,Packages,.pesde}"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>\\t-scriptsync-haiku-new-2\\.claude\\skills\\structure-roblox-projects\" && python scripts/check_updates.py"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\script-sync.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-scriptsync-haiku-new-2\\rokit.toml"
+  ]
+ ],
+ "denials": [],
+ "result": "**No, not directly.** Script Sync won't sync a pesde packages folder usefully, so keep it outside the synced roots.\n\n- **Dot-folders are skipped.** pesde stores packages in `.pesde/`, and Script Sync skips directories whose names start with a dot. The link modules pesde generates `require` into `.pesde`, so they fail in Studio.\n- **Package project files are ignored.** Script Sync ignores each package's `default.project.json`.\n- **Bundled test runners sync as running scripts.** Files like `*.server.lua` inside a package come in as `Script`s that run.\n\nThe reference notes this was verified in Studio 0.743 with pesde 0.7.4.\n\n**Options:**\n\n1. **Build a model from the install folder.** Use `rojo build` with a project file that maps the packages folder to a container, then insert the `.rbxm` into Studio. Rebuild after each install. This needs a Rojo project file, which this repo doesn't have yet (`CLAUDE.md` says there's no Rojo project), so it's a new piece of tooling to add.\n2. **Keep packages out of synced roots entirely.** Pick this if the packages only need to exist at runtime in Studio and you're fine re-importing them after each install.\n\nI couldn't run the skill's update check because Bash is disabled in this session. I also didn't find a `pesde.toml` or a packages folder in this checkout, so I can't tell where your pesde setup lives. If it's in another checkout, point me to it and I'll check its layout against these notes. Otherwise, tell me whether you want option 1 set up here.",
+ "cost": 0.00479789,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15883,
+  "cache_read_input_tokens": 48319,
+  "output_tokens": 2275,
+  "output_tokens_details": {
+   "thinking_tokens": 1090
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15883,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 978,
+    "cache_read_input_tokens": 21433,
+    "cache_creation_input_tokens": 3617,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3617
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

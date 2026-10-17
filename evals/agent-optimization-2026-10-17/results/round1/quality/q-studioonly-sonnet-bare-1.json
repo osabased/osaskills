@@ -1,0 +1,57 @@
+{
+ "id": "q-studioonly",
+ "suite": "srp",
+ "kind": "quality",
+ "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
+ "scaffold": "studio",
+ "max_turns": 15,
+ "model": "sonnet",
+ "cond": "bare",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [],
+ "denials": [],
+ "result": "**What I understand you want:** rename the `GiveCoins` function in `ServerScriptService.Rewards` to `AwardCoins`, and change every call site so nothing still references the old name. Nothing else should change.\n\nI can't call the MCP server from here, so I haven't checked the tool names below. I'm going from memory of Roblox's Studio MCP, and step 0 is to confirm them against what the server actually lists.\n\n**Questions for you first** (my recommendation is first in each):\n1. Should I rename outright with no `GiveCoins` alias? An alias would hide missed callers, and the other two editors may have unpushed code that still uses the old name. The alternative is a temporary `Rewards.GiveCoins = Rewards.AwardCoins` shim.\n2. Can I message the other two Team Create editors before I start? Edits to scripts they have open can conflict or get overwritten.\n\n**Plan**\n\n0. **Discover tools.** List the server's tools and use their real names and schemas. I expect roughly: search the DataModel tree, read a script, grep scripts, edit a script, run Luau in the edit DataModel, read the console, and start or stop playtest. I would not use a Bash or PowerShell workaround, because the code exists only in Studio.\n1. **Read `ServerScriptService.Rewards`** with the script-read tool. Note how `GiveCoins` is defined: `function Rewards.GiveCoins`, `Rewards:GiveCoins`, a local function that is then exported, or a table field. Also check whether it is a ModuleScript and who requires it.\n2. **Find every reference.** Run a script-grep across the whole place for `GiveCoins`, case-insensitive and plain-text, not only `Rewards.GiveCoins`. Cover:\n   - `Rewards.GiveCoins(` and `Rewards:GiveCoins(`\n   - destructured or aliased uses (`local give = Rewards.GiveCoins`)\n   - string lookups (`Rewards[\"GiveCoins\"]`, `require(...)[name]`)\n   - RemoteEvent, BindableEvent or attribute names that contain the string\n   - comments and docs\n3. **Check non-script references.** Use the tree-search tool, or a read-only `execute_luau` that loops over `game:GetDescendants()`. Look for Instances named `GiveCoins` and attributes or string values that mention it. I need this because the grep only sees script source.\n4. **Report the hit list to you** (script path, line, and the kind of use). I'd flag any dynamic or string-based hit, because those need a judgment call rather than a mechanical rename.\n5. **Edit.** Use the script-edit tool with exact-string replacements, one script at a time:\n   - Rename the definition in `Rewards`.\n   - Update each caller.\n   - Leave a name alone if it is a remote or an Instance that is not this function, and ask you about it.\n   - Avoid whole-script rewrites, so I don't clobber the other editors' changes.\n6. **Verify.**\n   - Re-run the same grep for `GiveCoins`. The expected result is zero hits, or only hits you have approved.\n   - Grep `AwardCoins` and check the count equals the definition plus the callers.\n   - Use `execute_luau` to `require` the `Rewards` module and assert that `AwardCoins` is a function and `GiveCoins` is nil.\n   - Start a playtest, trigger a coin award, and read the console. It should show no \"attempt to call a nil value\" or \"GiveCoins is not a valid member\" errors, and coins should actually increase. Then stop the playtest.\n7. **Report** the files changed, the before and after grep counts, the playtest result, and anything I skipped. Studio has no git here, so the report is the only change record. Team Create's version history is the rollback path.\n\n**Not covered:** I can't check scripts the other editors haven't published yet, or callers in other places that use this module.\n\nI wouldn't spawn subagents for this. It's a small sequential task, so I'd do it in the main session.",
+ "cost": 0.0468151,
+ "turns": 1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 7429,
+  "cache_read_input_tokens": 9751,
+  "output_tokens": 1612,
+  "output_tokens_details": {
+   "thinking_tokens": 281
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7429,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1612,
+    "cache_read_input_tokens": 9751,
+    "cache_creation_input_tokens": 7429,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7429
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}
