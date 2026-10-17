@@ -35,6 +35,7 @@ Check that Claude actually loaded a skill: it should appear under `/skills`, and
 | Problem | Skill | Invocation |
 |---|---|---|
 | An agent left you with findings or open-ended choices, and you need a clear recommendation and next step | [then-what](./skills/then-what/) | `/then-what` only |
+| You have a vague direction and want help defining it, and checking it's what you actually want, before anything gets built | [sharpen](./skills/sharpen/) | automatic |
 | You want to preview an uncertain animation before production work | [motion-studies](./skills/motion-studies/) | `/motion-studies` only |
 | You need to place Roblox code correctly, set up Rojo or Script Sync, start or onboard a project, or make a Roblox repo agent-ready (guide, checks, hooks, CI, play-test verification) | [structure-roblox-projects](./skills/structure-roblox-projects/) | automatic |
 | You want to choose, add, compare, or upgrade a Roblox library or development tool | [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) | automatic |
