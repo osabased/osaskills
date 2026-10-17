@@ -1,0 +1,33 @@
+{
+ "id": "neg-short",
+ "run": 2,
+ "model": "sonnet",
+ "expect": "none",
+ "soft": false,
+ "verdict": "PASS",
+ "loaded": false,
+ "loaded_in_checked": false,
+ "output": null,
+ "cost": 0.0659602,
+ "turns": [
+  {
+   "prompt": "Add a count of wishlist items next to the Sign in link in the header. Keep it simple: read the count from localStorage key 'wishlist' (a JSON array).",
+   "skills": [],
+   "text": "I added the wishlist count to `src/header.js`. It's a bare number in a `<span>` right after the Sign in link. I haven't run it or loaded it in a browser.\n\n- **Missing or invalid data:** if the `wishlist` key is missing or isn't valid JSON, the count shows `0` instead of breaking the header.\n- **Signed-in users:** the count also shows when a user is signed in, where it sits after their name.\n- **Refreshing:** the count is read each time `renderHeader` runs. It won't update on its own when the wishlist changes, so you'd need to call `renderHeader` again.\n\nYou didn't specify the look or copy, so I used the plain number. If you'd like a label like \"Wishlist (3)\", a heart icon, or the count hidden at zero, tell me which.",
+   "trace": [
+    "tool:Grep",
+    "tool:Glob",
+    "tool:Read",
+    "tool:Edit",
+    "text:I added the wishlist count to `src/header.js`. It's a bare n"
+   ],
+   "cost": 0.0659602,
+   "rc": 0,
+   "init": [
+    "osaskills:bigger-picture",
+    "osaskills:then-what"
+   ],
+   "stderr": ""
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "id": "neg-question",
+ "run": 1,
+ "model": "haiku",
+ "expect": "none",
+ "soft": false,
+ "verdict": "PASS",
+ "loaded": false,
+ "loaded_in_checked": false,
+ "output": null,
+ "cost": 0.0033082499999999996,
+ "turns": [
+  {
+   "prompt": "What does putJSON in src/api.js do?",
+   "skills": [],
+   "text": "`putJSON` is defined at `src/api.js:7`. It sends a JSON PUT request to `path` and returns the parsed response:\n\n1. It calls `fetch(path)` with `method: \"PUT\"`, a `content-type: application/json` header, and `body` serialized with `JSON.stringify(body)`.\n2. If the response isn't OK (`res.ok` is false), it throws `Error(\"<path>: <status>\")`, for example `/items/1: 404`.\n3. Otherwise it returns `res.json()`, so the caller gets the parsed JSON response body.\n\nIt's the write-side counterpart to `getJSON` on line 1, which does the same thing with GET and no body. Note that the success path assumes the server returns JSON. An empty or non-JSON response, such as a 204, would make `res.json()` reject.",
+   "trace": [
+    "tool:Grep",
+    "tool:Glob",
+    "tool:Read",
+    "text:`putJSON` is defined at `src/api.js:7`. It sends a JSON PUT "
+   ],
+   "cost": 0.0033082499999999996,
+   "rc": 0,
+   "init": [
+    "osaskills:bigger-picture",
+    "osaskills:then-what"
+   ],
+   "stderr": ""
+  }
+ ]
+}

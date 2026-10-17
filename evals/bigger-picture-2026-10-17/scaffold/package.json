@@ -1,0 +1,6 @@
+{
+  "name": "shopfront",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "npx serve ." }
+}
