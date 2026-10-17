@@ -15,8 +15,8 @@ Apply these on every project unless the current request overrides them. Keep pro
 The exporter builds a complete chronological review timeline, not an automatic selects assembly. Its inputs are the same `events.json` plus a separate placement plan authored from reviewed evidence; no POV is hardcoded.
 
 - The plan's `main_sources` stay complete and in plan order on the base video track, with their audio below. Take `main_sources`, part order and identities from the current project. Resolve the main POV before building this layout; source-marker discovery does not need one.
-- Main video and linked audio are cut at each included moment's start and end. Moment sections get the **Mango** clip label; surrounding footage gets no label element, so Premiere shows its normal default. Every frame appears exactly once, including unmarked footage. Overlapping and nested moments keep every distinct boundary without duplicating footage; adjacent moments keep their shared edit.
-- For a moment at 1:48–1:59 the main becomes `[0:00–1:48 default] [1:48–1:59 Mango] [1:59–end default]`. Nothing is removed or moved.
+- Main video and linked audio are cut at the edges of **blocks**: moments with status `candidate` that overlap or sit within 10 seconds of each other become one block. Block sections get the **Mango** clip label; surrounding footage gets no label element, so Premiere shows its normal default. Every frame appears exactly once, including unlabeled footage. `context` and `uncertain` moments keep their markers but earn no cut or label, so the label separates likely material from background; pass `--label-status` to include them and `--close-gaps-sec` to change the gap.
+- For a block at 1:46–2:21 the main becomes `[0:00–1:46 default] [1:46–2:21 Mango] [2:21–end default]`. Nothing is removed or moved.
 - Relevant alternate excerpts sit on upper video tracks, one layer per alternate source, with their audio on separate higher tracks. **Main picture and audio play by default; alternate video and audio start disabled.** Alternates also use Mango.
 - Labels are visual locators, not confidence ratings, and do not mean surrounding footage is uninteresting.
 - Secondary-only moments stay as source markers unless a reviewed local anchor supports placing them.
@@ -24,10 +24,24 @@ The exporter builds a complete chronological review timeline, not an automatic s
 
 If the editor asks for a different assembly, settle it explicitly instead of treating this review layout as the requested edit.
 
+## Cut points
+
+Reviewed moment boundaries come from frames sampled every few seconds, so they land mid-sentence. Snap them first:
+
+```sh
+"$PY" <skill>/scripts/snap_cuts.py --events outputs/events.json --prepared <main-source-id>=work/vods/main --out outputs/events-cut.json
+```
+
+For each main view this adds `cut_start_sec` and `cut_end_sec` (the marker interval is untouched): the start moves back to the pause nearest 2 seconds before the moment, the end forward to the pause nearest 1.5 seconds after it, never inside the moment and within 8 seconds of the target. Pauses are gaps of at least half a second between transcribed speech plus silences in the first audio stream (−35 dB for 0.3 s, cached as `silence.json` in the prepared folder). Where no pause is within reach the cut keeps the lead-in or tail and `cut_notes` says so; open those cuts and fix them by hand. Use the snapped file for everything after this step.
+
+## Alternates
+
+Find and confirm each alternate's offset with [alignment](alignment.md), then let `plan_alternates.py` place one disabled excerpt under every block it covers. Hand-authored `alternates` in the plan still work.
+
 ## Build
 
 ```sh
-"$PY" <skill>/scripts/review_timeline.py --events outputs/events.json --plan outputs/timeline-plan.json --out outputs/discovery-timeline.xml
+"$PY" <skill>/scripts/review_timeline.py --events outputs/events-cut.json --plan outputs/timeline-plan-alts.json --out outputs/discovery-timeline.xml
 ```
 
 Add `--path-map LOCAL=HOST` when the media is mounted at a different path than on the editor's machine, and `--force` to replace an existing `--out`. Import into a new Premiere review project, then follow the import checks in [premiere](premiere.md#after-import) and open the sequence in `02 Sequences`.
