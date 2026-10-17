@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
-- `check_rojo_artifact.py --require-class PATH=Class[:RunContext]` asserts an instance's class, and for a `Script` its `RunContext` in the built place. It catches a default-settings `init.client.luau` in ReplicatedStorage, which builds as a `LocalScript` that never runs. Tested on Rojo 7.7.1 with `emitLegacyScripts` on and off.
+- `check_rojo_artifact.py --require-class PATH=Class[:RunContext]` asserts an instance's class, and for a `Script` its `RunContext` in the built place. It catches a default-settings `init.client.luau` in ReplicatedStorage, which builds as a `LocalScript` that never runs. Tested on Rojo 7.7.1 with `emitLegacyScripts` on and off. ([#66](https://github.com/osabased/osaskills/pull/66))
 
 #### Changed
 
