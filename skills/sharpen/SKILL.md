@@ -34,7 +34,7 @@ Listen for these as you go and name them gently when they show up:
 
 ## Converge with choices
 
-Once the shape is visible (usually after four to six questions), switch to concrete choices about scope, priority and tradeoffs. Use the AskUserQuestion tool where it's available: batch up to three independent questions and build the options from their own answers. List first the option that best fits what they've told you, mark it as recommended, and say why in its description. Hold back any question whose answer depends on another one.
+Once the shape is visible (usually after four to six questions), switch to concrete choices about scope, priority and tradeoffs. Use the AskUserQuestion tool where it's available: batch up to three independent questions and build the options from their own answers. List first the option that best fits what they've told you, mark it as recommended, and say why in its description. When an option is your idea rather than something they said, say so in its description ("my suggestion, you didn't mention this"), and recommend it only when their answers clearly support it. Hold back any question whose answer depends on another one.
 
 Stop when you can state the goal, the reason, a test for success and what's out of scope, and they agree with your statement of each. If the conversation runs past about a dozen questions, say what's still unclear and ask whether to keep going or settle it with what you have.
 
