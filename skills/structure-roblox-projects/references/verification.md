@@ -7,8 +7,8 @@ Use when choosing how to verify a change, setting up tests, or running a Studio 
 | Static | Syntax, types, lint, format, mapping topology | The [check command](checks.md#one-check-command) | Yes |
 | Native tests | Pure logic | Lest native backend | Yes |
 | Lune tests | Modules that need `task`, file or place processing | Lest Lune backend | Yes |
-| Studio engine tests | Instances, services, UI libraries | Lest Studio backend against a built place | No, it launches Studio |
-| Play-test | Startup, replication, rendering, input | Studio Play with the dev build synced, by hand or through Studio MCP | No |
+| Studio engine tests | Instances, services, UI libraries | Lest Studio backend against a place file or published place | No, it launches Studio. Lest's cloud backend can run the same suites on a game server through Open Cloud |
+| Play-test | Startup, replication, rendering, input | Studio Play with the current code in the place (the Rojo dev build served, Script Sync running, or edited in Studio), by hand or through Studio MCP | No |
 | Multiplayer | Several clients, ordering, latency, Server Authority rollback | Studio's multi-client test with network simulation | No |
 
 Design for the low rungs: split pure logic out of modules that touch Roblox APIs and keep the Roblox-facing shell thin, so most behavior is covered offline and in CI.
@@ -36,7 +36,7 @@ Observed with Roblox's Studio MCP server in October 2026. Tool names and behavio
 
 ## Previews
 
-To prove rendered UI or real input in a Rojo project, serve the dev build through the normal client startup path; a dev-only module is fine when the release build excludes it ([dev and release builds](rojo.md#dev-and-release-builds)). Don't widen Script Capabilities, inject code through a privileged tool, or replace startup to make a preview run. UI Labs stories complement this for isolated states and variants.
+To prove rendered UI or real input, run it through the normal client startup path; a dev-only module is fine when it can't ship or run in live servers ([Rojo](rojo.md#dev-and-release-builds), [Script Sync](script-sync.md#dev-content-and-publishing)). Don't widen Script Capabilities, inject code through a privileged tool, or replace startup to make a preview run. UI Labs stories complement this for isolated states and variants.
 
 ## Sources
 

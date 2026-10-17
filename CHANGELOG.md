@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## structure-roblox-projects
 
+### 2026-10-16
+
+#### Added
+
+- `studio-only.md`, for a place whose code lives only in Studio: what an agent can't verify there, Script Sync as the smallest step, and how to work through the Studio MCP when the place stays Studio-only. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync guidance for agent edits, checks (type checking without a sourcemap, a generated sourcemap for CI, engine tests) and keeping dev content out of a published place. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Behavioral scenarios for making a Script Sync project agent-ready and for a Studio-only place. ([#59](https://github.com/osabased/osaskills/pull/59))
+
+#### Changed
+
+- The agent-ready table, check command, verification ladder and luau-lsp notes no longer assume Rojo: builds and topology are Rojo-only steps, the dev/release boundary links Script Sync too, and Lest's cloud backend is named for engine tests in CI. ([#59](https://github.com/osabased/osaskills/pull/59))
+- Script Sync's attributes-and-tags rule now matches Roblox's advice: don't sync those scripts. ([#59](https://github.com/osabased/osaskills/pull/59))
+
 ### 2026-10-15
 
 #### Added

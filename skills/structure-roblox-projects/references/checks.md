@@ -11,7 +11,7 @@ One script runs everything static, in this order, and stops at the first failure
 3. **Codegen:** regenerate generated modules (networking, types) so the rest checks fresh output.
 4. **Tests** that run offline ([verification](verification.md)).
 5. **Format** (`stylua --check`), **lint** (`selene`), **types** (`luau-lsp analyze` with the sourcemap and definitions). Flags: [tooling](tooling.md).
-6. **Build** each project file, then check the built place's **topology** ([Rojo](rojo.md#check-the-built-place)).
+6. **Build** each project file, then check the built place's **topology** ([Rojo](rojo.md#check-the-built-place)). Script Sync has no build, and its types need a generated sourcemap ([Script Sync checks](script-sync.md#checks)); a Studio-only place has no check command ([Studio-only](studio-only.md)).
 
 Output is for an agent whose context is the bottleneck: one line per step (`ok   format (2s)` or `FAIL types (9s)`), then only the failing step's last 40 lines, with the full log written to a file. Under `CI`, print the failing step in full. A passing run should be about ten lines.
 
