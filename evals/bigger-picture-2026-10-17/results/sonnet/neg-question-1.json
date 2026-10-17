@@ -1,0 +1,30 @@
+{
+ "id": "neg-question",
+ "run": 1,
+ "model": "sonnet",
+ "expect": "none",
+ "soft": false,
+ "verdict": "PASS",
+ "loaded": false,
+ "loaded_in_checked": false,
+ "output": null,
+ "cost": 0.0513267,
+ "turns": [
+  {
+   "prompt": "What does putJSON in src/api.js do?",
+   "skills": [],
+   "text": "`putJSON(path, body)` in `src/api.js:7` sends a JSON `PUT` request and returns the parsed JSON response.\n\n1. It calls `fetch(path)` with method `PUT`, a `content-type: application/json` header, and `JSON.stringify(body)` as the request body.\n2. If the response status isn't OK (not 2xx), it throws `Error(\"<path>: <status>\")`.\n3. Otherwise it returns `res.json()`.\n\nIt mirrors `getJSON` just above it, which does the same fetch, error check and JSON parse, but as a plain GET with no body.\n\nThe call always parses the response as JSON. A successful `PUT` that returns an empty body, such as a `204 No Content`, will therefore make `res.json()` reject with a parse error.",
+   "trace": [
+    "tool:Grep",
+    "text:`putJSON(path, body)` in `src/api.js:7` sends a JSON `PUT` r"
+   ],
+   "cost": 0.0513267,
+   "rc": 0,
+   "init": [
+    "osaskills:bigger-picture",
+    "osaskills:then-what"
+   ],
+   "stderr": ""
+  }
+ ]
+}

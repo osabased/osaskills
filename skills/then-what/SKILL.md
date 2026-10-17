@@ -10,7 +10,7 @@ Close the loop on the user's goal. Do the reasoning for them and cut down what t
 
 ## Build the recommendation
 
-1. **Recover the goal.** Read the preceding exchange and findings. Establish what the user wanted, what is done, and what still blocks the outcome.
+1. **Recover the goal.** Read the preceding exchange and findings. Establish what the user wanted, what is done, and what still blocks the outcome. If that work includes changes the user didn't ask for or the goal doesn't need, or your recommendation would be one, load the bigger-picture skill, print its output first, and build on it.
 2. **Explain the consequence.** Translate unfamiliar terms into their practical effect on that goal, in a few familiar words at first use. Keep evidence and uncertainty next to the claim. A check that wasn't run means "unknown", not "broken".
 3. **Choose one next move.** Recommend one path with its deciding reason and main tradeoff. Look up anything you can inspect that could change the recommendation. Don't recommend changing things that work unless there is an observed problem or the user asked. When the goal is met, recommend stopping.
 
