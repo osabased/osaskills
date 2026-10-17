@@ -1,6 +1,6 @@
 ---
 name: sharpen
-description: Interviews you to turn an abstract, half-formed direction or a vague feature idea into a defined goal, then gives an honest read on whether it is what you actually want, and saves a brief. Invoke with /sharpen when you have a direction rather than a destination and want it pinned down before anything gets built.
+description: Interviews you to turn an abstract, half-formed direction or a vague feature idea into a defined goal, then gives an honest read on whether it is what you actually want, and hands you a prompt for an agent to plan it. Invoke with /sharpen when you have a direction rather than a destination and want it pinned down before anything gets built.
 disable-model-invocation: true
 ---
 
@@ -55,38 +55,35 @@ Say plainly whether this is what they want, based on what they told you, not on 
 
 Quote the answers that led you there. A Reshape or Not-this verdict is useful output, so don't soften it into a Go.
 
-## Write the brief
+## Write the prompt
 
-Save it to `<agent dir>/briefs/YYYY-MM-DD-<slug>.md`. The agent dir is `.claude/` if it exists, otherwise `.agents/` if it exists, otherwise a new `.claude/`. When you can't write files, put the brief in chat instead.
+End with a prompt the user can paste into a fresh agent session, in a single code block. That agent hasn't seen this conversation, so the prompt has to stand on its own: spell out names, paths and decisions rather than pointing back at "what we discussed". It asks the agent to plan the work for the user's approval, not to build it.
 
-```markdown
-# <Short name>
+Write it for what the verdict points to. For a Reshape, that's the reshaped thing; for a Not this, it's where the answers pointed. In those cases, say in chat, before the code block, that the prompt asks for something different from what they started with, and why in a line.
 
-**Verdict:** <Go, Reshape or Not this>. <One line on why.>
+````text
+Plan the following and show me the plan for approval before you build anything.
 
-## Goal
-<One or two sentences: what will exist or be different.>
+Goal: <one or two sentences: what will exist or be different>
 
-## Why
-<The underlying reason, in the user's words where possible.>
+Why: <the underlying reason, in the user's words where possible>
 
-## Success looks like
+Success looks like:
 - <observable signs it worked>
 
-## Out of scope
+Out of scope:
 - <what this deliberately isn't>
 
-## Existing work
-- <what already exists that this builds on or replaces; leave the section out when nothing does>
+Existing work:
+- <what already exists that this builds on or replaces, with paths; leave the section out when nothing does>
 
-## Tensions and assumptions
-- <conflicts surfaced, and how they were resolved or left open>
+Decided already:
+- <tradeoffs and tensions that were settled, and which way>
 
-## Open questions
-- <what still needs an answer, and who can answer it>
+Open questions to resolve in the plan:
+- <what still needs an answer; mark the ones only I can answer>
 
-## Started from
-> <the user's original phrasing>
-```
+My original ask, for context: "<the user's original phrasing>"
+````
 
-Link the file, give the verdict in a line, and ask whether to start on it, reshape it or leave it. Starting the work is a separate decision for the user.
+Leave out anything nobody said; an invented requirement in the prompt becomes a requirement in the plan. Then tell them they can paste it into a new session.
