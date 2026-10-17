@@ -65,4 +65,6 @@ Use a fresh output path. The result records the engine language, image and manif
 
 OCR can miss text and misspell names or other words. Use approximate phrases and spelling variants to find leads, then read the actual image before writing a factual event or cross-POV link. Absence of OCR text never proves absence of an event.
 
+`region_text.py` runs this helper over a fixed crop at every few seconds for a whole recording; see [alignment](alignment.md#1-screen-text-when-povs-share-some).
+
 Supply this report to `unified_search.py index` to retrieve visible text alongside speech and optional semantic leads; read [unified-search.md](unified-search.md). The unified index verifies image hashes and exact frame-map clocks and requires an explicit source mapping when OCR aliases differ from preparation IDs. It retains the raw OCR and report references. `vod.py search` remains speech-only, and OCR is never collected automatically from arbitrary folders. OCR does not replace contact-sheet review, denser sampling of fast events, or human-readable factual marker comments.

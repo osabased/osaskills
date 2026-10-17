@@ -472,6 +472,11 @@ def export_events(data):
             start, end = number(view["start_sec"], "start"), number(view["end_sec"], "end")
             if not start < end <= sources[sid]["duration_sec"]:
                 raise ValueError("Marker interval outside source or empty")
+            if "cut_start_sec" in view or "cut_end_sec" in view:
+                cut_start = number(view.get("cut_start_sec"), "cut start")
+                cut_end = number(view.get("cut_end_sec"), "cut end")
+                if not cut_start <= start or not end <= cut_end <= sources[sid]["duration_sec"]:
+                    raise ValueError("Cut points must contain the marker interval and stay inside the source")
             text(view["role"], "role"); text(view["evidence"], "evidence")
             uncertainty = number(view["uncertainty_sec"], "uncertainty")
             if view["alignment"] not in ("observed", "estimated") or (view["alignment"] == "estimated" and uncertainty <= 0):

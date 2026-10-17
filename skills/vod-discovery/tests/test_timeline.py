@@ -5,7 +5,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
-from review_timeline import build_review
+from review_timeline import build_review, merged_blocks
 
 
 class TimelineDelivery(unittest.TestCase):
@@ -137,6 +137,49 @@ class TimelineDelivery(unittest.TestCase):
             plan=copy.deepcopy(self.plan)
             change(plan)
             with self.assertRaises(ValueError):build_review(self.markers,self.probes,plan)
+
+    def test_cuts_follow_blocks_not_individual_marker_edges(self):
+        source = self.markers['sources'][0]
+        template = source['markers'][0]
+        source['markers'] = [dict(template, key=f'e{i}', comments=f'Outcome. [VOD:e{i}]', start_sec=a, end_sec=b)
+                             for i, (a, b) in enumerate([(10, 20), (15, 30), (35, 40)])]
+        self.plan['alternates'] = []
+        blocks = {'a': [(8, 40)], 'c': []}
+        root = ET.fromstring(build_review(self.markers, self.probes, self.plan, blocks=blocks))
+        seq = root.find('.//sequence')
+        parts = seq.find('./media/video/track').findall('clipitem')
+        self.assertEqual([(int(p.findtext('in')), int(p.findtext('out'))) for p in parts[:3]],
+                         [(0, 480), (480, 2400), (2400, 36000)])
+        self.assertEqual([p.findtext('labels/label2') for p in parts], [None, 'Mango', None, None])
+        self.assertEqual(len(root.findall('.//clip/marker')), 3)
+
+    def test_no_blocks_leaves_each_main_part_whole(self):
+        self.plan['alternates'] = []
+        seq = ET.fromstring(build_review(self.markers, self.probes, self.plan, blocks={'a': [], 'c': []})).find('.//sequence')
+        parts = seq.find('./media/video/track').findall('clipitem')
+        self.assertEqual([p.findtext('labels/label2') for p in parts], [None, None])
+        self.assertEqual(len(parts), 2)
+
+
+class MergedBlocks(unittest.TestCase):
+    def event(self, eid, status, start, end, source='a', **cut):
+        return {'id': eid, 'status': status, 'perspectives': [dict(source_id=source, start_sec=start, end_sec=end, **cut)]}
+
+    def test_overlapping_and_near_moments_become_one_block_and_far_ones_stay_apart(self):
+        data = {'events': [self.event('x', 'candidate', 100, 120), self.event('y', 'candidate', 115, 130),
+                           self.event('z', 'candidate', 138, 150), self.event('w', 'candidate', 200, 210)]}
+        self.assertEqual(merged_blocks(data, ['a'], close_gaps_sec=10)['a'], [(100, 150), (200, 210)])
+        self.assertEqual(merged_blocks(data, ['a'], close_gaps_sec=0)['a'], [(100, 130), (138, 150), (200, 210)])
+
+    def test_only_the_chosen_statuses_and_main_sources_form_blocks(self):
+        data = {'events': [self.event('x', 'candidate', 10, 20), self.event('y', 'context', 30, 40),
+                           self.event('z', 'uncertain', 50, 60), self.event('w', 'candidate', 5, 9, source='b')]}
+        self.assertEqual(merged_blocks(data, ['a'], close_gaps_sec=0), {'a': [(10, 20)]})
+        self.assertEqual(merged_blocks(data, ['a'], ('candidate', 'context'), 0), {'a': [(10, 20), (30, 40)]})
+
+    def test_snapped_cut_points_replace_the_marker_interval(self):
+        data = {'events': [self.event('x', 'candidate', 10, 20, cut_start_sec=8, cut_end_sec=23)]}
+        self.assertEqual(merged_blocks(data, ['a'])['a'], [(8, 23)])
 
 
 if __name__ == '__main__':unittest.main()

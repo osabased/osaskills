@@ -1,9 +1,9 @@
 """Build a Premiere discovery timeline from factual markers and local POV anchors.
 
-The ordered main sources stay complete, cut and labeled at moment boundaries.
-Alternate excerpts are disabled by
-default, without retiming. The plan is authored from reviewed evidence, not
-inferred automatically from marker boundaries.
+The ordered main sources stay complete, cut and labeled at the edges of merged
+blocks of candidate moments. Alternate excerpts are disabled by default,
+without retiming. The plan is authored from reviewed evidence, not inferred
+automatically from marker boundaries.
 """
 import argparse
 from copy import deepcopy
@@ -16,18 +16,48 @@ from vod import export_events, number, parse_path_map, probe, read, run_cli, tex
 
 
 MOMENT_LABEL = 'Mango'
+LABELED_STATUSES = ('candidate',)
+CLOSE_GAPS_SEC = 10
 
 
-def main_segments(master):
-    """Partition a source once at every validated, frame-quantized marker edge.
+def merged_blocks(data, main_ids, statuses=LABELED_STATUSES, close_gaps_sec=CLOSE_GAPS_SEC):
+    """Per main source, the cut/label ranges: moments that overlap or sit within the gap become one block.
 
-    Count active ranges so overlapping/nested moments retain every boundary
-    without duplicating footage. Unmarked intervals remain ordinary footage;
-    they are not asserted to be reviewed or uninteresting.
+    Snapped cut points win over the marker interval. Every event keeps its own marker regardless.
     """
-    changes = {0: 0, int(master.findtext('duration')): 0}
-    for marker in master.findall('marker'):
-        start, end = int(marker.findtext('in')), int(marker.findtext('out'))
+    ranges = {sid: [] for sid in main_ids}
+    for event in data['events']:
+        if event['status'] not in statuses:
+            continue
+        for view in event['perspectives']:
+            if view['source_id'] in ranges:
+                ranges[view['source_id']].append((view.get('cut_start_sec', view['start_sec']),
+                                                  view.get('cut_end_sec', view['end_sec'])))
+    blocks = {}
+    for sid, spans in ranges.items():
+        blocks[sid] = []
+        for start, end in sorted(spans):
+            if blocks[sid] and start - blocks[sid][-1][1] <= close_gaps_sec:
+                blocks[sid][-1] = (blocks[sid][-1][0], max(blocks[sid][-1][1], end))
+            else:
+                blocks[sid].append((start, end))
+    return blocks
+
+
+def main_segments(master, ranges=None):
+    """Partition a source once at every frame-quantized range edge.
+
+    Without explicit ranges every marker is a range. Count active ranges so
+    overlapping/nested ranges retain every boundary without duplicating
+    footage. Unlabeled intervals remain ordinary footage; they are not
+    asserted to be reviewed or uninteresting.
+    """
+    duration = int(master.findtext('duration'))
+    if ranges is None:
+        ranges = [(int(m.findtext('in')), int(m.findtext('out'))) for m in master.findall('marker')]
+    changes = {0: 0, duration: 0}
+    for start, end in ranges:
+        start, end = max(0, start), min(duration, end)
         changes[start] = changes.get(start, 0) + 1
         changes[end] = changes.get(end, 0) - 1
     boundaries = sorted(changes)
@@ -37,7 +67,7 @@ def main_segments(master):
         yield start, end, MOMENT_LABEL if active else None
 
 
-def build_review(markers, probes, plan, path_map=()):
+def build_review(markers, probes, plan, path_map=(), blocks=None):
     root = ET.fromstring(build_xml(markers, probes, plan['title'], organize=False, path_map=path_map))
     children = root.find('./project/children')
     sources = {s['id']: s for s in markers['sources']}
@@ -71,7 +101,8 @@ def build_review(markers, probes, plan, path_map=()):
     element(ac, 'samplerate', 48000)
     entries = []
     for sid in mains:
-        for start, end, label in main_segments(masters[sid]):
+        ranges = None if blocks is None else [(frame(a), frame(b)) for a, b in blocks.get(sid, [])]
+        for start, end, label in main_segments(masters[sid], ranges):
             entries.append(dict(source_id=sid, source_in=start, source_out=end,
                                 start=origins[sid]+start, end=origins[sid]+end,
                                 layer=0, enabled=True, label=label,
@@ -194,6 +225,11 @@ def main(argv=None):
     parser.add_argument('--path-map', action='append', metavar='LOCAL=HOST',
                         help='Write host paths for Premiere when media is probed through another mount, '
                              'e.g. a Cowork VM folder=D:/VODs (repeatable)')
+    parser.add_argument('--label-status', action='append', choices=['candidate', 'context', 'uncertain'],
+                        help='Event status that earns a cut and the Mango label on the main track; repeatable '
+                             '(default: candidate). Every event keeps its marker.')
+    parser.add_argument('--close-gaps-sec', type=float, default=CLOSE_GAPS_SEC,
+                        help='Merge labeled sections closer than this many seconds (default: %(default)s)')
     parser.add_argument('--force', action='store_true', help='Replace an existing --out file')
     args = parser.parse_args(argv)
     path_map = parse_path_map(args.path_map)
@@ -201,10 +237,11 @@ def main(argv=None):
         raise ValueError(f'{args.out} already exists; choose a new --out or pass --force to replace it')
     data, plan = read(args.events), read(args.plan)
     markers = export_events(data)
-    # Full main parts with no reviewed events are still required in the timeline.
+    # Main parts and placed alternates are required even when they carry no markers.
     present = {s['id'] for s in markers['sources']}
+    required = set(plan['main_sources']) | {alt['source_id'] for alt in plan.get('alternates', [])}
     for source in data['sources']:
-        if source['id'] in plan['main_sources'] and source['id'] not in present:
+        if source['id'] in required and source['id'] not in present:
             markers['sources'].append(dict(source, markers=[]))
     probes = {}
     for source in markers['sources']:
@@ -212,7 +249,9 @@ def main(argv=None):
         if abs(duration-source['duration_sec']) > .1:
             raise ValueError('Source duration changed; review source mapping')
         probes[source['id']] = metadata
-    write_output(args.out, build_review(markers, probes, plan, path_map), args.force)
+    blocks = merged_blocks(data, plan['main_sources'], tuple(args.label_status or LABELED_STATUSES),
+                           number(args.close_gaps_sec, 'gap to close'))
+    write_output(args.out, build_review(markers, probes, plan, path_map, blocks), args.force)
     print(f'Wrote {args.out}; {len(plan.get("alternates", []))} disabled alternate excerpts')
 
 

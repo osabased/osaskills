@@ -2,6 +2,8 @@
 
 POV recordings drift and only sometimes share audio. A whole-file offset or a multicam sync is not a prerequisite, and it is not trustworthy across hours.
 
+Before following leads one by one, run [alignment](alignment.md): it proposes where each alternate overlaps the main POV and at what offset, from shared speech and on-screen text, and a pair sheet confirms it at a glance. Local anchors below tighten that offset for an event.
+
 ## Follow leads
 
 Investigate another POV when it may explain an off-screen action, add setup or payoff, show the event more clearly, supply useful audio, or reveal a reaction. Follow another hop when new evidence warrants it. Stop when the connection becomes speculative or adds no editorial information.

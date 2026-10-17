@@ -38,6 +38,8 @@ Times are finite seconds from each original media file's playback start. Retain 
 
 This is an illustrative schema example, not a real finding. Valid status values: `candidate`, `context`, `uncertain`. Role is free text so useful viewpoints need not fit a fixed category. Alignment is `observed` or `estimated`; estimated requires positive uncertainty. Zero uncertainty on an observed interval means no additional cross-POV search uncertainty is being asserted, not that sampled boundaries are frame accurate. Describe boundary limits in evidence when material.
 
+A perspective may also carry `cut_start_sec` and `cut_end_sec`, the section edges the review timeline uses instead of `start_sec` and `end_sec`. `snap_cuts.py` writes them (with `cut_notes`) and the exporter requires them to contain the marker interval inside the source; see [timeline](timeline.md#cut-points).
+
 Keep partial/unresolved links in analysis notes without inventing a perspective; see [cross-POV linking](cross-pov.md). The exporter (`vod.py export`, also run inside both XML exporters) preserves all supplied events, including uncertain ones, and adds links to all other listed perspectives in each comment. It validates IDs, paths, source bounds, status, evidence, and uncertainty before writing any marker export.
 
 ## Compact marker presentation

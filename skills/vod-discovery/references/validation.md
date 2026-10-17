@@ -8,6 +8,7 @@ This file states what the bundled adapters have been checked against. It is not 
 - whisper.cpp: verified baseline v1.9.4, explicit local runtime and model paths, and a check that Vulkan was actually selected. Historical English trials do not establish multilingual quality or throughput elsewhere. See [speech-search](speech-search.md).
 - Semantic retrieval: the pinned English BGE model only. Literal search and transcript navigation work without it.
 - Audalign: development heuristics that need evidence review. OCR: Windows PowerShell 5.1 with an installed OCR language. Both are optional; see [optional-tools](optional-tools.md).
+- POV alignment, region text and pair sheets: unit tests with synthetic transcripts and generated video, plus one development check on a single session; see [alignment](alignment.md#what-this-has-and-has-not-shown). Region OCR needs Windows and has no automated test.
 - Caches validate inputs and artifacts. A cache hit proves reuse, not review completeness or discovery quality.
 
 ## Premiere delivery
