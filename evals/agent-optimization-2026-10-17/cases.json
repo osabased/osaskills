@@ -296,5 +296,32 @@
   "prompt": "Studio is open on this place with Roblox's Studio MCP server connected, but you can't call it from here. I want to rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller. Write the exact plan you'd follow: the steps, the MCP tools, and how you'd confirm it worked. Reply in chat only; don't edit files.",
   "scaffold": "studio",
   "max_turns": 15
+ },
+ {
+  "id": "q-studio-mcp",
+  "suite": "srp",
+  "kind": "quality",
+  "mcp": true,
+  "prompt": "Rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller.",
+  "scaffold": "studio",
+  "max_turns": 30
+ },
+ {
+  "id": "q-studio-mcp-guide",
+  "suite": "srp",
+  "kind": "quality",
+  "mcp": true,
+  "prompt": "Rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller.",
+  "scaffold": "studio-guide",
+  "max_turns": 30
+ },
+ {
+  "id": "q-studio-mcp-guide2",
+  "suite": "srp",
+  "kind": "quality",
+  "mcp": true,
+  "prompt": "Rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller.",
+  "scaffold": "studio-guide2",
+  "max_turns": 30
  }
 ]

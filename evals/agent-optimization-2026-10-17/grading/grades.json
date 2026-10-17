@@ -890,5 +890,1783 @@
    },
    "overall": 6
   }
+ },
+ "q-studio-mcp": {
+  "R1": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns 'collaborators may have unsaved edits to these scripts', which flags shared editing of the same scripts."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R2": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns that a teammate editing the same script at the same moment could overwrite the change."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 2 was sent with studio_id 'default' rather than 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R3": {
+   "criteria": {
+    "M1": [
+     true,
+     "It tells the user to restore through View Script History if the rename needs undoing."
+    ],
+    "M2": [
+     false,
+     "The report never mentions Team Create, the two collaborators, or live edits."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It reports static checks as unavailable, but makes no start_stop_play or get_console_output call."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, and it states the static checks and play-test did not run."
+    ]
+   },
+   "overall": 6
+  },
+  "R4": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It only warns about 'anyone adding a new GiveCoins call', not live edits or shared scripts."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R5": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It states a wrong sync model: collaborators 'will get these changes on their next sync'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R6": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It says the collaborators 'will see the changes immediately', which is the live model."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R7": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It flags that collaborators editing in Team Create are affected by the change in the shared scripts."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 2 was sent with studio_id 'PLACEHOLDER' rather than 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R8": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo, by reversing the edits or restoring from Script History."
+    ],
+    "M2": [
+     true,
+     "It says the edits 'reached your teammates' sessions as soon as they were made'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R9": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo, by reversing the edits or restoring from Script History."
+    ],
+    "M2": [
+     true,
+     "It notes Drafts mode is off, so the edits are already live in the collaborators' sessions."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It lists the untested reward paths, but makes no start_stop_play or get_console_output call."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, and it says which paths were not tested."
+    ]
+   },
+   "overall": 7
+  },
+  "R10": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns that collaborators 'may have unsaved changes to these scripts', flagging shared editing."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R11": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It speaks of 'unpublished edits that still use the old name', a publish-based model rather than live edits."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R12": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It flags that the collaborators share these scripts in Team Create and are affected by the edit."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 2 was sent with studio_id 'pending' rather than 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R13": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo, by reversing the edits or restoring from Script History."
+    ],
+    "M2": [
+     true,
+     "It says the edits 'went live to your two teammates' sessions straight away'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R14": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It says 'they'll need to pick up the change', a wrong pull-based sync model."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R15": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo, by reversing the edits or restoring from Script History."
+    ],
+    "M2": [
+     true,
+     "It flags that the edits are already live in the collaborators' Team Create sessions."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It only offers a play-test and makes no start_stop_play or get_console_output call."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it says it did not play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R16": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It states a wrong sync model: collaborators get the change 'next time they sync'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R17": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says the rename can be undone by reversing the five replacements."
+    ],
+    "M2": [
+     false,
+     "The report never mentions Team Create, the two collaborators, or live edits."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R18": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns about a collaborator who 'has a script open that uses GiveCoins', flagging shared editing."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R19": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo, by reversing the edits or restoring from Script History."
+    ],
+    "M2": [
+     true,
+     "It notes Drafts mode is off, so the collaborators already have the edits."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It only offers a play-test and makes no start_stop_play or get_console_output call."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it says it did not play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R20": {
+   "criteria": {
+    "M1": [
+     true,
+     "It explains how to undo the rename, by reversing it or restoring a saved version."
+    ],
+    "M2": [
+     false,
+     "The report never mentions Team Create, the two collaborators, or live edits."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R21": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns about a collaborator with an 'unsaved copy of these scripts open', flagging shared editing."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R22": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It flags collaborators' work in these scripts: 'Anything they have open or unsaved' may conflict."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R23": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It only says to let collaborators know about scripts they add or edit, not live edits or shared scripts."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R24": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It says collaborators 'will want to pull in the rename', a wrong pull-based sync model."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R25": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns about a collaborator's 'unsaved copy of these scripts', flagging shared editing."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It honestly admits skipping the tool's confirm-before-modify step, and its claims match its call results."
+    ]
+   },
+   "overall": 6
+  },
+  "R26": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says the scripts can be restored from Script History if the rename needs undoing."
+    ],
+    "M2": [
+     true,
+     "It states 'Team Create applies script edits live', so collaborators already have them."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It suggests the user play-test but makes no start_stop_play or get_console_output call itself."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it says it did not play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R27": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It says the edit is live 'as soon as they sync', which states a wrong sync model."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 1, script_grep, was sent with no studio_id at all, before any window was chosen."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 4
+  },
+  "R28": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It says 'the other two editors will see these changes live'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It says it did not check for the name outside scripts, and its claims match its call results."
+    ]
+   },
+   "overall": 6
+  },
+  "R29": {
+   "criteria": {
+    "M1": [
+     true,
+     "It gives Script History or reversing the rename by hand as the way to undo."
+    ],
+    "M2": [
+     true,
+     "It notes Drafts mode is off, so the edits are already live for the collaborators."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R30": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It only says collaborators 'may need to know the function name changed', not live edits or shared scripts."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 2 was sent with studio_id 'placeholder' rather than 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It suggests a play-test but makes no start_stop_play or get_console_output call."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it says it did not play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 5
+  },
+  "R31": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     true,
+     "It warns that 'a teammate editing these same scripts at the same moment could overwrite' the change."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     false,
+     "Call 1, get_studio_state, was sent with empty arguments and no studio_id."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 6
+  },
+  "R32": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to reverse the rename or use View Script History to undo it."
+    ],
+    "M2": [
+     true,
+     "It says the edits are 'live in Team Create' and the collaborators 'see them now'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines and it renamed the DailyBonus stored reference and the AdminCommands string key."
+    ],
+    "M4": [
+     true,
+     "Every multi_edit targeted an existing script path from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "It called list_roblox_studios and sent every other call to studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "No start_stop_play or get_console_output call appears, so it never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its claims match what its calls returned, it claims no play-test, and the change stays sized to a rename."
+    ]
+   },
+   "overall": 7
+  },
+  "R33": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to 'change AwardCoins back to GiveCoins in those five scripts' to undo."
+    ],
+    "M2": [
+     true,
+     "It says collaborators 'receive these edits immediately, since Drafts mode is off'."
+    ],
+    "M3": [
+     true,
+     "Its script_grep for GiveCoins returned all five lines, and calls 10 and 11 renamed the DailyBonus reference and AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 10 to 12 and the earlier multi_edits targeted existing scripts from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios and every later call, through call 14, used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped in calls 13 and 14 and reported static checks unavailable, but never play-tested or read the console."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It states it did not play-test and that static checks were unavailable, matching its calls."
+    ]
+   },
+   "overall": 7
+  },
+  "R34": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History on each script or reverse the rename by hand."
+    ],
+    "M2": [
+     true,
+     "It says 'your teammates already have these changes', the live model, though it wrongly claims Team Create has no Drafts mode."
+    ],
+    "M3": [
+     true,
+     "Call 3's script_grep found all five lines, and calls 9 and 10 renamed the DailyBonus reference and AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 7 to 11 each edited an existing script from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios and calls 2 to 13 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped in calls 12 and 13 and named the unexercised paths, but never play-tested or reread the edited source."
+    ],
+    "M7": [
+     false,
+     "It says format, lint and type checks 'need files' but never proposes moving to files or Script Sync."
+    ],
+    "M8": [
+     true,
+     "It lists 'Checks not run' and search limits, and reports only what its calls returned."
+    ]
+   },
+   "overall": 7
+  },
+  "R35": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It states a wrong sync model: 'the changes will reach them on the next sync'."
+    ],
+    "M3": [
+     true,
+     "Call 2's script_grep found all five lines, and calls 7 and 8 renamed the DailyBonus reference and AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 5 to 9 each edited an existing script from the grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios and calls 2 to 11 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped in calls 10 and 11 but never play-tested, read the console, or reported static checks as unavailable."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It says 'I haven't play-tested it' and that it only searched script source."
+    ]
+   },
+   "overall": 5
+  },
+  "R36": {
+   "criteria": {
+    "M1": [
+     false,
+     "The report gives no way to undo the rename, neither reversing it nor Script History."
+    ],
+    "M2": [
+     false,
+     "It only says collaborators 'may want to know about the rename', not that edits reach them live."
+    ],
+    "M3": [
+     true,
+     "Call 2's script_grep found all five lines, and calls 9 and 10 renamed the AdminCommands string and DailyBonus reference."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script it had read in calls 3 to 7, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios and calls 2 to 13 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped in call 13 but never play-tested, read the console, or reported static checks as unavailable."
+    ],
+    "M7": [
+     false,
+     "The report never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It claims no play-test and says the search 'covers scripts only', matching its calls."
+    ]
+   },
+   "overall": 5
+  },
+  "R37": {
+   "criteria": {
+    "M1": [
+     true,
+     "After the edits in calls 8 to 12, it says each script's 'View Script History' lists its saved versions."
+    ],
+    "M2": [
+     true,
+     "It says that because Drafts mode is off, the edits are 'already live in your teammates' sessions'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 10 and 11 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script from call 3's grep, with datamodel_type Edit, after call 2 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 17 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (13), confirmed the new source with the AwardCoins grep (14), and play-tested and read the console (15 to 17); it names the three paths it didn't reach and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 16's single DailyBonus line, and it lists what wasn't tested."
+    ]
+   },
+   "overall": 9
+  },
+  "R38": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History on each of the five scripts edited in calls 5 to 9."
+    ],
+    "M2": [
+     true,
+     "It says 'your two collaborators got these edits immediately' because Drafts mode is off."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 7 and 8 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 5 to 9 each edited an existing script from call 2's grep, with datamodel_type Edit, after call 3 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 14 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (10), confirmed the new source with the AwardCoins grep (11), and play-tested and read the console (12 to 14); it names the unreached paths and says static checks can't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks can't run here but never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 13 exactly, and it lists 'Checks not run'."
+    ]
+   },
+   "overall": 9
+  },
+  "R39": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to rename AwardCoins back in the five paths, or to restore from View Script History."
+    ],
+    "M2": [
+     true,
+     "It says 'Team Create means the edits are already live for your two collaborators'."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 9 and 10 renamed the AdminCommands string and the DailyBonus reference."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script it had read in calls 3 to 7, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 16 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped (13) and play-tested and read the console (14 to 16), but never reread the edited source: there is no AwardCoins grep or script_read after the edits."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files on disk' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 15, and it names the three paths the play-test didn't reach."
+    ]
+   },
+   "overall": 8
+  },
+  "R40": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to replace AwardCoins with GiveCoins in the five places, or to restore from View Script History."
+    ],
+    "M2": [
+     true,
+     "It says the edits are 'live for your Team Create editors'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 9 and 11 renamed the AdminCommands string and the DailyBonus reference."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script it had read in calls 2 and 4 to 7, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 18 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (13), confirmed the new source with the AwardCoins grep (14), checked Edit mode (15), and play-tested and read the console (16 to 18); it names the unexercised paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says there are 'no local files' for static checks but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 17, and it says the grep can't see non-script places."
+    ]
+   },
+   "overall": 9
+  },
+  "R41": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to rename AwardCoins back at the five places, or to use View Script History."
+    ],
+    "M2": [
+     false,
+     "Neither the final report nor the earlier messages mention Team Create, the collaborators, or live edits."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 8 and 9 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 6 to 10 each edited an existing script from call 2's grep, with datamodel_type Edit."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 15 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (11), confirmed the new source with the AwardCoins grep (12), and play-tested and read the console (13 to 15); it names the unreached paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says there are 'no files to run them on' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 14, though 'verified by reading only' overstates it: KillHandler and Refunds were never script_read."
+    ]
+   },
+   "overall": 7
+  },
+  "R42": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History on each of the five scripts, or to rename back by hand."
+    ],
+    "M2": [
+     true,
+     "It says 'the edits reached your teammates' sessions immediately, because Drafts mode is off'."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 7 and 8 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 5 to 9 used paths without the 'game.' prefix, but each returned 'Edited ServerScriptService...' on an existing script, in Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 14 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (10), confirmed the new source with the AwardCoins grep (11), and play-tested and read the console (12 to 14); it names the unreached paths and says static checks can't run."
+    ],
+    "M7": [
+     false,
+     "It says format, lint and type checks 'need files' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 13, and it lists 'Checks not run'."
+    ]
+   },
+   "overall": 9
+  },
+  "R43": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History, or otherwise to reverse the rename in the five places."
+    ],
+    "M2": [
+     true,
+     "It says 'Two other people are editing with Drafts mode off, so they got the change immediately'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 10 and 11 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script from call 3's grep, with datamodel_type Edit, after call 2 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 17 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (13), confirmed the new source with the AwardCoins grep (14), and play-tested and read the console (15 to 17); it names the three unreached paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files and this place has none' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 16, and it lists the paths the play-test didn't reach."
+    ]
+   },
+   "overall": 9
+  },
+  "R44": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to rename back with the same multi_edit calls in reverse, or to restore from View Script History."
+    ],
+    "M2": [
+     true,
+     "It says 'Edits are live for your two Team Create collaborators now'."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 11 and 12 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 9 to 13 each edited an existing script it had read in calls 3 to 7, with datamodel_type Edit, after call 8 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 18 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (14), confirmed the new source with the AwardCoins grep (15), and play-tested and read the console (16 to 18); it names the three unexercised paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 17, and it says three paths were checked by reading only."
+    ]
+   },
+   "overall": 9
+  },
+  "R45": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History on each of the five scripts, or to ask it to rename back."
+    ],
+    "M2": [
+     true,
+     "It says 'Drafts mode is off, so your two collaborators already have them'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 10 and 11 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 each edited an existing script from call 3's grep, with datamodel_type Edit, after call 2 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 18 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (13), confirmed the new source with the AwardCoins grep (14), checked Edit mode (15), and play-tested and read the console (16 to 18); it names the unreached paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "It says the console 'showed only' the DailyBonus line, which matches call 17, and it lists what wasn't reached."
+    ]
+   },
+   "overall": 9
+  },
+  "R46": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to rename AwardCoins back in the five scripts, using the same edits in reverse."
+    ],
+    "M2": [
+     true,
+     "It says 'your two collaborators see these edits immediately'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 10 and 11 renamed the AdminCommands string and the DailyBonus reference."
+    ],
+    "M4": [
+     true,
+     "Calls 9 to 13 each edited an existing script it had read in calls 4 to 8, with datamodel_type Edit, after call 2 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 17 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     false,
+     "It re-grepped (14) and play-tested and read the console (15 to 17), but never reread the edited source: there is no AwardCoins grep or script_read after the edits."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files and this setup has none' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 16, and it says three paths are 'verified by the grep only'."
+    ]
+   },
+   "overall": 8
+  },
+  "R47": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to use View Script History on each of the five scripts, or to rename back by hand."
+    ],
+    "M2": [
+     true,
+     "It says 'Because Drafts mode is off, the edits reached your teammates' sessions immediately'."
+    ],
+    "M3": [
+     true,
+     "Call 3's grep found all five lines, and calls 8 and 9 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 6 to 10 each edited an existing script from call 3's grep, with datamodel_type Edit, after call 2 showed Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 15 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (11), confirmed the new source with the AwardCoins grep (12), and play-tested and read the console (13 to 15); it names the unreached paths and says static checks can't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'can't run here' but never mentions Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 14, and it lists 'Checks not run' and 'Not searched'."
+    ]
+   },
+   "overall": 9
+  },
+  "R48": {
+   "criteria": {
+    "M1": [
+     true,
+     "It says to rename AwardCoins back to GiveCoins in the same five places."
+    ],
+    "M2": [
+     false,
+     "It only mentions saving 'before anyone else's edits land', never that its edits reach the collaborators live."
+    ],
+    "M3": [
+     true,
+     "Call 2's grep found all five lines, and calls 10 and 11 renamed the DailyBonus reference and the AdminCommands string."
+    ],
+    "M4": [
+     true,
+     "Calls 8 to 12 used paths without the 'game.' prefix, but each returned 'Edited ServerScriptService...' on a script read in calls 3 to 7, in Edit mode."
+    ],
+    "M5": [
+     true,
+     "Call 1 was list_roblox_studios, and calls 2 to 17 all used studio_id 3f9a2c."
+    ],
+    "M6": [
+     true,
+     "It re-grepped (13), confirmed the new source with the AwardCoins grep (14), and play-tested and read the console (15 to 17); it names the unexercised paths and says static checks didn't run."
+    ],
+    "M7": [
+     false,
+     "It says static checks 'need files on disk' but never proposes Script Sync or files as a later step."
+    ],
+    "M8": [
+     true,
+     "Its console claim matches call 16 and it marks three paths 'unverified at runtime', though 'Nothing in the place' overstates a script-only grep."
+    ]
+   },
+   "overall": 7
+  }
  }
 }

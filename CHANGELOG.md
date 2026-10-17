@@ -15,6 +15,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Drafts mode is described as off by default, with an MCP edit seen reaching another session under Live Scripting. ([#59](https://github.com/osabased/osaskills/pull/59))
 - The description is shorter (990 to 971 characters) and now triggers on editing through the Studio MCP, not only testing. ([#62](https://github.com/osabased/osaskills/pull/62))
 - `ssa.md` has a table of contents. ([#62](https://github.com/osabased/osaskills/pull/62))
+- For a Studio-only place, the working rules now go in the place's `CLAUDE.md`, since in an eval the skill loaded in 1 of 12 sessions. Those rules are the `studio_id` to use, Team Create and Drafts state, checkpoints, edits, play-tests, and reporting static checks as not run. ([#63](https://github.com/osabased/osaskills/pull/63))
+- A Studio-only place asks for a save with notes only before moving, deleting or adding scripts. An edit inside existing scripts goes ahead, and the report says how to undo it, pointing to View Script History in Team Create. ([#63](https://github.com/osabased/osaskills/pull/63))
+- After an edit in a Studio-only place, the agent play-tests the paths it changed unless the user has said not to, and reports the paths the play-test didn't reach. ([#63](https://github.com/osabased/osaskills/pull/63))
 
 ### 2026-10-16
 

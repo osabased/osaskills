@@ -18,13 +18,17 @@ Recommend Script Sync first. Roblox describes it as an extra feature for existin
 
 When the user keeps the place Studio-only:
 
-- **Guide:** keep `CLAUDE.md` and the [project guide](project-guide.md) in a local folder the agent starts in, with the place's name and ID. Two Studio windows can share a name; pass the `studio_id` that `list_roblox_studios` reports for that place ID.
-- **Checkpoints:** before an edit that spans several scripts, ask the user to save with notes (**File** > **Save to Roblox with Notes**) so there is a version to return to. Restoring a version creates a new one and doesn't publish it. In Team Create, **View Script History** on a script lists and opens its earlier versions.
+- **Guide:** keep `CLAUDE.md` and the [project guide](project-guide.md) in a local folder the agent starts in. A session that doesn't load this skill still reads `CLAUDE.md`, so write the rules it needs there:
+  - the place's name and ID, and that every call passes the `studio_id` that `list_roblox_studios` reports for that ID, since two Studio windows can share a name;
+  - whether the place is in Team Create and whether Drafts mode is on, as the user confirms them;
+  - the checkpoint, edit and play-test rules below;
+  - that the static checks can't run, so a report names them as not run.
+- **Checkpoints:** before a structural change, such as moving, deleting or adding scripts, ask the user to save with notes (**File** > **Save to Roblox with Notes**) and wait, so there is a version to return to. Restoring a version creates a new one and doesn't publish it. An edit inside existing scripts, such as a rename, can go ahead, and the report says how to undo it. In Team Create, **View Script History** on a script lists its saved versions. With Drafts mode off, a script is saved every 5 minutes or on **Ctrl+S**, so the history can miss the last few minutes before an edit.
 - **Drafts mode:** off by default, and Live Scripting puts each edit in every collaborator's session at once; in a test, an MCP `multi_edit` reached another session of the place within seconds. In Drafts mode edits stay local until committed. The MCP can't read the Drafts state (`DraftsService` needs a capability MCP code lacks), and how MCP edits interact with drafts is undocumented and untested, so ask the user before relying on one.
 - **Edits:** `multi_edit` creates a script when the path doesn't exist, so a wrong path adds a stray script; check the path first. Edit in Edit mode, since changes made during a play-test are discarded when it stops.
 - **Tests:** Lest's studio backend can run specs kept in the local folder against the published place; an Instance require in a spec reaches the place's own module. In Team Create that is the live session, with the [costs](verification.md#test-runner-facts) that brings. Otherwise Roblox's command-line docs don't say whether a run sees the latest save or the latest publish, so ask the user to save first and confirm a run sees the current edit, for example with a spec that reads the edited module's `Source`.
-- **Play-tests:** as in [verification](verification.md#play-tests-with-studio-mcp).
-- **Report** the static rung as not run, and why.
+- **Play-tests:** with no static checks, a play-test is the lowest rung that can observe an edit. After an edit, play-test the paths it changed and read the console, unless the user has said not to, then stop the play-test. Run it as in [verification](verification.md#play-tests-with-studio-mcp).
+- **Report** the static rung as not run, and why, and name the changed paths the play-test didn't reach.
 
 ## Sources
 

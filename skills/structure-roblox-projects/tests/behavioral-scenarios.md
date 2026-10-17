@@ -98,7 +98,7 @@ Fixture: a description of a place whose code exists only in Studio, with no sync
 
 Request: "Set this game up so Claude can work on it safely."
 
-Assess: states that without files there is no diff, Git recovery, static check or CI. Recommends Script Sync as the smallest step, with the attributes-and-tags check, and leaves its setup to the user. If the user keeps the place Studio-only, proposes a guide in the local folder with the place's identity, saved checkpoints before multi-script edits, and verification in Studio, reporting the static rung as not run. Makes no place edits.
+Assess: states that without files there is no diff, Git recovery, static check or CI. Recommends Script Sync as the smallest step, with the attributes-and-tags check, and leaves its setup to the user. If the user keeps the place Studio-only, proposes a `CLAUDE.md` in the local folder that carries the working rules: the place's identity and `studio_id`, saved checkpoints before structural changes, how to undo an in-script edit, and verification in Studio, reporting the static rung as not run. Makes no place edits.
 
 ## Add a guard
 
