@@ -1,0 +1,279 @@
+{
+ "id": "q-studio-mcp",
+ "suite": "srp",
+ "kind": "quality",
+ "mcp": true,
+ "prompt": "Rename the GiveCoins function in ServerScriptService.Rewards to AwardCoins and update every caller.",
+ "scaffold": "studio",
+ "max_turns": 30,
+ "model": "haiku",
+ "cond": "bare",
+ "rep": 6,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:mcp__Roblox_Studio__script_search,mcp__Roblox_Studio__script_grep,mcp__Roblox_Studio__script_read,mcp__Roblox_Studio__multi_edit,mcp__Roblox_Studio__get_studio_state,mcp__Roblox_Studio__list_roblox_studios"
+  ],
+  [
+   "mcp__Roblox_Studio__list_roblox_studios",
+   ""
+  ],
+  [
+   "mcp__Roblox_Studio__script_grep",
+   "GiveCoins"
+  ],
+  [
+   "mcp__Roblox_Studio__script_read",
+   "game.ServerScriptService.Rewards"
+  ],
+  [
+   "mcp__Roblox_Studio__script_read",
+   "game.ServerScriptService.AdminCommands"
+  ],
+  [
+   "mcp__Roblox_Studio__script_read",
+   "game.ServerScriptService.DailyBonus"
+  ],
+  [
+   "mcp__Roblox_Studio__script_read",
+   "game.ServerScriptService.KillHandler"
+  ],
+  [
+   "mcp__Roblox_Studio__script_read",
+   "game.ServerScriptService.Shop.Refunds"
+  ],
+  [
+   "mcp__Roblox_Studio__multi_edit",
+   "game.ServerScriptService.Rewards"
+  ],
+  [
+   "mcp__Roblox_Studio__multi_edit",
+   "game.ServerScriptService.AdminCommands"
+  ],
+  [
+   "mcp__Roblox_Studio__multi_edit",
+   "game.ServerScriptService.DailyBonus"
+  ],
+  [
+   "mcp__Roblox_Studio__multi_edit",
+   "game.ServerScriptService.KillHandler"
+  ],
+  [
+   "mcp__Roblox_Studio__multi_edit",
+   "game.ServerScriptService.Shop.Refunds"
+  ],
+  [
+   "mcp__Roblox_Studio__script_grep",
+   "GiveCoins"
+  ]
+ ],
+ "texts": [
+  "I'll rename `GiveCoins` to `AwardCoins` in the `Rewards` module and update every call site across the place. The code lives only in Studio, so I'll find the definition and callers through the Studio MCP tools.",
+  "The place ID in CLAUDE.md is 1234567890, which matches \"Sword Arena - 1234567890\" (id 3f9a2c), so that's the instance I'll use. Next I'll find every reference to `GiveCoins`.",
+  "Five matches. The one at `AdminCommands:6` is a string key rather than a function call, so I need to read that file before editing. I'll read the others too.",
+  "All five references point at the same function, and the `AdminCommands` string is looked up as `Rewards[method]`, so it has to change too or the admin `/coins` command breaks. The chat command text (`coins`) stays the same. I'll make the edits in each script.",
+  "Now I'll confirm nothing still references the old name.",
+  "I renamed `Rewards.GiveCoins` to `Rewards.AwardCoins` in the Sword Arena place (ID 1234567890). A search for `GiveCoins` across all scripts now returns nothing.\n\nEdits:\n- **`ServerScriptService.Rewards`**: the function definition.\n- **`ServerScriptService.KillHandler`**: the kill reward call.\n- **`ServerScriptService.DailyBonus`**: `local give = Rewards.AwardCoins`.\n- **`ServerScriptService.Shop.Refunds`**: the refund call.\n- **`ServerScriptService.AdminCommands`**: the `COMMANDS` table value `\"GiveCoins\"` became `\"AwardCoins\"`. This is a string that gets looked up as `Rewards[method]`, so it had to change or the admin command would break. The chat command itself (`/coins`) is unchanged, so admins won't notice anything different.\n\nI edited the Studio instance \"Sword Arena - 1234567890\", not the \"Sword Arena Test\" instance. The search covers scripts only, so I didn't check for the name in other places like attributes or non-script instances. Because two other people are editing this place in Team Create, they may want to know about the rename."
+ ],
+ "mcp_calls": [
+  {
+   "tool": "list_roblox_studios",
+   "args": {},
+   "error": false,
+   "result": "[\n {\n  \"id\": \"3f9a2c\",\n  \"name\": \"Sword Arena - 1234567890\"\n },\n {\n  \"id\": \"b71e04\",\n  \"name\": \"Sword Arena Test - 4455667788\"\n }\n]"
+  },
+  {
+   "tool": "script_grep",
+   "args": {
+    "query": "GiveCoins",
+    "studio_id": "3f9a2c"
+   },
+   "error": false,
+   "result": "ServerScriptService.Rewards:3: function Rewards.GiveCoins(player: Player, amount: number)\nServerScriptService.KillHandler:12: Rewards.GiveCoins(killer, KILL_REWARD)\nServerScriptService.DailyBonus:4: local give = Rewards.GiveCoins\nServerScriptService.AdminCommands:6: coins = \"GiveCoins\",\nServerScriptService.Shop.Refunds:8: Rewards.GiveCoins(player, price)"
+  },
+  {
+   "tool": "script_read",
+   "args": {
+    "studio_id": "3f9a2c",
+    "target_file": "game.ServerScriptService.Rewards"
+   },
+   "error": false,
+   "result": "1→local Rewards = {}\n2→\n3→function Rewards.GiveCoins(player: Player, amount: number)\n4→\tlocal leaderstats = player:FindFirstChild(\"leaderstats\")\n5→\tlocal coins = leaderstats and leaderstats:FindFirstChild(\"Coins\")\n6→\tif coins and coins:IsA(\"IntValue\") then\n7→\t\tcoins.Value += amount\n8→\tend\n9→end\n10→\n11→return Rewards"
+  },
+  {
+   "tool": "script_read",
+   "args": {
+    "studio_id": "3f9a2c",
+    "target_file": "game.ServerScriptService.AdminCommands"
+   },
+   "error": false,
+   "result": "1→local Players = game:GetService(\"Players\")\n2→local Rewards = require(script.Parent.Rewards)\n3→\n4→local ADMINS = { [1029384756] = true }\n5→local COMMANDS = {\n6→\tcoins = \"GiveCoins\",\n7→}\n8→\n9→Players.PlayerAdded:Connect(function(player)\n10→\tplayer.Chatted:Connect(function(message)\n11→\t\tif not ADMINS[player.UserId] then\n12→\t\t\treturn\n13→\t\tend\n14→\t\tlocal command, targetName, amount = string.match(message, \"^/(%a+) (%S+) (%d+)$\")\n15→\t\tlocal method = command and COMMANDS[command]\n16→\t\tlocal target = targetName and Players:FindFirstChild(targetName)\n17→\t\tif method and target then\n18→\t\t\tRewards[method](target, tonumber(amount))\n19→\t\tend\n20→\tend)\n21→end)"
+  },
+  {
+   "tool": "script_read",
+   "args": {
+    "studio_id": "3f9a2c",
+    "target_file": "game.ServerScriptService.DailyBonus"
+   },
+   "error": false,
+   "result": "1→local Players = game:GetService(\"Players\")\n2→local Rewards = require(script.Parent.Rewards)\n3→\n4→local give = Rewards.GiveCoins\n5→local DAILY_BONUS = 50\n6→\n7→Players.PlayerAdded:Connect(function(player)\n8→\ttask.wait(2)\n9→\tgive(player, DAILY_BONUS)\n10→\tprint(`[DailyBonus] {player.Name} +{DAILY_BONUS} coins`)\n11→end)"
+  },
+  {
+   "tool": "script_read",
+   "args": {
+    "studio_id": "3f9a2c",
+    "target_file": "game.ServerScriptService.KillHandler"
+   },
+   "error": false,
+   "result": "1→local Players = game:GetService(\"Players\")\n2→local Rewards = require(script.Parent.Rewards)\n3→\n4→local KILL_REWARD = 10\n5→\n6→local function onCharacterAdded(character: Model)\n7→\tlocal humanoid = character:WaitForChild(\"Humanoid\") :: Humanoid\n8→\thumanoid.Died:Connect(function()\n9→\t\tlocal tag = humanoid:FindFirstChild(\"creator\") :: ObjectValue?\n10→\t\tlocal killer = tag and tag.Value\n11→\t\tif killer and killer:IsA(\"Player\") then\n12→\t\t\tRewards.GiveCoins(killer, KILL_REWARD)\n13→\t\tend\n14→\tend)\n15→end\n16→\n17→Players.PlayerAdded:Connect(function(player)\n18→\tplayer.CharacterAdded:Connect(onCharacterAdded)\n19→end)"
+  },
+  {
+   "tool": "script_read",
+   "args": {
+    "studio_id": "3f9a2c",
+    "target_file": "game.ServerScriptService.Shop.Refunds"
+   },
+   "error": false,
+   "result": "1→local ServerScriptService = game:GetService(\"ServerScriptService\")\n2→local ServerStorage = game:GetService(\"ServerStorage\")\n3→local Rewards = require(ServerScriptService.Rewards)\n4→\n5→local RefundIssued = ServerStorage.Events.RefundIssued :: BindableEvent\n6→\n7→RefundIssued.Event:Connect(function(player: Player, price: number)\n8→\tRewards.GiveCoins(player, price)\n9→end)"
+  },
+  {
+   "tool": "multi_edit",
+   "args": {
+    "studio_id": "3f9a2c",
+    "datamodel_type": "Edit",
+    "file_path": "game.ServerScriptService.Rewards",
+    "edits": [
+     {
+      "old_string": "function Rewards.GiveCoins(player: Player, amount: number)",
+      "new_string": "function Rewards.AwardCoins(player: Player, amount: number)"
+     }
+    ]
+   },
+   "error": false,
+   "result": "Edited ServerScriptService.Rewards (1 edit applied).",
+   "source_after": "local Rewards = {}\n\nfunction Rewards.AwardCoins(player: Player, amount: number)\n\tlocal leaderstats = player:FindFirstChild(\"leaderstats\")\n\tlocal coins = leaderstats and leaderstats:FindFirstChild(\"Coins\")\n\tif coins and coins:IsA(\"IntValue\") then\n\t\tcoins.Value += amount\n\tend\nend\n\nreturn Rewards\n"
+  },
+  {
+   "tool": "multi_edit",
+   "args": {
+    "studio_id": "3f9a2c",
+    "datamodel_type": "Edit",
+    "file_path": "game.ServerScriptService.AdminCommands",
+    "edits": [
+     {
+      "old_string": "coins = \"GiveCoins\",",
+      "new_string": "coins = \"AwardCoins\","
+     }
+    ]
+   },
+   "error": false,
+   "result": "Edited ServerScriptService.AdminCommands (1 edit applied).",
+   "source_after": "local Players = game:GetService(\"Players\")\nlocal Rewards = require(script.Parent.Rewards)\n\nlocal ADMINS = { [1029384756] = true }\nlocal COMMANDS = {\n\tcoins = \"AwardCoins\",\n}\n\nPlayers.PlayerAdded:Connect(function(player)\n\tplayer.Chatted:Connect(function(message)\n\t\tif not ADMINS[player.UserId] then\n\t\t\treturn\n\t\tend\n\t\tlocal command, targetName, amount = string.match(message, \"^/(%a+) (%S+) (%d+)$\")\n\t\tlocal method = command and COMMANDS[command]\n\t\tlocal target = targetName and Players:FindFirstChild(targetName)\n\t\tif method and target then\n\t\t\tRewards[method](target, tonumber(amount))\n\t\tend\n\tend)\nend)\n"
+  },
+  {
+   "tool": "multi_edit",
+   "args": {
+    "studio_id": "3f9a2c",
+    "datamodel_type": "Edit",
+    "file_path": "game.ServerScriptService.DailyBonus",
+    "edits": [
+     {
+      "old_string": "local give = Rewards.GiveCoins",
+      "new_string": "local give = Rewards.AwardCoins"
+     }
+    ]
+   },
+   "error": false,
+   "result": "Edited ServerScriptService.DailyBonus (1 edit applied).",
+   "source_after": "local Players = game:GetService(\"Players\")\nlocal Rewards = require(script.Parent.Rewards)\n\nlocal give = Rewards.AwardCoins\nlocal DAILY_BONUS = 50\n\nPlayers.PlayerAdded:Connect(function(player)\n\ttask.wait(2)\n\tgive(player, DAILY_BONUS)\n\tprint(`[DailyBonus] {player.Name} +{DAILY_BONUS} coins`)\nend)\n"
+  },
+  {
+   "tool": "multi_edit",
+   "args": {
+    "studio_id": "3f9a2c",
+    "datamodel_type": "Edit",
+    "file_path": "game.ServerScriptService.KillHandler",
+    "edits": [
+     {
+      "old_string": "Rewards.GiveCoins(killer, KILL_REWARD)",
+      "new_string": "Rewards.AwardCoins(killer, KILL_REWARD)"
+     }
+    ]
+   },
+   "error": false,
+   "result": "Edited ServerScriptService.KillHandler (1 edit applied).",
+   "source_after": "local Players = game:GetService(\"Players\")\nlocal Rewards = require(script.Parent.Rewards)\n\nlocal KILL_REWARD = 10\n\nlocal function onCharacterAdded(character: Model)\n\tlocal humanoid = character:WaitForChild(\"Humanoid\") :: Humanoid\n\thumanoid.Died:Connect(function()\n\t\tlocal tag = humanoid:FindFirstChild(\"creator\") :: ObjectValue?\n\t\tlocal killer = tag and tag.Value\n\t\tif killer and killer:IsA(\"Player\") then\n\t\t\tRewards.AwardCoins(killer, KILL_REWARD)\n\t\tend\n\tend)\nend\n\nPlayers.PlayerAdded:Connect(function(player)\n\tplayer.CharacterAdded:Connect(onCharacterAdded)\nend)\n"
+  },
+  {
+   "tool": "multi_edit",
+   "args": {
+    "studio_id": "3f9a2c",
+    "datamodel_type": "Edit",
+    "file_path": "game.ServerScriptService.Shop.Refunds",
+    "edits": [
+     {
+      "old_string": "Rewards.GiveCoins(player, price)",
+      "new_string": "Rewards.AwardCoins(player, price)"
+     }
+    ]
+   },
+   "error": false,
+   "result": "Edited ServerScriptService.Shop.Refunds (1 edit applied).",
+   "source_after": "local ServerScriptService = game:GetService(\"ServerScriptService\")\nlocal ServerStorage = game:GetService(\"ServerStorage\")\nlocal Rewards = require(ServerScriptService.Rewards)\n\nlocal RefundIssued = ServerStorage.Events.RefundIssued :: BindableEvent\n\nRefundIssued.Event:Connect(function(player: Player, price: number)\n\tRewards.AwardCoins(player, price)\nend)\n"
+  },
+  {
+   "tool": "script_grep",
+   "args": {
+    "query": "GiveCoins",
+    "studio_id": "3f9a2c"
+   },
+   "error": false,
+   "result": "No matches for 'GiveCoins'."
+  }
+ ],
+ "denials": [],
+ "result": "I renamed `Rewards.GiveCoins` to `Rewards.AwardCoins` in the Sword Arena place (ID 1234567890). A search for `GiveCoins` across all scripts now returns nothing.\n\nEdits:\n- **`ServerScriptService.Rewards`**: the function definition.\n- **`ServerScriptService.KillHandler`**: the kill reward call.\n- **`ServerScriptService.DailyBonus`**: `local give = Rewards.AwardCoins`.\n- **`ServerScriptService.Shop.Refunds`**: the refund call.\n- **`ServerScriptService.AdminCommands`**: the `COMMANDS` table value `\"GiveCoins\"` became `\"AwardCoins\"`. This is a string that gets looked up as `Rewards[method]`, so it had to change or the admin command would break. The chat command itself (`/coins`) is unchanged, so admins won't notice anything different.\n\nI edited the Studio instance \"Sword Arena - 1234567890\", not the \"Sword Arena Test\" instance. The search covers scripts only, so I didn't check for the name in other places like attributes or non-script instances. Because two other people are editing this place in Team Create, they may want to know about the rename.",
+ "cost": 0.005719630000000001,
+ "turns": 15,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 14658,
+  "cache_read_input_tokens": 115633,
+  "output_tokens": 3261,
+  "output_tokens_details": {
+   "thinking_tokens": 574
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14658,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 522,
+    "cache_read_input_tokens": 24253,
+    "cache_creation_input_tokens": 156,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 156
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "verdict": "-",
+ "cli": "2.1.296 (Claude Code)"
+}

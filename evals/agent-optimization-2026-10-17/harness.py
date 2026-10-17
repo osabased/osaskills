@@ -5,7 +5,8 @@ resource-revamp-2026-10-15 ("rra" suite), each installed as that eval installed 
 skills on main ("old") and this checkout ("new"). Quality cases run under "new" and "bare", which is
 "new" without structure-roblox-projects. Each run copies the case's scaffold and one version's skills
 into a temporary project and runs headless Claude Code there with project settings only, so an
-installed osaskills plugin stays out of it. "old" is a plugin tree you extract, for example
+installed osaskills plugin stays out of it. A case with "mcp" also gets studio_stub.py as its only MCP
+server, with its tools allowed, and keeps the stub's call log. "old" is a plugin tree you extract, for example
 `git archive origin/main skills hooks | tar -x -C <dir>`. Results have local paths replaced. Usage:
     python harness.py --old-root <dir> [--models sonnet,haiku] [--reps N] [--conds old,new,bare] [--out results] [case-id ...]
 """
@@ -16,8 +17,10 @@ REPO = ROOT.parent.parent
 SCAFFOLDS = {"base": ROOT.parent / "sonnet-ab-2026-10-11" / "scaffold",
              "game": ROOT.parent / "structure-revamp-2026-10-15" / "scaffold",
              "coin": ROOT.parent / "resource-revamp-2026-10-15" / "scaffold",
-             "sync": ROOT / "scaffold-sync", "studio": ROOT / "scaffold-studio"}
+             "sync": ROOT / "scaffold-sync", "studio": ROOT / "scaffold-studio",
+             "studio-guide": ROOT / "scaffold-studio-guide", "studio-guide2": ROOT / "scaffold-studio-guide2"}
 SESSION_HOOK = ROOT.parent / "resource-revamp-2026-10-15" / "session_hook.py"
+STUDIO_STUB = ROOT / "studio_stub.py"
 CONDS = {"trigger": ("old", "new"), "quality": ("new", "bare")}
 DENY = {"trigger": "Bash,PowerShell,Write,Edit,WebSearch,WebFetch,Agent,Task",
         "quality": "Bash,PowerShell,WebSearch,WebFetch,Agent,Task"}
@@ -76,7 +79,7 @@ def changed_files(proj, scaffold):
     return out
 
 def step(name, inp):
-    for key in ("command", "file_path", "pattern", "skill", "path"):
+    for key in ("command", "file_path", "pattern", "skill", "path", "target_file", "query", "keywords", "code"):
         if inp.get(key):
             return [name, str(inp[key])[:300]]
     return [name, ""]
@@ -89,9 +92,15 @@ def run(case, model, cond, rep, plugin, workdir):
     cmd = ["claude", "-p", case["prompt"], "--model", model, "--output-format", "stream-json", "--verbose",
            "--max-turns", str(case["max_turns"]), "--setting-sources", "project,local", "--strict-mcp-config",
            "--permission-mode", "acceptEdits", "--disallowedTools", DENY[case["kind"]]]
+    log = workdir / f"{proj.name}-mcp.jsonl"
+    if case.get("mcp"):
+        config = workdir / f"{proj.name}-mcp.json"
+        server = {"command": sys.executable, "args": ["-I", str(STUDIO_STUB), str(log)]}
+        config.write_text(json.dumps({"mcpServers": {"Roblox_Studio": server}}), encoding="utf-8")
+        cmd += ["--mcp-config", str(config), "--allowedTools", "mcp__Roblox_Studio"]
     p = subprocess.run(cmd, cwd=proj, env=clean_env(), capture_output=True, text=True,
                        encoding="utf-8", errors="replace", timeout=900, stdin=subprocess.DEVNULL)
-    loaded, reads, steps, pending = [], [], [], {}
+    loaded, reads, steps, texts, pending = [], [], [], [], {}
     result = cost = turns = usage = denials = None
     for line in p.stdout.splitlines():
         try: ev = json.loads(line)
@@ -99,6 +108,8 @@ def run(case, model, cond, rep, plugin, workdir):
         t = ev.get("type")
         if t == "assistant":
             for c in ev["message"].get("content", []):
+                if c.get("type") == "text":
+                    texts.append(c["text"])
                 if c.get("type") != "tool_use": continue
                 inp = c.get("input", {})
                 steps.append(step(c["name"], inp))
@@ -120,9 +131,10 @@ def run(case, model, cond, rep, plugin, workdir):
         if t == "result":
             result, cost, turns, usage = ev.get("result"), ev.get("total_cost_usd"), ev.get("num_turns"), ev.get("usage")
             denials = [step(d.get("tool_name", ""), d.get("tool_input", {})) for d in ev.get("permission_denials") or []]
-    return dict(case, model=model, cond=cond, rep=rep, loaded=loaded, reads=reads, steps=steps, denials=denials,
-                result=result, cost=cost, turns=turns, usage=usage, rc=p.returncode, stderr=p.stderr[-400:],
-                written=changed_files(proj, scaffold))
+    mcp_calls = [json.loads(l) for l in log.read_text(encoding="utf-8").splitlines()] if log.exists() else None
+    return dict(case, model=model, cond=cond, rep=rep, loaded=loaded, reads=reads, steps=steps, texts=texts,
+                mcp_calls=mcp_calls, denials=denials, result=result, cost=cost, turns=turns, usage=usage,
+                rc=p.returncode, stderr=p.stderr[-400:], written=changed_files(proj, scaffold))
 
 def verdict(r):
     e = r.get("expect")
