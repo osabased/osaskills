@@ -1,5 +1,5 @@
 {
-  "description": "Tell the agent when the Roblox skills are behind the latest tool or library releases (once a day) and when the project lacks a current clone of a cataloged library skill it declares.",
+  "description": "Tell the agent when the project pins tool versions that differ from the ones the Roblox skills were reviewed against, and when it lacks a current clone of a cataloged library skill it declares.",
   "hooks": {
     "SessionStart": [
       {

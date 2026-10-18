@@ -130,7 +130,7 @@ def test_structure_copy_of_the_checker_is_identical():
     assert copy.read_bytes() == (ROOT / "scripts" / "check_updates.py").read_bytes()
 
 
-def test_plugin_session_hook_runs_the_shared_checker():
+def test_plugin_session_hook_is_registered_and_never_fails():
     repo = SKILLS.parent
     hooks = repo / "hooks" / "hooks.json"
     if not hooks.exists():
@@ -139,9 +139,7 @@ def test_plugin_session_hook_runs_the_shared_checker():
     command = spec["hooks"][0]["command"]
     assert "${CLAUDE_PLUGIN_ROOT}/hooks/freshness.py" in command and command.rstrip().endswith("|| true")
     text = (repo / "hooks" / "freshness.py").read_text(encoding="utf-8")
-    for name in ("roblox-resource-acquisition", "structure-roblox-projects"):
-        assert name in text
-    assert "check_updates" in text
+    assert "structure-roblox-projects" in text
 
 
 def test_plugin_version_follows_commits():
