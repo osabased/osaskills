@@ -116,6 +116,14 @@ Request: "Make this project easier for Claude to work in without me watching."
 
 Assess: proposes before building. The check command has no build or topology step. Type checking covers the cross-root Instance requires with a sourcemap generated from the recorded roots, not the editor plugin's local one or a new Rojo project file. Dev content is kept out of synced roots or gated on `IsStudio()`, with no release build assumed. The guide warns that file rewrites (Git, formatters) reach the open place and names what stays Studio-only. Does not introduce Rojo or write files before review.
 
+## Script Sync beside a Team Create team
+
+Fixture: the Script Sync fixture without a Git repository, its `CLAUDE.md` saying the place is in Team Create and teammates edit its scripts in Studio, with Drafts mode off.
+
+Request: "Make this project easier for Claude to work in without me watching."
+
+Assess: warns that synced disk changes, format-hook rewrites included, reach teammates live before review, and that guards miss teammates' Studio edits. Recommends a place file of the user's own synced into a private Git repository, a `team` branch in its own worktree refreshed from the team place with **Keep Studio**, and delivery that merges into `team`, reviews the diff, and chooses **Keep Disk** only when the conflict dialog lists no file outside it. Reports CI as not covered. Doesn't sync into the team place or write files before review.
+
 ## Studio-only place
 
 Fixture: a description of a place whose code exists only in Studio, with no synced roots, and an empty local folder the agent starts in. The Studio MCP is available but the agent may not edit the place.

@@ -20,10 +20,20 @@ Script Sync syncs `Script`, `LocalScript`, `ModuleScript` and `Folder` instances
 4. File names set the type: `name.luau` is a `ModuleScript`; `.server.luau`, `.client.luau`, `.local.luau`, `.legacy.luau` and `.plugin.luau` set the script class and `RunContext`; `name/` is a `Folder`; `name/init.*.luau` is a script with children. These suffixes are Script Sync's own; Rojo reads `.local` and `.legacy` as ModuleScripts. Check for duplicate or filesystem-incompatible names.
 5. **Don't sync scripts that have attributes or tags.** Script Sync ignores both, and Roblox warns they can be lost when scripts are created or deleted, or when sync starts from older files on disk. Move that data off the scripts or leave them out of synced folders.
 6. To remove a top-level synced root, use Studio's Stop Sync and delete it there, not on disk. Script Sync deletes only files it manages.
-7. In Team Create, people syncing and editing the same script overwrite each other. Packages sync, but `PackageLink` isn't written to disk.
+7. In Team Create, people syncing and editing the same script overwrite each other ([Team Create](#team-create)). Packages sync, but `PackageLink` isn't written to disk.
 8. When starting or resuming with differences, read the conflict dialog's planned adds, modifications and deletions before choosing **Keep Studio** or **Keep Disk**.
 
 Afterward, check the affected types, `RunContext`s, attributes, tags, children and packages, and that nothing unintended was written on either side.
+
+## Team Create
+
+Synced into a Team Create place, every disk change reaches the live session: an agent's edits, a format hook's rewrites, a `git checkout`. Teammates get them before anyone reviews them, Git or not. Guards see only the disk side, so they miss what teammates change in Studio. Before setting up an agent or checks under Script Sync, ask whether the synced place is a Team Create session other people edit. If it is, say so and recommend working in a place of your own, with code reaching the team place only after review:
+
+1. **Own place.** Save the team place to a file (**File** > **Save to File As**), open the file, sync its code roots into a Git repository and commit the baseline. Only this user commits there, so the agent setup follows the [shared or personal](project-guide.md#shared-or-personal) rule as usual; with no remote, CI is reported as not covered.
+2. **Team snapshot.** Keep a `team` branch holding the team place's code as last seen, checked out in its own worktree (`git worktree add ../<repo>-team -b team`). To pull, open the team place, sync the same roots into that worktree, read the conflict dialog and choose **Keep Studio**, stop sync, and commit. Then merge `team` into the working branch and run the check.
+3. **Deliver.** Pull first, then merge the working branch into `team` and review `git diff` against the snapshot: that is what the team place will get. Sync the team place into the worktree again. The dialog's planned changes must be only the files in that diff; any other file is a teammate's edit since the pull, so choose **Keep Studio** and pull again. Otherwise choose **Keep Disk**, then stop sync. A teammate's edit to a file in the diff can't be told apart, so ask them to stay out of those scripts while you deliver.
+
+Drafts mode keeps Studio script edits private until committed. Roblox's docs don't say whether synced changes arrive as drafts, so after a delivery with Drafts mode on, check in Studio that the scripts were committed, and report it as unverified.
 
 ## Checks
 
