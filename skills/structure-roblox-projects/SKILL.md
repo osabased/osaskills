@@ -27,7 +27,7 @@ Two jobs: put code where Roblox actually runs it, and give a Roblox project what
 
 ## An agent-ready project
 
-An agent works safely in a Roblox project that has the pieces below. When you set up a project or write its guide, propose the missing ones, sized to the project, and build them after the user reviews the proposal. When asked whether a project is agent-ready, check each row. Ask once whether the setup is shared with the team or [personal](references/project-guide.md#shared-or-personal); a personal one keeps every piece out of Git and CI. A place whose code lives only in Studio can't have most of them; start from [Studio-only](references/studio-only.md).
+An agent works safely in a Roblox project that has the pieces below. When you set up a project or write its guide, first ask once, in a message of its own with no proposal, whether the setup is shared with the team or [personal](references/project-guide.md#shared-or-personal); a personal one keeps every piece out of Git and CI. Then propose the missing pieces for that answer, sized to the project, and build them after the user reviews the proposal. When asked whether a project is agent-ready, check each row. A place whose code lives only in Studio can't have most of them; start from [Studio-only](references/studio-only.md).
 
 | Piece | Done when | Details |
 | --- | --- | --- |
