@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
-- `rojo.md` says to build the checker's sourcemap with `rojo sourcemap --include-non-scripts`. Without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a `--require-class` check on a Remote failed. `check_rojo_artifact.py` now names the flag when a sourcemap is `null`. Before, it said only that sourcemap nodes must be JSON objects. Rojo writes a `null` sourcemap when no script is mapped. A real-Rojo test covers a Remote with and without the flag. ([#PR](https://github.com/osabased/osaskills/pull/PR))
+- `rojo.md` says to build the checker's sourcemap with `rojo sourcemap --include-non-scripts`. Without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a `--require-class` check on a Remote failed. `check_rojo_artifact.py` now names the flag when a sourcemap is `null`. Before, it said only that sourcemap nodes must be JSON objects. Rojo writes a `null` sourcemap when no script is mapped. A real-Rojo test covers a Remote with and without the flag. ([#73](https://github.com/osabased/osaskills/pull/73))
 
 ### 2026-10-17
 
