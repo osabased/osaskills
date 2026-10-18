@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
-- The description names first-time Rokit, Wally, pesde, StyLua, Selene, luau-lsp or Lest setup, and sends picking or upgrading a specific package to roblox-resource-acquisition.
+- The description names first-time Rokit, Wally, pesde, StyLua, Selene, luau-lsp or Lest setup, and sends picking or upgrading a specific package to roblox-resource-acquisition. ([#80](https://github.com/osabased/osaskills/pull/80))
 
 ### 2026-10-17
 
@@ -248,17 +248,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
-- A Write a library skill mode in `SKILL.md`, and links from `writing-library-skills.md` to the GoodSignal and Rojo build examples, each with when to read it.
-- Eval cases for cloning a missing library skill, preferring the catalog pin, a pending install, carrying out an upgrade and a removal, writing a library skill, the boundary with structure-roblox-projects, writing your own Signal class, and freshness reports for used and unused libraries.
+- A Write a library skill mode in `SKILL.md`, and links from `writing-library-skills.md` to the GoodSignal and Rojo build examples, each with when to read it. ([#80](https://github.com/osabased/osaskills/pull/80))
+- Eval cases for cloning a missing library skill, preferring the catalog pin, a pending install, carrying out an upgrade and a removal, writing a library skill, the boundary with structure-roblox-projects, writing your own Signal class, and freshness reports for used and unused libraries. ([#80](https://github.com/osabased/osaskills/pull/80))
 
 #### Changed
 
-- The description covers adding, pinning or upgrading a specific Wally, pesde, npm or Rokit package or tool, and leaves first-time setup of the package manager or toolchain to structure-roblox-projects.
-- The freshness check reports only minor and major releases, and the agent mentions an outdated library only when the task uses it, then offers to update the skill and does so only when asked. The session hook's note says the same. The script skips its run when the hook's note is in context, and shares the hook's cache when `CLAUDE_PLUGIN_DATA` is set.
-- Cloned library skills are staged with the project's changes and committed only when the user asks.
-- A pending install's clone refusal is spelled out in `SKILL.md` step 3: follow the catalog copy under `libraries/` until the lock matches. The full clone rules live only in `library-skills.md`.
-- A behavior claim taken from reading source is labeled as read, not run, instead of being ruled out.
-- The missing-PyYAML error names the script that needs it and the `uv run` route, and an unsupported `pesde.lock` format says to check the pin by hand.
+- The description covers adding, pinning or upgrading a specific Wally, pesde, npm or Rokit package or tool, and leaves first-time setup of the package manager or toolchain to structure-roblox-projects. ([#80](https://github.com/osabased/osaskills/pull/80))
+- The freshness check reports only minor and major releases, and the agent mentions an outdated library only when the task uses it, then offers to update the skill and does so only when asked. The session hook's note says the same. The script skips its run when the hook's note is in context, and shares the hook's cache when `CLAUDE_PLUGIN_DATA` is set. ([#80](https://github.com/osabased/osaskills/pull/80))
+- Cloned library skills are staged with the project's changes and committed only when the user asks. ([#80](https://github.com/osabased/osaskills/pull/80))
+- A pending install's clone refusal is spelled out in `SKILL.md` step 3: follow the catalog copy under `libraries/` until the lock matches. The full clone rules live only in `library-skills.md`. ([#80](https://github.com/osabased/osaskills/pull/80))
+- A behavior claim taken from reading source is labeled as read, not run, instead of being ruled out. ([#80](https://github.com/osabased/osaskills/pull/80))
+- The missing-PyYAML error names the script that needs it and the `uv run` route, and an unsupported `pesde.lock` format says to check the pin by hand. ([#80](https://github.com/osabased/osaskills/pull/80))
 
 ### 2026-10-17
 
