@@ -17,13 +17,13 @@ Claude Code loads `CLAUDE.md` from the start directory and its ancestors, and a 
 
 ## Shared or personal
 
-Before the first write to a project's agent setup, ask once whether it is shared with the team (committed and run in CI) or personal to this user. Where the onboarding pointer lives records the answer: `CLAUDE.md` for shared, `CLAUDE.local.md` for personal. Before asking, compare the authors `git shortlog -sne HEAD` lists with `git config user.email`. When anyone else has committed, recommend personal, because a shared setup changes files and CI those people own, unless the repository already has a shared agent setup. Ask this as its own question before drafting the proposal, then propose only the layout for the answer given. Even after a go-ahead, list the paths you will write in one line before the first write.
+Before the first write to a project's agent setup, ask once whether it is shared with the team (committed and run in CI) or personal to this user. Where the onboarding pointer lives records the answer: `CLAUDE.md` for shared, `CLAUDE.local.md` for personal. Before asking, compare the authors `git shortlog -sne HEAD` lists with `git config user.email`. When anyone else has committed, recommend personal, because a shared setup changes files and CI those people own, unless the repository already has a shared agent setup. Ask this as its own question before drafting the proposal. The answer picks the layout but doesn't approve anything: next, propose only the layout for that answer and wait for the user's review. Once the user approves, list the paths you will write and the lines you will add to the exclude file in one line, then write.
 
 A personal setup keeps every piece out of Git:
 
 - The pointer goes in `CLAUDE.local.md`; the team's `CLAUDE.md` and any `AGENTS.md` stay as they are.
 - The guide, the check script and guards live under `AGENT_DIR/roblox/`, and hooks and the allowlist in `.claude/settings.local.json` ([checks](checks.md)).
-- Each file or directory the setup adds, such as `/CLAUDE.local.md` and `/.claude/roblox/`, goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed. Never exclude all of `/.claude/`, so files the team adds there later still show up. `.gitignore` is the team's.
+- Each file or directory the setup adds, such as `/CLAUDE.local.md` and `/.claude/roblox/`, goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed: `printf '%s\n' /CLAUDE.local.md /.claude/roblox/ /.claude/settings.local.json >> "$(git rev-parse --git-path info/exclude)"`. Never exclude all of `/.claude/`, so files the team adds there later still show up. `.gitignore` is the team's.
 - A file the team already tracks stays theirs: read and run it, but don't edit it for the setup.
 
 A personal setup doesn't reach a fresh clone, another worktree or a cloud session, and its guards don't protect teammates. The setup's report names all three places and the teammate gap, and a later task that depends on either says so.
