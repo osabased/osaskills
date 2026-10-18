@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
+- `unfamiliar-stack.md` first reuses a contract the guide or a matching `roblox-<tool>` library skill already records, ends the report with a `Reuse:` line, and offers a catalog library skill when at least one of the tool's rows is quoted and none exists at that pin. A row counts as `read` only with a quoted line, and the work loop sends a stack a library skill partly covers through the same report. ([#70](https://github.com/osabased/osaskills/pull/70))
 - The check command, tooling table and verification ladder name tools as examples of a role rather than a required stack, and the check gains a compile step for non-Luau source. ([#69](https://github.com/osabased/osaskills/pull/69))
 - Lest's Studio backend on a Team Create place is documented from a test: it joins the live session, disconnects the user's own Studio from the place, and keeps whatever a spec changes. ([#59](https://github.com/osabased/osaskills/pull/59))
 - Script Sync guidance now says not to sync a pesde or Wally install folder, since dot-prefixed directories and package project files are skipped, and that Lest's Studio didn't run Script Sync in a test. ([#59](https://github.com/osabased/osaskills/pull/59))
@@ -236,6 +237,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
+- Writing a library skill accepts a structure-roblox-projects contract table as a starting point, using only its quoted tool rows, and sends a skill built from one straight to a catalog pull request. ([#70](https://github.com/osabased/osaskills/pull/70))
 - The description is shorter (1021 to 924 characters) and now covers writing a library skill and setting up a package. It drops the tool-setup clause (Rojo, Rokit, Selene, StyLua, Lune), so setting up a tool routes to structure-roblox-projects. ([#62](https://github.com/osabased/osaskills/pull/62))
 
 ### 2026-10-16
