@@ -245,6 +245,17 @@ def test_canonical_pin_accepts_a_different_alias(package_profile, monkeypatch):
     assert result['status'] == 'FAIL' and 'the skill targets wally#example/widget@1.2.3 roblox' in result['reason']
 
 
+def test_unsupported_pesde_lock_format_says_why(package_profile):
+    child, project, data, manifest, lock = package_profile
+    lock['format'] = 3
+    (project / 'pesde.toml').write_text('', encoding='utf-8')
+    (project / 'pesde.lock').write_text('', encoding='utf-8')
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(pins, 'toml', lambda p: manifest if p.name == 'pesde.toml' else lock)
+        assert pins.check(child, project) == {
+            'status': 'UNAVAILABLE', 'reason': 'pesde.lock format 3 not supported (expects 2); check the pin by hand'}
+
+
 def test_pin_lock_registry_and_ambiguous_binding_fail(package_profile):
     _, _, data, manifest, lock = package_profile
     resource, profile = data['resource'], data['installation']

@@ -37,6 +37,7 @@ Do one item (or one group of companions, such as the four Nevermore packages), o
      - for an asset, `asset_sha256` of the new release file.
    - `SKILL.md`: the pinned version and the `## Check the pin` entries (the validator fails until they state the new pin), the Core API table, the example and the gotchas, so they match the new source. Remove gotchas the release fixed and add new ones.
    - Any affected `references/*.md`.
+   - Volatile facts that drift between releases: Blink's unreliable-payload byte limit (1000 bytes at 0.18.9) and the `pesde.lock` format the pin check reads (format 2).
    - The pin in the [catalog table](library-skills.md) and the repository `README.md` table.
 5. **Verify.**
    - Run `scripts/validate_skill.py libraries/roblox-<lib>`.

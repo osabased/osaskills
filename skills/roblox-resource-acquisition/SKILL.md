@@ -1,6 +1,6 @@
 ---
 name: roblox-resource-acquisition
-description: "Choose, add, compare, upgrade or remove Roblox libraries and development tools, and clone, write or fix their roblox-* skills. Use when a Roblox/Luau task might pull in an external dependency: installing or setting up a Wally, pesde or npm (roblox-ts) package; picking a signal, cleanup (Janitor, Maid, Trove), Promise, DataStore wrapper (ProfileStore), networking (Blink, ByteNet), UI (Vide, Fusion, React) or state (Charm) library; \"is there a module for X\", \"X vs Y\" or \"library or write it myself\"; a DevForum community resource; or refreshing a pinned version. Also use when a task uses Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink or Nevermore UI and the project lacks its skill (this skill clones it), or a roblox-* skill's pin doesn't match the project or its guidance is wrong. Not for ordinary coding with a library whose skill the project has, or project layout (use structure-roblox-projects)."
+description: "Choose, add, compare, upgrade or remove Roblox libraries and development tools, and clone, write or fix their roblox-* skills. Use when a Roblox/Luau task might pull in an external dependency: adding, pinning or upgrading a specific Wally, pesde, npm (roblox-ts) or Rokit package or tool; picking a signal, cleanup (Janitor, Maid, Trove), Promise, DataStore wrapper (ProfileStore), networking (Blink, ByteNet), UI (Vide, Fusion, React) or state (Charm) library; \"is there a module for X\", \"X vs Y\" or \"library or write it myself\"; a DevForum community resource. Also use when a task uses Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink or Nevermore UI and the project lacks its skill (this skill clones it), or a roblox-* skill's pin doesn't match the project or its guidance is wrong. Not for ordinary coding with a library whose skill the project has, project layout, or first-time setup of the package manager or toolchain itself (use structure-roblox-projects)."
 ---
 
 # Roblox Resource Acquisition
@@ -26,7 +26,7 @@ python scripts/clone_children.py --project PROJECT --status
 python scripts/clone_children.py --project PROJECT roblox-vide
 ```
 
-`--status` compares each catalog skill's pin with the project's manifest and lock (`declared`: `PASS`, `FAIL` or `UNAVAILABLE`) and reports its clone state. Clone only the skills the task uses, and commit the clones, unless the project's agent setup is personal (its onboarding pointer is in `CLAUDE.local.md`): then list them in the clone's git exclude file instead. A refusal means the project pins another version or the folder holds something else: report it and keep the project's pin. In a plugin install, a session-start hook names missing or stale clones and pin mismatches; act on those only for libraries the task uses. Details, and routes without Python: [library skills](references/library-skills.md).
+`--status` compares each catalog skill's pin with the project's manifest and lock and reports its clone state. Clone only the skills the task uses, stage the clones with the project's changes and tell the user. Refusals, personal setups, the session hook and routes without Python: [library skills](references/library-skills.md).
 
 ## Evaluate or compare
 
@@ -37,9 +37,13 @@ Follow [choosing a resource](references/choosing.md): settle the brief, apply th
 1. Choose with [choosing a resource](references/choosing.md), unless the user named the exact target.
 2. Follow [adopting](references/adopting.md): pin the exact version (the catalog's, when it has a skill for the library), install through the project's manager, and run the smallest checks that show the intended use works. If the install or a required check can't run, adoption is pending: still do every step that doesn't depend on it, including step 3, and name what's missing.
 3. Leave it agent-ready:
-   - clone its library skill when the catalog has one at this pin; otherwise offer to [write one](references/writing-library-skills.md) in one sentence, and write it only when the user asks;
+   - clone its library skill when the catalog has one at this pin. While the install is pending, `--status` reports `declared` as `FAIL` and cloning is refused: follow the catalog copy under `libraries/` and clone once the lock matches. When the catalog has none, offer to [write one](references/writing-library-skills.md) in one sentence, and write it only when the user asks;
    - add its entry to the `CLAUDE.md` resource list, naming the skill and any blocked use;
    - when the project bans a feature because breaking the ban is a security hole, permanent or silent, add a [version-pinned guard](references/adopting.md#guard-a-banned-feature).
+
+## Write a library skill
+
+When the user asks for a library skill, follow [writing library skills](references/writing-library-skills.md). Writing one doesn't adopt the library.
 
 ## Upgrade, replace or remove
 
@@ -57,7 +61,7 @@ Report the library and pin, expected and observed behavior, the reproduction, th
 ## Rules
 
 - Bind every claim to the exact identity and pin. Forks, mirrors and modified copies inherit nothing.
-- Use canonical sources (repository, releases, package registry) and current Roblox Creator Hub documentation. Never infer APIs or passing tests from names, or runtime behavior from reading source.
+- Use canonical sources (repository, releases, package registry) and current Roblox Creator Hub documentation. Don't infer APIs or passing tests from names, and label a behavior claim taken from reading source as read, not run.
 - Never change a project's pin to fit a library skill.
 - Keep checks proportional and reversible. Preserve server authority. Never publish, spend money, expose secrets or make irreversible project changes to validate a resource.
 - Report the exact target and pin, what you ran separately from what you only read, and any pending check. Don't add adoption reporting to a no-acquisition or evaluation-only result.

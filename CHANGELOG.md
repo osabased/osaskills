@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Real-Rojo tests fail instead of skipping when `REQUIRE_ROJO=1` is set, which CI and the update steps now set. New real-Rojo tests cover four behaviours the guidance relies on: a wrapper's `emitLegacyScripts` doesn't reach a nested tree, `.local.luau` and `.legacy.luau` build as ModuleScripts, `**/Preview/**` keeps the directory's init module, and `!` negation works in `globIgnorePaths`. The fixture's `rokit.toml` pins 7.7.1, and `script-sync.md` is listed with Rojo's files in `versions.json`, since it makes Rojo claims. ([#76](https://github.com/osabased/osaskills/pull/76))
 - The skill updates on demand instead of checking upstream releases every session. The agent no longer runs `check_updates.py` at the start of a session. When a task depends on a tool's version-specific guidance, it compares the project's pin with `reviewed`. For a newer pin it checks the release notes for the claims the task uses and tells the user; for an older pin it confirms those claims and warns. Without a pin it uses the installed version, or the current docs. Updates run only when the user asks or accepts an offer after a task that found a gap, and never lower `reviewed`. Only a full review sets `reviewed`; a fix to a single claim is a `Fix <name>: <claim>` PR that leaves it unchanged, and the duplicate-PR search covers both kinds.
 - The session hook drops its daily network freshness note. Its pin note compares the project's `rokit.toml` and `aftman.toml` tool pins with `reviewed`, locally, and prints only when they differ. `check_updates.py` and the weekly Freshness workflow are unchanged.
+- The description names first-time Rokit, Wally, pesde, StyLua, Selene, luau-lsp or Lest setup, and sends picking or upgrading a specific package to roblox-resource-acquisition. ([#80](https://github.com/osabased/osaskills/pull/80))
 
 ### 2026-10-17
 
@@ -252,10 +253,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### 2026-10-18
 
+#### Added
+
+- A Write a library skill mode in `SKILL.md`, and links from `writing-library-skills.md` to the GoodSignal and Rojo build examples, each with when to read it. ([#80](https://github.com/osabased/osaskills/pull/80))
+- Eval cases for cloning a missing library skill, preferring the catalog pin, a pending install, carrying out an upgrade and a removal, writing a library skill, the boundary with structure-roblox-projects, writing your own Signal class, and a project pin newer or older than the skill's. ([#80](https://github.com/osabased/osaskills/pull/80))
+
 #### Changed
 
 - The skill updates on demand instead of checking upstream releases every session. The agent no longer runs `check_updates.py` at the start of a session. When a task depends on a library skill's version-specific guidance and the project declares another version, it checks the release notes for a newer version, confirms the claims at an older one, and tells the user. Updates run only when the user asks or accepts an offer after a task that found a gap, and never lower `reviewed`. Only a full review sets `reviewed`; a fix to a single claim is a `Fix <name>: <claim>` PR that leaves it and the skill's pin unchanged, and the duplicate-PR search covers both kinds.
 - The session hook no longer adds a freshness note from a daily network check. Its library note, for missing or stale clones and pin mismatches, is unchanged.
+- The description covers adding, pinning or upgrading a specific Wally, pesde, npm or Rokit package or tool, and leaves first-time setup of the package manager or toolchain to structure-roblox-projects. ([#80](https://github.com/osabased/osaskills/pull/80))
+- Cloned library skills are staged with the project's changes and committed only when the user asks. ([#80](https://github.com/osabased/osaskills/pull/80))
+- A pending install's clone refusal is spelled out in `SKILL.md` step 3: follow the catalog copy under `libraries/` until the lock matches. The full clone rules live only in `library-skills.md`. ([#80](https://github.com/osabased/osaskills/pull/80))
+- A behavior claim taken from reading source is labeled as read, not run, instead of being ruled out. ([#80](https://github.com/osabased/osaskills/pull/80))
+- The missing-PyYAML error names the script that needs it and the `uv run` route, and an unsupported `pesde.lock` format says to check the pin by hand. ([#80](https://github.com/osabased/osaskills/pull/80))
 
 ### 2026-10-17
 

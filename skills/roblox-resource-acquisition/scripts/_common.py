@@ -14,6 +14,7 @@ keys, letting a file pass validation in one environment and fail in another.
 from __future__ import annotations
 
 import ipaddress
+import os
 import re
 import sys
 from datetime import date
@@ -22,9 +23,12 @@ from typing import Any
 try:
     import yaml
 except ImportError:  # pragma: no cover - exercised via subprocess in tests
+    script = os.path.basename(sys.argv[0]) or "<name>.py"
     print(
-        "ERROR: PyYAML is required to run this validator. "
-        "Install it with: uv pip install -r requirements.txt in the selected environment",
+        f"ERROR: PyYAML is required to run {script}. "
+        "Install it with: uv pip install -r requirements.txt (in the skill folder, beside scripts/) "
+        "in the selected environment, or run: "
+        f'uv run --no-project --python ">=3.11" --with pyyaml python scripts/{script}',
         file=sys.stderr,
     )
     sys.exit(2)

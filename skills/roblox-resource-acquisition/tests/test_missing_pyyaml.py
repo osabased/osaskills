@@ -35,3 +35,5 @@ def test_missing_pyyaml_exits_2_with_hint(scripts_dir, tmp_path, blocked_yaml_en
     assert "PyYAML is required" in proc.stderr
     assert "pip install -r requirements.txt" in proc.stderr
     assert "Traceback" not in proc.stderr
+    assert f"required to run {script}" in proc.stderr
+    assert f"--with pyyaml python scripts/{script}" in proc.stderr

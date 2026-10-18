@@ -14,7 +14,12 @@ A contract table from structure-roblox-projects is a starting point, not a skill
 
 ## SKILL.md
 
-Start from [the template](../templates/resource-skill-template.md). Name the skill `roblox-<library>` without a version; the pin goes in the body and `resource.yaml`.
+Start from [the template](../templates/resource-skill-template.md). The [checked examples](../examples/README.md) show the finished layout:
+
+- [GoodSignal](../examples/goodsignal/SKILL.example.md): read when writing a skill for a Luau module.
+- [Rojo build](../examples/rojo-build/SKILL.example.md): read when writing a skill for a command-line development tool.
+
+Name the skill `roblox-<library>` without a version; the pin goes in the body and `resource.yaml`.
 
 - **Description** (at most 1024 characters): library and repo names, key API names, file names (`pesde.toml`, `default.project.json`) and phrases a user would type; say what and when, plus one short exclusion.
 - **`## Check the pin`:** the exact manifest entry and lock key (or, for an asset, the SHA-256) that match the pin, for each manager the profile supports, then the standard closing paragraph from the template: on another version, tell the user, keep the project's pin, use only API confirmed at that version, and stop where behavior may differ; upgrade through `roblox-resource-acquisition`; advice only when the project doesn't declare the library; stop on a blocked use noted in the project's `CLAUDE.md`; say what was checked. The validator fails unless this section states the selector value, the git tree and the asset hash where the descriptor has them.

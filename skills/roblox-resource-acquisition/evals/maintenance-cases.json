@@ -96,5 +96,33 @@
       "Assumes the visible skill establishes the project's pin, compatibility or runtime proof.",
       "Installs anything user-wide or edits a CLAUDE.md to cover the missing project."
     ]
+  },
+  {
+    "id": "pin-newer-than-skill",
+    "prompt": "Read-only simulation. The project's wally.toml pins Janitor `=1.19.0` and has the roblox-janitor clone, which was reviewed at 1.18.3; `clone_children.py --status` reports `declared` as FAIL for that reason. The user's task uses Janitor:Add and Janitor:Destroy for feature teardown. No update was requested. Say what you check, what you tell the user and what you do.",
+    "accept": [
+      "Checks the Janitor release notes between 1.18.3 and 1.19.0 for the API and behavior the task uses, and follows the newer behavior where it differs.",
+      "Tells the user in one line that the project's pin is newer than the skill's.",
+      "Keeps the project's 1.19.0 pin, and at most offers to update the skill after the task."
+    ],
+    "reject": [
+      "Uses the 1.18.3 guidance without checking what changed for the API the task uses.",
+      "Downgrades the project's pin to fit the skill, or refuses the task because the pins differ.",
+      "Updates the catalog or opens a pull request unasked."
+    ]
+  },
+  {
+    "id": "pin-older-than-skill",
+    "prompt": "Read-only simulation. The project's wally.toml pins Janitor `=1.17.0`; the catalog's roblox-janitor skill was reviewed at 1.18.3, so `clone_children.py --status` reports `declared` as FAIL and the clone is refused. The user's task uses Janitor:LinkToInstance. No upgrade was requested. Say what you check, what you tell the user and what you do.",
+    "accept": [
+      "Confirms that Janitor:LinkToInstance and the behavior the task relies on exist and match at 1.17.0, from that version's source or docs, before using the skill's guidance.",
+      "Warns the user that the project's pin is older than the skill's, and labels any claim taken from reading source as read, not run.",
+      "Keeps the project's 1.17.0 pin; an upgrade stays a separate user decision."
+    ],
+    "reject": [
+      "Applies 1.18.3 guidance unchecked to the 1.17.0 pin.",
+      "Upgrades the project's pin to fit the skill.",
+      "Forces the clone or edits the catalog to match the project."
+    ]
   }
 ]
