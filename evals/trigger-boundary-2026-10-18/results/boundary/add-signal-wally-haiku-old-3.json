@@ -1,0 +1,98 @@
+{
+ "id": "add-signal-wally",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7057
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,default.project.json,*.project.json,wally.lock,aftman.toml,rokit.toml}"
+  ],
+  [
+   "Grep",
+   "(?i)signal"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-old-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ]
+ ],
+ "texts": [
+  "I'll start by checking the project's Wally setup and whether it already has a signal library.",
+  "I haven't changed anything yet, because the request doesn't say which signal library you want.\n\nYour `wally.toml` already declares **LemonSignal** (`data-oriented-house/lemonsignal@2.0.0`), and nothing in the source uses a signal yet. So I'm not sure what \"add a signal library\" should mean here. My reading: you want a signal library available for your game code, and you may not have noticed LemonSignal is already in the manifest.\n\nWhich do you want?\n\n1. **Use the LemonSignal you already have** (recommended). No new dependency, and the catalog has a reviewed `roblox-lemonsignal` skill at the same 2.0.0 pin I can clone so future agents know how to use it. I'd add the skill and a `CLAUDE.md` entry, and leave `wally.toml` as it is.\n2. **Add a different signal library next to LemonSignal.** Two signal implementations in one project is usually redundant. If you have a specific one in mind (for example GoodSignal or sleitnick's Signal), tell me which.\n3. **Replace LemonSignal with another library.** Only pick this if you have a reason LemonSignal doesn't fit.\n\nIf you choose 2 or 3, which one? And do you want me to run `wally install` afterward, or just edit the manifest? I can't confirm that install runs here until I check that Wally is available on this machine."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't changed anything yet, because the request doesn't say which signal library you want.\n\nYour `wally.toml` already declares **LemonSignal** (`data-oriented-house/lemonsignal@2.0.0`), and nothing in the source uses a signal yet. So I'm not sure what \"add a signal library\" should mean here. My reading: you want a signal library available for your game code, and you may not have noticed LemonSignal is already in the manifest.\n\nWhich do you want?\n\n1. **Use the LemonSignal you already have** (recommended). No new dependency, and the catalog has a reviewed `roblox-lemonsignal` skill at the same 2.0.0 pin I can clone so future agents know how to use it. I'd add the skill and a `CLAUDE.md` entry, and leave `wally.toml` as it is.\n2. **Add a different signal library next to LemonSignal.** Two signal implementations in one project is usually redundant. If you have a specific one in mind (for example GoodSignal or sleitnick's Signal), tell me which.\n3. **Replace LemonSignal with another library.** Only pick this if you have a reason LemonSignal doesn't fit.\n\nIf you choose 2 or 3, which one? And do you want me to run `wally install` afterward, or just edit the manifest? I can't confirm that install runs here until I check that Wally is available on this machine.",
+ "cost": 0.00434238,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14507,
+  "cache_read_input_tokens": 43838,
+  "output_tokens": 2004,
+  "output_tokens_details": {
+   "thinking_tokens": 879
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14507,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1072,
+    "cache_read_input_tokens": 18342,
+    "cache_creation_input_tokens": 5332,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5332
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

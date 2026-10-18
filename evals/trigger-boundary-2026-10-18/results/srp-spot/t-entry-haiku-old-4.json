@@ -1,0 +1,87 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-4\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-4\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-4\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "I'll look at the project layout first to see whether this is a Roblox project and where client code already lives.",
+  "This is a Rojo-based Roblox project. I'll read the Rojo mapping and the existing entry scripts.",
+  "The client entrypoint should go under **`StarterPlayer/StarterPlayerScripts`**. That's the container Roblox runs LocalScripts from automatically, once per player.\n\nYour current mapping doesn't do that. In `default.project.json:7`, `src/client` maps to `ReplicatedStorage/Client`. Scripts in ReplicatedStorage never run on their own, so `src/client/init.client.luau` (which prints `\"client\"`) would sit there silently. The server side is fine: `src/server` maps to `ServerScriptService/Server`, where Scripts do run.\n\nI'd recommend changing the mapping so the client code runs from StarterPlayerScripts:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"$path\": \"src/client\" }\n}\n```\n\nand removing the `\"Client\"` line from `ReplicatedStorage`. Nothing on the server can require StarterPlayerScripts, so that's safe as long as shared code stays in `src/shared`.\n\nIf you want client modules to stay in ReplicatedStorage, the other option is a separate folder, such as `src/client-entry`, mapped to `StarterPlayer/StarterPlayerScripts`, with only the entry script in it.\n\nI haven't changed anything. Do you want me to apply the first option?"
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The client entrypoint should go under **`StarterPlayer/StarterPlayerScripts`**. That's the container Roblox runs LocalScripts from automatically, once per player.\n\nYour current mapping doesn't do that. In `default.project.json:7`, `src/client` maps to `ReplicatedStorage/Client`. Scripts in ReplicatedStorage never run on their own, so `src/client/init.client.luau` (which prints `\"client\"`) would sit there silently. The server side is fine: `src/server` maps to `ServerScriptService/Server`, where Scripts do run.\n\nI'd recommend changing the mapping so the client code runs from StarterPlayerScripts:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"$path\": \"src/client\" }\n}\n```\n\nand removing the `\"Client\"` line from `ReplicatedStorage`. Nothing on the server can require StarterPlayerScripts, so that's safe as long as shared code stays in `src/shared`.\n\nIf you want client modules to stay in ReplicatedStorage, the other option is a separate folder, such as `src/client-entry`, mapped to `StarterPlayer/StarterPlayerScripts`, with only the entry script in it.\n\nI haven't changed anything. Do you want me to apply the first option?",
+ "cost": 0.00433273,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12886,
+  "cache_read_input_tokens": 48043,
+  "output_tokens": 2549,
+  "output_tokens_details": {
+   "thinking_tokens": 1525
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12886,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1761,
+    "cache_read_input_tokens": 21217,
+    "cache_creation_input_tokens": 836,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 836
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

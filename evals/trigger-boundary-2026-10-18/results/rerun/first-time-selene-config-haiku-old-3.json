@@ -1,0 +1,99 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Glob",
+   "{selene.toml,rokit.toml,aftman.toml,wally.toml,default.project.json,*.project.json,src/**,*.luau,*.lua,stylua.toml,.gitignore,README.md}"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "Before I start, my read of the request: set up Selene for this project, with a `selene.toml` that loads the Roblox standard library. I'll look at the project first and check the Roblox setup guidance.",
+  "The skill is loaded. Next I'll check whether the project has any Luau code, a Rojo project file, or a toolchain pin, since those decide how Selene should be set up.",
+  "The project root appears to hold only `.claude/`, with no Luau code and no `selene.toml` yet. I'll confirm that and read the Selene guidance in `tooling.md`."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00494378,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18650,
+  "cache_read_input_tokens": 48968,
+  "output_tokens": 1447,
+  "output_tokens_details": {
+   "thinking_tokens": 464
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18650,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 464,
+    "cache_read_input_tokens": 23424,
+    "cache_creation_input_tokens": 4393,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4393
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

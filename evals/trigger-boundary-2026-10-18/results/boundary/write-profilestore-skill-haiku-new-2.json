@@ -1,0 +1,121 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ],
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   11149
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.md",
+   1631
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.yaml",
+   1027
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,wally.lock,pesde.toml,pesde.lock,rokit.toml,aftman.toml,foreman.toml,package.json}"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Glob",
+   "**/.claude/skills/**"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.yaml"
+  ]
+ ],
+ "texts": [
+  "I'll find the pinned ProfileStore version in the project first, then write the skill to match it.",
+  "The project already has a `roblox-resource-acquisition` skill with a writing guide, template, and `versions.json`. Reading the pin, the guide, and the template next.",
+  "I haven't written the skill yet, because the project doesn't pin ProfileStore anywhere I can find.\n\n- `wally.toml` has Janitor, LemonSignal, and Charm. It has no ProfileStore.\n- `pesde.toml` has Vide and Blink. Neither has ProfileStore.\n- `rokit.toml` is for tools, not libraries.\n- There are no `wally.lock` or `pesde.lock` files.\n- The only ProfileStore mentions are in the `roblox-resource-acquisition` skill's examples and trigger tests. Its own trigger test \"add ProfileStore to our wally.toml\" implies it isn't installed yet.\n\nA skill's `## Check the pin` section has to match a real manifest entry and lock key, and the writing guide requires a reviewed source. I also can't look up ProfileStore's current release or API from here, so I'd be guessing at the version and the API. Here's what I need from you:\n\n1. **Which version?** Recommended: give me the Wally package name and exact version you use, or the GitHub repo and commit. If you don't have one yet, tell me which release to pin, and I'll add it to `wally.toml` and write the skill against that release's source. I can't verify a release from here, so I need you to supply the source.\n2. **Scope:** project-only at `.claude/skills/roblox-profilestore/` (recommended), or user-wide in `~/.claude/skills/`?\n3. **Catalog:** should I also propose the skill for the shared `osabased/osaskills` catalog? Recommended: not yet. That's an outward-facing pull request, so I'd wait until the skill is verified.\n\nOnce I have the version, I'll read its source, write `SKILL.md`, `resource.yaml`, and any references from the template, then run `validate_skill.py` and the pin check against a fixture project."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't written the skill yet, because the project doesn't pin ProfileStore anywhere I can find.\n\n- `wally.toml` has Janitor, LemonSignal, and Charm. It has no ProfileStore.\n- `pesde.toml` has Vide and Blink. Neither has ProfileStore.\n- `rokit.toml` is for tools, not libraries.\n- There are no `wally.lock` or `pesde.lock` files.\n- The only ProfileStore mentions are in the `roblox-resource-acquisition` skill's examples and trigger tests. Its own trigger test \"add ProfileStore to our wally.toml\" implies it isn't installed yet.\n\nA skill's `## Check the pin` section has to match a real manifest entry and lock key, and the writing guide requires a reviewed source. I also can't look up ProfileStore's current release or API from here, so I'd be guessing at the version and the API. Here's what I need from you:\n\n1. **Which version?** Recommended: give me the Wally package name and exact version you use, or the GitHub repo and commit. If you don't have one yet, tell me which release to pin, and I'll add it to `wally.toml` and write the skill against that release's source. I can't verify a release from here, so I need you to supply the source.\n2. **Scope:** project-only at `.claude/skills/roblox-profilestore/` (recommended), or user-wide in `~/.claude/skills/`?\n3. **Catalog:** should I also propose the skill for the shared `osabased/osaskills` catalog? Recommended: not yet. That's an outward-facing pull request, so I'd wait until the skill is verified.\n\nOnce I have the version, I'll read its source, write `SKILL.md`, `resource.yaml`, and any references from the template, then run `validate_skill.py` and the pin check against a fixture project.",
+ "cost": 0.00684795,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20858,
+  "cache_read_input_tokens": 46525,
+  "output_tokens": 4421,
+  "output_tokens_details": {
+   "thinking_tokens": 2742
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20858,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2856,
+    "cache_read_input_tokens": 20977,
+    "cache_creation_input_tokens": 9048,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 9048
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

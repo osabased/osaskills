@@ -1,0 +1,97 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\wally.toml"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "{rokit.toml,aftman.toml,foreman.toml,stylua.toml,.stylua.toml,selene.toml,.luaurc,pesde.lock,wally.lock,*.lock,.gitignore,README*,CLAUDE.md,.github/**}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-1\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "I'll start by looking at what's in the project so I know what CI needs to cover."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0037758500000000003,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13254,
+  "cache_read_input_tokens": 48145,
+  "output_tokens": 1286,
+  "output_tokens_details": {
+   "thinking_tokens": 320
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13254,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 579,
+    "cache_read_input_tokens": 21283,
+    "cache_creation_input_tokens": 1138,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1138
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

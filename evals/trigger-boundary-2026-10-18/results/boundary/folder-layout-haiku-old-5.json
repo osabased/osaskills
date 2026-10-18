@@ -1,0 +1,81 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "**What I think you want:** a folder layout for `ServerScriptService` and `ReplicatedStorage` in a new game, with the reasoning, so you can start building on it.\n\nHere's the layout I'd recommend. It assumes you're using a filesystem source of truth (Rojo or Script Sync), which is the setup I'd push for on a new project because an agent can read, diff, and check what's in files.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client   -- client startup owner\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides use\n  Remotes/          RemoteEvent / RemoteFunction instances\nServerScriptService/\n  ServerMain        Script, RunContext = Server   -- server startup owner\n  Server/           server-only modules (rules, state, DataStores, validation)\nServerStorage/\n  Assets/           server-only templates\nReplicatedFirst/    only the loading-screen subset\n```\n\n**Why this shape:**\n\n- **One startup owner per side.** `ServerMain` and `ClientMain` require feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Server secrets stay server-side.** Everything in `ReplicatedStorage` reaches clients, including module source. Anything with authority (DataStores, purchases, rules, validation) goes in `ServerScriptService` or `ServerStorage`.\n- **Client code lives in `ReplicatedStorage` on purpose.** A `LocalScript` placed there never runs. Use a `Script` with `RunContext = Client` as the client entrypoint, or put the entrypoint in `StarterPlayerScripts` as a `LocalScript`.\n- **Remotes get their own folder.** Every client-to-server Remote is attack surface, so it's easy to audit. The server checks type, range, ownership, and rate on every incoming payload.\n- **Feature-first or runtime-layer grouping.** Use `Server/Combat`, `Client/Combat`, `Shared/Combat` once you have several gameplay systems. Keep a flat list per side while the game is small.\n\n**Rojo gotcha:** under Rojo 7 with default settings, `*.client.luau` builds to a `LocalScript`, so a client script mapped into `ReplicatedStorage` silently never runs. Either set `\"emitLegacyScripts\": false` in your `*.project.json` or use `RunContext` explicitly. I'd verify this in your project file once it exists.\n\n**One question before I build anything:** which sync workflow do you want? Rojo (filesystem owns the DataModel, the usual choice for a new project with Git and CI), Script Sync (Studio owns most content, code syncs both ways), or Studio-only (everything in Studio, no filesystem)? The layout above works for Rojo and Script Sync. Studio-only loses most of the agent-readability benefits, so I'd steer away from it.\n\nIf you tell me which, I can scaffold the folder structure and a `*.project.json`, plus the two entrypoint stubs, in the working directory."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "**What I think you want:** a folder layout for `ServerScriptService` and `ReplicatedStorage` in a new game, with the reasoning, so you can start building on it.\n\nHere's the layout I'd recommend. It assumes you're using a filesystem source of truth (Rojo or Script Sync), which is the setup I'd push for on a new project because an agent can read, diff, and check what's in files.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client   -- client startup owner\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides use\n  Remotes/          RemoteEvent / RemoteFunction instances\nServerScriptService/\n  ServerMain        Script, RunContext = Server   -- server startup owner\n  Server/           server-only modules (rules, state, DataStores, validation)\nServerStorage/\n  Assets/           server-only templates\nReplicatedFirst/    only the loading-screen subset\n```\n\n**Why this shape:**\n\n- **One startup owner per side.** `ServerMain` and `ClientMain` require feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Server secrets stay server-side.** Everything in `ReplicatedStorage` reaches clients, including module source. Anything with authority (DataStores, purchases, rules, validation) goes in `ServerScriptService` or `ServerStorage`.\n- **Client code lives in `ReplicatedStorage` on purpose.** A `LocalScript` placed there never runs. Use a `Script` with `RunContext = Client` as the client entrypoint, or put the entrypoint in `StarterPlayerScripts` as a `LocalScript`.\n- **Remotes get their own folder.** Every client-to-server Remote is attack surface, so it's easy to audit. The server checks type, range, ownership, and rate on every incoming payload.\n- **Feature-first or runtime-layer grouping.** Use `Server/Combat`, `Client/Combat`, `Shared/Combat` once you have several gameplay systems. Keep a flat list per side while the game is small.\n\n**Rojo gotcha:** under Rojo 7 with default settings, `*.client.luau` builds to a `LocalScript`, so a client script mapped into `ReplicatedStorage` silently never runs. Either set `\"emitLegacyScripts\": false` in your `*.project.json` or use `RunContext` explicitly. I'd verify this in your project file once it exists.\n\n**One question before I build anything:** which sync workflow do you want? Rojo (filesystem owns the DataModel, the usual choice for a new project with Git and CI), Script Sync (Studio owns most content, code syncs both ways), or Studio-only (everything in Studio, no filesystem)? The layout above works for Rojo and Script Sync. Studio-only loses most of the agent-readability benefits, so I'd steer away from it.\n\nIf you tell me which, I can scaffold the folder structure and a `*.project.json`, plus the two entrypoint stubs, in the working directory.",
+ "cost": 0.00400323,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13298,
+  "cache_read_input_tokens": 45303,
+  "output_tokens": 1780,
+  "output_tokens_details": {
+   "thinking_tokens": 500
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13298,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1237,
+    "cache_read_input_tokens": 19801,
+    "cache_creation_input_tokens": 2664,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2664
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

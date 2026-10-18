@@ -1,0 +1,95 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-2\\src\\client\\init.client.luau"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00392902,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14462,
+  "cache_read_input_tokens": 45352,
+  "output_tokens": 1165,
+  "output_tokens_details": {
+   "thinking_tokens": 549
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14462,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 414,
+    "cache_read_input_tokens": 19850,
+    "cache_creation_input_tokens": 3779,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3779
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

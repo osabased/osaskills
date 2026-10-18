@@ -1,0 +1,119 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7079
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,rokit.toml,aftman.toml,pesde.toml,package.json,default.project.json,*.project.json,wally.lock,pesde.lock,.claude/**}"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\rokit.toml"
+  ],
+  [
+   "Glob",
+   "**/*profile*/**"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-2\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore|profile store|ProfileService"
+  ],
+  [
+   "Glob",
+   "**/{*.lock,*.lock.json,CLAUDE.md,AGENTS.md,src/**/*.luau,src/**/*.lua}"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding the pinned ProfileStore version in the project, since the skill has to match it.",
+  "The repo has a `roblox-resource-acquisition` skill with per-library folders and a `versions.json`. I'll check the package manifests and that skill's ProfileStore references.",
+  "ProfileStore isn't in `wally.toml`, `pesde.toml`, or `rokit.toml`, and it isn't in the catalog's `versions.json`. I'll check where the repo mentions it before deciding what \"pinned\" refers to."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0046875300000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16842,
+  "cache_read_input_tokens": 45353,
+  "output_tokens": 1730,
+  "output_tokens_details": {
+   "thinking_tokens": 533
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16842,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 505,
+    "cache_read_input_tokens": 19802,
+    "cache_creation_input_tokens": 6207,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6207
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

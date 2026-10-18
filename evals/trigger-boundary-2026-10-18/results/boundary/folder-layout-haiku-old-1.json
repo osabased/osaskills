@@ -1,0 +1,81 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "You want a layout for a new game's server and shared code, with the client side and assets in the right places. Here's what I'd recommend, assuming you're using an external editor with Git (Rojo or Script Sync). If you're building entirely in Studio, the same split applies, just without files on disk.\n\n```text\nServerScriptService/\n  ServerMain          Script (server entrypoint, the only thing that starts server features)\n  Server/             server-only modules, grouped by feature (Combat/, Data/, Economy/)\nServerStorage/\n  Assets/             server-only templates and maps clients never see\nReplicatedStorage/\n  ClientMain          Script with RunContext = Client (client entrypoint)\n  Client/             client-only modules: input, camera, UI\n  Shared/             types, constants, and pure logic both sides run\n  Remotes/            RemoteEvents and RemoteFunctions, or created by a networking library\n  Assets/             models and UI both sides need\nReplicatedFirst/      only the loading-screen subset\n```\n\nThe rules behind it:\n\n- **One startup owner per side.** `ServerMain` and `ClientMain` require the feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Secrets, DataStores, purchases and validation stay on the server.** Everything in `ReplicatedStorage` is downloadable by clients, module source included.\n- **Validate every client-to-server Remote on the server**: type, range, ownership and rate.\n- **Don't use `LocalScript` in `ReplicatedStorage`.** It never runs there. Use a `Script` with `RunContext = Client`, or put a `LocalScript` under `StarterPlayerScripts`.\n- **Pick one folder pattern and keep it.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) works well once you have several gameplay systems. A flat list per side is fine while the game is small.\n- **Use PascalCase for folders, scripts and module tables; camelCase for functions and locals.**\n\nTwo decisions I need from you before you build this:\n\n1. **How do you want to edit code?** Rojo (filesystem is the source of truth, best for Git and agents), Script Sync (external editor, Studio owns the rest), or Studio-only (simplest for a solo prototype, but harder for tooling to check). I'd recommend Rojo if you'll use Git or an AI agent.\n2. **Do you use a framework or loader** (for example, a lifecycle loader or a networking library)? If so, its discovery rules override the defaults above.\n\nIf you tell me those two, I can set up the folder structure and starter entrypoints for you."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "You want a layout for a new game's server and shared code, with the client side and assets in the right places. Here's what I'd recommend, assuming you're using an external editor with Git (Rojo or Script Sync). If you're building entirely in Studio, the same split applies, just without files on disk.\n\n```text\nServerScriptService/\n  ServerMain          Script (server entrypoint, the only thing that starts server features)\n  Server/             server-only modules, grouped by feature (Combat/, Data/, Economy/)\nServerStorage/\n  Assets/             server-only templates and maps clients never see\nReplicatedStorage/\n  ClientMain          Script with RunContext = Client (client entrypoint)\n  Client/             client-only modules: input, camera, UI\n  Shared/             types, constants, and pure logic both sides run\n  Remotes/            RemoteEvents and RemoteFunctions, or created by a networking library\n  Assets/             models and UI both sides need\nReplicatedFirst/      only the loading-screen subset\n```\n\nThe rules behind it:\n\n- **One startup owner per side.** `ServerMain` and `ClientMain` require the feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Secrets, DataStores, purchases and validation stay on the server.** Everything in `ReplicatedStorage` is downloadable by clients, module source included.\n- **Validate every client-to-server Remote on the server**: type, range, ownership and rate.\n- **Don't use `LocalScript` in `ReplicatedStorage`.** It never runs there. Use a `Script` with `RunContext = Client`, or put a `LocalScript` under `StarterPlayerScripts`.\n- **Pick one folder pattern and keep it.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) works well once you have several gameplay systems. A flat list per side is fine while the game is small.\n- **Use PascalCase for folders, scripts and module tables; camelCase for functions and locals.**\n\nTwo decisions I need from you before you build this:\n\n1. **How do you want to edit code?** Rojo (filesystem is the source of truth, best for Git and agents), Script Sync (external editor, Studio owns the rest), or Studio-only (simplest for a solo prototype, but harder for tooling to check). I'd recommend Rojo if you'll use Git or an AI agent.\n2. **Do you use a framework or loader** (for example, a lifecycle loader or a networking library)? If so, its discovery rules override the defaults above.\n\nIf you tell me those two, I can set up the folder structure and starter entrypoints for you.",
+ "cost": 0.00394686,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13357,
+  "cache_read_input_tokens": 45336,
+  "output_tokens": 1643,
+  "output_tokens_details": {
+   "thinking_tokens": 519
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13357,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1041,
+    "cache_read_input_tokens": 19834,
+    "cache_creation_input_tokens": 2690,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2690
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

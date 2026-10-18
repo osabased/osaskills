@@ -1,0 +1,90 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Grep",
+   "Upgrade, replace or remove"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-sonnet-new-2\\rokit.toml"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Grep",
+   "selene"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.060708399999999996,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11561,
+  "cache_read_input_tokens": 42824,
+  "output_tokens": 1017,
+  "output_tokens_details": {
+   "thinking_tokens": 70
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11561,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 242,
+    "cache_read_input_tokens": 18056,
+    "cache_creation_input_tokens": 2672,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2672
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

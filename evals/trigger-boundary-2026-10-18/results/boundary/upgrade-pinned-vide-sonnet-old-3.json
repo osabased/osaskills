@@ -1,0 +1,109 @@
+{
+ "id": "upgrade-pinned-vide",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ],
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   6323
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/{wally.toml,pesde.toml,package.json,rokit.toml,wally.lock,pesde.lock,CLAUDE.md,CLAUDE.local.md}"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-old-3\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-old-3\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-old-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-old-3\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "(?i)vide"
+  ],
+  [
+   "Glob",
+   ".claude/skills/*"
+  ]
+ ],
+ "texts": [
+  "I'll load the Roblox resource skill, since it covers refreshing a pinned version."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.07505120000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14998,
+  "cache_read_input_tokens": 42672,
+  "output_tokens": 1078,
+  "output_tokens_details": {
+   "thinking_tokens": 115
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14998,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 473,
+    "cache_read_input_tokens": 17942,
+    "cache_creation_input_tokens": 6223,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6223
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

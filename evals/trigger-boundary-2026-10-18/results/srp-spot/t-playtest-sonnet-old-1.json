@@ -1,0 +1,80 @@
+{
+ "id": "t-playtest",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   5094
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ]
+ ],
+ "texts": [
+  "Here's how to test the shop button in a Studio play-test through the MCP. The MCP tool names change over time, so list the server's tools first and check them against what's below.\n\n1. **Check that Studio has your latest code.** While still in Edit mode, read the `Source` of the module you changed with `execute_luau` or `script_read`. A commit hash won't tell you about uncommitted edits. Make sure Rojo is serving or Script Sync is running if you use either.\n\n2. **Start the play-test** with `start_stop_play`. Changes made during a play-test are discarded when it stops. Stop only a session you started.\n\n3. **Find the button** with `search_game_tree` or `inspect_instance` on the Client datamodel. The path will look like `LocalPlayer.PlayerGui.<ShopGui>.<ShopButton>`. Confirm it exists and is visible.\n\n4. **Click it with real input.** Call `user_mouse_input` with that `instance_path` and a click. This fires the button's `Activated` event, so you test the actual path. If you call the handler directly, you only prove the handler works.\n\n5. **Check the result.** Use `get_console_output` for errors and prints. Use `inspect_instance` to see whether the shop frame opened or became visible. If the button asks the server for something, such as a purchase, check the Server datamodel as well.\n\n**Things that will trip you up**\n- **Timing:** the first `execute_luau` after Play returns 7 to 15 seconds in, and each call takes seconds. A short-lived UI (a popup or a fade) may be gone before you look. To catch it, run one `execute_luau` that connects to the relevant signals. Connections outlive the call. Have it append timestamped lines to a `StringValue` under `LocalPlayer`, then read that afterward.\n- **Don't `require` your own game modules from `execute_luau` during Play.** That builds a second copy with its own state, and its errors look like real bugs. Watch the UI, the console and the Instance tree instead.\n- **`screen_capture` only works in Edit mode.** You can't take screenshots mid-play.\n- **Console noise:** Studio logs messages such as mocked DataStores and unavailable APIs. Those are normal.\n\nIf the button should also work for several players, or the shop has server-authoritative purchase logic, that needs Studio's multi-client test. A single-client play-test won't cover it.\n\nI can run this against your project if you tell me the button's name and where its GUI lives. I haven't looked at your project yet, so I don't know your GUI path or whether you use Rojo or Script Sync."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's how to test the shop button in a Studio play-test through the MCP. The MCP tool names change over time, so list the server's tools first and check them against what's below.\n\n1. **Check that Studio has your latest code.** While still in Edit mode, read the `Source` of the module you changed with `execute_luau` or `script_read`. A commit hash won't tell you about uncommitted edits. Make sure Rojo is serving or Script Sync is running if you use either.\n\n2. **Start the play-test** with `start_stop_play`. Changes made during a play-test are discarded when it stops. Stop only a session you started.\n\n3. **Find the button** with `search_game_tree` or `inspect_instance` on the Client datamodel. The path will look like `LocalPlayer.PlayerGui.<ShopGui>.<ShopButton>`. Confirm it exists and is visible.\n\n4. **Click it with real input.** Call `user_mouse_input` with that `instance_path` and a click. This fires the button's `Activated` event, so you test the actual path. If you call the handler directly, you only prove the handler works.\n\n5. **Check the result.** Use `get_console_output` for errors and prints. Use `inspect_instance` to see whether the shop frame opened or became visible. If the button asks the server for something, such as a purchase, check the Server datamodel as well.\n\n**Things that will trip you up**\n- **Timing:** the first `execute_luau` after Play returns 7 to 15 seconds in, and each call takes seconds. A short-lived UI (a popup or a fade) may be gone before you look. To catch it, run one `execute_luau` that connects to the relevant signals. Connections outlive the call. Have it append timestamped lines to a `StringValue` under `LocalPlayer`, then read that afterward.\n- **Don't `require` your own game modules from `execute_luau` during Play.** That builds a second copy with its own state, and its errors look like real bugs. Watch the UI, the console and the Instance tree instead.\n- **`screen_capture` only works in Edit mode.** You can't take screenshots mid-play.\n- **Console noise:** Studio logs messages such as mocked DataStores and unavailable APIs. Those are normal.\n\nIf the button should also work for several players, or the shop has server-authoritative purchase logic, that needs Studio's multi-client test. A single-client play-test won't cover it.\n\nI can run this against your project if you tell me the button's name and where its GUI lives. I haven't looked at your project yet, so I don't know your GUI path or whether you use Rojo or Script Sync.",
+ "cost": 0.0672079,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12985,
+  "cache_read_input_tokens": 46159,
+  "output_tokens": 1064,
+  "output_tokens_details": {
+   "thinking_tokens": 42
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12985,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 845,
+    "cache_read_input_tokens": 20101,
+    "cache_creation_input_tokens": 2051,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2051
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

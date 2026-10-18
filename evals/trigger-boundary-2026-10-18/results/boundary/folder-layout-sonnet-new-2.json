@@ -1,0 +1,89 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ],
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-new-2\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ]
+ ],
+ "texts": [
+  "Here's the layout I'd start with. It assumes you haven't picked a sync tool or framework yet.\n\n```text\nServerScriptService/\n  ServerMain          Script (RunContext = Server), the only server startup owner\n  Server/             server-only modules (data, game rules, validation)\n\nServerStorage/\n  Assets/             templates and models that clients shouldn't see\n\nReplicatedStorage/\n  ClientMain          Script (RunContext = Client), the only client startup owner\n  Client/             client-only modules (input, camera, UI)\n  Shared/             types, constants and pure logic that both sides run\n  Remotes/            RemoteEvents and RemoteFunctions\n```\n\n**Rules that matter**\n- **Client code:** Put the client entrypoint in `ReplicatedStorage` as a `Script` with `RunContext = Client`. A `LocalScript` there never runs. Use a `LocalScript` only if it has to sit in `StarterPlayerScripts` or `StarterCharacterScripts`.\n- **Client visibility:** Everything in `ReplicatedStorage`, including module source, is readable by clients. Keep secrets, DataStores, purchase handling and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **One startup owner per side:** `ServerMain` and `ClientMain` explicitly `require` the feature modules. You can then see what starts and in what order. Don't add `Init`/`Start` phases until ordering actually causes problems.\n- **Remotes:** Treat every client-to-server Remote as attack surface. The server checks type, range, ownership and rate on each call.\n- **Dependencies:** Modules depend on `Shared` or on domain modules, never back on the entrypoints.\n- **Module state:** Module state is not shared between server and clients. Each environment loads its own copy.\n\n**Grouping as it grows**\n- Group by feature once you have several systems: `Server/Combat`, `Client/Combat`, `Shared/Combat`. For a small game, a flat list per side is fine.\n- Use PascalCase for folders, scripts and module tables, camelCase for functions and locals, and UPPER_SNAKE_CASE for constants.\n- Stick to one pattern so new modules are easy to copy.\n\n**Sync tool**\n- If you want the code in Git and an external editor, Rojo makes the filesystem the source of truth. Roblox's built-in Script Sync is the lighter option and keeps Studio in charge of everything except scripts.\n- Don't run two sync systems on the same content.\n\nI can scaffold this as a Rojo project (`default.project.json`, folders, the two entrypoints and a check command) if you'd like. Before I do, three questions, with my recommendation first:\n1. **Sync:** Rojo, Script Sync, or Studio only? I'd pick Rojo.\n2. **Networking:** Plain RemoteEvents, or a library like Blink? I'd start with plain Remotes.\n3. **Team:** Solo, or others committing to the repo? That decides whether the agent setup (guide, hooks, CI) is shared or personal."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's the layout I'd start with. It assumes you haven't picked a sync tool or framework yet.\n\n```text\nServerScriptService/\n  ServerMain          Script (RunContext = Server), the only server startup owner\n  Server/             server-only modules (data, game rules, validation)\n\nServerStorage/\n  Assets/             templates and models that clients shouldn't see\n\nReplicatedStorage/\n  ClientMain          Script (RunContext = Client), the only client startup owner\n  Client/             client-only modules (input, camera, UI)\n  Shared/             types, constants and pure logic that both sides run\n  Remotes/            RemoteEvents and RemoteFunctions\n```\n\n**Rules that matter**\n- **Client code:** Put the client entrypoint in `ReplicatedStorage` as a `Script` with `RunContext = Client`. A `LocalScript` there never runs. Use a `LocalScript` only if it has to sit in `StarterPlayerScripts` or `StarterCharacterScripts`.\n- **Client visibility:** Everything in `ReplicatedStorage`, including module source, is readable by clients. Keep secrets, DataStores, purchase handling and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **One startup owner per side:** `ServerMain` and `ClientMain` explicitly `require` the feature modules. You can then see what starts and in what order. Don't add `Init`/`Start` phases until ordering actually causes problems.\n- **Remotes:** Treat every client-to-server Remote as attack surface. The server checks type, range, ownership and rate on each call.\n- **Dependencies:** Modules depend on `Shared` or on domain modules, never back on the entrypoints.\n- **Module state:** Module state is not shared between server and clients. Each environment loads its own copy.\n\n**Grouping as it grows**\n- Group by feature once you have several systems: `Server/Combat`, `Client/Combat`, `Shared/Combat`. For a small game, a flat list per side is fine.\n- Use PascalCase for folders, scripts and module tables, camelCase for functions and locals, and UPPER_SNAKE_CASE for constants.\n- Stick to one pattern so new modules are easy to copy.\n\n**Sync tool**\n- If you want the code in Git and an external editor, Rojo makes the filesystem the source of truth. Roblox's built-in Script Sync is the lighter option and keeps Studio in charge of everything except scripts.\n- Don't run two sync systems on the same content.\n\nI can scaffold this as a Rojo project (`default.project.json`, folders, the two entrypoints and a check command) if you'd like. Before I do, three questions, with my recommendation first:\n1. **Sync:** Rojo, Script Sync, or Studio only? I'd pick Rojo.\n2. **Networking:** Plain RemoteEvents, or a library like Blink? I'd start with plain Remotes.\n3. **Team:** Solo, or others committing to the repo? That decides whether the agent setup (guide, hooks, CI) is shared or personal.",
+ "cost": 0.0723392,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13496,
+  "cache_read_input_tokens": 43532,
+  "output_tokens": 1399,
+  "output_tokens_details": {
+   "thinking_tokens": 73
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13496,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1105,
+    "cache_read_input_tokens": 18766,
+    "cache_creation_input_tokens": 3897,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3897
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

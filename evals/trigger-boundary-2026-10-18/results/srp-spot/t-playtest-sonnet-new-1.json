@@ -1,0 +1,80 @@
+{
+ "id": "t-playtest",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/verification.md",
+   5094
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ]
+ ],
+ "texts": [
+  "Here's how to play-test your shop button through the Studio MCP. These steps come from the verification notes in the project skill, which were observed in October 2026. Tool names change, so list the MCP server's tools first and check them against the names below.\n\n1. **Confirm Studio has your latest code.** While still in Edit mode, read the changed script's `Source` with `execute_luau` or `script_read`. A commit hash won't tell you about uncommitted edits. If you use Rojo or Script Sync, make sure it's running.\n\n2. **Start Play.** Call `start_stop_play`. Anything changed during the session is discarded when it stops. Only stop sessions you started.\n\n3. **Find the button.** Use `search_game_tree` or `inspect_instance` on the Client datamodel. The path should look like `LocalPlayer.PlayerGui.<ShopGui>.<ShopButton>`. Confirm it exists and is visible.\n\n4. **Click it with real input.** Call `user_mouse_input` with that `instance_path` and a click. This fires the button's `Activated` event. Calling the handler directly from `execute_luau` only proves the handler works, not the button.\n\n5. **Read what happened.** Call `get_console_output` on both Client and Server. Use `inspect_instance` to check that the shop frame opened, or that the purchase remote fired and the server reacted. Expect some Studio console noise, such as mocked DataStores.\n\n**Pitfalls**\n- **Timing:** The first `execute_luau` after Play takes 7 to 15 seconds, and each later call takes a few seconds. If the shop UI is short-lived, it will be gone before you look. Run one `execute_luau` that connects to the relevant signals and appends timestamped lines to a `StringValue` under `LocalPlayer`. Read that afterward. Connections outlive the call.\n- **Don't `require` your game's modules from `execute_luau` during Play.** That builds a second copy with separate state, and its errors look like real bugs. Observe through the UI, the console and the Instance tree instead.\n- **`screen_capture` only works in Edit mode,** so you can't use it for screenshots mid-Play.\n- **Purchases:** Validation and purchasing belong on the server. Check the server console to confirm it handled the request, not just that the client UI changed.\n\nIf you tell me the GUI and button names, I can write the exact `user_mouse_input` and recorder calls. This directory has no Studio MCP connection that I can see, so I haven't run any of this."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's how to play-test your shop button through the Studio MCP. These steps come from the verification notes in the project skill, which were observed in October 2026. Tool names change, so list the MCP server's tools first and check them against the names below.\n\n1. **Confirm Studio has your latest code.** While still in Edit mode, read the changed script's `Source` with `execute_luau` or `script_read`. A commit hash won't tell you about uncommitted edits. If you use Rojo or Script Sync, make sure it's running.\n\n2. **Start Play.** Call `start_stop_play`. Anything changed during the session is discarded when it stops. Only stop sessions you started.\n\n3. **Find the button.** Use `search_game_tree` or `inspect_instance` on the Client datamodel. The path should look like `LocalPlayer.PlayerGui.<ShopGui>.<ShopButton>`. Confirm it exists and is visible.\n\n4. **Click it with real input.** Call `user_mouse_input` with that `instance_path` and a click. This fires the button's `Activated` event. Calling the handler directly from `execute_luau` only proves the handler works, not the button.\n\n5. **Read what happened.** Call `get_console_output` on both Client and Server. Use `inspect_instance` to check that the shop frame opened, or that the purchase remote fired and the server reacted. Expect some Studio console noise, such as mocked DataStores.\n\n**Pitfalls**\n- **Timing:** The first `execute_luau` after Play takes 7 to 15 seconds, and each later call takes a few seconds. If the shop UI is short-lived, it will be gone before you look. Run one `execute_luau` that connects to the relevant signals and appends timestamped lines to a `StringValue` under `LocalPlayer`. Read that afterward. Connections outlive the call.\n- **Don't `require` your game's modules from `execute_luau` during Play.** That builds a second copy with separate state, and its errors look like real bugs. Observe through the UI, the console and the Instance tree instead.\n- **`screen_capture` only works in Edit mode,** so you can't use it for screenshots mid-Play.\n- **Purchases:** Validation and purchasing belong on the server. Check the server console to confirm it handled the request, not just that the client UI changed.\n\nIf you tell me the GUI and button names, I can write the exact `user_mouse_input` and recorder calls. This directory has no Studio MCP connection that I can see, so I haven't run any of this.",
+ "cost": 0.0670995,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13021,
+  "cache_read_input_tokens": 46235,
+  "output_tokens": 1038,
+  "output_tokens_details": {
+   "thinking_tokens": 38
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13021,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 823,
+    "cache_read_input_tokens": 20137,
+    "cache_creation_input_tokens": 2051,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2051
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

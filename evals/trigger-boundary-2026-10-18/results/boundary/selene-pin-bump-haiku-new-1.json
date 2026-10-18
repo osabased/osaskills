@@ -1,0 +1,80 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-new-1\\rokit.toml"
+  ],
+  [
+   "Bash",
+   "curl -sL https://api.github.com/repos/Kampfkarren/selene/releases/latest | head -c 400; echo; curl -sL https://api.github.com/repos/Kampfkarren/selene/tags?per_page=5 | head -c 600"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00243326,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 7890,
+  "cache_read_input_tokens": 42366,
+  "output_tokens": 862,
+  "output_tokens_details": {
+   "thinking_tokens": 316
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7890,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 438,
+    "cache_read_input_tokens": 16822,
+    "cache_creation_input_tokens": 235,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 235
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

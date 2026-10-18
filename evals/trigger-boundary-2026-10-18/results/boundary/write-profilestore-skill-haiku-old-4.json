@@ -1,0 +1,131 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ],
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10848
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.md",
+   1631
+  ],
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7057
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\src\\server\\PlayerData.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Grep",
+   "(?i)profile ?store|madstudio|loleris|ProfileService"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-4\\rokit.toml"
+  ]
+ ],
+ "texts": [
+  "I read this as: write a `roblox-profilestore` skill that documents the ProfileStore version your project pins, so agents use its API correctly. I'll check the project for that pin first.",
+  "The project has `wally.toml` and `pesde.toml`, and the acquisition skill ships a `versions.json`, a template, and a guide for writing library skills. I'll read those next.",
+  "The project doesn't declare ProfileStore yet. I'll check the remaining manifests and the acquisition skill's references for any ProfileStore pin before I conclude that."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.006399589999999999,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 22898,
+  "cache_read_input_tokens": 46089,
+  "output_tokens": 2717,
+  "output_tokens_details": {
+   "thinking_tokens": 1120
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22898,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1029,
+    "cache_read_input_tokens": 20581,
+    "cache_creation_input_tokens": 11484,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 11484
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

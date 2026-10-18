@@ -1,0 +1,89 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Bash",
+   "curl -sL -H \"Accept: application/vnd.github+json\" https://api.github.com/repos/Kampfkarren/selene/releases/latest | head -c 600; echo; curl -sL -o /dev/null -w \"%{url_effective}\\n\" https://github.com/Kampfkarren/selene/releases/latest"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-old-2\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ]
+ ],
+ "texts": [
+  "I read this as: find Selene's entry in `rokit.toml`, look up the latest Selene release, and update the pinned version to match. Starting with the config file.",
+  "The pin is `Kampfkarren/selene@0.29.0`. Checking the latest release on GitHub.",
+  "Bash isn't available in this session, and no web-fetch tool is loaded. I'll check the skill's `versions.json`, which may record the latest Selene version."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0026193200000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8579,
+  "cache_read_input_tokens": 42942,
+  "output_tokens": 947,
+  "output_tokens_details": {
+   "thinking_tokens": 320
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8579,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 310,
+    "cache_read_input_tokens": 17438,
+    "cache_creation_input_tokens": 308,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 308
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

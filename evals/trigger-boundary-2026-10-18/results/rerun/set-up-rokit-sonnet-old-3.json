@@ -1,0 +1,109 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ],
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ],
+  [
+   "structure-roblox-projects/references/project-guide.md",
+   9042
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ],
+  [
+   "Glob",
+   "{*,*.*,src/**,.git*}"
+  ],
+  [
+   "Glob",
+   ".claude/skills/structure-roblox-projects/versions.json"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\project-guide.md"
+  ]
+ ],
+ "texts": [
+  "You want Rokit installed and the Roblox toolchain (Rojo, StyLua, Selene, etc.) configured for this repo. I'll load the project-setup skill first."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0788015,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16526,
+  "cache_read_input_tokens": 43655,
+  "output_tokens": 832,
+  "output_tokens_details": {
+   "thinking_tokens": 180
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16526,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 315,
+    "cache_read_input_tokens": 18891,
+    "cache_creation_input_tokens": 6802,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6802
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

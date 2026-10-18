@@ -1,0 +1,85 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ]
+ ],
+ "steps": [
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-new-4\\rokit.toml"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-new-4\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ],
+  [
+   "Edit",
+   "<runs>\\selene-pin-bump-haiku-new-4\\rokit.toml"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00295331,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 9293,
+  "cache_read_input_tokens": 43461,
+  "output_tokens": 1319,
+  "output_tokens_details": {
+   "thinking_tokens": 669
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9293,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 558,
+    "cache_read_input_tokens": 17917,
+    "cache_creation_input_tokens": 543,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 543
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

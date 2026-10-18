@@ -1,0 +1,97 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-new-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-new-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-new-3\\scripts\\check.sh"
+  ],
+  [
+   "Bash",
+   "where rokit; rokit --version"
+  ]
+ ],
+ "texts": [
+  "I couldn't install Rokit. This session has no shell tool (Bash is disabled and no PowerShell tool is available), so I can only read and edit files. I also haven't confirmed whether Rokit is already on your machine.\n\n**What the repo already has**\n- `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0. I left those pins alone.\n- `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n\n**Run these yourself in PowerShell from the repo root**\n1. Check for Rokit with `rokit --version`.\n2. If it's missing, download the Windows release from https://github.com/rojo-rbx/rokit/releases and run `rokit self-install` on the extracted binary. Restart the terminal afterwards so `~\\.rokit\\bin` is on your PATH.\n3. Run `rokit trust` for each tool author if prompted, then `rokit install` in the repo.\n4. Confirm with `rojo --version`, `wally --version`, `stylua --version`, `selene --version` and `luau-lsp --version`.\n\nIf you'd rather I run these, enable a shell tool and I'll do it.\n\n**Questions for you**\n1. **Which package manager do you want?** The repo has both `wally.toml` and `pesde.toml`, and they shouldn't manage the same packages. I recommend Wally, since `check.sh` already uses it, and removing `pesde.toml`. If you choose pesde, I'd add it to `rokit.toml` and change `check.sh` to match.\n2. **Should I make the remaining toolchain additions?** I recommend all of these:\n   - Add `.luaurc` and a `sourcemap.json` step so `luau-lsp analyze` runs in `check.sh`.\n   - Set `roblox-std-source = \"pinned\"` in `selene.toml`.\n   - Add `stylua --check` and `wally install` flags as needed.\n3. **Is this setup shared with a team or just for you?** This decides whether hooks and CI get committed. I'd recommend personal if anyone else has committed to the repo, but this folder isn't a git repository, so I can't check.\n\nTell me your answers and I'll make the edits."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I couldn't install Rokit. This session has no shell tool (Bash is disabled and no PowerShell tool is available), so I can only read and edit files. I also haven't confirmed whether Rokit is already on your machine.\n\n**What the repo already has**\n- `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0. I left those pins alone.\n- `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n\n**Run these yourself in PowerShell from the repo root**\n1. Check for Rokit with `rokit --version`.\n2. If it's missing, download the Windows release from https://github.com/rojo-rbx/rokit/releases and run `rokit self-install` on the extracted binary. Restart the terminal afterwards so `~\\.rokit\\bin` is on your PATH.\n3. Run `rokit trust` for each tool author if prompted, then `rokit install` in the repo.\n4. Confirm with `rojo --version`, `wally --version`, `stylua --version`, `selene --version` and `luau-lsp --version`.\n\nIf you'd rather I run these, enable a shell tool and I'll do it.\n\n**Questions for you**\n1. **Which package manager do you want?** The repo has both `wally.toml` and `pesde.toml`, and they shouldn't manage the same packages. I recommend Wally, since `check.sh` already uses it, and removing `pesde.toml`. If you choose pesde, I'd add it to `rokit.toml` and change `check.sh` to match.\n2. **Should I make the remaining toolchain additions?** I recommend all of these:\n   - Add `.luaurc` and a `sourcemap.json` step so `luau-lsp analyze` runs in `check.sh`.\n   - Set `roblox-std-source = \"pinned\"` in `selene.toml`.\n   - Add `stylua --check` and `wally install` flags as needed.\n3. **Is this setup shared with a team or just for you?** This decides whether hooks and CI get committed. I'd recommend personal if anyone else has committed to the repo, but this folder isn't a git repository, so I can't check.\n\nTell me your answers and I'll make the edits.",
+ "cost": 0.0812477,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15526,
+  "cache_read_input_tokens": 46917,
+  "output_tokens": 1444,
+  "output_tokens_details": {
+   "thinking_tokens": 183
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15526,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 883,
+    "cache_read_input_tokens": 22151,
+    "cache_creation_input_tokens": 2542,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2542
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

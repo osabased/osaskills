@@ -1,0 +1,88 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-4\\wally.toml"
+  ]
+ ],
+ "texts": [
+  "I'll read the project layout first so I can see what CI would need to build and check.",
+  "Here's my read: you want a CI workflow for this Rojo project (`arena`) that runs the project's checks on every push and pull request, so broken builds or Luau errors get caught before merge. I haven't written anything yet.\n\nOne question before I propose the setup. This folder isn't a git repository, so I can't check who has committed here. Should the agent setup (guide, check script, hooks, CI) be shared with your team and committed to the repo, or personal and kept out of Git and CI? I'd recommend personal unless you know this repo is shared.\n\nTwo things I noticed while reading the project, which I'll cover in the proposal:\n- `src/client/init.client.luau` is mapped into `ReplicatedStorage.Client` with default Rojo 7 settings. It builds as a `LocalScript` under `ReplicatedStorage`, which never runs. Client entrypoints need to live somewhere a player will run them, or the project needs `\"emitLegacyScripts\": false`.\n- The project pins dependencies with both pesde (Vide, Blink) and Wally (Janitor, LemonSignal, Charm). CI will need to install both."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's my read: you want a CI workflow for this Rojo project (`arena`) that runs the project's checks on every push and pull request, so broken builds or Luau errors get caught before merge. I haven't written anything yet.\n\nOne question before I propose the setup. This folder isn't a git repository, so I can't check who has committed here. Should the agent setup (guide, check script, hooks, CI) be shared with your team and committed to the repo, or personal and kept out of Git and CI? I'd recommend personal unless you know this repo is shared.\n\nTwo things I noticed while reading the project, which I'll cover in the proposal:\n- `src/client/init.client.luau` is mapped into `ReplicatedStorage.Client` with default Rojo 7 settings. It builds as a `LocalScript` under `ReplicatedStorage`, which never runs. Client entrypoints need to live somewhere a player will run them, or the project needs `\"emitLegacyScripts\": false`.\n- The project pins dependencies with both pesde (Vide, Blink) and Wally (Janitor, LemonSignal, Charm). CI will need to install both.",
+ "cost": 0.004926300000000001,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16793,
+  "cache_read_input_tokens": 51310,
+  "output_tokens": 2108,
+  "output_tokens_details": {
+   "thinking_tokens": 1249
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16793,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 852,
+    "cache_read_input_tokens": 24448,
+    "cache_creation_input_tokens": 1512,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1512
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

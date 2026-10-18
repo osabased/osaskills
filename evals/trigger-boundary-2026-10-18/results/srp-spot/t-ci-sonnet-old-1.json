@@ -1,0 +1,101 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   ".github/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-sonnet-old-1\\wally.toml"
+  ]
+ ],
+ "texts": [
+  "I'll start with the Roblox project-structure skill, since it covers Rojo CI, and look at what's in the project.",
+  "Before I propose or build anything, one question.\n\nIs this CI setup **shared with a team** or **personal**?\n\n- **Shared:** I commit a GitHub Actions workflow, `.claude/settings.json` hooks, and a pre-push hook.\n- **Personal:** nothing goes into Git or CI. The hooks and allowlist go in `.claude/settings.local.json`, and I add no workflow.\n\nI recommend **shared**. This directory isn't a git repository, so I can't see any other authors, and CI normally means a committed workflow. If you pick shared, I'll also need to `git init` or point me at the real repo."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Before I propose or build anything, one question.\n\nIs this CI setup **shared with a team** or **personal**?\n\n- **Shared:** I commit a GitHub Actions workflow, `.claude/settings.json` hooks, and a pre-push hook.\n- **Personal:** nothing goes into Git or CI. The hooks and allowlist go in `.claude/settings.local.json`, and I add no workflow.\n\nI recommend **shared**. This directory isn't a git repository, so I can't see any other authors, and CI normally means a committed workflow. If you pick shared, I'll also need to `git init` or point me at the real repo.",
+ "cost": 0.08765590000000001,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18097,
+  "cache_read_input_tokens": 49659,
+  "output_tokens": 1029,
+  "output_tokens_details": {
+   "thinking_tokens": 190
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18097,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 355,
+    "cache_read_input_tokens": 23613,
+    "cache_creation_input_tokens": 3651,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3651
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

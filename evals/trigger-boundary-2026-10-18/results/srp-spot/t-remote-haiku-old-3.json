@@ -1,0 +1,101 @@
+{
+ "id": "t-remote",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "I'll check the project layout first, then load the Roblox structure guidance.",
+  "You're asking where the shop's RemoteEvents should live and how the server should validate purchases. This repo has no shop code yet, only a skeleton `arena` Rojo project, so this is a proposal and I haven't changed any files.\n\n## Where the RemoteEvents go\n\nPut them in `ReplicatedStorage`, under a `Remotes` folder, and declare them in `default.project.json` rather than creating them at runtime:\n\n```json\n\"ReplicatedStorage\": {\n  \"Shared\": { \"$path\": \"src/shared\" },\n  \"Client\": { \"$path\": \"src/client\" },\n  \"Packages\": { \"$path\": \"Packages\" },\n  \"Remotes\": {\n    \"$className\": \"Folder\",\n    \"ShopPurchase\": { \"$className\": \"RemoteEvent\" },\n    \"ShopResult\": { \"$className\": \"RemoteEvent\" }\n  }\n}\n```\n\n- **Why declared, not created in code:** the client can wait on them with `WaitForChild` with no race against a server script that hasn't run yet, and they're visible in the project file for review.\n- **Why two events:** `ShopPurchase` is client→server (the request). `ShopResult` is server→client (accepted or rejected, with the new balance or a reason). A `RemoteFunction` would also work for the reply, but events keep the pattern consistent.\n- **Where the handlers go:** `ServerScriptService/Server/Shop/`, with a server entrypoint that requires it. Shared item definitions go in `ReplicatedStorage/Shared/`, and the client UI in `ReplicatedStorage/Client/`.\n\n## How the server validates a purchase\n\nThe client sends only an intent, for example `{ itemId = \"sword_01\", quantity = 1 }`. Everything else is decided on the server.\n\n1. **Rate limit:** drop requests that arrive too fast from the same player.\n2. **Payload shape:** `itemId` is a string that exists in the server catalog, and `quantity` is an integer in a sane range (for example 1–10). Reject anything else.\n3. **Price from the server:** read the price from the server's catalog. Never accept a price or currency amount from the client.\n4. **Ownership and balance:** check the player's server-side data (not a client value) for enough currency and for any ownership or level requirement.\n5. **Commit atomically:** deduct currency and grant the item in the same server step, with no yield between them, so a failure can't leave the player charged without the item or the reverse.\n6. **Reply on `ShopResult`:** send the outcome and the new balance. The client updates its display from this, not from its own guess.\n\nPer the placement guidance, the catalog's prices and grant logic should stay server-side. If the client also needs display data like names and icons, put that in a shared module with no price-authority role, or send it on request.\n\n## Questions for you\n\n1. **Catalog location:** should the shared item list (names, icons, descriptions) live in `ReplicatedStorage/Shared`, with prices kept in a server-only table? Or is everything server-only, with the client getting display data over a Remote? I'd recommend the first, so the client UI can render without a round trip.\n2. **Currency and data store:** what currency does the shop use, and where is player data kept? There's no DataStore code in the repo yet, so I'd need to know whether to build a minimal one or leave a stub for you to connect.\n\nOnce you answer, I can build the Remotes declaration, the server shop module, and a check that exercises accepted and rejected requests."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "You're asking where the shop's RemoteEvents should live and how the server should validate purchases. This repo has no shop code yet, only a skeleton `arena` Rojo project, so this is a proposal and I haven't changed any files.\n\n## Where the RemoteEvents go\n\nPut them in `ReplicatedStorage`, under a `Remotes` folder, and declare them in `default.project.json` rather than creating them at runtime:\n\n```json\n\"ReplicatedStorage\": {\n  \"Shared\": { \"$path\": \"src/shared\" },\n  \"Client\": { \"$path\": \"src/client\" },\n  \"Packages\": { \"$path\": \"Packages\" },\n  \"Remotes\": {\n    \"$className\": \"Folder\",\n    \"ShopPurchase\": { \"$className\": \"RemoteEvent\" },\n    \"ShopResult\": { \"$className\": \"RemoteEvent\" }\n  }\n}\n```\n\n- **Why declared, not created in code:** the client can wait on them with `WaitForChild` with no race against a server script that hasn't run yet, and they're visible in the project file for review.\n- **Why two events:** `ShopPurchase` is client→server (the request). `ShopResult` is server→client (accepted or rejected, with the new balance or a reason). A `RemoteFunction` would also work for the reply, but events keep the pattern consistent.\n- **Where the handlers go:** `ServerScriptService/Server/Shop/`, with a server entrypoint that requires it. Shared item definitions go in `ReplicatedStorage/Shared/`, and the client UI in `ReplicatedStorage/Client/`.\n\n## How the server validates a purchase\n\nThe client sends only an intent, for example `{ itemId = \"sword_01\", quantity = 1 }`. Everything else is decided on the server.\n\n1. **Rate limit:** drop requests that arrive too fast from the same player.\n2. **Payload shape:** `itemId` is a string that exists in the server catalog, and `quantity` is an integer in a sane range (for example 1–10). Reject anything else.\n3. **Price from the server:** read the price from the server's catalog. Never accept a price or currency amount from the client.\n4. **Ownership and balance:** check the player's server-side data (not a client value) for enough currency and for any ownership or level requirement.\n5. **Commit atomically:** deduct currency and grant the item in the same server step, with no yield between them, so a failure can't leave the player charged without the item or the reverse.\n6. **Reply on `ShopResult`:** send the outcome and the new balance. The client updates its display from this, not from its own guess.\n\nPer the placement guidance, the catalog's prices and grant logic should stay server-side. If the client also needs display data like names and icons, put that in a shared module with no price-authority role, or send it on request.\n\n## Questions for you\n\n1. **Catalog location:** should the shared item list (names, icons, descriptions) live in `ReplicatedStorage/Shared`, with prices kept in a server-only table? Or is everything server-only, with the client getting display data over a Remote? I'd recommend the first, so the client UI can render without a round trip.\n2. **Currency and data store:** what currency does the shop use, and where is player data kept? There's no DataStore code in the repo yet, so I'd need to know whether to build a minimal one or leave a stub for you to connect.\n\nOnce you answer, I can build the Remotes declaration, the server shop module, and a check that exercises accepted and rejected requests.",
+ "cost": 0.005812820000000001,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 18639,
+  "cache_read_input_tokens": 51342,
+  "output_tokens": 3142,
+  "output_tokens_details": {
+   "thinking_tokens": 1294
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18639,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2160,
+    "cache_read_input_tokens": 24503,
+    "cache_creation_input_tokens": 3303,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3303
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,82 @@
+{
+ "id": "rokit-stylua",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Bash",
+   "rokit --version; rokit list 2>&1 | head -20"
+  ],
+  [
+   "Glob",
+   "rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-haiku-new-1\\rokit.toml"
+  ]
+ ],
+ "texts": [
+  "I'll add `stylua` and `selene` entries to the existing `rokit.toml`, pinned to their newest GitHub releases. First I'll find the file and check the current pins."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00226171,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 7824,
+  "cache_read_input_tokens": 42381,
+  "output_tokens": 545,
+  "output_tokens_details": {
+   "thinking_tokens": 140
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7824,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 104,
+    "cache_read_input_tokens": 16832,
+    "cache_creation_input_tokens": 159,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 159
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

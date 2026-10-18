@@ -1,0 +1,131 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ],
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   11149
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.md",
+   1631
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.yaml",
+   1027
+  ],
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7128
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Glob",
+   "**/.claude/skills/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Glob",
+   "**/{wally.toml,wally.lock,pesde.toml,pesde.lock,rokit.toml,package.json,package-lock.json,default.project.json,CLAUDE.md,*.md}"
+  ],
+  [
+   "Grep",
+   "(?i)profile ?store|loleary|MadStudioRoblox|ProfileService"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding the pinned ProfileStore version and any existing roblox-* skills, so the new skill matches the project.",
+  "The repo holds the roblox-* skills, not a game project. The pin should be in `versions.json`, and the skill-writing guidance is in `writing-library-skills.md`. I'll read those.",
+  "The catalog has no ProfileStore entry, and the grep found no ProfileStore pin in the visible files. I'll check the rest of the tree for a manifest or lock that names it."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0067404,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 26289,
+  "cache_read_input_tokens": 49900,
+  "output_tokens": 1966,
+  "output_tokens_details": {
+   "thinking_tokens": 588
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 26289,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 644,
+    "cache_read_input_tokens": 24354,
+    "cache_creation_input_tokens": 11102,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 11102
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

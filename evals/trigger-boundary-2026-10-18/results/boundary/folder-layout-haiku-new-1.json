@@ -1,0 +1,81 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "The layout depends on how the code gets into Studio, so I'd settle that first. The folder rules below hold either way.\n\n**Recommended layout (Rojo or Script Sync):**\n\n```text\nReplicatedStorage/\n  Shared/        types, constants, pure logic both sides use\n  Client/        client-only modules: input, camera, UI\n  Remotes/       RemoteEvents and RemoteFunctions (or made by a networking library)\n  ClientMain     Script, RunContext = Client (the one client entrypoint)\nServerScriptService/\n  Server/        server-only modules: rules, state, DataStores, validation\n  ServerMain     Script, RunContext = Server (the one server entrypoint)\nServerStorage/\n  Assets/        server-only templates and models\nReplicatedFirst/ only the loading-screen subset\n```\n\n**Rules that matter most:**\n\n- **One startup script per side.** `ServerMain` and `ClientMain` require feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Secrets and authority stay server-side.** DataStores, purchases, and anything that decides outcomes live in `ServerScriptService` or `ServerStorage`. Everything in `ReplicatedStorage` reaches clients, including module source.\n- **Client code in `ReplicatedStorage` needs a `Script` with `RunContext = Client`.** A plain `LocalScript` placed there never runs. Under Rojo 7, `*.client.luau` builds to `LocalScript` by default, so set `\"emitLegacyScripts\": false` in the project file if you want the `Script` form.\n- **Validate every Remote on the server.** Check type, range, ownership, and rate on each client-to-server call. Each Remote needs a test with accepted and rejected input.\n- **Group by feature or by layer.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) suits a game built around gameplay systems. A flat list per side suits a small game. Pick one and use it everywhere.\n\n**The decision I need from you:** which workflow will the project use?\n\n1. **Rojo** (recommended for an agent-friendly setup): files on disk define the whole DataModel, so an agent can read, diff, and check everything.\n2. **Script Sync**: code syncs both ways with local files, and Studio owns everything else.\n3. **Studio-only**: everything lives in Studio. Agents then need a Studio connection to inspect anything.\n\nThe folder above works with any of them. The Rojo mapping and the `emitLegacyScripts` setting only apply to option 1. This directory has no Roblox project yet, so I haven't created anything. If you choose Rojo, I can scaffold the project file and folders next."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The layout depends on how the code gets into Studio, so I'd settle that first. The folder rules below hold either way.\n\n**Recommended layout (Rojo or Script Sync):**\n\n```text\nReplicatedStorage/\n  Shared/        types, constants, pure logic both sides use\n  Client/        client-only modules: input, camera, UI\n  Remotes/       RemoteEvents and RemoteFunctions (or made by a networking library)\n  ClientMain     Script, RunContext = Client (the one client entrypoint)\nServerScriptService/\n  Server/        server-only modules: rules, state, DataStores, validation\n  ServerMain     Script, RunContext = Server (the one server entrypoint)\nServerStorage/\n  Assets/        server-only templates and models\nReplicatedFirst/ only the loading-screen subset\n```\n\n**Rules that matter most:**\n\n- **One startup script per side.** `ServerMain` and `ClientMain` require feature modules explicitly. Anyone reading the project can see what starts and in what order.\n- **Secrets and authority stay server-side.** DataStores, purchases, and anything that decides outcomes live in `ServerScriptService` or `ServerStorage`. Everything in `ReplicatedStorage` reaches clients, including module source.\n- **Client code in `ReplicatedStorage` needs a `Script` with `RunContext = Client`.** A plain `LocalScript` placed there never runs. Under Rojo 7, `*.client.luau` builds to `LocalScript` by default, so set `\"emitLegacyScripts\": false` in the project file if you want the `Script` form.\n- **Validate every Remote on the server.** Check type, range, ownership, and rate on each client-to-server call. Each Remote needs a test with accepted and rejected input.\n- **Group by feature or by layer.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) suits a game built around gameplay systems. A flat list per side suits a small game. Pick one and use it everywhere.\n\n**The decision I need from you:** which workflow will the project use?\n\n1. **Rojo** (recommended for an agent-friendly setup): files on disk define the whole DataModel, so an agent can read, diff, and check everything.\n2. **Script Sync**: code syncs both ways with local files, and Studio owns everything else.\n3. **Studio-only**: everything lives in Studio. Agents then need a Studio connection to inspect anything.\n\nThe folder above works with any of them. The Rojo mapping and the `emitLegacyScripts` setting only apply to option 1. This directory has no Roblox project yet, so I haven't created anything. If you choose Rojo, I can scaffold the project file and folders next.",
+ "cost": 0.004011600000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13451,
+  "cache_read_input_tokens": 45580,
+  "output_tokens": 1730,
+  "output_tokens_details": {
+   "thinking_tokens": 580
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13451,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1070,
+    "cache_read_input_tokens": 20038,
+    "cache_creation_input_tokens": 2580,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2580
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

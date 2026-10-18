@@ -1,0 +1,72 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ]
+ ],
+ "texts": [
+  "Assuming you're building a standard client/server game in Studio or with Rojo, here's a layout that keeps server authority clear:\n\n```\nServerScriptService/           (server only, never replicates)\n  Main.server.luau             entrypoint: requires services and starts them\n  Services/                    ModuleScripts: Data, Shop, Combat...\nServerStorage/                 (server only, never replicates)\n  Templates/                   NPC models and other assets clients shouldn't see\nReplicatedStorage/             (replicates to clients)\n  Shared/                      ModuleScripts both sides use: Config, Types, Util\n  Remotes/                     RemoteEvents/Functions, or one module that declares them\n  Assets/                      models and UI that clients clone\nStarterPlayer/\n  StarterPlayerScripts/\n    Client.client.luau        client entrypoint (LocalScript)\n    Controllers/               client ModuleScripts: Input, UI...\nReplicatedFirst/\n  Loading.client.luau          optional loading screen only\n```\n\nRules that keep it manageable:\n\n- **Entrypoints stay thin.** A script only requires modules and starts them. The logic lives in ModuleScripts.\n- **Secrets and authoritative state stay on the server.** Anything in `ReplicatedStorage` can be read by exploiters, so DataStores, purchases, and validation never go there.\n- **Clients request, servers decide.** Every RemoteEvent/Function validates its payload on the server.\n- **Shared never requires server or client code.** Dependencies flow one way: `Shared` ← `Services`/`Controllers`. That keeps modules reusable and testable.\n- **`LocalScript`s never go in `ReplicatedStorage`.** They won't run there. Client code belongs in `StarterPlayerScripts`, `PlayerGui`, or `ReplicatedFirst`.\n- **Each module runs once per environment.** The server and each client have separate copies of its state, so don't rely on shared state between them.\n\nIf you use Rojo, one detail matters: by default `*.client.luau` builds to a `LocalScript`. Setting `\"emitLegacyScripts\": false` in `default.project.json` makes it a `Script` with `RunContext = Client` instead, which is the option that can also run from `ReplicatedStorage`.\n\nDo you use Rojo (with Git), or do you build everything inside Studio? That changes whether this lives in files or in the place, and I can write the matching `default.project.json` for you."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Assuming you're building a standard client/server game in Studio or with Rojo, here's a layout that keeps server authority clear:\n\n```\nServerScriptService/           (server only, never replicates)\n  Main.server.luau             entrypoint: requires services and starts them\n  Services/                    ModuleScripts: Data, Shop, Combat...\nServerStorage/                 (server only, never replicates)\n  Templates/                   NPC models and other assets clients shouldn't see\nReplicatedStorage/             (replicates to clients)\n  Shared/                      ModuleScripts both sides use: Config, Types, Util\n  Remotes/                     RemoteEvents/Functions, or one module that declares them\n  Assets/                      models and UI that clients clone\nStarterPlayer/\n  StarterPlayerScripts/\n    Client.client.luau        client entrypoint (LocalScript)\n    Controllers/               client ModuleScripts: Input, UI...\nReplicatedFirst/\n  Loading.client.luau          optional loading screen only\n```\n\nRules that keep it manageable:\n\n- **Entrypoints stay thin.** A script only requires modules and starts them. The logic lives in ModuleScripts.\n- **Secrets and authoritative state stay on the server.** Anything in `ReplicatedStorage` can be read by exploiters, so DataStores, purchases, and validation never go there.\n- **Clients request, servers decide.** Every RemoteEvent/Function validates its payload on the server.\n- **Shared never requires server or client code.** Dependencies flow one way: `Shared` ← `Services`/`Controllers`. That keeps modules reusable and testable.\n- **`LocalScript`s never go in `ReplicatedStorage`.** They won't run there. Client code belongs in `StarterPlayerScripts`, `PlayerGui`, or `ReplicatedFirst`.\n- **Each module runs once per environment.** The server and each client have separate copies of its state, so don't rely on shared state between them.\n\nIf you use Rojo, one detail matters: by default `*.client.luau` builds to a `LocalScript`. Setting `\"emitLegacyScripts\": false` in `default.project.json` makes it a `Script` with `RunContext = Client` instead, which is the option that can also run from `ReplicatedStorage`.\n\nDo you use Rojo (with Git), or do you build everything inside Studio? That changes whether this lives in files or in the place, and I can write the matching `default.project.json` for you.",
+ "cost": 0.00369102,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 10616,
+  "cache_read_input_tokens": 25542,
+  "output_tokens": 2624,
+  "output_tokens_details": {
+   "thinking_tokens": 1737
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10616,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2326,
+    "cache_read_input_tokens": 16375,
+    "cache_creation_input_tokens": 3408,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3408
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

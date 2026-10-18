@@ -1,0 +1,94 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-old-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-old-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-old-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ]
+ ],
+ "texts": [
+  "I haven't changed anything yet, because I can't tell which DataStore name to lock or where the guard should run.\n\nWhat I think you want: a check that fails whenever the DataStore name in the code differs from a locked value, so nobody renames it by accident. Renaming it would hide every existing player's saved data.\n\nWhat I found: this repo has no DataStore code. `src/server/init.server.luau` only prints `\"server\"`, and `src/shared/init.luau` returns `{}`. There's also no check script yet. The only mention is the guard guidance in `.claude/skills/structure-roblox-projects/references/checks.md`, which describes this pattern.\n\nQuestions, with my recommendation first:\n\n1. **Which name should be locked?** Options:\n   - a. The name the live game uses now. Give it to me and I'll lock that exact string. (Recommended, since the risk is changing a name that already holds data.)\n   - b. A new name I pick now. This is only safe if no player data exists under any name yet.\n   - c. Lock whatever name is in the code once the DataStore code is added. This is the weakest option.\n2. **Where should the DataStore name live?** I'd put it in one shared module, such as `src/shared/DataStoreConfig.luau`, and have the guard read the literal from there. Should I also create that module, or is it already planned elsewhere?\n3. **How should the guard run?** Options:\n   - a. A check script (`scripts/check.ps1` or `.luau`) plus a Git `pre-push` hook. Nothing runs unless someone installs the hook. (Recommended.)\n   - b. A Claude Code `Stop` hook in `.claude/settings.json`, which only covers agent sessions.\n   - c. Both, plus a CI step if you have CI.\n4. **Who should be covered?** Is this for everyone on the team (commit the guard) or just you (keep it in `.claude/settings.local.json`)?\n\nReply with the name and your choices, or say \"use your recommendations\" plus the name, and I'll build it and break-test it: change the name on purpose, confirm the check fails, then revert."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't changed anything yet, because I can't tell which DataStore name to lock or where the guard should run.\n\nWhat I think you want: a check that fails whenever the DataStore name in the code differs from a locked value, so nobody renames it by accident. Renaming it would hide every existing player's saved data.\n\nWhat I found: this repo has no DataStore code. `src/server/init.server.luau` only prints `\"server\"`, and `src/shared/init.luau` returns `{}`. There's also no check script yet. The only mention is the guard guidance in `.claude/skills/structure-roblox-projects/references/checks.md`, which describes this pattern.\n\nQuestions, with my recommendation first:\n\n1. **Which name should be locked?** Options:\n   - a. The name the live game uses now. Give it to me and I'll lock that exact string. (Recommended, since the risk is changing a name that already holds data.)\n   - b. A new name I pick now. This is only safe if no player data exists under any name yet.\n   - c. Lock whatever name is in the code once the DataStore code is added. This is the weakest option.\n2. **Where should the DataStore name live?** I'd put it in one shared module, such as `src/shared/DataStoreConfig.luau`, and have the guard read the literal from there. Should I also create that module, or is it already planned elsewhere?\n3. **How should the guard run?** Options:\n   - a. A check script (`scripts/check.ps1` or `.luau`) plus a Git `pre-push` hook. Nothing runs unless someone installs the hook. (Recommended.)\n   - b. A Claude Code `Stop` hook in `.claude/settings.json`, which only covers agent sessions.\n   - c. Both, plus a CI step if you have CI.\n4. **Who should be covered?** Is this for everyone on the team (commit the guard) or just you (keep it in `.claude/settings.local.json`)?\n\nReply with the name and your choices, or say \"use your recommendations\" plus the name, and I'll build it and break-test it: change the name on purpose, confirm the check fails, then revert.",
+ "cost": 0.00476612,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16305,
+  "cache_read_input_tokens": 48902,
+  "output_tokens": 2031,
+  "output_tokens_details": {
+   "thinking_tokens": 650
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16305,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1200,
+    "cache_read_input_tokens": 22075,
+    "cache_creation_input_tokens": 3397,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3397
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

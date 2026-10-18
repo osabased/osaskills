@@ -1,0 +1,93 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-old-2\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "{*.toml,*.json,*.yml,src/**,*.luau,*.lua}"
+  ],
+  [
+   "Grep",
+   "selene"
+  ]
+ ],
+ "texts": [
+  "I'll load the Roblox project-structure skill, since it covers first-time Selene setup."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0720851,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15198,
+  "cache_read_input_tokens": 43711,
+  "output_tokens": 691,
+  "output_tokens_details": {
+   "thinking_tokens": 107
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15198,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 326,
+    "cache_read_input_tokens": 18943,
+    "cache_creation_input_tokens": 5422,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5422
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

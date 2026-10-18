@@ -1,0 +1,90 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-3\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "I'll look at the project layout first to see whether this is a Roblox project and how its client code is organized.",
+  "The client entrypoint belongs in `StarterPlayer.StarterPlayerScripts`, but the current mapping puts it somewhere it won't run.\n\n**The problem:** `default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns a folder containing `init.client.luau` into a script of that type, so `Client` becomes a LocalScript inside ReplicatedStorage. LocalScripts don't run from ReplicatedStorage, so `print(\"client\")` never executes. The server side is fine: `src/server` becomes a Script under `ServerScriptService.Server`, which does run.\n\n**Recommended fix:** map the client folder under `StarterPlayerScripts`, which is where LocalScripts start for each player:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n}\n```\n\nKeep `src/client/init.client.luau` as the entrypoint file. Shared modules stay in `src/shared`, which is already mapped to `ReplicatedStorage.Shared`, so the client can require them from there.\n\nI haven't made this change because you asked where the file should go. Do you want me to apply the mapping edit? I haven't run `rojo build` to confirm the output, since I only read the project files here."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The client entrypoint belongs in `StarterPlayer.StarterPlayerScripts`, but the current mapping puts it somewhere it won't run.\n\n**The problem:** `default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns a folder containing `init.client.luau` into a script of that type, so `Client` becomes a LocalScript inside ReplicatedStorage. LocalScripts don't run from ReplicatedStorage, so `print(\"client\")` never executes. The server side is fine: `src/server` becomes a Script under `ServerScriptService.Server`, which does run.\n\n**Recommended fix:** map the client folder under `StarterPlayerScripts`, which is where LocalScripts start for each player:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n}\n```\n\nKeep `src/client/init.client.luau` as the entrypoint file. Shared modules stay in `src/shared`, which is already mapped to `ReplicatedStorage.Shared`, so the client can require them from there.\n\nI haven't made this change because you asked where the file should go. Do you want me to apply the mapping edit? I haven't run `rojo build` to confirm the output, since I only read the project files here.",
+ "cost": 0.00436458,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12932,
+  "cache_read_input_tokens": 48208,
+  "output_tokens": 2591,
+  "output_tokens_details": {
+   "thinking_tokens": 1485
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12932,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1813,
+    "cache_read_input_tokens": 21382,
+    "cache_creation_input_tokens": 717,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 717
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

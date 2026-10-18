@@ -1,0 +1,99 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-1\\scripts\\check.sh"
+  ],
+  [
+   "Bash",
+   "command -v rokit || echo \"rokit not on PATH\"; ls \"$USERPROFILE/.rokit/bin\" 2>/dev/null"
+  ]
+ ],
+ "texts": [
+  "You want Rokit installed and a Roblox toolchain (Rojo, StyLua, Selene, and so on) set up in this repo. I'll load the project-structure skill first, since it covers Rokit setup.",
+  "The repo already has a `rokit.toml`. I'll read it and the tooling reference, and check whether Rokit is already installed.",
+  "I couldn't install Rokit. This session has no shell tool (Bash is disabled and no PowerShell tool is available), so I can't run commands or check whether Rokit is already on your machine.\n\nThe repo already has a pinned manifest, so no files need changing. `rokit.toml` pins these tools:\n\n| Tool | Version |\n| --- | --- |\n| Rojo | 7.7.1 |\n| Wally | 0.3.2 |\n| StyLua | 2.3.1 |\n| Selene | 0.29.0 |\n| luau-lsp | 1.58.0 |\n\n`scripts/check.sh` already runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n\nTo finish the setup, run this in PowerShell:\n\n```powershell\n# Rokit: download rokit-*-windows-x86_64.exe from https://github.com/rojo-rbx/rokit/releases, then:\n.\\rokit-windows-x86_64.exe self-install\n# open a new terminal so ~/.rokit/bin is on PATH\ncd <runs>\\set-up-rokit-sonnet-old-1\nrokit install      # approve the trust prompts for each tool\nrojo --version; wally --version; stylua --version; selene --version; luau-lsp --version\n```\n\nIf you run it and paste the output, I can check it. Or enable a shell tool and I'll do it myself.\n\nTwo things I noticed in the repo:\n- **Two package managers:** it has both `wally.toml` and `pesde.toml`, and `check.sh` only uses Wally. The tooling guide says not to run both on the same packages. Which one do you want to keep? I'd recommend Wally, since the check script already uses it, but I won't remove anything without your word.\n- **Missing lockfile:** there is no `wally.lock` yet. `wally install` will create one, and it should be committed.\n\nTwo things the check script doesn't cover yet: `luau-lsp analyze` as a type gate, and a `.luaurc`. I can add them if you want, but that changes what the check enforces, so I'm asking first."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I couldn't install Rokit. This session has no shell tool (Bash is disabled and no PowerShell tool is available), so I can't run commands or check whether Rokit is already on your machine.\n\nThe repo already has a pinned manifest, so no files need changing. `rokit.toml` pins these tools:\n\n| Tool | Version |\n| --- | --- |\n| Rojo | 7.7.1 |\n| Wally | 0.3.2 |\n| StyLua | 2.3.1 |\n| Selene | 0.29.0 |\n| luau-lsp | 1.58.0 |\n\n`scripts/check.sh` already runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n\nTo finish the setup, run this in PowerShell:\n\n```powershell\n# Rokit: download rokit-*-windows-x86_64.exe from https://github.com/rojo-rbx/rokit/releases, then:\n.\\rokit-windows-x86_64.exe self-install\n# open a new terminal so ~/.rokit/bin is on PATH\ncd <runs>\\set-up-rokit-sonnet-old-1\nrokit install      # approve the trust prompts for each tool\nrojo --version; wally --version; stylua --version; selene --version; luau-lsp --version\n```\n\nIf you run it and paste the output, I can check it. Or enable a shell tool and I'll do it myself.\n\nTwo things I noticed in the repo:\n- **Two package managers:** it has both `wally.toml` and `pesde.toml`, and `check.sh` only uses Wally. The tooling guide says not to run both on the same packages. Which one do you want to keep? I'd recommend Wally, since the check script already uses it, but I won't remove anything without your word.\n- **Missing lockfile:** there is no `wally.lock` yet. `wally install` will create one, and it should be committed.\n\nTwo things the check script doesn't cover yet: `luau-lsp analyze` as a type gate, and a `.luaurc`. I can add them if you want, but that changes what the check enforces, so I'm asking first.",
+ "cost": 0.08320620000000001,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15687,
+  "cache_read_input_tokens": 46962,
+  "output_tokens": 1575,
+  "output_tokens_details": {
+   "thinking_tokens": 223
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15687,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 813,
+    "cache_read_input_tokens": 22236,
+    "cache_creation_input_tokens": 2618,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2618
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

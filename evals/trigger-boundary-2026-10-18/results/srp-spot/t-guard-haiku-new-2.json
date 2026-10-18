@@ -1,0 +1,104 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStoreService|GetDataStore|DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\src\\shared\\init.luau"
+  ],
+  [
+   "Glob",
+   "{.claude/settings*.json,scripts/**,*.md,.claude/*.md}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-2\\pesde.toml"
+  ]
+ ],
+ "texts": [
+  "I'll read the project first to find where the DataStore name is set.",
+  "The game source has no DataStore code yet. I'll read the project files and the skill's guard reference, which covers this case.",
+  "The source has no DataStore code yet. I'll check for an existing check script or settings before asking how to proceed."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.004951840000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16540,
+  "cache_read_input_tokens": 49074,
+  "output_tokens": 2305,
+  "output_tokens_details": {
+   "thinking_tokens": 1259
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16540,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1279,
+    "cache_read_input_tokens": 22207,
+    "cache_creation_input_tokens": 3500,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3500
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

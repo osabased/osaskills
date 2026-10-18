@@ -1,0 +1,106 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   11149
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Glob",
+   "**/{pesde.toml,wally.toml,wally.lock,pesde.lock,rokit.toml,package.json,CLAUDE.md,*ProfileStore*}"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-sonnet-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-sonnet-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-sonnet-new-2\\rokit.toml"
+  ],
+  [
+   "Glob",
+   "libraries/*"
+  ]
+ ],
+ "texts": [
+  "I'll start with the `roblox-resource-acquisition` skill, since it covers writing roblox-* skills like this one.",
+  "You want a `roblox-profilestore` library skill for the ProfileStore version this project has pinned. I'll read the writing guide and find the pin first."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0715942,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13691,
+  "cache_read_input_tokens": 42782,
+  "output_tokens": 1254,
+  "output_tokens_details": {
+   "thinking_tokens": 145
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13691,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 456,
+    "cache_read_input_tokens": 18010,
+    "cache_creation_input_tokens": 4848,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4848
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

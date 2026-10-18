@@ -1,0 +1,100 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ]
+ ],
+ "texts": [
+  "I'll start by looking at what's in the project so I know what CI needs to build and test.",
+  "The project has a Rojo tree, both `pesde.toml` and `wally.toml`, and no existing CI or tool manifest. I'll load the project-structure skill for current Rojo and CI guidance before choosing a setup."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00385181,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13334,
+  "cache_read_input_tokens": 48041,
+  "output_tokens": 1408,
+  "output_tokens_details": {
+   "thinking_tokens": 533
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13334,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 538,
+    "cache_read_input_tokens": 21219,
+    "cache_creation_input_tokens": 1282,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1282
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,95 @@
+{
+ "id": "t-glob",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Grep",
+   "globIgnorePaths"
+  ],
+  [
+   "Glob",
+   "**/*Preview*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-glob-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Glob",
+   "src/client/**"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ]
+ ],
+ "texts": [
+  "I read this as: Rojo is still syncing the `Preview` folders under `src/client` into the place, even though they're listed in `globIgnorePaths`. I'll look at the project config and the folder layout to find out why.",
+  "I couldn't find the config you're describing, so I can't see why it isn't working yet.\n\nWhat I checked in `<runs>\\t-glob-haiku-new-3`:\n\n- **`default.project.json`** is the only Rojo project file. It has no `globIgnorePaths` at all. It maps `ReplicatedStorage/Client` to `src/client`, and nothing else.\n- **`src/client`** contains only `init.client.luau`. There is no `Preview` folder anywhere in this tree.\n\nSo either this isn't the project you're working in, or the `globIgnorePaths` edit went into a different file. The skill reference that covers this (`structure-roblox-projects/references/rojo.md`) is outside this folder, and I didn't have permission to read it.\n\nIf you point me at the real project root, I'll check the config there. In the meantime, the usual fix is a root-level field in the project file. Patterns are relative to the project file's directory:\n\n```json\n{\n  \"name\": \"arena\",\n  \"globIgnorePaths\": [\"src/client/Preview/**\"],\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Client\": { \"$path\": \"src/client\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } }\n  }\n}\n```\n\nIf the Preview folders sit at other depths, use `\"**/Preview/**\"` instead. Two things to check after editing:\n\n- **Restart `rojo serve`.** Rojo reads the project file when it starts, so an edit made while it's running may not take effect.\n- **Reconnect or rebuild in Studio.** Instances that already synced stay in the place until the next full sync. Ignoring a path doesn't remove them.\n\nI haven't confirmed the exact field placement against the Rojo version this project uses. If the field is ignored after a restart, check the `globIgnorePaths` section in the reference above."
+ ],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ]
+ ],
+ "result": "I couldn't find the config you're describing, so I can't see why it isn't working yet.\n\nWhat I checked in `<runs>\\t-glob-haiku-new-3`:\n\n- **`default.project.json`** is the only Rojo project file. It has no `globIgnorePaths` at all. It maps `ReplicatedStorage/Client` to `src/client`, and nothing else.\n- **`src/client`** contains only `init.client.luau`. There is no `Preview` folder anywhere in this tree.\n\nSo either this isn't the project you're working in, or the `globIgnorePaths` edit went into a different file. The skill reference that covers this (`structure-roblox-projects/references/rojo.md`) is outside this folder, and I didn't have permission to read it.\n\nIf you point me at the real project root, I'll check the config there. In the meantime, the usual fix is a root-level field in the project file. Patterns are relative to the project file's directory:\n\n```json\n{\n  \"name\": \"arena\",\n  \"globIgnorePaths\": [\"src/client/Preview/**\"],\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Client\": { \"$path\": \"src/client\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } }\n  }\n}\n```\n\nIf the Preview folders sit at other depths, use `\"**/Preview/**\"` instead. Two things to check after editing:\n\n- **Restart `rojo serve`.** Rojo reads the project file when it starts, so an edit made while it's running may not take effect.\n- **Reconnect or rebuild in Studio.** Instances that already synced stay in the place until the next full sync. Ignoring a path doesn't remove them.\n\nI haven't confirmed the exact field placement against the Rojo version this project uses. If the field is ignored after a restart, check the `globIgnorePaths` section in the reference above.",
+ "cost": 0.0037836500000000004,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10001,
+  "cache_read_input_tokens": 45435,
+  "output_tokens": 2657,
+  "output_tokens_details": {
+   "thinking_tokens": 1462
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10001,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1932,
+    "cache_read_input_tokens": 18552,
+    "cache_creation_input_tokens": 616,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 616
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

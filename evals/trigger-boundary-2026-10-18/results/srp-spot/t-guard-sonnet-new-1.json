@@ -1,0 +1,98 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Grep",
+   "GetDataStore|DataStoreService|ProfileStore"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-sonnet-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Glob",
+   "{scripts/**,CLAUDE.md,.claude/settings*.json,rokit.toml,*.md}"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0842492,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17742,
+  "cache_read_input_tokens": 46792,
+  "output_tokens": 859,
+  "output_tokens_details": {
+   "thinking_tokens": 123
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17742,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 399,
+    "cache_read_input_tokens": 20701,
+    "cache_creation_input_tokens": 6208,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 6208
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

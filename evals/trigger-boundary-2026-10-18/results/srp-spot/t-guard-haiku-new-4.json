@@ -1,0 +1,103 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Grep",
+   "GetDataStore|DataStoreService|OrderedDataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "datastore"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding where the DataStore name is defined and how the project is laid out.",
+  "The Grep found no DataStore usage in the source. I'll read the source files and project config to see what's actually there.",
+  "The project is a small skeleton: a server script that prints, an empty shared module, and no DataStore calls. I'll do one case-insensitive search to rule out a DataStore name stored under another spelling."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0041601500000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13822,
+  "cache_read_input_tokens": 48515,
+  "output_tokens": 1820,
+  "output_tokens_details": {
+   "thinking_tokens": 600
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13822,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 562,
+    "cache_read_input_tokens": 21648,
+    "cache_creation_input_tokens": 1341,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1341
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

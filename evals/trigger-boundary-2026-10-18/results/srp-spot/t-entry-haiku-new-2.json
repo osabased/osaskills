@@ -1,0 +1,85 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-2\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-2\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "The client entrypoint belongs in **`StarterPlayer/StarterPlayerScripts`**, but the current mapping puts it somewhere it won't run.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns `init.client.luau` into a LocalScript, and LocalScripts in ReplicatedStorage never execute. Your `print(\"client\")` would never fire.\n\nThe server side is already right: `src/server` maps to `ServerScriptService.Server`, so `init.server.luau` runs as a Script.\n\nThe fix is to change the client mapping in `default.project.json`:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n}\n```\n\nKeep `src/shared` in ReplicatedStorage. Shared modules still need to be reachable from both sides, and the client entrypoint can require them from there.\n\nI haven't edited the file. Do you want me to make this change? I'd also check it with `rojo build` if Rojo is installed here."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The client entrypoint belongs in **`StarterPlayer/StarterPlayerScripts`**, but the current mapping puts it somewhere it won't run.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns `init.client.luau` into a LocalScript, and LocalScripts in ReplicatedStorage never execute. Your `print(\"client\")` would never fire.\n\nThe server side is already right: `src/server` maps to `ServerScriptService.Server`, so `init.server.luau` runs as a Script.\n\nThe fix is to change the client mapping in `default.project.json`:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n}\n```\n\nKeep `src/shared` in ReplicatedStorage. Shared modules still need to be reachable from both sides, and the client entrypoint can require them from there.\n\nI haven't edited the file. Do you want me to make this change? I'd also check it with `rojo build` if Rojo is installed here.",
+ "cost": 0.00406806,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12780,
+  "cache_read_input_tokens": 48096,
+  "output_tokens": 2061,
+  "output_tokens_details": {
+   "thinking_tokens": 1186
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12780,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1419,
+    "cache_read_input_tokens": 21230,
+    "cache_creation_input_tokens": 717,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 717
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

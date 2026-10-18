@@ -1,0 +1,98 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-old-1\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-old-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-old-1\\scripts\\check.sh"
+  ],
+  [
+   "Grep",
+   "(?i)selene"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/first-time-selene-config-sonnet-old-1\" && (selene --version || rokit --version) 2>&1; cat default.project.json; ls -a"
+  ]
+ ],
+ "texts": [
+  "You want a `selene.toml` and the Roblox standard library set up for Selene in this directory. I'll load the project-structure skill first, since it covers Selene setup.",
+  "A `selene.toml` already exists, so I'll check what it contains before changing anything.",
+  "`selene.toml` only has `std = \"roblox\"`. The skill says to pin the std source and commit the generated `roblox.yml`, so I'll check whether Selene is installed and what the project looks like."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0792462,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15700,
+  "cache_read_input_tokens": 46942,
+  "output_tokens": 1174,
+  "output_tokens_details": {
+   "thinking_tokens": 290
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15700,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 380,
+    "cache_read_input_tokens": 22212,
+    "cache_creation_input_tokens": 2655,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2655
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,101 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-new-1\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-new-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-sonnet-new-1\\scripts\\check.sh"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/first-time-selene-config-sonnet-new-1\" && (selene --version; rokit --version) 2>&1; cat default.project.json; cat .gitignore 2>&1 | head -20"
+  ]
+ ],
+ "texts": [
+  "I'll load the skill that covers first-time Selene setup."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0755565,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15545,
+  "cache_read_input_tokens": 46945,
+  "output_tokens": 867,
+  "output_tokens_details": {
+   "thinking_tokens": 163
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15545,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 256,
+    "cache_read_input_tokens": 22175,
+    "cache_creation_input_tokens": 2537,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2537
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

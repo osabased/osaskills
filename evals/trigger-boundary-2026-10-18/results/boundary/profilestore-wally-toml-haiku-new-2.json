@@ -1,0 +1,81 @@
+{
+ "id": "profilestore-wally-toml",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add ProfileStore to our wally.toml",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\profilestore-wally-toml-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Grep",
+   "(?i)profilestore"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00231114,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 7790,
+  "cache_read_input_tokens": 42204,
+  "output_tokens": 661,
+  "output_tokens_details": {
+   "thinking_tokens": 265
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7790,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 298,
+    "cache_read_input_tokens": 16664,
+    "cache_creation_input_tokens": 293,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 293
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

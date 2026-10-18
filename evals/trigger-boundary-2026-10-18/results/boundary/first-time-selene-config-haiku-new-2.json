@@ -1,0 +1,108 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "selene|Selene"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Grep",
+   "[Ss]elene|roblox\\.yml|roblox-std|update-roblox-std"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-2\\stylua.toml"
+  ]
+ ],
+ "texts": [
+  "I'll read what's in the project first, then say back what I think you want before making changes.",
+  "The structure skill has a Selene section. I'll read its checks and tooling notes before writing anything."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00400354,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13952,
+  "cache_read_input_tokens": 45854,
+  "output_tokens": 1508,
+  "output_tokens_details": {
+   "thinking_tokens": 334
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13952,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 557,
+    "cache_read_input_tokens": 20308,
+    "cache_creation_input_tokens": 2811,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2811
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

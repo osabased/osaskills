@@ -1,0 +1,92 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   ".github/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ]
+ ],
+ "texts": [
+  "I'll start by looking at the project layout to see what CI needs to cover.",
+  "The project uses Wally (`Packages/`) and pesde (for Vide and Blink), and there's no git repo or existing `.github/` folder. Before I write anything, I'll read the project-structure skill since it covers Rojo and CI."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00391705,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13145,
+  "cache_read_input_tokens": 48295,
+  "output_tokens": 1609,
+  "output_tokens_details": {
+   "thinking_tokens": 920
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13145,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 924,
+    "cache_read_input_tokens": 21433,
+    "cache_creation_input_tokens": 879,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 879
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

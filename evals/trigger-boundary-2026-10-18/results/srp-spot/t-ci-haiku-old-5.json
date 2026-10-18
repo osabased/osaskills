@@ -1,0 +1,100 @@
+{
+ "id": "t-ci",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up CI for my Rojo project",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "read:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/SKILL.md",
+   9555
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/.github/**"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-5\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-5\\wally.toml"
+  ],
+  [
+   "Glob",
+   "{rokit.toml,aftman.toml,foreman.toml,selene.toml,stylua.toml,.stylua.toml,.gitignore,.luaurc,.luau-lsp,README.md,sourcemap.json}"
+  ],
+  [
+   "Read",
+   "<runs>\\t-ci-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\SKILL.md"
+  ]
+ ],
+ "texts": [
+  "I'll read the project first to see what CI should cover."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0038860800000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13228,
+  "cache_read_input_tokens": 48338,
+  "output_tokens": 1513,
+  "output_tokens_details": {
+   "thinking_tokens": 659
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13228,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 705,
+    "cache_read_input_tokens": 21516,
+    "cache_creation_input_tokens": 879,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 879
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

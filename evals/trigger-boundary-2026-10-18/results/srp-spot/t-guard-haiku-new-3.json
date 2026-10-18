@@ -1,0 +1,100 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ]
+ ],
+ "texts": [
+  "I'll read this as: make a check fail whenever the DataStore name in the code changes from its current value. Let me find where it's defined.",
+  "The project code under `src/` doesn't mention DataStore at all. I'll read the source files, the Rojo config, and the skill's checks reference to see what exists.",
+  "I haven't changed anything yet, because I can't find a DataStore name to guard in this project.\n\n- **No DataStore in the code.** Nothing under `src/` or in `default.project.json` uses `DataStoreService` or defines a store name. `src/server/init.server.luau` only prints `\"server\"`.\n- **No check command.** There's no `scripts/` folder, and this directory isn't a git repo, so there's no pre-push hook or CI to hook a guard into.\n\nHere's how I'd read the request: the DataStore name should live in one place, and a check should fail if that name changes from its current value. Before I build it, I need a few answers. Each one has a recommended option first.\n\n1. **Where does the DataStore name live?**\n   - (a) It's a store you're adding to this project now. I'd put the name in a shared module and write the guard against it. *Recommended.*\n   - (b) It already exists somewhere else, such as in the Studio place file or another repo. Tell me which file, and I'll guard that.\n2. **What is the exact current name?** The guard has to pin a literal, and I won't invent one. If the store is new, tell me the name you want. If it's existing, paste it.\n3. **How far should the guard go?**\n   - (a) A check script that compares the name against a pinned copy and fails on any difference. I'd write it in PowerShell since you're on Windows. The two-copy design makes changing the name a deliberate two-file edit. *Recommended.*\n   - (b) Also wire it into a Claude Code `Stop` hook and a git pre-push hook. This needs `git init` first.\n   - (c) Also add CI. This needs a remote repo.\n\nOnce you answer, I'll write the guard and break-test it by changing the name, confirming the check fails, and reverting."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't changed anything yet, because I can't find a DataStore name to guard in this project.\n\n- **No DataStore in the code.** Nothing under `src/` or in `default.project.json` uses `DataStoreService` or defines a store name. `src/server/init.server.luau` only prints `\"server\"`.\n- **No check command.** There's no `scripts/` folder, and this directory isn't a git repo, so there's no pre-push hook or CI to hook a guard into.\n\nHere's how I'd read the request: the DataStore name should live in one place, and a check should fail if that name changes from its current value. Before I build it, I need a few answers. Each one has a recommended option first.\n\n1. **Where does the DataStore name live?**\n   - (a) It's a store you're adding to this project now. I'd put the name in a shared module and write the guard against it. *Recommended.*\n   - (b) It already exists somewhere else, such as in the Studio place file or another repo. Tell me which file, and I'll guard that.\n2. **What is the exact current name?** The guard has to pin a literal, and I won't invent one. If the store is new, tell me the name you want. If it's existing, paste it.\n3. **How far should the guard go?**\n   - (a) A check script that compares the name against a pinned copy and fails on any difference. I'd write it in PowerShell since you're on Windows. The two-copy design makes changing the name a deliberate two-file edit. *Recommended.*\n   - (b) Also wire it into a Claude Code `Stop` hook and a git pre-push hook. This needs `git init` first.\n   - (c) Also add CI. This needs a remote repo.\n\nOnce you answer, I'll write the guard and break-test it by changing the name, confirming the check fails, and reverting.",
+ "cost": 0.00519392,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16722,
+  "cache_read_input_tokens": 49142,
+  "output_tokens": 2715,
+  "output_tokens_details": {
+   "thinking_tokens": 1248
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16722,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1540,
+    "cache_read_input_tokens": 22275,
+    "cache_creation_input_tokens": 3614,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3614
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

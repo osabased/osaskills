@@ -1,0 +1,90 @@
+{
+ "id": "t-playtest",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "(?i)shop"
+  ],
+  [
+   "Read",
+   "<runs>\\t-playtest-haiku-old-1\\default.project.json"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\verification.md"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00404165,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15591,
+  "cache_read_input_tokens": 47885,
+  "output_tokens": 888,
+  "output_tokens_details": {
+   "thinking_tokens": 321
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15591,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 341,
+    "cache_read_input_tokens": 21051,
+    "cache_creation_input_tokens": 3707,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3707
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

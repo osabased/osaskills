@@ -1,0 +1,98 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-4\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-4\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-4\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-4\\scripts\\check.sh"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/setup-wally-new-project-haiku-new-4\" && ls -la && (which rokit wally rojo 2>&1; echo \"---\"; wally --version 2>&1; rokit --version 2>&1) | head -20"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00429085,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14947,
+  "cache_read_input_tokens": 48035,
+  "output_tokens": 1641,
+  "output_tokens_details": {
+   "thinking_tokens": 769
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14947,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 538,
+    "cache_read_input_tokens": 22499,
+    "cache_creation_input_tokens": 1615,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1615
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

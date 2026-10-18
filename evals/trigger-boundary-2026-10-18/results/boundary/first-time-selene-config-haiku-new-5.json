@@ -1,0 +1,111 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-5\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-5\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-5\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Bash",
+   "which selene rokit wally 2>&1; selene --version 2>&1; rokit --version 2>&1; echo \"---\"; ls -la; echo \"---\"; ls .claude/skills/roblox-resource-acquisition/versions.json && cat .claude/skills/roblox-resource-acquisition/versions.json"
+  ]
+ ],
+ "texts": [
+  "I'll read the project and the Roblox project-structure skill first, since that skill covers first-time Selene setup.",
+  "You want Selene's `selene.toml` configured and the Roblox standard library wired in, so the linter understands Roblox globals. I'll read the existing config and the tooling reference before changing anything.",
+  "The config is minimal: `std = \"roblox\"` and nothing else. The tooling reference says to pin the Roblox std source and commit the generated `roblox.yml`. Next I'll check the reviewed Selene version and whether the tools are installed here."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00488716,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17108,
+  "cache_read_input_tokens": 48746,
+  "output_tokens": 1955,
+  "output_tokens_details": {
+   "thinking_tokens": 717
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17108,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 757,
+    "cache_read_input_tokens": 23200,
+    "cache_creation_input_tokens": 3075,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3075
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

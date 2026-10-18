@@ -1,0 +1,129 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   11149
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.md",
+   1631
+  ],
+  [
+   "roblox-resource-acquisition/templates/resource-skill-template.yaml",
+   1027
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,wally.lock,pesde.toml,pesde.lock,rokit.toml,aftman.toml,foreman.toml,package.json,*.project.json}"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Glob",
+   "**/.claude/skills/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\templates\\resource-skill-template.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding the pinned ProfileStore version and any existing roblox-* skills in this project.",
+  "The repo has a roblox-resource-acquisition skill with a library-skill template and writing guide. I'll read the pins, that guide, the template, and the existing ProfileStore mentions.",
+  "I haven't written the skill yet, because this project doesn't pin ProfileStore at all.\n\nWhat I checked:\n- `wally.toml` pins Janitor 1.18.3, LemonSignal 2.0.0 and Charm 0.11.1. No ProfileStore entry.\n- `pesde.toml` pins Vide by commit, and Blink as a dev dependency. No ProfileStore entry.\n- `rokit.toml` lists only the toolchain (Rojo, Wally, StyLua, Selene, luau-lsp).\n- There is no `wally.lock` or `pesde.lock`, and the roblox-resource-acquisition catalog has no `roblox-profilestore` entry.\n- The only ProfileStore mentions are a routing example in that skill's eval cases and a note about ProfileStore key prefixes in `structure-roblox-projects`.\n\nAlso, the environment I'm working in has no network or shell tool, so I can't read ProfileStore's source at any version. The writing guide requires the skill's API and gotchas to come from the reviewed source at the pinned version, so a skill written from memory wouldn't meet that bar.\n\nWhat I think you want: a `roblox-profilestore` library skill for the ProfileStore version your project uses, built from that version's source and written with the catalog's writing guide.\n\nI need three things from you:\n\n1. **Version and pin location.** Which version do you use, and in which manifest? My recommendation is adding it to `wally.toml`, next to the other Wally libraries, at that exact version. Adding a dependency changes the project, so I'll wait for your go-ahead. If it's already pinned somewhere I can't see (another project, or a branch), point me to it.\n2. **Source access.** Either give me a local copy of the package (for example a `Packages/` folder or the source repo checkout), or paste its README and the module files for that version. Without that, I'd have to write from memory.\n3. **Scope.** My recommendation is `.claude/skills/roblox-profilestore/` in this project only. The alternative is also proposing it for the shared catalog, which other projects could clone."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't written the skill yet, because this project doesn't pin ProfileStore at all.\n\nWhat I checked:\n- `wally.toml` pins Janitor 1.18.3, LemonSignal 2.0.0 and Charm 0.11.1. No ProfileStore entry.\n- `pesde.toml` pins Vide by commit, and Blink as a dev dependency. No ProfileStore entry.\n- `rokit.toml` lists only the toolchain (Rojo, Wally, StyLua, Selene, luau-lsp).\n- There is no `wally.lock` or `pesde.lock`, and the roblox-resource-acquisition catalog has no `roblox-profilestore` entry.\n- The only ProfileStore mentions are a routing example in that skill's eval cases and a note about ProfileStore key prefixes in `structure-roblox-projects`.\n\nAlso, the environment I'm working in has no network or shell tool, so I can't read ProfileStore's source at any version. The writing guide requires the skill's API and gotchas to come from the reviewed source at the pinned version, so a skill written from memory wouldn't meet that bar.\n\nWhat I think you want: a `roblox-profilestore` library skill for the ProfileStore version your project uses, built from that version's source and written with the catalog's writing guide.\n\nI need three things from you:\n\n1. **Version and pin location.** Which version do you use, and in which manifest? My recommendation is adding it to `wally.toml`, next to the other Wally libraries, at that exact version. Adding a dependency changes the project, so I'll wait for your go-ahead. If it's already pinned somewhere I can't see (another project, or a branch), point me to it.\n2. **Source access.** Either give me a local copy of the package (for example a `Packages/` folder or the source repo checkout), or paste its README and the module files for that version. Without that, I'd have to write from memory.\n3. **Scope.** My recommendation is `.claude/skills/roblox-profilestore/` in this project only. The alternative is also proposing it for the shared catalog, which other projects could clone.",
+ "cost": 0.00690274,
+ "turns": 12,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 21315,
+  "cache_read_input_tokens": 46214,
+  "output_tokens": 4354,
+  "output_tokens_details": {
+   "thinking_tokens": 2363
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21315,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2619,
+    "cache_read_input_tokens": 20666,
+    "cache_creation_input_tokens": 9816,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 9816
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

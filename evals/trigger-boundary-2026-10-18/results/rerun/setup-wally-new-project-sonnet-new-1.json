@@ -1,0 +1,106 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-1\\scripts\\check.sh"
+  ]
+ ],
+ "texts": [
+  "I'll load the Roblox project setup skill, since it covers first-time Wally and toolchain setup.",
+  "The project already has most of a Wally setup, so I need a few answers before I change anything.\n\n**What's there**\n- `wally.toml` lists Janitor, LemonSignal and Charm.\n- `rokit.toml` pins wally 0.3.2, rojo, stylua, selene and luau-lsp.\n- `default.project.json` maps a `Packages` folder into `ReplicatedStorage`.\n- `scripts/check.sh` runs `wally install`.\n- Nothing has been installed yet: there is no `wally.lock` and no `Packages/` folder.\n- There is also a `pesde.toml` that lists vide and blink. That's a second package manager in the same project, and the skill says not to run both on the same packages.\n\n**My reading:** you want this project's Wally setup finished and working. That means a first `rokit install` and `wally install`, a committed lockfile, and the packages wired into Rojo and the check script. I'd leave the existing pins as they are.\n\n**Questions**\n1. **Which package manager should the project use?** I recommend Wally only, since that's what you asked for. I'd delete `pesde.toml` and add vide and blink to `wally.toml` if you still need them. The alternatives are to keep both managers on separate packages, or to keep pesde as is and drop Wally.\n2. **Do you still need vide and blink?** If so, I'd look up their Wally package names and versions. The `roblox-resource-acquisition` skill covers that.\n3. **Should I run the installs now?** `rokit install` downloads tools, and `wally install` fetches packages from the registry. I recommend yes.\n4. **Is this setup shared with a team or just yours?** I recommend personal, which keeps the agent files out of Git and CI. There's no Git repository here yet, so I can't check for other authors.\n\nOnce you answer, I'll do the work."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The project already has most of a Wally setup, so I need a few answers before I change anything.\n\n**What's there**\n- `wally.toml` lists Janitor, LemonSignal and Charm.\n- `rokit.toml` pins wally 0.3.2, rojo, stylua, selene and luau-lsp.\n- `default.project.json` maps a `Packages` folder into `ReplicatedStorage`.\n- `scripts/check.sh` runs `wally install`.\n- Nothing has been installed yet: there is no `wally.lock` and no `Packages/` folder.\n- There is also a `pesde.toml` that lists vide and blink. That's a second package manager in the same project, and the skill says not to run both on the same packages.\n\n**My reading:** you want this project's Wally setup finished and working. That means a first `rokit install` and `wally install`, a committed lockfile, and the packages wired into Rojo and the check script. I'd leave the existing pins as they are.\n\n**Questions**\n1. **Which package manager should the project use?** I recommend Wally only, since that's what you asked for. I'd delete `pesde.toml` and add vide and blink to `wally.toml` if you still need them. The alternatives are to keep both managers on separate packages, or to keep pesde as is and drop Wally.\n2. **Do you still need vide and blink?** If so, I'd look up their Wally package names and versions. The `roblox-resource-acquisition` skill covers that.\n3. **Should I run the installs now?** `rokit install` downloads tools, and `wally install` fetches packages from the registry. I recommend yes.\n4. **Is this setup shared with a team or just yours?** I recommend personal, which keeps the agent files out of Git and CI. There's no Git repository here yet, so I can't check for other authors.\n\nOnce you answer, I'll do the work.",
+ "cost": 0.0848214,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15687,
+  "cache_read_input_tokens": 46314,
+  "output_tokens": 1743,
+  "output_tokens_details": {
+   "thinking_tokens": 366
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15687,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 825,
+    "cache_read_input_tokens": 21554,
+    "cache_creation_input_tokens": 3300,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3300
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

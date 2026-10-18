@@ -1,0 +1,128 @@
+{
+ "id": "vide-skill-missing",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "read:roblox-resource-acquisition",
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7128
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/SKILL.md",
+   7099
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   ".claude/skills/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\pesde.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/vide-skill-missing-haiku-new-3\" && python .claude/skills/roblox-resource-acquisition/scripts/clone_children.py --project . --status 2>&1; echo \"exit=$?\"; ls -la; which pesde rokit wally 2>&1 | head -5"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-new-3\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "I'll start by looking at the project layout and what's already there.",
+  "The project has a `roblox-vide` library skill under `libraries/`, which is the one to install. Next I'll read the existing code, the package manifests, and the acquisition skill's instructions.",
+  "The project already declares Vide at the pinned commit that the `roblox-vide` skill documents, so the skill matches the project. Before cloning, I'll check the clone status and the rest of the project layout."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0064598,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 22037,
+  "cache_read_input_tokens": 49230,
+  "output_tokens": 3119,
+  "output_tokens_details": {
+   "thinking_tokens": 1565
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 22037,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1625,
+    "cache_read_input_tokens": 23683,
+    "cache_creation_input_tokens": 7521,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7521
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

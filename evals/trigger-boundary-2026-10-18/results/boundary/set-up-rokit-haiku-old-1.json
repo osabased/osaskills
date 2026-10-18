@@ -1,0 +1,119 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "rokit --version 2>&1; where.exe rokit 2>&1; echo \"---\"; cargo --version 2>&1; aftman --version 2>&1"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-1\\stylua.toml"
+  ],
+  [
+   "Glob",
+   "*rokit*"
+  ]
+ ],
+ "texts": [
+  "I'll check what's in the repo and whether Rokit is already installed, then load the Roblox project-structure skill, since it covers Rokit setup.",
+  "Bash is disabled in this session, so I can't run the Rokit installer or the toolchain commands. I'll read the existing toolchain config so I can tell you exactly what to run.",
+  "The toolchain is already pinned. I'll check whether Rokit is already on this machine before giving you the install steps."
+ ],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Glob",
+   "*rokit*"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00506669,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16281,
+  "cache_read_input_tokens": 48839,
+  "output_tokens": 2643,
+  "output_tokens_details": {
+   "thinking_tokens": 1437
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16281,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 999,
+    "cache_read_input_tokens": 23337,
+    "cache_creation_input_tokens": 2111,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2111
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

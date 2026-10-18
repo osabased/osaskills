@@ -1,0 +1,90 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-new-5\\src\\shared\\init.luau"
+  ]
+ ],
+ "texts": [
+  "I'll look at the project layout first.",
+  "**Short answer:** the file belongs in `src/client/init.client.luau`, which is already where it is. The problem is the Rojo mapping in `default.project.json`, which would stop it from running.\n\nI read your question as \"where should the client entrypoint go so it actually runs when a player joins.\"\n\n**The issue:** the project maps the client folder to the wrong service:\n\n```json\n\"ReplicatedStorage\": {\n  \"Client\": { \"$path\": \"src/client\" },\n  ...\n}\n```\n\nRojo turns `src/client/init.client.luau` into a LocalScript named `Client`, and that LocalScript ends up under `ReplicatedStorage`. Roblox never runs LocalScripts there. They only run when they sit under `StarterPlayer.StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or similar containers.\n\nThe server side is fine: `ServerScriptService.Server` is a valid place for a Script to run.\n\n**Recommended fix:** map the client folder to `StarterPlayer/StarterPlayerScripts`:\n\n```json\n{\n  \"name\": \"arena\",\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"StarterPlayer\": {\n      \"StarterPlayerScripts\": {\n        \"Client\": { \"$path\": \"src/client\" }\n      }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } }\n  }\n}\n```\n\nShared code can stay in `ReplicatedStorage`, since both sides need it. Client-only modules that the entrypoint requires can sit in `src/client` alongside it.\n\nI haven't edited anything. Moving the client folder changes where the code lives in the place, so tell me if you want me to make the change. I can also check that the `Packages` path and `wally.toml` are set up as you expect."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "**Short answer:** the file belongs in `src/client/init.client.luau`, which is already where it is. The problem is the Rojo mapping in `default.project.json`, which would stop it from running.\n\nI read your question as \"where should the client entrypoint go so it actually runs when a player joins.\"\n\n**The issue:** the project maps the client folder to the wrong service:\n\n```json\n\"ReplicatedStorage\": {\n  \"Client\": { \"$path\": \"src/client\" },\n  ...\n}\n```\n\nRojo turns `src/client/init.client.luau` into a LocalScript named `Client`, and that LocalScript ends up under `ReplicatedStorage`. Roblox never runs LocalScripts there. They only run when they sit under `StarterPlayer.StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or similar containers.\n\nThe server side is fine: `ServerScriptService.Server` is a valid place for a Script to run.\n\n**Recommended fix:** map the client folder to `StarterPlayer/StarterPlayerScripts`:\n\n```json\n{\n  \"name\": \"arena\",\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"StarterPlayer\": {\n      \"StarterPlayerScripts\": {\n        \"Client\": { \"$path\": \"src/client\" }\n      }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } }\n  }\n}\n```\n\nShared code can stay in `ReplicatedStorage`, since both sides need it. Client-only modules that the entrypoint requires can sit in `src/client` alongside it.\n\nI haven't edited anything. Moving the client folder changes where the code lives in the place, so tell me if you want me to make the change. I can also check that the `Packages` path and `wally.toml` are set up as you expect.",
+ "cost": 0.00412984,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12948,
+  "cache_read_input_tokens": 48264,
+  "output_tokens": 2114,
+  "output_tokens_details": {
+   "thinking_tokens": 811
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12948,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1360,
+    "cache_read_input_tokens": 21398,
+    "cache_creation_input_tokens": 717,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 717
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,98 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ],
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "I'll read the project-structure skill for Wally setup and check what's in the working directory.",
+  "Here's what I think you want: a new Roblox project in this folder, using Wally as its package manager, with the tools pinned so a fresh checkout can restore everything. The folder currently has only the `.claude` skills, so there's nothing to convert. I haven't created anything yet, because this skill sets up a new project by learning your needs, proposing one setup, and building it after you review it.\n\nBefore I propose anything, I need a few answers. My recommendation is first in each list.\n\n1. **Product:** Is this a game (and if so, what are its main systems), a plugin, a reusable package, or a prototype? Does a Studio place already exist anywhere?\n2. **Authoring:** Should code live as files on disk synced with Rojo (recommended, so Git and agents can work on it), or be written in Studio, or use Script Sync?\n3. **Packages:** Wally (recommended, the most widely used) or pesde?\n4. **Tool manager:** Rokit (recommended) to pin Rojo, Wally and the other CLI tools per project, or another manager you already use?\n5. **Git:** Should I initialize a Git repository here? I recommend yes. Do you want CI?\n6. **Libraries:** Do you already have specific libraries in mind (for example Janitor or Charm), or start with none?\n\nSeparately, is the agent setup (the guide, check command and hooks) **personal** or **shared with the team**? I recommend personal if you're working solo and don't want it in Git, and shared if others will commit to this repo.\n\nOnce you answer, I'll send back one proposed setup for review, and I'll build it after you approve."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's what I think you want: a new Roblox project in this folder, using Wally as its package manager, with the tools pinned so a fresh checkout can restore everything. The folder currently has only the `.claude` skills, so there's nothing to convert. I haven't created anything yet, because this skill sets up a new project by learning your needs, proposing one setup, and building it after you review it.\n\nBefore I propose anything, I need a few answers. My recommendation is first in each list.\n\n1. **Product:** Is this a game (and if so, what are its main systems), a plugin, a reusable package, or a prototype? Does a Studio place already exist anywhere?\n2. **Authoring:** Should code live as files on disk synced with Rojo (recommended, so Git and agents can work on it), or be written in Studio, or use Script Sync?\n3. **Packages:** Wally (recommended, the most widely used) or pesde?\n4. **Tool manager:** Rokit (recommended) to pin Rojo, Wally and the other CLI tools per project, or another manager you already use?\n5. **Git:** Should I initialize a Git repository here? I recommend yes. Do you want CI?\n6. **Libraries:** Do you already have specific libraries in mind (for example Janitor or Charm), or start with none?\n\nSeparately, is the agent setup (the guide, check command and hooks) **personal** or **shared with the team**? I recommend personal if you're working solo and don't want it in Git, and shared if others will commit to this repo.\n\nOnce you answer, I'll send back one proposed setup for review, and I'll build it after you approve.",
+ "cost": 0.00616649,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 21385,
+  "cache_read_input_tokens": 48839,
+  "output_tokens": 2801,
+  "output_tokens_details": {
+   "thinking_tokens": 1791
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 21385,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1723,
+    "cache_read_input_tokens": 23308,
+    "cache_creation_input_tokens": 7244,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7244
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

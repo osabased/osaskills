@@ -1,0 +1,94 @@
+{
+ "id": "rokit-stylua",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9134
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-sonnet-new-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Bash",
+   "for r in JohnnyMorganz/StyLua Kampfkarren/selene; do echo -n \"$r: \"; curl -s https://api.github.com/repos/$r/releases/latest | grep -m1 '\"tag_name\"'; done"
+  ]
+ ],
+ "texts": [
+  "You want StyLua and Selene added to the existing `rokit.toml`, each pinned to its latest release. I'll load the Rokit skill and find the file.",
+  "`rokit.toml` already lists StyLua 2.3.1 and Selene 0.29.0, so I'll check whether those are the latest releases."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.06225700000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12663,
+  "cache_read_input_tokens": 42830,
+  "output_tokens": 731,
+  "output_tokens_details": {
+   "thinking_tokens": 168
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12663,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 233,
+    "cache_read_input_tokens": 18057,
+    "cache_creation_input_tokens": 3773,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3773
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}
