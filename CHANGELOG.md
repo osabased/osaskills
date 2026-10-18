@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
-- A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#PR](https://github.com/osabased/osaskills/pull/PR))
+- A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#74](https://github.com/osabased/osaskills/pull/74))
 
 ### 2026-10-17
 
