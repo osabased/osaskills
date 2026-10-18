@@ -41,7 +41,7 @@ Cloning writes `PROJECT/.claude/skills/<skill>/` and prints one JSON result per 
 
 An `UNAVAILABLE` comparison still clones; say which check was skipped.
 
-Commit clones with the project, so every checkout and cloud session has them. A refresh replaces the whole folder, so a local edit lasts only until the next one: fix the catalog instead (see "When a library skill is wrong" in this skill's `SKILL.md`) and re-clone.
+Commit clones with the project, so every checkout and cloud session has them. When the project's agent setup is personal to one developer (structure-roblox-projects puts its onboarding pointer in `CLAUDE.local.md`), list each clone in the exclude file `git rev-parse --git-path info/exclude` names instead, and say other checkouts won't have it. A refresh replaces the whole folder, so a local edit lasts only until the next one: fix the catalog instead (see "When a library skill is wrong" in this skill's `SKILL.md`) and re-clone.
 
 ## The session hook
 

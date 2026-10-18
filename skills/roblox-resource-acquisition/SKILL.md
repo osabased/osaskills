@@ -26,7 +26,7 @@ python scripts/clone_children.py --project PROJECT --status
 python scripts/clone_children.py --project PROJECT roblox-vide
 ```
 
-`--status` compares each catalog skill's pin with the project's manifest and lock (`declared`: `PASS`, `FAIL` or `UNAVAILABLE`) and reports its clone state. Clone only the skills the task uses, and commit the clones. A refusal means the project pins another version or the folder holds something else: report it and keep the project's pin. In a plugin install, a session-start hook names missing or stale clones and pin mismatches; act on those only for libraries the task uses. Details, and routes without Python: [library skills](references/library-skills.md).
+`--status` compares each catalog skill's pin with the project's manifest and lock (`declared`: `PASS`, `FAIL` or `UNAVAILABLE`) and reports its clone state. Clone only the skills the task uses, and commit the clones, unless the project's agent setup is personal (its onboarding pointer is in `CLAUDE.local.md`): then list them in the clone's git exclude file instead. A refusal means the project pins another version or the folder holds something else: report it and keep the project's pin. In a plugin install, a session-start hook names missing or stale clones and pin mismatches; act on those only for libraries the task uses. Details, and routes without Python: [library skills](references/library-skills.md).
 
 ## Evaluate or compare
 

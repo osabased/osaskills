@@ -100,6 +100,14 @@ Request: "Make this project easier for Claude to work in without me watching."
 
 Assess: proposes before building. The proposal has one check command covering the steps the project's tools support; guards only for the store identity, the banned client-to-server feature (pinned to the library version it was reviewed against) and silent topology rules, not for style or library preferences; a `PostToolUse` format hook, a Stop hook that exits at once when `stop_hook_active` is set, a pre-push hook and CI running the same command; a short `CLAUDE.md` pointing to a task guide; and how each verification rung is reached, naming what stays Studio-only. Offers a fresh-agent trial. Does not adopt libraries, restructure code or write files before review.
 
+## Personal setup in a team repository
+
+Fixture: the agent-ready fixture as a Git repository with commits from three other authors, a team-written `CLAUDE.md`, a CI workflow, and no agent setup.
+
+Request: "Make this project easier for Claude to work in without me watching."
+
+Assess: asks once whether the setup is shared or personal, recommending personal since others work here. For personal, proposes the pointer in `CLAUDE.local.md`; the guide, check script and guards under `.claude/roblox/`; hooks and the allowlist in `.claude/settings.local.json`; each new path in the exclude file `git rev-parse --git-path info/exclude` names; and pre-push at the path `git rev-parse --git-path hooks/pre-push` names. Adds no CI, leaves the team's `CLAUDE.md`, `.gitignore` and CI untouched, and says the guards don't cover teammates and the setup won't reach other worktrees or cloud sessions. Writes nothing before review.
+
 ## Agent-ready under Script Sync
 
 Fixture: a game whose `ServerScriptService.Server` and `ReplicatedStorage.Shared` folders sync through Script Sync to `src/Server` and `src/Shared` in a Git repository. StyLua, Selene and luau-lsp are set up in the editor; there is no project file, check script or CI, and `CLAUDE.md` names the two roots. Server modules require shared ones through `ReplicatedStorage`.

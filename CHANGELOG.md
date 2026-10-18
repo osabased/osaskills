@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
+- An agent setup can be personal. The skill asks once per project whether the setup is shared with the team or personal; a personal one keeps the pointer in `CLAUDE.local.md`, the guide, check and guards under `.claude/roblox/`, and hooks in `.claude/settings.local.json`, all listed in the clone's git exclude file. It adds no CI and leaves the team's files alone. A behavioral scenario covers it in a team repository.
 - `unfamiliar-stack.md`: a method for any sync tool, compiler, loader, framework or test runner the references don't describe. The agent works out its mapping, startup, boundaries, restore, check and release contract from the project and the pinned version's docs (a row counts as a gap until a quoted line from the tool's docs or type declarations answers it), restores every manifest the check needs, ends its report with a proposed guide diff in a set format even after a routine edit, and uses it for placement, checks, guards and moves. ([#69](https://github.com/osabased/osaskills/pull/69))
 - A behavioral scenario for a roblox-ts and Flamework project. ([#69](https://github.com/osabased/osaskills/pull/69))
 - `check_rojo_artifact.py --require-class PATH=Class[:RunContext]` asserts an instance's class, and for a `Script` its `RunContext` in the built place. It catches a default-settings `init.client.luau` in ReplicatedStorage, which builds as a `LocalScript` that never runs. Tested on Rojo 7.7.1 with `emitLegacyScripts` on and off. ([#66](https://github.com/osabased/osaskills/pull/66))
@@ -237,6 +238,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
+- In a project whose agent setup is personal (its onboarding pointer is in `CLAUDE.local.md`), cloned library skills go in the clone's git exclude file instead of being committed.
 - Writing a library skill accepts a structure-roblox-projects contract table as a starting point, using only its quoted tool rows, and sends a skill built from one straight to a catalog pull request. ([#70](https://github.com/osabased/osaskills/pull/70))
 - The description is shorter (1021 to 924 characters) and now covers writing a library skill and setting up a package. It drops the tool-setup clause (Rojo, Rokit, Selene, StyLua, Lune), so setting up a tool routes to structure-roblox-projects. ([#62](https://github.com/osabased/osaskills/pull/62))
 

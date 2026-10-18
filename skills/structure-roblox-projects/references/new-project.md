@@ -26,7 +26,7 @@ Show enough to review what will exist:
 - roots, what is authored, generated or Studio-owned, and the filesystem-to-DataModel mapping;
 - entrypoint paths, classes or `RunContext`s and startup owners; client/server and authority boundaries ([placement](placement.md));
 - tools and libraries with versions, and how they restore;
-- **the agent foundation, sized to the project** ([agent-ready project](../SKILL.md#an-agent-ready-project)): the guide's outline and `CLAUDE.md` pointer, the check command's steps, the guards the project's permanent or security rules need, hooks, CI if wanted, and how each verification rung is reached. A solo prototype might get a guide, a check command and a Stop hook; a team game with saved data gets all of it;
+- **the agent foundation, sized to the project** ([agent-ready project](../SKILL.md#an-agent-ready-project)): whether it is [shared or personal](project-guide.md#shared-or-personal), the guide's outline and pointer, the check command's steps, the guards the project's permanent or security rules need, hooks, CI if wanted, and how each verification rung is reached. A solo prototype might get a guide, a check command and a Stop hook; a team game with saved data gets all of it;
 - Studio steps and owner actions, and remaining evidence gaps.
 
 A plugin or package needs its host's or consumer's contract, not invented game bootstraps. Wait for review; the review doesn't reopen choices the user already settled.
