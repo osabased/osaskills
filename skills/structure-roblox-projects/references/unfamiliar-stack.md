@@ -27,12 +27,12 @@ If restore or the check can't run, report the failing step and the pin behind it
 This holds for a routine edit too. When the guide doesn't record the contract, finish the task, then propose the rows you worked out as a guide diff for review ([save it](project-guide.md#save-it)); don't write it unasked. End the report with the diff itself, one line per row:
 
 ```markdown
-| Row | Claim | Source | Version | Checked | Status |
-| --- | --- | --- | --- | --- | --- |
-| Startup | <what it discovers and when> | <file and the quoted line> | <pinned version> | <date> | read, inferred or gap |
+| Row | Claim | Source | Version | Checked | Status | To settle |
+| --- | --- | --- | --- | --- | --- | --- |
+| Startup | <what it discovers and when> | <file and the quoted line> | <pinned version> | <date> | read, inferred or gap | <the probe, for inferred or gap> |
 ```
 
-A report that says a proposal is owed but doesn't contain one is incomplete.
+Status is `read` only when Source holds the quoted line; otherwise it is `inferred` or `gap`. A report that says a proposal is owed but doesn't contain one is incomplete.
 
 Write the contract into the project guide with each claim's source, version and date ([what to write](project-guide.md#what-to-write)), and make the feature guide's layer table follow the tool's discovery rule. Then use it where the rest of this skill would use a described tool:
 
