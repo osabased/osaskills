@@ -31,11 +31,7 @@
   ],
   [
    "Glob",
-   "*"
-  ],
-  [
-   "Bash",
-   "where rokit 2>/dev/null; rokit --version 2>/dev/null; echo \"exit=$?\""
+   "**/*"
   ],
   [
    "Read",
@@ -47,39 +43,33 @@
   ],
   [
    "Read",
+   "<runs>\\set-up-rokit-haiku-new-3\\scripts\\check.sh"
+  ],
+  [
+   "Read",
    "<runs>\\set-up-rokit-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\versions.json"
   ],
   [
-   "Glob",
-   "rokit*.exe"
-  ],
-  [
-   "Glob",
-   "*"
+   "Bash",
+   "which rokit wally rojo stylua selene 2>/dev/null; command -v winget cargo pwsh 2>/dev/null; echo \"---\"; ls \"$USERPROFILE/.rokit/bin\" 2>/dev/null; echo \"PATH check done\""
   ]
  ],
  "texts": [
-  "I'm reading this as: install Rokit (the Roblox toolchain manager) on this Windows machine, then add a `rokit.toml` to this repo that pins the standard Roblox tools (Rojo, StyLua, Selene, luau-lsp, Wally) so they install on demand. I'll check the repo first and follow the project's setup guidance.",
-  "The skill is loaded. Bash is disabled in this session, so I can't run the Rokit installer. I'll read the existing `rokit.toml` and the tooling reference first.",
-  "The repo already has a `rokit.toml` with five tool pins. I'll check whether Rokit is already on this machine."
+  "I read this as: install Rokit on this Windows machine, then use it to pin the Roblox toolchain (Rojo, and whatever else the skill recommends) in this repo. The repo isn't a git repo yet and looks nearly empty, so I'll check that first. I'll load the project-setup skill for the current Rokit and tool guidance.",
+  "The repo already has a `rokit.toml` with pins, so the job is to install Rokit itself and restore those pins. Before I install anything, I'll check whether Rokit is already present and what installers are available."
  ],
  "mcp_calls": null,
- "denials": [
-  [
-   "Glob",
-   "rokit*.exe"
-  ]
- ],
+ "denials": [],
  "result": null,
- "cost": 0.005032100000000001,
+ "cost": 0.00487528,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 18151,
-  "cache_read_input_tokens": 48430,
-  "output_tokens": 1834,
+  "cache_creation_input_tokens": 17914,
+  "cache_read_input_tokens": 48088,
+  "output_tokens": 1622,
   "output_tokens_details": {
-   "thinking_tokens": 731
+   "thinking_tokens": 710
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -87,19 +77,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 18151,
+   "ephemeral_1h_input_tokens": 17914,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 516,
-    "cache_read_input_tokens": 22885,
-    "cache_creation_input_tokens": 4433,
+    "output_tokens": 535,
+    "cache_read_input_tokens": 22547,
+    "cache_creation_input_tokens": 4534,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 4433
+     "ephemeral_1h_input_tokens": 4534
     },
     "type": "message"
    }

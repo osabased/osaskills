@@ -46,25 +46,29 @@
    "*"
   ],
   [
-   "Grep",
-   "rokit|stylua|selene|rojo|luau-lsp"
+   "Glob",
+   "[!.]*"
+  ],
+  [
+   "Bash",
+   "rokit --version 2>&1; aftman --version 2>&1; foreman --version 2>&1"
   ]
  ],
  "texts": [
-  "I'll load the Roblox project setup skill, since it covers first-time Rokit and toolchain setup."
+  "I'll load the project-setup skill, since it covers first-time Rokit and toolchain setup."
  ],
  "mcp_calls": null,
  "denials": [],
  "result": null,
- "cost": 0.0787733,
+ "cost": 0.0936343,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 16446,
-  "cache_read_input_tokens": 47173,
-  "output_tokens": 826,
+  "cache_creation_input_tokens": 20054,
+  "cache_read_input_tokens": 47163,
+  "output_tokens": 869,
   "output_tokens_details": {
-   "thinking_tokens": 124
+   "thinking_tokens": 187
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -72,19 +76,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 16446,
+   "ephemeral_1h_input_tokens": 20054,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 415,
-    "cache_read_input_tokens": 22409,
-    "cache_creation_input_tokens": 3204,
+    "output_tokens": 348,
+    "cache_read_input_tokens": 22403,
+    "cache_creation_input_tokens": 6818,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 3204
+     "ephemeral_1h_input_tokens": 6818
     },
     "type": "message"
    }

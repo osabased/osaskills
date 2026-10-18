@@ -34,24 +34,12 @@
    "*"
   ],
   [
+   "Bash",
+   "where.exe rokit 2>$null; rokit --version 2>$null; echo \"exit=$?\""
+  ],
+  [
    "Read",
    "<runs>\\set-up-rokit-haiku-new-2\\rokit.toml"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-2\\pesde.toml"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-2\\wally.toml"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-2\\scripts\\check.sh"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-2\\default.project.json"
   ],
   [
    "Read",
@@ -59,30 +47,47 @@
   ],
   [
    "Read",
+   "<runs>\\set-up-rokit-haiku-new-2\\scripts\\check.sh"
+  ],
+  [
+   "Read",
    "<runs>\\set-up-rokit-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\versions.json"
   ],
   [
-   "Bash",
-   "which rokit aftman foreman mise cargo 2>&1; rokit --version 2>&1; echo \"---\"; ls \"$HOME/.rokit/bin\" 2>&1; echo \"---\"; uname -a"
+   "Glob",
+   "rokit*.exe"
+  ],
+  [
+   "Glob",
+   "*"
   ]
  ],
  "texts": [
-  "I read this as: install Rokit, then use it to install the Roblox toolchain this repo needs (likely Rojo, plus whatever linter, formatter, and package manager the project uses), and pin those versions in the repo. I'll start with the setup skill for this kind of work and look at what's in the directory.",
-  "The skill is loaded. Next I'll read the existing toolchain files and the tooling reference so I can see what the repo already pins.",
-  "The repo already pins its tools in `rokit.toml`, so the job is to install Rokit itself and run `rokit install`. Before installing, I'll check whether Rokit, Rust, or Aftman/Foreman is already on this machine."
+  "I'll read the project's setup guidance first, then look at what's in the repo.",
+  "Bash is disabled in this session, so I can't run the Rokit install or the tool installs myself. I'll read the existing toolchain files and the tooling reference, then work out what I can do with Read, Glob and Grep.",
+  "The pins in `rokit.toml` are older than the versions this skill was reviewed against. I'll check whether Rokit is already on disk, since I can't query it from a shell."
  ],
  "mcp_calls": null,
- "denials": [],
+ "denials": [
+  [
+   "Glob",
+   "rokit*.exe"
+  ],
+  [
+   "Glob",
+   "*"
+  ]
+ ],
  "result": null,
- "cost": 0.00537375,
+ "cost": 0.00500156,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 18845,
-  "cache_read_input_tokens": 48115,
-  "output_tokens": 2246,
+  "cache_creation_input_tokens": 18159,
+  "cache_read_input_tokens": 48316,
+  "output_tokens": 1772,
   "output_tokens_details": {
-   "thinking_tokens": 1006
+   "thinking_tokens": 680
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -90,19 +95,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 18845,
+   "ephemeral_1h_input_tokens": 18159,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 805,
-    "cache_read_input_tokens": 22570,
-    "cache_creation_input_tokens": 5442,
+    "output_tokens": 593,
+    "cache_read_input_tokens": 22775,
+    "cache_creation_input_tokens": 4551,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 5442
+     "ephemeral_1h_input_tokens": 4551
     },
     "type": "message"
    }

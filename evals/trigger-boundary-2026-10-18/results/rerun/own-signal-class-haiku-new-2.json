@@ -24,11 +24,11 @@
   ],
   [
    "Read",
-   "<runs>\\own-signal-class-haiku-new-2\\stylua.toml"
+   "<runs>\\own-signal-class-haiku-new-2\\src\\shared\\init.luau"
   ],
   [
    "Read",
-   "<runs>\\own-signal-class-haiku-new-2\\src\\shared\\init.luau"
+   "<runs>\\own-signal-class-haiku-new-2\\stylua.toml"
   ],
   [
    "Grep",
@@ -39,15 +39,15 @@
  "mcp_calls": null,
  "denials": [],
  "result": null,
- "cost": 0.004192370000000001,
+ "cost": 0.006147670000000001,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 11289,
-  "cache_read_input_tokens": 44847,
-  "output_tokens": 2971,
+  "cache_creation_input_tokens": 11193,
+  "cache_read_input_tokens": 44897,
+  "output_tokens": 6919,
   "output_tokens_details": {
-   "thinking_tokens": 2392
+   "thinking_tokens": 6350
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -55,19 +55,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 11289,
+   "ephemeral_1h_input_tokens": 11193,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 2091,
-    "cache_read_input_tokens": 19309,
-    "cache_creation_input_tokens": 1147,
+    "output_tokens": 6131,
+    "cache_read_input_tokens": 19363,
+    "cache_creation_input_tokens": 997,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 1147
+     "ephemeral_1h_input_tokens": 997
     },
     "type": "message"
    }

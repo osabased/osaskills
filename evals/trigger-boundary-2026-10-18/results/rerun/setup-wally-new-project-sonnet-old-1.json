@@ -43,20 +43,21 @@
   ]
  ],
  "texts": [
-  "You want Wally (the Roblox package manager) set up in a new project. The working directory has no project files yet, only `.claude/skills`, so I'd be starting from scratch: Rokit to pin Wally, a `wally.toml`, a Rojo mapping for the `Packages` folders, and a check that restores them.\n\nA few choices change what I build. My recommendation comes first in each one:\n\n1. **Product:** What is it?\n   - a game\n   - a plugin\n   - a package you'll publish to Wally\n   - a prototype\n2. **Authoring:** Do you want to work in an external editor with Rojo (recommended), Studio with Script Sync, or Studio only? Do you use Git or CI?\n3. **Packages:** Which packages do you want first, if you know? If you don't, I'll set up Wally with none and add them later.\n4. **Wally details:** Do you want `wally.toml` to carry a package name and scope (`scope/name`)? That's needed only if you'll publish. For a game I'd use a placeholder.\n5. **Setup scope:** Is this setup just for you (personal, kept out of Git and CI) or shared with a team? I recommend personal if others have committed. Since there's no repo yet, tell me which you want.\n\nOnce you answer, I'll propose the exact layout and versions for review before I build anything."
+  "I'll load the Roblox project-structure skill, which covers first-time Wally setup, and check what's already in the directory.",
+  "I think you want a new Roblox project in this empty folder, with Wally managing its packages. I'd pin the toolchain with Rokit and add the usual check command and agent guide. I'll propose the setup for your review before I build anything.\n\nA few answers will change that setup:\n\n1. **Shared or personal setup?** The folder isn't a Git repo, so I can't see other authors. I recommend **personal**, which keeps the agent files, hooks and CI out of Git. Choose **shared** if teammates will use them too.\n2. **What are you building?** A game, a plugin, a reusable package, or a prototype? Which main systems does it have?\n3. **Where will you author code?** I recommend an external editor with Rojo. Studio-only or Studio Script Sync are the alternatives.\n4. **Which Wally packages do you want?** For example signals, cleanup, networking, UI or state. I recommend none to start. I'd add them one at a time once you know you need them.\n5. **Do you want Git initialised, and CI?** I recommend `git init` and no CI for now.\n6. **Do you have an existing place or content to bring in?** If not, I'll start from scratch.\n\nSkip any of these and I'll go with my recommended option."
  ],
  "mcp_calls": null,
  "denials": [],
- "result": "You want Wally (the Roblox package manager) set up in a new project. The working directory has no project files yet, only `.claude/skills`, so I'd be starting from scratch: Rokit to pin Wally, a `wally.toml`, a Rojo mapping for the `Packages` folders, and a check that restores them.\n\nA few choices change what I build. My recommendation comes first in each one:\n\n1. **Product:** What is it?\n   - a game\n   - a plugin\n   - a package you'll publish to Wally\n   - a prototype\n2. **Authoring:** Do you want to work in an external editor with Rojo (recommended), Studio with Script Sync, or Studio only? Do you use Git or CI?\n3. **Packages:** Which packages do you want first, if you know? If you don't, I'll set up Wally with none and add them later.\n4. **Wally details:** Do you want `wally.toml` to carry a package name and scope (`scope/name`)? That's needed only if you'll publish. For a game I'd use a placeholder.\n5. **Setup scope:** Is this setup just for you (personal, kept out of Git and CI) or shared with a team? I recommend personal if others have committed. Since there's no repo yet, tell me which you want.\n\nOnce you answer, I'll propose the exact layout and versions for review before I build anything.",
- "cost": 0.08026530000000001,
+ "result": "I think you want a new Roblox project in this empty folder, with Wally managing its packages. I'd pin the toolchain with Rokit and add the usual check command and agent guide. I'll propose the setup for your review before I build anything.\n\nA few answers will change that setup:\n\n1. **Shared or personal setup?** The folder isn't a Git repo, so I can't see other authors. I recommend **personal**, which keeps the agent files, hooks and CI out of Git. Choose **shared** if teammates will use them too.\n2. **What are you building?** A game, a plugin, a reusable package, or a prototype? Which main systems does it have?\n3. **Where will you author code?** I recommend an external editor with Rojo. Studio-only or Studio Script Sync are the alternatives.\n4. **Which Wally packages do you want?** For example signals, cleanup, networking, UI or state. I recommend none to start. I'd add them one at a time once you know you need them.\n5. **Do you want Git initialised, and CI?** I recommend `git init` and no CI for now.\n6. **Do you have an existing place or content to bring in?** If not, I'll start from scratch.\n\nSkip any of these and I'll go with my recommended option.",
+ "cost": 0.08321980000000001,
  "turns": 6,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 16459,
-  "cache_read_input_tokens": 47173,
-  "output_tokens": 970,
+  "cache_creation_input_tokens": 16504,
+  "cache_read_input_tokens": 47218,
+  "output_tokens": 1247,
   "output_tokens_details": {
-   "thinking_tokens": 192
+   "thinking_tokens": 470
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -64,19 +65,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 16459,
+   "ephemeral_1h_input_tokens": 16504,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 539,
-    "cache_read_input_tokens": 22418,
-    "cache_creation_input_tokens": 3208,
+    "output_tokens": 765,
+    "cache_read_input_tokens": 22467,
+    "cache_creation_input_tokens": 3204,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 3208
+     "ephemeral_1h_input_tokens": 3204
     },
     "type": "message"
    }

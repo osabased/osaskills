@@ -43,20 +43,21 @@
   ]
  ],
  "texts": [
-  "Here's what I think you want: a new Roblox project in this directory, with Wally as its package manager. That means Rokit pinning the tools, a `wally.toml` and lockfile, and the `Packages` folders mapped into the game. The directory is empty apart from `.claude`, and it isn't a git repo.\n\nI need a few answers before I build anything. My recommendation is listed first for each.\n\n1. **Authoring workflow:**\n   - **Rojo with an external editor (recommended).** Code lives in files, and Wally's `Packages` folders map in through a Rojo project file.\n   - **Studio with Script Sync.**\n   - **A plugin or package rather than a game.** This one needs a different layout.\n2. **Language and checks:**\n   - **Luau with StyLua, Selene and luau-lsp, run from one check command (recommended).**\n   - **Luau with no linting or type checks.**\n   - **roblox-ts.** It has its own npm toolchain and mixes awkwardly with Wally.\n3. **Wally packages to start with:**\n   - **None yet (recommended).** I'd set up the manifest and mapping so you can add packages later.\n   - **Specific ones.** Tell me which, for example a signal, cleanup, Promise or networking library.\n4. **Game name and Wally scope:** Wally needs `scope/name` in `wally.toml`. What should I use? I'd default the name to the folder name.\n5. **Scope of setup:**\n   - **Minimal (recommended for a new project).** Rokit, Wally, Rojo mapping, a `CLAUDE.md` guide and one check command.\n   - **Full.** Everything in minimal, plus hooks, CI, guards and a fresh-agent trial.\n\nI also need to know whether this setup is personal or shared with a team. A personal setup keeps the agent files out of Git and CI. I'll ask that separately after you answer the above."
+  "I'll start with the Roblox project-structure skill, since it covers first-time Wally setup.",
+  "You want Wally set up as the package manager for a new Roblox project. The working directory has no project in it yet, only `.claude/skills`, and it isn't a Git repo. I need a few answers before I build anything, and my recommendation is first in each case.\n\n1. **What is the project?** A game, a plugin, or a package?\n   - Recommended: a game, with the project named after this folder.\n   - Tell me the name and any main systems if you have them.\n2. **How will you author code?**\n   - Recommended: Rojo with an external editor, Luau, and Rokit to pin the tools (Rojo, Wally, StyLua, Selene, luau-lsp). Wally's `Packages` folders get mapped through Rojo.\n   - The alternative is Studio-only or Script Sync, where Wally is awkward to use.\n3. **Which Wally packages do you want at the start?**\n   - Recommended: none. I'd set up an empty `wally.toml` and `wally.lock`, and you add packages as you need them. I won't install anything I haven't shown you first.\n   - If you name some now, I'll pin them.\n4. **Who owns the Wally package scope?** `wally.toml` needs `scope/name`. Recommended: your Roblox or GitHub handle, and I'll use a placeholder if you don't have one. The project is only consuming packages, so this is just metadata.\n5. **Should the agent setup be shared with a team or personal?**\n   - A shared setup is committed to Git and CI.\n   - A personal setup keeps the guide, check command and hooks out of Git.\n   - Recommended: personal, unless others will work in this repo.\n\nOnce you answer, I'll propose the exact file layout and the Rokit tool versions for your review. I'll build it after you approve."
  ],
  "mcp_calls": null,
  "denials": [],
- "result": "Here's what I think you want: a new Roblox project in this directory, with Wally as its package manager. That means Rokit pinning the tools, a `wally.toml` and lockfile, and the `Packages` folders mapped into the game. The directory is empty apart from `.claude`, and it isn't a git repo.\n\nI need a few answers before I build anything. My recommendation is listed first for each.\n\n1. **Authoring workflow:**\n   - **Rojo with an external editor (recommended).** Code lives in files, and Wally's `Packages` folders map in through a Rojo project file.\n   - **Studio with Script Sync.**\n   - **A plugin or package rather than a game.** This one needs a different layout.\n2. **Language and checks:**\n   - **Luau with StyLua, Selene and luau-lsp, run from one check command (recommended).**\n   - **Luau with no linting or type checks.**\n   - **roblox-ts.** It has its own npm toolchain and mixes awkwardly with Wally.\n3. **Wally packages to start with:**\n   - **None yet (recommended).** I'd set up the manifest and mapping so you can add packages later.\n   - **Specific ones.** Tell me which, for example a signal, cleanup, Promise or networking library.\n4. **Game name and Wally scope:** Wally needs `scope/name` in `wally.toml`. What should I use? I'd default the name to the folder name.\n5. **Scope of setup:**\n   - **Minimal (recommended for a new project).** Rokit, Wally, Rojo mapping, a `CLAUDE.md` guide and one check command.\n   - **Full.** Everything in minimal, plus hooks, CI, guards and a fresh-agent trial.\n\nI also need to know whether this setup is personal or shared with a team. A personal setup keeps the agent files out of Git and CI. I'll ask that separately after you answer the above.",
- "cost": 0.0821094,
+ "result": "You want Wally set up as the package manager for a new Roblox project. The working directory has no project in it yet, only `.claude/skills`, and it isn't a Git repo. I need a few answers before I build anything, and my recommendation is first in each case.\n\n1. **What is the project?** A game, a plugin, or a package?\n   - Recommended: a game, with the project named after this folder.\n   - Tell me the name and any main systems if you have them.\n2. **How will you author code?**\n   - Recommended: Rojo with an external editor, Luau, and Rokit to pin the tools (Rojo, Wally, StyLua, Selene, luau-lsp). Wally's `Packages` folders get mapped through Rojo.\n   - The alternative is Studio-only or Script Sync, where Wally is awkward to use.\n3. **Which Wally packages do you want at the start?**\n   - Recommended: none. I'd set up an empty `wally.toml` and `wally.lock`, and you add packages as you need them. I won't install anything I haven't shown you first.\n   - If you name some now, I'll pin them.\n4. **Who owns the Wally package scope?** `wally.toml` needs `scope/name`. Recommended: your Roblox or GitHub handle, and I'll use a placeholder if you don't have one. The project is only consuming packages, so this is just metadata.\n5. **Should the agent setup be shared with a team or personal?**\n   - A shared setup is committed to Git and CI.\n   - A personal setup keeps the guide, check command and hooks out of Git.\n   - Recommended: personal, unless others will work in this repo.\n\nOnce you answer, I'll propose the exact file layout and the Rokit tool versions for your review. I'll build it after you approve.",
+ "cost": 0.0822029,
  "turns": 6,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 16460,
-  "cache_read_input_tokens": 47174,
-  "output_tokens": 1154,
+  "cache_creation_input_tokens": 16495,
+  "cache_read_input_tokens": 47209,
+  "output_tokens": 1149,
   "output_tokens_details": {
-   "thinking_tokens": 183
+   "thinking_tokens": 203
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -64,19 +65,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 16460,
+   "ephemeral_1h_input_tokens": 16495,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 722,
-    "cache_read_input_tokens": 22419,
-    "cache_creation_input_tokens": 3208,
+    "output_tokens": 676,
+    "cache_read_input_tokens": 22458,
+    "cache_creation_input_tokens": 3204,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 3208
+     "ephemeral_1h_input_tokens": 3204
     },
     "type": "message"
    }

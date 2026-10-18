@@ -51,20 +51,21 @@
   ]
  ],
  "texts": [
-  "A selene.toml already exists. Let me look at the existing config files."
+  "You want a first-time Selene setup: a `selene.toml` plus the Roblox standard library. I'll load the project-setup skill, since it covers this.",
+  "A `selene.toml` already exists, so I'll check what's in it and the tool pins."
  ],
  "mcp_calls": null,
  "denials": [],
  "result": null,
- "cost": 0.068852,
+ "cost": 0.0691063,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 14218,
-  "cache_read_input_tokens": 43580,
-  "output_tokens": 761,
+  "cache_creation_input_tokens": 14232,
+  "cache_read_input_tokens": 43663,
+  "output_tokens": 780,
   "output_tokens_details": {
-   "thinking_tokens": 31
+   "thinking_tokens": 75
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -72,19 +73,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 14218,
+   "ephemeral_1h_input_tokens": 14232,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 433,
-    "cache_read_input_tokens": 18807,
-    "cache_creation_input_tokens": 4578,
+    "output_tokens": 432,
+    "cache_read_input_tokens": 18894,
+    "cache_creation_input_tokens": 4505,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 4578
+     "ephemeral_1h_input_tokens": 4505
     },
     "type": "message"
    }
