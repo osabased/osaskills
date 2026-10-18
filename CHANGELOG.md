@@ -13,6 +13,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Behavioral scenarios cover three placement cases. The first is a client entrypoint in ReplicatedStorage, which builds as a `LocalScript` that never runs under default `emitLegacyScripts`. The second is a client-to-server Remote, with server validation and a test that rejects bad input. The third is dev content kept out of a release build. ([#77](https://github.com/osabased/osaskills/pull/77))
 - `script-sync.md` covers a Team Create place, where synced disk changes reach teammates live, before review. The agent asks whether the synced place is a shared session, and if it is, recommends a place file of the user's own in a private Git repository: a `team` branch refreshed from the team place, and delivery only when the conflict dialog lists nothing outside the reviewed diff. A behavioral scenario covers a team with no Git. ([#72](https://github.com/osabased/osaskills/pull/72))
 
+#### Changed
+
+- `rojo.md` says to build the checker's sourcemap with `rojo sourcemap --include-non-scripts`. Without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a `--require-class` check on a Remote failed. `check_rojo_artifact.py` now names the flag when a sourcemap is `null`. Before, it said only that sourcemap nodes must be JSON objects. Rojo writes a `null` sourcemap when no script is mapped. A real-Rojo test covers a Remote with and without the flag. ([#73](https://github.com/osabased/osaskills/pull/73))
+- A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#74](https://github.com/osabased/osaskills/pull/74))
+
 ### 2026-10-17
 
 #### Added
