@@ -1,6 +1,6 @@
 # Rojo
 
-Rojo facts here were reviewed against the version in [`versions.json`](../versions.json); the session's first [update check](keeping-current.md#check) says whether a newer release exists. Use this when changing a `*.project.json`, `*.meta.json` or `*.model.json`, moving content into, out of or within the mapping, or setting up builds, topology checks or live sync. A routine edit inside a stable mapping doesn't need it.
+Rojo facts here were reviewed against the version in [`versions.json`](../versions.json); when the project pins another Rojo, follow the [check](keeping-current.md#check). Use this when changing a `*.project.json`, `*.meta.json` or `*.model.json`, moving content into, out of or within the mapping, or setting up builds, topology checks or live sync. A routine edit inside a stable mapping doesn't need it.
 
 A small project:
 

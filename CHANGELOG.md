@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#74](https://github.com/osabased/osaskills/pull/74))
 - `rojo.md` has a table of which project file reads `emitLegacyScripts`, `servePlaceIds`, `blockedPlaceIds` and `globIgnorePaths` when wrappers point at a common tree. Observed on Rojo 7.7.1, the place-ID guards apply only in the file `rojo serve` is given, and a nested tree file's values are dropped. The dev wrapper is now described as holding the serve settings. Before, it was said to add nothing. ([#75](https://github.com/osabased/osaskills/pull/75))
 - Real-Rojo tests fail instead of skipping when `REQUIRE_ROJO=1` is set, which CI and the update steps now set. New real-Rojo tests cover four behaviours the guidance relies on: a wrapper's `emitLegacyScripts` doesn't reach a nested tree, `.local.luau` and `.legacy.luau` build as ModuleScripts, `**/Preview/**` keeps the directory's init module, and `!` negation works in `globIgnorePaths`. The fixture's `rokit.toml` pins 7.7.1, and `script-sync.md` is listed with Rojo's files in `versions.json`, since it makes Rojo claims. ([#76](https://github.com/osabased/osaskills/pull/76))
+- The skill updates on demand instead of checking upstream releases every session. The agent no longer runs `check_updates.py` at the start of a session. When a task depends on a tool's version-specific guidance, it compares the project's pin with `reviewed`. For a newer pin it checks the release notes for the claims the task uses and tells the user; for an older pin it confirms those claims and warns. Without a pin it uses the installed version, or the current docs. Updates run only when the user asks or accepts an offer after a task that found a gap, and never lower `reviewed`. Only a full review sets `reviewed`; a fix to a single claim is a `Fix <name>: <claim>` PR that leaves it unchanged, and the duplicate-PR search covers both kinds.
+- The session hook drops its daily network freshness note. Its pin note compares the project's `rokit.toml` and `aftman.toml` tool pins with `reviewed`, locally, and prints only when they differ. `check_updates.py` and the weekly Freshness workflow are unchanged.
 
 ### 2026-10-17
 
@@ -247,6 +249,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - First version: SKILL.md, `practices.md`, `preference-wizard.md` and OpenAI agent metadata. ([69a3285](https://github.com/osabased/osaskills/commit/69a3285))
 
 ## roblox-resource-acquisition
+
+### 2026-10-18
+
+#### Changed
+
+- The skill updates on demand instead of checking upstream releases every session. The agent no longer runs `check_updates.py` at the start of a session. When a task depends on a library skill's version-specific guidance and the project declares another version, it checks the release notes for a newer version, confirms the claims at an older one, and tells the user. Updates run only when the user asks or accepts an offer after a task that found a gap, and never lower `reviewed`. Only a full review sets `reviewed`; a fix to a single claim is a `Fix <name>: <claim>` PR that leaves it and the skill's pin unchanged, and the duplicate-PR search covers both kinds.
+- The session hook no longer adds a freshness note from a daily network check. Its library note, for missing or stale clones and pin mismatches, is unchanged.
 
 ### 2026-10-17
 

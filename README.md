@@ -65,11 +65,11 @@ Agent-facing project files live in the project's agent directory: `.claude/` if 
 
 ## Staying current
 
-The Roblox workflow skills track the latest stable release of every tool and library they pin (Rojo, Rokit, Wally, pesde, Lune, Lute, StyLua, Selene, Luau-LSP, Lest, ModuleLoader, and the bundled library guides). Each skill's `versions.json` records what its guidance was last reviewed against.
+Each Roblox workflow skill's `versions.json` records the release of every tool and library it pins (Rojo, Rokit, Wally, pesde, Lune, Lute, StyLua, Selene, Luau-LSP, Lest, ModuleLoader, and the bundled library guides) that its guidance was last reviewed against. The skills are updated on demand, not on a schedule.
 
-- **When an agent uses the skills,** it runs `scripts/check_updates.py` (cached for a day). In a plugin install, a session-start hook runs the same check and tells the agent only when something is outdated.
-- **When something is outdated,** the agent mentions it, finishes your task, then reads the release notes, updates the skill, reruns its checks against the new version, and opens one pull request per item. It never changes your game project's pins for this. Pull requests need push access to this repository; other installs just report the outdated item.
-- **Weekly,** the [Freshness workflow](./.github/workflows/freshness.yml) runs the same check in CI and keeps an "Outdated skill pins" issue up to date.
+- **When a task depends on a tool's version,** the agent compares your project's pin with that release. For a newer pin it checks the release notes for the claims the task uses and tells you; for an older one it confirms those claims at your version and warns you. It never changes your game project's pins to fit a skill. In a plugin install, a session-start hook notes `rokit.toml` and `aftman.toml` pins that differ, without network access.
+- **When you ask** ("update rojo"), or accept the agent's offer after a task that found a gap, the agent reads the release notes, updates the skill, reruns its checks against the target version, and opens one pull request per item. A fix to a single claim gets its own `Fix <name>: <claim>` pull request. Pull requests need push access to this repository; other installs just report the gap.
+- **Weekly,** the [Freshness workflow](./.github/workflows/freshness.yml) runs `check_updates.py` in CI and keeps an "Outdated skill pins" issue up to date for the maintainer.
 
 The plugin has no fixed version, so each commit is a new version. Turn on auto-update for this marketplace in `/plugin` → Marketplaces to receive merged updates automatically.
 
