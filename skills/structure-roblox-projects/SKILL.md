@@ -21,7 +21,7 @@ Two jobs: put code where Roblox actually runs it, and give a Roblox project what
 ## Work loop
 
 1. **Locate.** Read `CLAUDE.md` and the project guide it points to. Find the files that own the change, which workflow syncs them (Rojo, Script Sync, Studio, a compiler), and the startup path that reaches them. Follow mappings and `require`s; don't infer execution from folder names. An empty folder doesn't mean the Studio place is empty.
-2. **Trace the boundary the change crosses:** client/server placement, startup, Remotes, saved data, and the checks that cover them. Stop when each has an answer or a named gap. A routine edit needs no overview or new guide.
+2. **Trace the boundary the change crosses:** client/server placement, startup, Remotes, saved data, and the checks that cover them. Stop when each has an answer or a named gap. A routine edit needs no overview or new guide, unless it relies on a stack the guide doesn't record ([unfamiliar stacks](references/unfamiliar-stack.md#record-and-apply-it)).
 3. **Do the whole change,** including the caller, entrypoint, mapping and test edits it needs to run. If the user restricts which files you may edit, do the allowed part and name the exact edit that stays blocked ([write scope](references/migration.md#write-scope)).
 4. **Verify** with the project's check command (if no guide names it, look in `scripts/`, the README and CI config), then the lowest rung of the [verification ladder](references/verification.md) that can observe the change. Name the rungs you couldn't run, and never report an unrun check as passed.
 
