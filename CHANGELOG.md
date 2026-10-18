@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to the two Roblox workflow skills, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
+Notable changes to the two Roblox workflow skills, and from 2026-10-17 to bigger-picture and then-what, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The plugin has no version numbers, so each entry is dated by the day its change reached `main`. Before 2026-09-02 both skills lived at the repository root instead of under `skills/`.
 
@@ -445,3 +445,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 #### Fixed
 
 - Test suite reliability. ([#2](https://github.com/osabased/osaskills/pull/2))
+
+## bigger-picture
+
+### 2026-10-17
+
+#### Added
+
+- bigger-picture restates the user's goal and sorts recent and planned changes into what serves it and what is off-goal, in three short lines, then keeps working. Planned off-goal changes are dropped and listed so the user can ask for them back; ones already made are flagged and left in place. It runs on its own before a change the goal doesn't clearly need, including a step from an earlier plan, or with `/bigger-picture`. In an eval Sonnet ran it in 7 of 8 trigger runs, and Haiku only when asked. ([#67](https://github.com/osabased/osaskills/pull/67))
+
+## then-what
+
+### 2026-10-17
+
+#### Changed
+
+- When the work so far includes changes the user didn't ask for, or the recommendation would be one, then-what loads bigger-picture first and builds its recommendation on the result. ([#67](https://github.com/osabased/osaskills/pull/67))
