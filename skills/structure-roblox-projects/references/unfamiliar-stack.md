@@ -36,11 +36,11 @@ This holds for a routine edit too. When the guide doesn't record the contract, f
 Reuse: <tool and pin>; skill: <the project or catalog skill used, or none in `.claude/skills/` or the catalog>; catalog PR: <offered, or why not>
 ```
 
-Status is `read` when Source quotes a line that states the claim (for Restore or Check, the manifest line or script body), `inferred` when it names only a file, a script or existing code, or rests on an absence such as a missing key, and `gap` when nothing answers it. What the quote doesn't cover goes in To settle; it doesn't downgrade the row.
+Status is `read` when Source quotes a line that states the claim (for Restore, the manifest line; for Check, the script body or the tool's documented exit behavior; for a row taken from a skill, the line the skill quotes), `inferred` when it names only a file, a script or existing code, or rests on an absence such as a missing key, and `gap` when nothing answers it. What the quote doesn't cover goes in To settle; it doesn't downgrade the row.
 
 Skip the diff only when every row the task touched came from the guide or a skill; rows you worked out yourself still go in it. A report that says a proposal is owed but doesn't contain one is incomplete. End every report that used this method with the `Reuse:` line, even when no diff is owed.
 
-When the catalog has no skill for the tool at this pin and at least one row quoted from the tool's own docs is `read`, offer in one sentence to turn them into a catalog library skill through `roblox-resource-acquisition`, so other projects on that pin don't rediscover them; rows that aren't `read` don't cancel the offer. Write it only when the user asks. Project facts, such as this project's mapping paths, stay in the guide.
+When the catalog has no skill for the tool at this pin and at least one row quoted from the tool's own docs is `read`, offer in one sentence to turn them into a catalog library skill through `roblox-resource-acquisition`, so other projects on that pin don't rediscover them; rows that aren't `read` don't cancel the offer, and the offer doesn't wait on judging whether a row is general enough. Write it only when the user asks. Project facts, such as this project's mapping paths, stay in the guide.
 
 Write the contract into the project guide with each claim's source, version and date ([what to write](project-guide.md#what-to-write)), and make the feature guide's layer table follow the tool's discovery rule. Then use it where the rest of this skill would use a described tool:
 
