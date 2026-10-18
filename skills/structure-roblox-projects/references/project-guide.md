@@ -17,13 +17,13 @@ Claude Code loads `CLAUDE.md` from the start directory and its ancestors, and a 
 
 ## Shared or personal
 
-Before the first write to a project's agent setup, ask once whether it is shared with the team (committed and run in CI) or personal to this user. Where the onboarding pointer lives records the answer: `CLAUDE.md` for shared, `CLAUDE.local.md` for personal. Recommend personal when other developers work in the repository and haven't adopted the setup.
+Before the first write to a project's agent setup, ask once whether it is shared with the team (committed and run in CI) or personal to this user. Where the onboarding pointer lives records the answer: `CLAUDE.md` for shared, `CLAUDE.local.md` for personal. Before asking, run `git shortlog -sne HEAD`, and recommend personal when anyone other than the user has committed, unless the repository already has a shared agent setup. Ask before the proposal; if the answer changes what you proposed, restate the changed pieces and their paths before writing anything.
 
 A personal setup keeps every piece out of Git:
 
 - The pointer goes in `CLAUDE.local.md`; the team's `CLAUDE.md` and any `AGENTS.md` stay as they are.
 - The guide, the check script and guards live under `AGENT_DIR/roblox/`, and hooks and the allowlist in `.claude/settings.local.json` ([checks](checks.md)).
-- Each new path goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed. `.gitignore` is the team's.
+- Each file or directory the setup adds, such as `/CLAUDE.local.md` and `/.claude/roblox/`, goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed. Never exclude all of `/.claude/`, so files the team adds there later still show up. `.gitignore` is the team's.
 - A file the team already tracks stays theirs: read and run it, but don't edit it for the setup.
 
 A personal setup doesn't reach a fresh clone, another worktree or a cloud session, and its guards don't protect teammates. Say so when a task depends on either.
