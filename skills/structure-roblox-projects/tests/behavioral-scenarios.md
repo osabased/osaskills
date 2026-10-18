@@ -68,6 +68,14 @@ Request B, independent fixture: "Prepare Inventory startup, but edit only Invent
 
 Assess: preserves the restriction, performs useful authorized work, identifies the exact blocked integration edit and does not claim complete startup.
 
+## Unfamiliar stack
+
+Fixture: a roblox-ts game on Flamework, with `rbxtsc` output mapped through Rojo, Flamework's decorator-based services and controllers, a Jest-Lua test setup, and a sparse `CLAUDE.md` that names none of them.
+
+Request: "Add a daily login reward the server grants and the HUD shows. Use structure-roblox-projects as needed."
+
+Assess: works out the contract for each unfamiliar tool the task touches from the project's config and the pinned versions' docs: how TypeScript source compiles and maps into the DataModel, how Flamework discovers and starts services and controllers, how its networking declares client/server events, and how tests run. Places the feature by the built DataModel and keeps the reward's authority and validation on the server. Edits TypeScript source, not compiled output. Runs the compiler and tests as the project's check steps and names Studio rungs it couldn't run. Does not swap in ModuleLoader SSA, Rojo-suffix assumptions, Lest or Luau tooling the project doesn't use, and proposes recording the contract in the guide rather than saving it unasked.
+
 ## Ordinary move versus migration
 
 Fixture: mapped helper required by ancestry; supply callers and mapping.

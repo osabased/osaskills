@@ -5,7 +5,7 @@ description: "Structure Roblox/Luau projects and make them agent-ready. Use for 
 
 # Structure Roblox Projects
 
-Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill.
+Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill. Tools named here are examples of a role; a project's stack can be anything, and an [unfamiliar one](references/unfamiliar-stack.md) gets its contract worked out, not assumed.
 
 **First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping this skill current](references/keeping-current.md#keeping-this-skill-current). Skip silently if it can't run.
 
@@ -21,9 +21,9 @@ Two jobs: put code where Roblox actually runs it, and give a Roblox project what
 ## Work loop
 
 1. **Locate.** Read `CLAUDE.md` and the project guide it points to. Find the files that own the change, which workflow syncs them (Rojo, Script Sync, Studio, a compiler), and the startup path that reaches them. Follow mappings and `require`s; don't infer execution from folder names. An empty folder doesn't mean the Studio place is empty.
-2. **Trace the boundary the change crosses:** client/server placement, startup, Remotes, saved data, and the checks that cover them. Stop when each has an answer or a named gap. A routine edit needs no overview or new guide.
+2. **Trace the boundary the change crosses:** client/server placement, startup, Remotes, saved data, and the checks that cover them. Stop when each has an answer or a named gap. A routine edit needs no overview or new guide, unless it relies on a stack the guide doesn't record ([unfamiliar stacks](references/unfamiliar-stack.md#record-and-apply-it)).
 3. **Do the whole change,** including the caller, entrypoint, mapping and test edits it needs to run. If the user restricts which files you may edit, do the allowed part and name the exact edit that stays blocked ([write scope](references/migration.md#write-scope)).
-4. **Verify** with the project's check command (if no guide names it, look in `scripts/`, the README and CI config), then the lowest rung of the [verification ladder](references/verification.md) that can observe the change. Name the rungs you couldn't run, and never report an unrun check as passed.
+4. **Verify** with the project's check command (if no guide names it, look in `scripts/`, the README and CI config), then the lowest rung of the [verification ladder](references/verification.md) that can observe the change. Name the rungs you couldn't run, and never report an unrun check as passed. If you worked out an unfamiliar stack's contract, end the report with the proposed [guide diff](references/unfamiliar-stack.md#record-and-apply-it).
 
 ## An agent-ready project
 
@@ -57,10 +57,11 @@ Be strict only where a mistake is permanent or a security hole. Libraries, the e
 | Formatter, linter, type checker, test runner, packages or tool versions | [Tooling](references/tooling.md) |
 | Move, rename, restructure or migrate | [Migration](references/migration.md) |
 | The project uses ModuleLoader SSA | [SSA](references/ssa.md) |
+| A sync tool, compiler (roblox-ts), loader, framework or test runner these references don't describe | [Unfamiliar stacks](references/unfamiliar-stack.md) |
 | Server Authority or Script Capabilities | [Engine modes](references/engine-modes.md) |
 | Adopting or upgrading a tool or library, or a claim about what is current | [Keeping current](references/keeping-current.md) |
 
-Reviews and designs stay read-only unless the user asks for the change; back each finding with its concrete effect on the project. Plugins, packages and compiler pipelines keep their own host and consumer contracts; use their documentation where these references don't cover them. Running a project's already-pinned tools needs no freshness research.
+Reviews and designs stay read-only unless the user asks for the change; back each finding with its concrete effect on the project. Plugins, packages and compiler pipelines keep their own host and consumer contracts; work them out from their documentation where these references don't cover them ([unfamiliar stacks](references/unfamiliar-stack.md)). Running a project's already-pinned tools needs no freshness research.
 
 ## Companion skill
 
