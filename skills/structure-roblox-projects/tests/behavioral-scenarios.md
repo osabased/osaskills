@@ -82,7 +82,7 @@ Fixture: the unfamiliar-stack fixture with a `roblox-flamework` skill in `.claud
 
 Request: "Add a daily login reward the server grants and the HUD shows. Use structure-roblox-projects as needed."
 
-Assess: reads the existing skill before working out a contract, takes the rows it answers from there, and works out only the rest. Doesn't offer a catalog skill.
+Assess: reads the existing skill before working out a contract, takes the rows it answers from there, and works out only the rest. Ends with the `Reuse:` line naming that skill, and doesn't offer a catalog skill.
 
 ## Ordinary move versus migration
 
