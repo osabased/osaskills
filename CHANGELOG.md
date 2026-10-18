@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `script-sync.md` covers a Team Create place, where synced disk changes reach teammates live, before review. The agent asks whether the synced place is a shared session, and if it is, recommends a place file of the user's own in a private Git repository: a `team` branch refreshed from the team place, and delivery only when the conflict dialog lists nothing outside the reviewed diff. A behavioral scenario covers a team with no Git. ([#72](https://github.com/osabased/osaskills/pull/72))
 
+#### Changed
+
+- `rojo.md` has a table of which project file reads `emitLegacyScripts`, `servePlaceIds`, `blockedPlaceIds` and `globIgnorePaths` when wrappers point at a common tree. Observed on Rojo 7.7.1, the place-ID guards apply only in the file `rojo serve` is given, and a nested tree file's values are dropped. The dev wrapper is now described as holding the serve settings. Before, it was said to add nothing. ([#PR](https://github.com/osabased/osaskills/pull/PR))
+
 ### 2026-10-17
 
 #### Added
