@@ -27,7 +27,7 @@ A personal setup keeps every piece out of Git:
 - Each file or directory the setup adds, such as `/CLAUDE.local.md` and `/.claude/roblox/`, goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed: `printf '%s\n' /CLAUDE.local.md /.claude/roblox/ /.claude/settings.local.json >> "$(git rev-parse --git-path info/exclude)"`. Never exclude all of `/.claude/`, so files the team adds there later still show up. `.gitignore` is the team's.
 - A file the team already tracks stays theirs: read and run it, but don't edit it for the setup.
 
-A personal setup doesn't reach a fresh clone, another worktree or a cloud session, and its guards don't protect teammates. The setup's report names all three places and the teammate gap, and a later task that depends on either says so. Under Script Sync into a Team Create place, keeping files out of Git doesn't stop the agent's unreviewed edits from reaching teammates; follow [Team Create](script-sync.md#team-create).
+A personal setup doesn't reach a fresh clone, another worktree or a cloud session, and its guards don't protect teammates. The setup's report names all three places and the teammate gap, and a later task that depends on either says so. Under Script Sync into a Team Create place, keeping files out of Git doesn't stop the agent's unreviewed edits from reaching teammates; follow [Team Create](script-sync.md#team-create). Its recommendation goes in the proposal that follows the shared-or-personal answer, not in the message that asks it.
 
 ## What to write
 
