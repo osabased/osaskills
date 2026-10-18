@@ -14,7 +14,7 @@ Answer from the project first (manifests, lockfiles, config, entry files, genera
 | Mapping | How authored files become instances: paths, class and `RunContext` rules, generated or vendored output, what Studio still owns | Where code actually runs; the [facts models get wrong](../SKILL.md#facts-models-get-wrong) apply to the result, not the source |
 | Startup | Entrypoints, the discovery rule (what counts as a unit, at what depth, what hides one), the entrypoint's scan paths or globs (anything added under them is discovered, specs and data included), lifecycle phases and their order, what one unit's failure does to the rest | Where a new feature goes and what a move or rename breaks |
 | Boundaries | Its client/server split, how it declares or generates Remotes, what it replicates | Whether authority stays on the server |
-| Restore | The committed manifest and lockfile that install it and its dependencies at a fixed version. Restore covers every manifest the check depends on (for example both `package.json` and `rokit.toml`); a binary missing because a manifest wasn't restored is a restore gap, not a blocked check | The check's restore step and fresh checkouts |
+| Restore | The committed manifest and lockfile that install it and its dependencies at a fixed version. Restore covers every manifest the check depends on (for example both `package.json` and `rokit.toml`); a binary missing because a manifest wasn't restored is a restore gap, not a blocked check. A tool the manifest pins whose binary won't run usually means its install step, such as `rokit install`, hasn't run | The check's restore step and fresh checkouts |
 | Check | Its command, exit codes and machine-readable output; what a pass proves and what it can't | Which check step and [verification](verification.md) rung it fills |
 | Release | Dev-only content it produces and how that is kept out of a published place | The dev/release boundary |
 
@@ -36,7 +36,9 @@ This holds for a routine edit too. When the guide doesn't record the contract, f
 Reuse: <tool and pin>; catalog skill: <name or none>; catalog PR: <offered, or why not>
 ```
 
-Status is `read` only when Source holds the quoted line; otherwise it is `inferred` or `gap`. A report that says a proposal is owed but doesn't contain one is incomplete.
+Status is `read` when Source quotes a line that states the claim, `inferred` when it names only a file or existing code, and `gap` when nothing answers it. What the quote doesn't cover goes in To settle; it doesn't downgrade the row.
+
+Skip the diff only when every row the task touched came from the guide or a skill; rows you worked out yourself still go in it. A report that says a proposal is owed but doesn't contain one is incomplete. End every report that used this method with the `Reuse:` line, even when no diff is owed.
 
 When the catalog has no skill for the tool at this pin and the rows quoted from the tool's own docs are `read`, offer in one sentence to turn them into a catalog library skill through `roblox-resource-acquisition`, so other projects on that pin don't rediscover them. Write it only when the user asks. Project facts, such as this project's mapping paths, stay in the guide.
 
