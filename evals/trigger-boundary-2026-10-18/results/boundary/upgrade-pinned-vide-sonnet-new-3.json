@@ -1,0 +1,114 @@
+{
+ "id": "upgrade-pinned-vide",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9134
+  ],
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   6494
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,wally.toml,wally.lock,pesde.lock,package.json,rokit.toml,CLAUDE.md}"
+  ],
+  [
+   "Grep",
+   "vide"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-new-3\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-new-3\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-sonnet-new-3\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Glob",
+   "**/pesde.lock"
+  ]
+ ],
+ "texts": [
+  "You want to know whether to move our pinned Vide version to the new release. I'll check what we pin and what changed, and I won't change anything until you say so. I'm loading the resource-acquisition skill first, since it covers upgrades.",
+  "Next I'll check which Vide version the project pins and read the skill's upgrade references."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0942722,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19172,
+  "cache_read_input_tokens": 42822,
+  "output_tokens": 1329,
+  "output_tokens_details": {
+   "thinking_tokens": 329
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19172,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 524,
+    "cache_read_input_tokens": 18052,
+    "cache_creation_input_tokens": 10287,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 10287
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

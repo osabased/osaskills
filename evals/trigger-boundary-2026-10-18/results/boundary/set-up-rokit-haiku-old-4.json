@@ -1,0 +1,88 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Bash",
+   "which rokit aftman foreman wally rojo 2>&1; echo \"---\"; rokit --version 2>&1; echo \"---\"; where.exe rokit 2>&1; echo \"---\"; cargo --version 2>&1; echo \"---\"; powershell -NoProfile -Command \"\\$PSVersionTable.PSVersion.ToString()\""
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-4\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-4\\scripts\\check.sh"
+  ],
+  [
+   "Grep",
+   "(?i)rokit"
+  ]
+ ],
+ "texts": [
+  "You want Rokit installed on this machine and a `rokit.toml` set up in this repo so its Roblox tools (Wally, StyLua, Selene, Rojo, and so on) are pinned and installed. I'll look at the repo first to see what's already there.",
+  "Bash is disabled in this session, so I can't run the installer or any commands. I'll read the existing config and the project-structure skill's Rokit guidance, then see what can be done with file tools.",
+  "I couldn't install Rokit or run `rokit install` here. Bash is disabled in this session and I have no PowerShell tool, so nothing has been executed. The repo already has a `rokit.toml`, so what's left is running the install yourself.\n\n**What's already in place**\n\n`rokit.toml` pins five tools:\n\n| Tool | Pin |\n|---|---|\n| Rojo | `rojo-rbx/rojo@7.7.1` |\n| Wally | `UpliftGames/wally@0.3.2` |\n| StyLua | `JohnnyMorganz/StyLua@2.3.1` |\n| Selene | `Kampfkarren/selene@0.29.0` |\n| luau-lsp | `JohnnyMorganz/luau-lsp@1.58.0` |\n\nI haven't checked these pins against current releases, since I have no network access here.\n\n**Steps to run in PowerShell**\n\n1. Install Rokit from the official script (check the current command in the [Rokit README](https://github.com/rojo-rbx/rokit) first):\n   ```powershell\n   iwr https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.ps1 -useb | iex\n   ```\n2. Open a new terminal so `~/.rokit/bin` is on `PATH`, then confirm the tool is the one you expect:\n   ```powershell\n   rokit --version\n   Get-Command rokit\n   ```\n3. From the repo root, install the pinned tools:\n   ```powershell\n   rokit install\n   ```\n4. Restore the Wally packages:\n   ```powershell\n   wally install\n   ```\n5. Confirm the tools resolve to the pinned versions:\n   ```powershell\n   rojo --version; wally --version; stylua --version; selene --version; luau-lsp version\n   ```\n\n**Things to know**\n\n- `scripts/check.sh` is a bash script. On Windows, run it from Git Bash, or port it to PowerShell.\n- The repo has both `wally.toml` and `pesde.toml`. Pick one package manager, or confirm you want both. I haven't changed either file.\n- I made no changes to the repo.\n\nIf you paste the output of `rokit install` or any failing step here, I can help work through it. I can't run it myself from this session, so I'd be reading output you send."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I couldn't install Rokit or run `rokit install` here. Bash is disabled in this session and I have no PowerShell tool, so nothing has been executed. The repo already has a `rokit.toml`, so what's left is running the install yourself.\n\n**What's already in place**\n\n`rokit.toml` pins five tools:\n\n| Tool | Pin |\n|---|---|\n| Rojo | `rojo-rbx/rojo@7.7.1` |\n| Wally | `UpliftGames/wally@0.3.2` |\n| StyLua | `JohnnyMorganz/StyLua@2.3.1` |\n| Selene | `Kampfkarren/selene@0.29.0` |\n| luau-lsp | `JohnnyMorganz/luau-lsp@1.58.0` |\n\nI haven't checked these pins against current releases, since I have no network access here.\n\n**Steps to run in PowerShell**\n\n1. Install Rokit from the official script (check the current command in the [Rokit README](https://github.com/rojo-rbx/rokit) first):\n   ```powershell\n   iwr https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.ps1 -useb | iex\n   ```\n2. Open a new terminal so `~/.rokit/bin` is on `PATH`, then confirm the tool is the one you expect:\n   ```powershell\n   rokit --version\n   Get-Command rokit\n   ```\n3. From the repo root, install the pinned tools:\n   ```powershell\n   rokit install\n   ```\n4. Restore the Wally packages:\n   ```powershell\n   wally install\n   ```\n5. Confirm the tools resolve to the pinned versions:\n   ```powershell\n   rojo --version; wally --version; stylua --version; selene --version; luau-lsp version\n   ```\n\n**Things to know**\n\n- `scripts/check.sh` is a bash script. On Windows, run it from Git Bash, or port it to PowerShell.\n- The repo has both `wally.toml` and `pesde.toml`. Pick one package manager, or confirm you want both. I haven't changed either file.\n- I made no changes to the repo.\n\nIf you paste the output of `rokit install` or any failing step here, I can help work through it. I can't run it myself from this session, so I'd be reading output you send.",
+ "cost": 0.004285290000000001,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13234,
+  "cache_read_input_tokens": 45689,
+  "output_tokens": 2362,
+  "output_tokens_details": {
+   "thinking_tokens": 788
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13234,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1295,
+    "cache_read_input_tokens": 20187,
+    "cache_creation_input_tokens": 2214,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2214
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

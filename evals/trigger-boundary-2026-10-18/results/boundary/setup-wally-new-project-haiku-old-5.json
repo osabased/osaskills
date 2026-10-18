@@ -1,0 +1,127 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7057
+  ],
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,json,project.json,wally.toml}"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Glob",
+   "{CLAUDE.md,CLAUDE.local.md,wally.lock,Packages/**,Packages,.claude/settings.json,.gitignore}"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\.claude\\settings.json"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-old-5\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Bash",
+   "where.exe rokit wally rojo stylua selene luau-lsp 2>&1; wally --version 2>&1; rokit --version 2>&1"
+  ]
+ ],
+ "texts": [
+  "I'll read the project directory first to see what's there before setting anything up.",
+  "The project already has a `wally.toml`, `rokit.toml`, and `default.project.json`. I'll read those along with the skill guidance for Wally setup.",
+  "The project already declares three Wally dependencies. Before deciding what's missing, I'll check for the lock file, the `Packages` folder, `CLAUDE.md`, and whether Rokit and Wally are on this machine."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.004523650000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15128,
+  "cache_read_input_tokens": 45845,
+  "output_tokens": 2078,
+  "output_tokens_details": {
+   "thinking_tokens": 538
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15128,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 991,
+    "cache_read_input_tokens": 20352,
+    "cache_creation_input_tokens": 3943,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3943
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

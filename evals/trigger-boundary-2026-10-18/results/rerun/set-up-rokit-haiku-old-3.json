@@ -1,0 +1,103 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Bash",
+   "where.exe rokit 2>$null; where.exe aftman 2>$null; where.exe foreman 2>$null; echo \"---\"; Get-Command rokit -ErrorAction SilentlyContinue | Select-Object Source"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "*.{json,toml,md,luaurc,yml,yaml,lock,project.json}"
+  ],
+  [
+   "Grep",
+   "[Rr]okit"
+  ]
+ ],
+ "texts": [
+  "I'll read the repo's setup guidance first, then check what's in the directory.",
+  "Bash is disabled in this session, so I can't run Rokit's installer or any commands. I'll read the tooling guidance and check what the repo already contains.",
+  "The top-level listing is crowded out by `.claude`, so I'll check for project files directly and read the new-project guide for the Rokit steps."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00542692,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 20367,
+  "cache_read_input_tokens": 49292,
+  "output_tokens": 1720,
+  "output_tokens_details": {
+   "thinking_tokens": 642
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20367,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 608,
+    "cache_read_input_tokens": 23752,
+    "cache_creation_input_tokens": 5782,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5782
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

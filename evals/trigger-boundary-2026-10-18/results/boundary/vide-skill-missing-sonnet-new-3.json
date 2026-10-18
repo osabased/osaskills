@@ -1,0 +1,104 @@
+{
+ "id": "vide-skill-missing",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:roblox-resource-acquisition",
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/SKILL.md",
+   7099
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,json,lock,md,luau,lua}"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/vide-skill-missing-sonnet-new-3/.claude/skills/roblox-resource-acquisition\" && python scripts/clone_children.py --project \"<runs>/vide-skill-missing-sonnet-new-3\" --status"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-new-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-new-3\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-new-3\\src\\client\\init.client.luau"
+  ]
+ ],
+ "texts": [
+  "I'll start by loading the resource-acquisition skill, since it's the one that adds the missing Vide skill.",
+  "Let me check the project's manifests and the clone script's status.",
+  "Bash is disabled here, so I can't run the clone script. I'll check the manifests and the catalog pin so I know what's needed."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0668216,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12370,
+  "cache_read_input_tokens": 42796,
+  "output_tokens": 1305,
+  "output_tokens_details": {
+   "thinking_tokens": 321
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12370,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 701,
+    "cache_read_input_tokens": 18025,
+    "cache_creation_input_tokens": 3512,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3512
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

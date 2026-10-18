@@ -1,0 +1,81 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "Here's a layout I'd recommend for a new game. It assumes you'll use an external editor with the filesystem as the source of truth (Rojo). If you'd rather keep everything in Studio, the same container rules apply, just without the files.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client   -- the one client startup owner\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking lib)\nServerScriptService/\n  ServerMain        Script, RunContext = Server   -- the one server startup owner\n  Server/           server-only modules (rules, state, DataStores, validation)\nServerStorage/\n  Assets/           server-only templates\nReplicatedFirst/    only the loading-screen subset\n```\n\nThe rules behind it:\n\n- **Anything in `ReplicatedStorage` reaches every client, including module source.** Keep secrets, DataStore code, purchase handling and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **A `LocalScript` never runs from `ReplicatedStorage`.** Client entrypoints there should be `Script`s with `RunContext = Client`. If you use Rojo 7 defaults, `*.client.luau` builds as a `LocalScript`, so a `ClientMain.client.luau` mapped into `ReplicatedStorage` silently never runs. Set `\"emitLegacyScripts\": false` in the project file, or check that `RunContext` is set.\n- **One startup owner per runtime.** `ServerMain` and `ClientMain` require their feature modules explicitly. Then you can see what starts and in what order. Avoid several independent scripts that each start a feature.\n- **Validate every client-to-server payload on the server:** type, range, ownership and rate.\n- **Group by feature or by layer, not both.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) works well once you have several gameplay systems. For a small game, a flat list per side is fine. Pick one and stick with it.\n- **Use PascalCase** for folders, scripts and module tables; camelCase for functions and locals.\n\nTwo decisions I can't make for you:\n\n1. **Sync tool:** Rojo (filesystem owns the project, best for Git and agents) or Script Sync (Studio owns the place, code syncs with your editor). Rojo is my recommendation if you want Git history and agents that can read and check the code.\n2. **Shared or personal agent setup:** only matters once you add `CLAUDE.md`, hooks or CI. Tell me if this is a solo project or a team one and I'll set up the matching pieces.\n\nAlso, this folder isn't a git repo and has no project files yet. Once you tell me which sync tool you want, I can scaffold the project file and folder skeleton above."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's a layout I'd recommend for a new game. It assumes you'll use an external editor with the filesystem as the source of truth (Rojo). If you'd rather keep everything in Studio, the same container rules apply, just without the files.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client   -- the one client startup owner\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking lib)\nServerScriptService/\n  ServerMain        Script, RunContext = Server   -- the one server startup owner\n  Server/           server-only modules (rules, state, DataStores, validation)\nServerStorage/\n  Assets/           server-only templates\nReplicatedFirst/    only the loading-screen subset\n```\n\nThe rules behind it:\n\n- **Anything in `ReplicatedStorage` reaches every client, including module source.** Keep secrets, DataStore code, purchase handling and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **A `LocalScript` never runs from `ReplicatedStorage`.** Client entrypoints there should be `Script`s with `RunContext = Client`. If you use Rojo 7 defaults, `*.client.luau` builds as a `LocalScript`, so a `ClientMain.client.luau` mapped into `ReplicatedStorage` silently never runs. Set `\"emitLegacyScripts\": false` in the project file, or check that `RunContext` is set.\n- **One startup owner per runtime.** `ServerMain` and `ClientMain` require their feature modules explicitly. Then you can see what starts and in what order. Avoid several independent scripts that each start a feature.\n- **Validate every client-to-server payload on the server:** type, range, ownership and rate.\n- **Group by feature or by layer, not both.** Feature-first (`Server/Combat`, `Client/Combat`, `Shared/Combat`) works well once you have several gameplay systems. For a small game, a flat list per side is fine. Pick one and stick with it.\n- **Use PascalCase** for folders, scripts and module tables; camelCase for functions and locals.\n\nTwo decisions I can't make for you:\n\n1. **Sync tool:** Rojo (filesystem owns the project, best for Git and agents) or Script Sync (Studio owns the place, code syncs with your editor). Rojo is my recommendation if you want Git history and agents that can read and check the code.\n2. **Shared or personal agent setup:** only matters once you add `CLAUDE.md`, hooks or CI. Tell me if this is a solo project or a team one and I'll set up the matching pieces.\n\nAlso, this folder isn't a git repo and has no project files yet. Once you tell me which sync tool you want, I can scaffold the project file and folder skeleton above.",
+ "cost": 0.004081990000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13514,
+  "cache_read_input_tokens": 45559,
+  "output_tokens": 1846,
+  "output_tokens_details": {
+   "thinking_tokens": 622
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13514,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1130,
+    "cache_read_input_tokens": 20017,
+    "cache_creation_input_tokens": 2664,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2664
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,105 @@
+{
+ "id": "vide-skill-missing",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/resource.yaml",
+   1695
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-old-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-old-1\\pesde.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/vide-skill-missing-sonnet-old-1/.claude/skills/roblox-resource-acquisition\" && python scripts/clone_children.py --project ../../.. --status"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-old-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-old-1\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-sonnet-old-1\\src\\client\\init.client.luau"
+  ]
+ ],
+ "texts": [
+  "I'll start with the resource-acquisition skill, since it covers cloning the missing Vide skill."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0687648,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12989,
+  "cache_read_input_tokens": 46068,
+  "output_tokens": 1219,
+  "output_tokens_details": {
+   "thinking_tokens": 330
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12989,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 578,
+    "cache_read_input_tokens": 21337,
+    "cache_creation_input_tokens": 819,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 819
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,79 @@
+{
+ "id": "rokit-stylua",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-haiku-new-2\\rokit.toml"
+  ],
+  [
+   "Bash",
+   "curl -sL https://api.github.com/repos/JohnnyMorganz/StyLua/releases/latest | grep '\"tag_name\"'; curl -sL https://api.github.com/repos/Kampfkarren/selene/releases/latest | grep '\"tag_name\"'"
+  ]
+ ],
+ "texts": [
+  "I'll read the existing `rokit.toml` first, then look up the latest StyLua and Selene releases.",
+  "The file already lists StyLua (2.3.1) and Selene (0.29.0). To pin them to the latest releases I need to check GitHub for the current versions."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00232458,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 7810,
+  "cache_read_input_tokens": 42248,
+  "output_tokens": 679,
+  "output_tokens_details": {
+   "thinking_tokens": 225
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 7810,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 293,
+    "cache_read_input_tokens": 16699,
+    "cache_creation_input_tokens": 278,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 278
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

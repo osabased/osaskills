@@ -1,0 +1,111 @@
+{
+ "id": "add-signal-wally",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-lemonsignal/resource.yaml",
+   1696
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-old-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-old-2\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-old-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-lemonsignal\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-old-2\\default.project.json"
+  ],
+  [
+   "Glob",
+   ".claude/skills/roblox-*/SKILL.md"
+  ],
+  [
+   "Grep",
+   "LemonSignal|Signal"
+  ],
+  [
+   "Glob",
+   "{CLAUDE.md,wally.lock,Packages/*}"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0842744,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17118,
+  "cache_read_input_tokens": 45904,
+  "output_tokens": 1120,
+  "output_tokens_details": {
+   "thinking_tokens": 229
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17118,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 490,
+    "cache_read_input_tokens": 21184,
+    "cache_creation_input_tokens": 5101,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5101
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

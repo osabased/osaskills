@@ -1,0 +1,101 @@
+{
+ "id": "write-tween",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "read:motion-studies"
+ ],
+ "reads": [
+  [
+   "motion-studies/SKILL.md",
+   3470
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-sonnet-old-1\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-sonnet-old-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-sonnet-old-1\\.claude\\skills\\motion-studies\\SKILL.md"
+  ],
+  [
+   "Edit",
+   "<runs>\\write-tween-sonnet-old-1\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\write-tween-sonnet-old-1\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\write-tween-sonnet-old-1\\src\\client\\ShopButton.luau"
+  ]
+ ],
+ "texts": [
+  "You want the `BuySword` button in `ShopGui` to fade in when it appears. I'll do that in `ShopButton.start()`."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0677336,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11729,
+  "cache_read_input_tokens": 43656,
+  "output_tokens": 1644,
+  "output_tokens_details": {
+   "thinking_tokens": 413
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11729,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1209,
+    "cache_read_input_tokens": 18942,
+    "cache_creation_input_tokens": 1954,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1954
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

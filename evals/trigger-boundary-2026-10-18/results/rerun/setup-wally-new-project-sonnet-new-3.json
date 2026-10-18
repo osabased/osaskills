@@ -1,0 +1,106 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-new-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "I'll start with the project-structure skill, since it covers first-time Wally and toolchain setup.",
+  "Wally is already mostly set up here, and the project has a conflict I need you to settle before I change anything.\n\n**What's already there**\n- `wally.toml` declares Janitor, LemonSignal and Charm, with the shared realm.\n- `rokit.toml` pins wally 0.3.2, rojo, stylua, selene and luau-lsp.\n- `default.project.json` maps `Packages` into `ReplicatedStorage`.\n- `scripts/check.sh` runs `wally install`.\n\n**What's missing**\n- There is no `wally.lock` and no `Packages/` folder, so `wally install` has never run here.\n- Nothing ties the check script to a lockfile.\n\n**The conflict:** `pesde.toml` is also present, with its own dependencies (vide and blink). The project guidance says not to run two package managers on the same packages. Here the two manifests list different packages, so they don't strictly overlap, but both would want to own `Packages/`.\n\nMy understanding is that you want Wally as the package manager and the toolchain restored, so the project builds from a fresh checkout. Questions, with my recommendation first:\n\n1. **Package manager:**\n   - (a) Wally only, and I remove `pesde.toml`. You'd need to find Wally versions of vide and blink, or drop them.\n   - (b) Keep both, with pesde installing into a separate folder.\n   - (c) Leave `pesde.toml` alone and just run Wally.\n2. **Packages:** Are Janitor, LemonSignal and Charm the packages you want, or should the list change?\n3. **Setup scope:** Is this setup shared with a team or personal? That decides whether the hooks and CI pieces go into Git.\n4. **Scope of work:** Should I only run `rokit install` and `wally install` and commit `wally.lock`? Or should I also update `check.sh` to use `--locked`, ignore `Packages/` in `.gitignore`, and add the `Packages` mapping and selene/stylua ignores?\n\nI haven't run anything yet."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Wally is already mostly set up here, and the project has a conflict I need you to settle before I change anything.\n\n**What's already there**\n- `wally.toml` declares Janitor, LemonSignal and Charm, with the shared realm.\n- `rokit.toml` pins wally 0.3.2, rojo, stylua, selene and luau-lsp.\n- `default.project.json` maps `Packages` into `ReplicatedStorage`.\n- `scripts/check.sh` runs `wally install`.\n\n**What's missing**\n- There is no `wally.lock` and no `Packages/` folder, so `wally install` has never run here.\n- Nothing ties the check script to a lockfile.\n\n**The conflict:** `pesde.toml` is also present, with its own dependencies (vide and blink). The project guidance says not to run two package managers on the same packages. Here the two manifests list different packages, so they don't strictly overlap, but both would want to own `Packages/`.\n\nMy understanding is that you want Wally as the package manager and the toolchain restored, so the project builds from a fresh checkout. Questions, with my recommendation first:\n\n1. **Package manager:**\n   - (a) Wally only, and I remove `pesde.toml`. You'd need to find Wally versions of vide and blink, or drop them.\n   - (b) Keep both, with pesde installing into a separate folder.\n   - (c) Leave `pesde.toml` alone and just run Wally.\n2. **Packages:** Are Janitor, LemonSignal and Charm the packages you want, or should the list change?\n3. **Setup scope:** Is this setup shared with a team or personal? That decides whether the hooks and CI pieces go into Git.\n4. **Scope of work:** Should I only run `rokit install` and `wally install` and commit `wally.lock`? Or should I also update `check.sh` to use `--locked`, ignore `Packages/` in `.gitignore`, and add the `Packages` mapping and selene/stylua ignores?\n\nI haven't run anything yet.",
+ "cost": 0.0851384,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15679,
+  "cache_read_input_tokens": 46304,
+  "output_tokens": 1778,
+  "output_tokens_details": {
+   "thinking_tokens": 341
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15679,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 868,
+    "cache_read_input_tokens": 21544,
+    "cache_creation_input_tokens": 3302,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3302
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

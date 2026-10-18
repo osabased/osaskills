@@ -1,0 +1,89 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-1\\pesde.toml"
+  ]
+ ],
+ "texts": [
+  "The client entrypoint should go under **`StarterPlayer/StarterPlayerScripts`**. Right now it won't run.\n\nIn `default.project.json`, `src/client` is mapped to `ReplicatedStorage.Client`. Rojo turns a folder containing `init.client.luau` into a LocalScript, and LocalScripts only run when they sit under `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or `StarterPack`. A LocalScript in `ReplicatedStorage` is inert, so `print(\"client\")` never fires. The server side is fine: `ServerScriptService.Server` is a regular Script and will run.\n\nThe fix is to change the mapping:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n},\n```\n\nin place of the current `\"Client\": { \"$path\": \"src/client\" }` entry under `ReplicatedStorage`. Keep `Shared` in `ReplicatedStorage`, since both server and client need it.\n\nI haven't changed anything. Do you want me to make this edit to `default.project.json`?"
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The client entrypoint should go under **`StarterPlayer/StarterPlayerScripts`**. Right now it won't run.\n\nIn `default.project.json`, `src/client` is mapped to `ReplicatedStorage.Client`. Rojo turns a folder containing `init.client.luau` into a LocalScript, and LocalScripts only run when they sit under `StarterPlayerScripts`, `StarterCharacterScripts`, `StarterGui`, or `StarterPack`. A LocalScript in `ReplicatedStorage` is inert, so `print(\"client\")` never fires. The server side is fine: `ServerScriptService.Server` is a regular Script and will run.\n\nThe fix is to change the mapping:\n\n```json\n\"StarterPlayer\": {\n  \"StarterPlayerScripts\": { \"Client\": { \"$path\": \"src/client\" } }\n},\n```\n\nin place of the current `\"Client\": { \"$path\": \"src/client\" }` entry under `ReplicatedStorage`. Keep `Shared` in `ReplicatedStorage`, since both server and client need it.\n\nI haven't changed anything. Do you want me to make this edit to `default.project.json`?",
+ "cost": 0.00419774,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13101,
+  "cache_read_input_tokens": 48044,
+  "output_tokens": 2193,
+  "output_tokens_details": {
+   "thinking_tokens": 1189
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13101,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1378,
+    "cache_read_input_tokens": 21218,
+    "cache_creation_input_tokens": 1050,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1050
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,113 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   11149
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,wally.lock,pesde.toml,pesde.lock,rokit.toml,aftman.toml,foreman.toml,package.json,default.project.json,*.project.json}"
+  ],
+  [
+   "Grep",
+   "ProfileStore|ProfileService|profilestore"
+  ],
+  [
+   "Glob",
+   "**/.claude/skills/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-5\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-5\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-new-5\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Grep",
+   "ProfileStore|ProfileService|profilestore"
+  ],
+  [
+   "Glob",
+   "**/*{ProfileStore,profilestore,Profile}*"
+  ]
+ ],
+ "texts": [
+  "I read this as: write a project skill, `roblox-profilestore`, that documents the ProfileStore API for the exact version your project pins, so agents use the right calls. I'll check for the pin and any existing roblox-* skills first.",
+  "The repo already has a convention for library skills under roblox-resource-acquisition. I'll read its writing guide and the dependency manifests to find the pin.",
+  "The project's manifests don't list ProfileStore: `wally.toml` has Janitor, LemonSignal and Charm, and `pesde.toml` has Vide and Blink. I'll check what the existing skills say about ProfileStore and whether any source has it."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0052432,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 19110,
+  "cache_read_input_tokens": 46510,
+  "output_tokens": 1911,
+  "output_tokens_details": {
+   "thinking_tokens": 787
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 19110,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 436,
+    "cache_read_input_tokens": 20962,
+    "cache_creation_input_tokens": 7315,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7315
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

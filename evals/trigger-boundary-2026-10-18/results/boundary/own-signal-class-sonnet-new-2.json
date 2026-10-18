@@ -1,0 +1,96 @@
+{
+ "id": "own-signal-class",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write me a small Signal class, no library, I want to own it",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Glob",
+   "**/*.{lua,luau,ts,js,py,json}"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-sonnet-new-2\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-sonnet-new-2\\src\\server\\Shop.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-sonnet-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-sonnet-new-2\\stylua.toml"
+  ],
+  [
+   "Write",
+   "<runs>\\own-signal-class-sonnet-new-2\\src\\shared\\Signal.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-sonnet-new-2\\scripts\\check.sh"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.10010269999999999,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12675,
+  "cache_read_input_tokens": 45307,
+  "output_tokens": 4486,
+  "output_tokens_details": {
+   "thinking_tokens": 2846
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12675,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3763,
+    "cache_read_input_tokens": 20548,
+    "cache_creation_input_tokens": 1294,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1294
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

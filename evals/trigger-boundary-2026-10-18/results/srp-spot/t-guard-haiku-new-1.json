@@ -1,0 +1,108 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "GetDataStore|DataStoreService|ProfileStore|DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-1\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "Store|datastore"
+  ],
+  [
+   "Glob",
+   "{scripts/**,.claude/settings*.json,AGENTS.md,README.md,CLAUDE.md,.github/**}"
+  ]
+ ],
+ "texts": [
+  "I'm reading this as: make the build or check fail if the DataStore name string is changed, so renames get caught before they ship. I'll look at the project first to see how the DataStore name is set.",
+  "The project source has no DataStore code yet. I'll read the source files and the checks reference the skill points to.",
+  "The repo has no DataStore code yet. Before deciding anything, I'll confirm that nothing outside the skill folders holds a store name, and check for an existing check script or settings file."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00501139,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17213,
+  "cache_read_input_tokens": 49369,
+  "output_tokens": 2149,
+  "output_tokens_details": {
+   "thinking_tokens": 837
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17213,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 957,
+    "cache_read_input_tokens": 22502,
+    "cache_creation_input_tokens": 3878,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3878
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

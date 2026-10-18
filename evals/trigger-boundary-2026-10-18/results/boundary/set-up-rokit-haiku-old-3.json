@@ -1,0 +1,113 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Bash",
+   "where rokit aftman rojo wally stylua selene 2>&1; echo \"---\"; rokit --version 2>&1; echo \"---\"; cargo --version 2>&1; echo \"---\"; powershell -NoProfile -Command \"$PSVersionTable.PSVersion.ToString()\""
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Glob",
+   "rokit*"
+  ],
+  [
+   "Glob",
+   "{rokit,rojo,wally,stylua,selene,luau-lsp}.exe"
+  ]
+ ],
+ "texts": [
+  "I'll read what's in the repo first, then install Rokit and set up its toolchain.",
+  "Bash isn't available in this session, so I can't run an installer. I'll read the repo's toolchain config to see what's declared.",
+  "The repo declares its tools in `rokit.toml`. Next I'll check whether Rokit is already on this machine, since I can't run it directly."
+ ],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Glob",
+   "rokit*"
+  ],
+  [
+   "Glob",
+   "{rokit,rojo,wally,stylua,selene,luau-lsp}.exe"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00378234,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12531,
+  "cache_read_input_tokens": 45654,
+  "output_tokens": 1638,
+  "output_tokens_details": {
+   "thinking_tokens": 528
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12531,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 551,
+    "cache_read_input_tokens": 20152,
+    "cache_creation_input_tokens": 1546,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1546
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

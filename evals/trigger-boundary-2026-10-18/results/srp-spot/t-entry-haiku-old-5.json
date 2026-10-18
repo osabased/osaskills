@@ -1,0 +1,81 @@
+{
+ "id": "t-entry",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should my client entrypoint script go in this project?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-5\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-entry-haiku-old-5\\src\\server\\init.server.luau"
+  ]
+ ],
+ "texts": [
+  "The client entrypoint belongs in **`StarterPlayer > StarterPlayerScripts`**, but right now it won't run.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns `init.client.luau` into a LocalScript there, and LocalScripts in ReplicatedStorage never run. The `print(\"client\")` in `src/client/init.client.luau` would never execute. The server side is fine: `src/server` maps to `ServerScriptService.Server`, which is a place where Scripts run.\n\nThe fix is to change the mapping in `default.project.json`:\n\n```json\n{\n  \"name\": \"arena\",\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } },\n    \"StarterPlayer\": {\n      \"StarterPlayerScripts\": {\n        \"Client\": { \"$path\": \"src/client\" }\n      }\n    }\n  }\n}\n```\n\nClient code can still `require` shared modules from `ReplicatedStorage.Shared`, so nothing else needs to move. The files in `src/client` stay where they are. They just become children of the client LocalScript instead of living in ReplicatedStorage.\n\nI haven't edited anything yet. Do you want me to make this change? I can also check the `structure-roblox-projects` skill for any other mapping details before I do."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "The client entrypoint belongs in **`StarterPlayer > StarterPlayerScripts`**, but right now it won't run.\n\n`default.project.json` maps `src/client` to `ReplicatedStorage.Client`. Rojo turns `init.client.luau` into a LocalScript there, and LocalScripts in ReplicatedStorage never run. The `print(\"client\")` in `src/client/init.client.luau` would never execute. The server side is fine: `src/server` maps to `ServerScriptService.Server`, which is a place where Scripts run.\n\nThe fix is to change the mapping in `default.project.json`:\n\n```json\n{\n  \"name\": \"arena\",\n  \"tree\": {\n    \"$className\": \"DataModel\",\n    \"ReplicatedStorage\": {\n      \"Shared\": { \"$path\": \"src/shared\" },\n      \"Packages\": { \"$path\": \"Packages\" }\n    },\n    \"ServerScriptService\": { \"Server\": { \"$path\": \"src/server\" } },\n    \"StarterPlayer\": {\n      \"StarterPlayerScripts\": {\n        \"Client\": { \"$path\": \"src/client\" }\n      }\n    }\n  }\n}\n```\n\nClient code can still `require` shared modules from `ReplicatedStorage.Shared`, so nothing else needs to move. The files in `src/client` stay where they are. They just become children of the client LocalScript instead of living in ReplicatedStorage.\n\nI haven't edited anything yet. Do you want me to make this change? I can also check the `structure-roblox-projects` skill for any other mapping details before I do.",
+ "cost": 0.00424828,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12654,
+  "cache_read_input_tokens": 47988,
+  "output_tokens": 2474,
+  "output_tokens_details": {
+   "thinking_tokens": 1544
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12654,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1886,
+    "cache_read_input_tokens": 21162,
+    "cache_creation_input_tokens": 659,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 659
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,226 @@
+[
+ {
+  "id": "setup-wally-new-project",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "set up Wally for a new project",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "first-time-selene-config",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "set-up-rokit",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "profilestore-wally-toml",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "add ProfileStore to our wally.toml",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "selene-pin-bump",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "rokit-stylua",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "vide-skill-missing",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "write-profilestore-skill",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "own-signal-class",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "neither",
+  "prompt": "write me a small Signal class, no library, I want to own it",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "add-signal-wally",
+  "group": "anchor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "add a signal library to my roblox game, we use wally",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "pesde-install-blink",
+  "group": "anchor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "set up Blink for networking in this pesde project",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "upgrade-pinned-vide",
+  "group": "anchor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "Vide has a new release, should we bump our pinned version?",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "folder-layout",
+  "group": "anchor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "write-tween",
+  "group": "anchor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "neither",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": []
+ },
+ {
+  "id": "t-entry",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "where should my client entrypoint script go in this project?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-glob",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-remote",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-ci",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "set up CI for my Rojo project",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-playtest",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-guard",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "add a guard so nobody changes the DataStore name",
+  "scaffold": "base",
+  "max_turns": 3
+ },
+ {
+  "id": "t-neg-tween",
+  "group": "srp-spot",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "neither",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "scaffold": "base",
+  "max_turns": 3
+ }
+]

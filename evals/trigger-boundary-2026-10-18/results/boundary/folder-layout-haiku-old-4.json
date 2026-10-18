@@ -1,0 +1,94 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-haiku-old-4\\src\\client\\init.client.luau"
+  ]
+ ],
+ "texts": [
+  "I read this as: you want a recommended folder layout for ServerScriptService and ReplicatedStorage in this Rojo project, so the code runs where it should. I'll check the existing project mapping first.",
+  "For this project, the layout you already have is close to right. I'd keep it and fill in the server side.\n\n**Current mapping** (`default.project.json`):\n\n```\nReplicatedStorage/\n  Shared/   ← src/shared   ModuleScripts both sides require (types, constants, pure logic)\n  Client/   ← src/client   client entrypoint (init.client.luau → Script, RunContext = Client)\n  Packages/ ← Packages     package installs (folder not created yet)\nServerScriptService/\n  Server/   ← src/server   server entrypoint (init.server.luau → Script, RunContext = Server)\n```\n\nThis is sound. `emitLegacyScripts: false` makes `init.client.luau` a client `Script`, which runs from `ReplicatedStorage`, so `ClientMain` works where it sits. `Shared` and `Client` are only reachable by clients, so keep secrets and authority out of them.\n\n**Recommended additions:**\n\n- **Server modules go in `src/server`.** `Shop.luau` and `PlayerData.luau` already sit there, which is right: DataStores, purchases and inventory changes stay server-only.\n- **Remotes get their own folder.** Add `ReplicatedStorage/Remotes` (e.g. `src/shared/Remotes` or a `Remotes` mapping) so every client-to-server entry point is in one place. Validate type, range, ownership and rate on the server for each one.\n- **Assets go in `ServerStorage` for server-only templates.** Anything both sides need goes in `ReplicatedStorage`.\n- **Keep one startup owner per side.** `init.client.luau` and `init.server.luau` are that owner, so features are required from there and not started by independent scripts.\n\n**Things to check:**\n\n- `Packages` is mapped but doesn't exist yet. Run your package install before the first `rojo serve`, or Rojo will have an empty folder.\n- The repo has both `pesde.toml` and `wally.toml`. Pick one package manager, because the `Packages` path depends on it.\n- I haven't read `Shop.luau` or `PlayerData.luau`, so I can't confirm they validate purchases on the server. Tell me if you want that reviewed.\n\nI took this as a request for a recommendation, so I made no file changes. If you want, I can add the `Remotes` folder mapping, or check the two server modules for the boundary rules above."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "For this project, the layout you already have is close to right. I'd keep it and fill in the server side.\n\n**Current mapping** (`default.project.json`):\n\n```\nReplicatedStorage/\n  Shared/   ← src/shared   ModuleScripts both sides require (types, constants, pure logic)\n  Client/   ← src/client   client entrypoint (init.client.luau → Script, RunContext = Client)\n  Packages/ ← Packages     package installs (folder not created yet)\nServerScriptService/\n  Server/   ← src/server   server entrypoint (init.server.luau → Script, RunContext = Server)\n```\n\nThis is sound. `emitLegacyScripts: false` makes `init.client.luau` a client `Script`, which runs from `ReplicatedStorage`, so `ClientMain` works where it sits. `Shared` and `Client` are only reachable by clients, so keep secrets and authority out of them.\n\n**Recommended additions:**\n\n- **Server modules go in `src/server`.** `Shop.luau` and `PlayerData.luau` already sit there, which is right: DataStores, purchases and inventory changes stay server-only.\n- **Remotes get their own folder.** Add `ReplicatedStorage/Remotes` (e.g. `src/shared/Remotes` or a `Remotes` mapping) so every client-to-server entry point is in one place. Validate type, range, ownership and rate on the server for each one.\n- **Assets go in `ServerStorage` for server-only templates.** Anything both sides need goes in `ReplicatedStorage`.\n- **Keep one startup owner per side.** `init.client.luau` and `init.server.luau` are that owner, so features are required from there and not started by independent scripts.\n\n**Things to check:**\n\n- `Packages` is mapped but doesn't exist yet. Run your package install before the first `rojo serve`, or Rojo will have an empty folder.\n- The repo has both `pesde.toml` and `wally.toml`. Pick one package manager, because the `Packages` path depends on it.\n- I haven't read `Shop.luau` or `PlayerData.luau`, so I can't confirm they validate purchases on the server. Tell me if you want that reviewed.\n\nI took this as a request for a recommendation, so I made no file changes. If you want, I can add the `Remotes` folder mapping, or check the two server modules for the boundary rules above.",
+ "cost": 0.00516401,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17207,
+  "cache_read_input_tokens": 48601,
+  "output_tokens": 2472,
+  "output_tokens_details": {
+   "thinking_tokens": 1193
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17207,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1542,
+    "cache_read_input_tokens": 23099,
+    "cache_creation_input_tokens": 3275,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3275
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

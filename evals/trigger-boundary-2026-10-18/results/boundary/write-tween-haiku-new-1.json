@@ -1,0 +1,87 @@
+{
+ "id": "write-tween",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-haiku-new-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-haiku-new-1\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\write-tween-haiku-new-1\\src\\server\\Shop.luau"
+  ],
+  [
+   "Edit",
+   "<runs>\\write-tween-haiku-new-1\\src\\client\\ShopButton.luau"
+  ]
+ ],
+ "texts": [
+  "I'll look at the project first to find the GUI you mean.",
+  "The GUI is the `ShopGui` built in `ShopButton.start()`. Its only visible element is the `BuySword` button, and a `ScreenGui` has no transparency property, so the fade has to act on the button."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00446605,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12130,
+  "cache_read_input_tokens": 45545,
+  "output_tokens": 3168,
+  "output_tokens_details": {
+   "thinking_tokens": 1659
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12130,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2488,
+    "cache_read_input_tokens": 20015,
+    "cache_creation_input_tokens": 1282,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1282
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

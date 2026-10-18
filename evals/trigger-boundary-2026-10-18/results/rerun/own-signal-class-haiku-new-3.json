@@ -1,0 +1,86 @@
+{
+ "id": "own-signal-class",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write me a small Signal class, no library, I want to own it",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-3\\src\\server\\Shop.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-3\\stylua.toml"
+  ],
+  [
+   "Grep",
+   "table\\.clone|task\\.spawn|coroutine"
+  ]
+ ],
+ "texts": [
+  "I'm reading this as a Roblox-style event signal: `connect`, `once`, `wait`, `fire`, `destroy`, in `src/shared` so both server and client can require it. Here's the file."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.005257680000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11260,
+  "cache_read_input_tokens": 44958,
+  "output_tokens": 5111,
+  "output_tokens_details": {
+   "thinking_tokens": 4521
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11260,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 4260,
+    "cache_read_input_tokens": 19420,
+    "cache_creation_input_tokens": 1007,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1007
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,103 @@
+{
+ "id": "upgrade-pinned-vide",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/library-skills.md",
+   5206
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,wally.toml,package.json,rokit.toml,aftman.toml,*.lock,pesde.lock,wally.lock}"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/upgrade-pinned-vide-haiku-old-3\" && python \".claude/skills/roblox-resource-acquisition/scripts/clone_children.py\" --project . --status"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-3\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-3\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-3\\.claude\\skills\\roblox-resource-acquisition\\references\\library-skills.md"
+  ]
+ ],
+ "texts": [
+  "I'll check this against the project's Roblox resource skill, which covers pinned-version refreshes.",
+  "You want to know whether this project should move its pinned Vide version to the new release. I'll compare the current pin with the release and check whether the project's Vide skill is in sync. I'll start by reading the manifests and the pin status.",
+  "Bash is disabled in this session, so I can't run the clone script's `--status`. I'll read the manifests and the catalog directly."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.003259,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 10397,
+  "cache_read_input_tokens": 44300,
+  "output_tokens": 1472,
+  "output_tokens_details": {
+   "thinking_tokens": 463
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10397,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 571,
+    "cache_read_input_tokens": 18794,
+    "cache_creation_input_tokens": 770,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 770
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

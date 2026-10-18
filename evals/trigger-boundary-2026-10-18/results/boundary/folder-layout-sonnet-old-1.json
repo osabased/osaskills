@@ -1,0 +1,89 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ],
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ]
+ ],
+ "texts": [
+  "Here's the layout I'd start with. It's a default, not something your project has committed to yet.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking library)\nServerScriptService/\n  ServerMain        Script, RunContext = Server\n  Server/           server-only modules (data, rules, validation)\nServerStorage/\n  Assets/           server-only templates and assets\n```\n\n**Rules that matter more than the folder names**\n\n- **Everything in `ReplicatedStorage` reaches clients, source included.** Put DataStores, purchases, secrets, validation and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **A `LocalScript` in `ReplicatedStorage` never runs.** Use a `Script` with `RunContext = Client` for the client entrypoint. Use a `LocalScript` only if it has to live in `StarterPlayerScripts`.\n- **If you use Rojo, set `\"emitLegacyScripts\": false`.** With the default, `*.client.luau` builds a `LocalScript`, so a `ClientMain` mapped into `ReplicatedStorage` silently never runs.\n- **Use one startup owner per side.** `ServerMain` and `ClientMain` require feature modules explicitly, so it's obvious what starts and in what order. Add separate `Init`/`Start` phases only if ordering between features starts to matter.\n- **Treat every client-to-server Remote as attack surface.** The server checks type, range, ownership and rate on every call.\n- **Module state isn't shared between server and client.** Each runtime gets its own copy.\n\n**Grouping as the game grows**\n\nSwitch to feature folders once you have several systems, for example `Server/Combat`, `Client/Combat` and `Shared/Combat`. Until then, flat `Server/`, `Client/` and `Shared/` lists are simpler. Use PascalCase for folders and modules.\n\n**Decisions for you**\n\n1. **Source of truth.** I recommend Rojo, because it gives you files in Git and an agent can read, diff and check them. Script Sync is the alternative if you'd rather stay Studio-first. Don't run both on the same content.\n2. **Networking.** I recommend plain `RemoteEvent`s in `Remotes/` to start. A library like Blink is worth it later if you have many Remotes.\n3. **Loader or framework.** I recommend none: plain modules required from the entrypoints.\n\nTell me which way you're leaning on these. If you pick Rojo, I can scaffold the project file, the entrypoints, a check command and a short `CLAUDE.md`. First I'd ask whether this is a shared team setup or a personal one, since that decides what goes into Git and CI."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's the layout I'd start with. It's a default, not something your project has committed to yet.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking library)\nServerScriptService/\n  ServerMain        Script, RunContext = Server\n  Server/           server-only modules (data, rules, validation)\nServerStorage/\n  Assets/           server-only templates and assets\n```\n\n**Rules that matter more than the folder names**\n\n- **Everything in `ReplicatedStorage` reaches clients, source included.** Put DataStores, purchases, secrets, validation and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **A `LocalScript` in `ReplicatedStorage` never runs.** Use a `Script` with `RunContext = Client` for the client entrypoint. Use a `LocalScript` only if it has to live in `StarterPlayerScripts`.\n- **If you use Rojo, set `\"emitLegacyScripts\": false`.** With the default, `*.client.luau` builds a `LocalScript`, so a `ClientMain` mapped into `ReplicatedStorage` silently never runs.\n- **Use one startup owner per side.** `ServerMain` and `ClientMain` require feature modules explicitly, so it's obvious what starts and in what order. Add separate `Init`/`Start` phases only if ordering between features starts to matter.\n- **Treat every client-to-server Remote as attack surface.** The server checks type, range, ownership and rate on every call.\n- **Module state isn't shared between server and client.** Each runtime gets its own copy.\n\n**Grouping as the game grows**\n\nSwitch to feature folders once you have several systems, for example `Server/Combat`, `Client/Combat` and `Shared/Combat`. Until then, flat `Server/`, `Client/` and `Shared/` lists are simpler. Use PascalCase for folders and modules.\n\n**Decisions for you**\n\n1. **Source of truth.** I recommend Rojo, because it gives you files in Git and an agent can read, diff and check them. Script Sync is the alternative if you'd rather stay Studio-first. Don't run both on the same content.\n2. **Networking.** I recommend plain `RemoteEvent`s in `Remotes/` to start. A library like Blink is worth it later if you have many Remotes.\n3. **Loader or framework.** I recommend none: plain modules required from the entrypoints.\n\nTell me which way you're leaning on these. If you pick Rojo, I can scaffold the project file, the entrypoints, a check command and a short `CLAUDE.md`. First I'd ask whether this is a shared team setup or a personal one, since that decides what goes into Git and CI.",
+ "cost": 0.0718019,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13483,
+  "cache_read_input_tokens": 43479,
+  "output_tokens": 1351,
+  "output_tokens_details": {
+   "thinking_tokens": 79
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13483,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1030,
+    "cache_read_input_tokens": 18753,
+    "cache_creation_input_tokens": 3897,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3897
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

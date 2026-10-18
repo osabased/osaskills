@@ -1,0 +1,125 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ],
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ],
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,json,lua,luau,yaml,yml}"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\stylua.toml"
+  ],
+  [
+   "Grep",
+   "(?i)selene"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Bash",
+   "where.exe selene rokit 2>&1; selene --version 2>&1; rokit --version 2>&1"
+  ]
+ ],
+ "texts": [
+  "I read this as: set up Selene (the Luau linter) in this project with a `selene.toml` and the Roblox standard library, so `selene` runs against the project's Luau code. I'll check the project layout first.",
+  "The project already has a `selene.toml`. I'll read it with the related config files and the skill's Selene guidance.",
+  "The existing `selene.toml` only sets `std = \"roblox\"`. The skill reference says to pin the standard library with `roblox-std-source = \"pinned\"` and commit the generated `roblox.yml`. I'll read the skill's guidance on that and check whether Selene is installed."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0042264500000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13630,
+  "cache_read_input_tokens": 46735,
+  "output_tokens": 2065,
+  "output_tokens_details": {
+   "thinking_tokens": 555
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13630,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 924,
+    "cache_read_input_tokens": 21191,
+    "cache_creation_input_tokens": 1606,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1606
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

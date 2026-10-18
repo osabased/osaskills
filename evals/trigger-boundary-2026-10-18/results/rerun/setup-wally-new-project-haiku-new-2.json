@@ -1,0 +1,106 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-2\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-haiku-new-2\\default.project.json"
+  ],
+  [
+   "Bash",
+   "for t in rokit wally rojo pesde; do printf \"%s: \" $t; command -v $t || echo \"not found\"; done"
+  ]
+ ],
+ "texts": [
+  "I'll start by checking what's already in the project directory.",
+  "The project already has `wally.toml` and `rokit.toml`, so I'll check what's configured before changing anything."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0045191400000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16207,
+  "cache_read_input_tokens": 47964,
+  "output_tokens": 1595,
+  "output_tokens_details": {
+   "thinking_tokens": 752
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16207,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 606,
+    "cache_read_input_tokens": 22428,
+    "cache_creation_input_tokens": 2946,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2946
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

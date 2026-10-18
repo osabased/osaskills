@@ -1,0 +1,104 @@
+{
+ "id": "t-guard",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "add a guard so nobody changes the DataStore name",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/checks.md",
+   7292
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "DataStoreService|GetDataStore|DataStore"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-5\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-guard-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\references\\checks.md"
+  ],
+  [
+   "Grep",
+   "(?i)datastore|data_?store|profilestore|saveKey|store_?name"
+  ],
+  [
+   "Glob",
+   "{pesde.toml,wally.toml,*.md,.claude/*.json,.claude/*.local.json,scripts/**,.github/**,.rokit*,rokit.toml,aftman.toml,foreman.toml}"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding where the DataStore name is defined and how the project is set up.",
+  "The project source has no DataStore code yet. I'll read the source files, the Rojo config, and the checks reference the skill points to.",
+  "This is a small Rojo project with no DataStore code in `src/`. Before deciding anything, I'll check the rest of the repo, including the manifests and any check script, for a name that's already defined."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.004729570000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16485,
+  "cache_read_input_tokens": 49047,
+  "output_tokens": 1883,
+  "output_tokens_details": {
+   "thinking_tokens": 641
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16485,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 912,
+    "cache_read_input_tokens": 22180,
+    "cache_creation_input_tokens": 3472,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3472
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

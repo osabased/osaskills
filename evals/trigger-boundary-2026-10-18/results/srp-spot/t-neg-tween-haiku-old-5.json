@@ -1,0 +1,94 @@
+{
+ "id": "t-neg-tween",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-5\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-5\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-5\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-5\\default.project.json"
+  ],
+  [
+   "Grep",
+   "ScreenGui|Frame|TextLabel|TweenService"
+  ],
+  [
+   "Glob",
+   "**/*.{rbxm,rbxmx,rbxl,rbxlx}"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding the GUI in the project.",
+  "The repo has no GUI definition in the source. I'll check for any GUI files before deciding what to do."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00356405,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12744,
+  "cache_read_input_tokens": 48015,
+  "output_tokens": 1069,
+  "output_tokens_details": {
+   "thinking_tokens": 145
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12744,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 430,
+    "cache_read_input_tokens": 21182,
+    "cache_creation_input_tokens": 729,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 729
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

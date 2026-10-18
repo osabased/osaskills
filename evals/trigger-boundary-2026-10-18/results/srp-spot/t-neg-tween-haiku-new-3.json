@@ -1,0 +1,102 @@
+{
+ "id": "t-neg-tween",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [
+  "read:motion-studies"
+ ],
+ "reads": [
+  [
+   "motion-studies/SKILL.md",
+   3470
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "TweenService|ScreenGui|Frame|TextLabel"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-new-3\\.claude\\skills\\motion-studies\\SKILL.md"
+  ]
+ ],
+ "texts": [
+  "I'll start by finding the GUI and any existing tween or UI code in the project.",
+  "The project source is small. I'll read the client, server, shared, and Rojo config files to find the GUI.",
+  "The repo has no GUI in its source: the client, server, and shared scripts are placeholders, and there's no existing tween code. I'll check the `motion-studies` skill in case it sets a house style for fades."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00475213,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16611,
+  "cache_read_input_tokens": 51833,
+  "output_tokens": 1822,
+  "output_tokens_details": {
+   "thinking_tokens": 860
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16611,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 781,
+    "cache_read_input_tokens": 24960,
+    "cache_creation_input_tokens": 818,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 818
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

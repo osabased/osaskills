@@ -1,0 +1,114 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ],
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Grep",
+   "roblox-std-source|generate-roblox-std|roblox\\.yml|selene"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ]
+ ],
+ "texts": [
+  "I'll read what the directory already has, then set up Selene.",
+  "The tooling reference says to pin the Roblox std source and commit the generated `roblox.yml`. I'll check the skill's notes for the exact keys and command before writing anything."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.004853690000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17123,
+  "cache_read_input_tokens": 48749,
+  "output_tokens": 1882,
+  "output_tokens_details": {
+   "thinking_tokens": 727
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17123,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 665,
+    "cache_read_input_tokens": 23243,
+    "cache_creation_input_tokens": 3047,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3047
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,100 @@
+{
+ "id": "t-glob",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/rojo.md",
+   7413
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-glob-sonnet-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-glob-sonnet-old-1\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ],
+  [
+   "Glob",
+   "src/client/**/Preview*"
+  ],
+  [
+   "Grep",
+   "globIgnorePaths"
+  ],
+  [
+   "Glob",
+   "src/client/**/*Preview*/**"
+  ]
+ ],
+ "texts": [
+  "I'll load the Rojo skill and look at your project file."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.0696609,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 14574,
+  "cache_read_input_tokens": 46329,
+  "output_tokens": 672,
+  "output_tokens_details": {
+   "thinking_tokens": 106
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14574,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 203,
+    "cache_read_input_tokens": 20262,
+    "cache_creation_input_tokens": 3479,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3479
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

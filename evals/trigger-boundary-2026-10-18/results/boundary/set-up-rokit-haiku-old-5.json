@@ -1,0 +1,107 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Bash",
+   "where rokit; where aftman; where cargo; where git; rokit --version 2>&1 | head -1"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-5\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-5\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-5\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-old-5\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "I read this as: install Rokit on this machine, then add a `rokit.toml` to the repo that pins the standard Roblox tools (Rojo, and probably Wally, StyLua, Selene, and luau-lsp) and install them. I'll check the repo first, then load the project-structure skill, since it covers Rokit setup.",
+  "Bash is disabled in this session, so I can't run `rokit` or any install command. I'll read the existing toolchain files and the skill's Rokit guidance, then see what can be done with file tools alone.",
+  "I couldn't install Rokit or run anything: Bash is disabled in this session, and I have no other shell tool. I changed no files.\n\n**What's already in the repo:** `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0. `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check`, `selene`, and `rojo build`. So the toolchain is already defined; it just hasn't been installed on this machine.\n\n**What you need to run (PowerShell):**\n\n1. Install Rokit. Either:\n   - `winget install rojo-rbx.rokit`, or\n   - the install script from the Rokit README on GitHub.\n\n   I haven't verified the exact winget ID or script URL, so check the README if either fails.\n2. Open a new terminal so Rokit's bin directory is on `PATH`.\n3. In the repo: `rokit install`, then `wally install`.\n4. Confirm the tools resolve to Rokit's copies: `rojo --version`, `wally --version`, `stylua --version`, `selene --version`, `luau-lsp version`.\n\n**Problems I found while reading:**\n\n- **Two package managers are configured.** Both `wally.toml` and `pesde.toml` exist, and the tooling guide says not to run both on the same packages. The packages differ too: Wally pulls Janitor, LemonSignal and Charm, while pesde pulls Vide and Blink. Neither has a lockfile yet.\n- **`scripts/check.sh` is Bash.** On Windows it needs Git Bash or WSL, or a PowerShell equivalent.\n\n**Decisions I need from you:**\n\n1. Which package manager to keep. I'd keep Wally, since it's the most widely used and matches the Janitor/LemonSignal/Charm dependencies. That would mean removing `pesde.toml`, or moving Vide and Blink into `wally.toml` if you still want them.\n2. Whether to add a PowerShell check script alongside `check.sh`, or leave it Bash-only and run it through Git Bash.\n\nOnce you've installed Rokit and run `rokit install`, paste the output and I'll check it, or send me a shell that can run commands and I'll do the install myself."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I couldn't install Rokit or run anything: Bash is disabled in this session, and I have no other shell tool. I changed no files.\n\n**What's already in the repo:** `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0. `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check`, `selene`, and `rojo build`. So the toolchain is already defined; it just hasn't been installed on this machine.\n\n**What you need to run (PowerShell):**\n\n1. Install Rokit. Either:\n   - `winget install rojo-rbx.rokit`, or\n   - the install script from the Rokit README on GitHub.\n\n   I haven't verified the exact winget ID or script URL, so check the README if either fails.\n2. Open a new terminal so Rokit's bin directory is on `PATH`.\n3. In the repo: `rokit install`, then `wally install`.\n4. Confirm the tools resolve to Rokit's copies: `rojo --version`, `wally --version`, `stylua --version`, `selene --version`, `luau-lsp version`.\n\n**Problems I found while reading:**\n\n- **Two package managers are configured.** Both `wally.toml` and `pesde.toml` exist, and the tooling guide says not to run both on the same packages. The packages differ too: Wally pulls Janitor, LemonSignal and Charm, while pesde pulls Vide and Blink. Neither has a lockfile yet.\n- **`scripts/check.sh` is Bash.** On Windows it needs Git Bash or WSL, or a PowerShell equivalent.\n\n**Decisions I need from you:**\n\n1. Which package manager to keep. I'd keep Wally, since it's the most widely used and matches the Janitor/LemonSignal/Charm dependencies. That would mean removing `pesde.toml`, or moving Vide and Blink into `wally.toml` if you still want them.\n2. Whether to add a PowerShell check script alongside `check.sh`, or leave it Bash-only and run it through Git Bash.\n\nOnce you've installed Rokit and run `rokit install`, paste the output and I'll check it, or send me a shell that can run commands and I'll do the install myself.",
+ "cost": 0.00544565,
+ "turns": 10,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17581,
+  "cache_read_input_tokens": 48985,
+  "output_tokens": 2878,
+  "output_tokens_details": {
+   "thinking_tokens": 1163
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17581,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1367,
+    "cache_read_input_tokens": 23483,
+    "cache_creation_input_tokens": 3265,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3265
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

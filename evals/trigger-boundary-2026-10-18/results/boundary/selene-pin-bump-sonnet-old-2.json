@@ -1,0 +1,89 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-sonnet-old-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-sonnet-old-2\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ]
+ ],
+ "texts": [
+  "I haven't changed anything. I can't look up Selene's latest release from here, because I have no shell or web access, and I won't guess a version number.\n\n`rokit.toml` currently pins `selene = \"Kampfkarren/selene@0.29.0\"`.\n\nYou can get the version either of these ways:\n- **Tell me the version.** Check https://github.com/Kampfkarren/selene/releases and give me the number. I'll edit the pin.\n- **Run it yourself.** `rokit add Kampfkarren/selene@X.Y.Z` writes the pin to `rokit.toml`.\n\nOnce the pin changes, `adopting.md` says to read the release notes between 0.29.0 and the new version and rerun `selene` on the project. If the project has a selene config or guards tied to 0.29.0, those need re-review."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I haven't changed anything. I can't look up Selene's latest release from here, because I have no shell or web access, and I won't guess a version number.\n\n`rokit.toml` currently pins `selene = \"Kampfkarren/selene@0.29.0\"`.\n\nYou can get the version either of these ways:\n- **Tell me the version.** Check https://github.com/Kampfkarren/selene/releases and give me the number. I'll edit the pin.\n- **Run it yourself.** `rokit add Kampfkarren/selene@X.Y.Z` writes the pin to `rokit.toml`.\n\nOnce the pin changes, `adopting.md` says to read the release notes between 0.29.0 and the new version and rerun `selene` on the project. If the project has a selene config or guards tied to 0.29.0, those need re-review.",
+ "cost": 0.0625711,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12570,
+  "cache_read_input_tokens": 42591,
+  "output_tokens": 802,
+  "output_tokens_details": {
+   "thinking_tokens": 196
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12570,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 462,
+    "cache_read_input_tokens": 17863,
+    "cache_creation_input_tokens": 3874,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3874
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

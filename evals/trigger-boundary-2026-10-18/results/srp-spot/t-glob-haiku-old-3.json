@@ -1,0 +1,95 @@
+{
+ "id": "t-glob",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*.project.json"
+  ],
+  [
+   "Grep",
+   "globIgnorePaths|Preview"
+  ],
+  [
+   "Read",
+   "<runs>\\t-glob-haiku-old-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ],
+  [
+   "Glob",
+   "src/client/**/Preview*/**"
+  ],
+  [
+   "Glob",
+   "**/*.json"
+  ]
+ ],
+ "texts": [
+  "I'll find the project file and see how `globIgnorePaths` is written.",
+  "The project file has no `globIgnorePaths` at all. I'll check whether `src/client` has Preview folders and whether that setting lives anywhere else."
+ ],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Read",
+   "~\\.claude\\skills\\structure-roblox-projects\\references\\rojo.md"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00341989,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 11828,
+  "cache_read_input_tokens": 47319,
+  "output_tokens": 1161,
+  "output_tokens_details": {
+   "thinking_tokens": 529
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11828,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 320,
+    "cache_read_input_tokens": 20476,
+    "cache_creation_input_tokens": 519,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 519
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

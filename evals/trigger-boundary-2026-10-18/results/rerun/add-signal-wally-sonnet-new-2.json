@@ -1,0 +1,119 @@
+{
+ "id": "add-signal-wally",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 2,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9134
+  ],
+  [
+   "roblox-resource-acquisition/references/choosing.md",
+   5526
+  ],
+  [
+   "roblox-resource-acquisition/libraries/roblox-lemonsignal/references/setup.md",
+   957
+  ],
+  [
+   "roblox-resource-acquisition/references/library-skills.md",
+   5832
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Glob",
+   "*.{toml,json,md}"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\choosing.md"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-lemonsignal\\references\\setup.md"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-sonnet-new-2\\.claude\\skills\\roblox-resource-acquisition\\references\\library-skills.md"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.084877,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17380,
+  "cache_read_input_tokens": 42650,
+  "output_tokens": 1108,
+  "output_tokens_details": {
+   "thinking_tokens": 148
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17380,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 668,
+    "cache_read_input_tokens": 17887,
+    "cache_creation_input_tokens": 8660,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 8660
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

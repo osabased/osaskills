@@ -1,0 +1,102 @@
+{
+ "id": "add-signal-wally",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add a signal library to my roblox game, we use wally",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "read:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/SKILL.md",
+   7128
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,wally.lock,*.project.json,aftman.toml,rokit.toml,selene.toml,stylua.toml}"
+  ],
+  [
+   "Grep",
+   "(?i)signal"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-new-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\add-signal-wally-haiku-new-5\\.claude\\skills\\roblox-resource-acquisition\\SKILL.md"
+  ],
+  [
+   "Grep",
+   "LemonSignal|GoodSignal|Signal|Connect\\(|BindableEvent"
+  ],
+  [
+   "Glob",
+   "{Packages,src,CLAUDE.md,*.md}/**"
+  ]
+ ],
+ "texts": [
+  "I'll start by checking the project for `wally.toml` and any existing signal code.",
+  "The project already declares LemonSignal in `wally.toml`. Before I decide what \"add a signal library\" means, I'll check whether it's used and whether a Packages folder exists."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00370309,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12508,
+  "cache_read_input_tokens": 43889,
+  "output_tokens": 1524,
+  "output_tokens_details": {
+   "thinking_tokens": 444
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12508,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 652,
+    "cache_read_input_tokens": 18353,
+    "cache_creation_input_tokens": 3322,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3322
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

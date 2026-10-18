@@ -1,0 +1,96 @@
+{
+ "id": "t-remote",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "new",
+ "rep": 3,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "RemoteEvent|RemoteFunction|shop|Shop|purchase|Purchase"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-3\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-3\\src\\server\\init.server.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-3\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-remote-haiku-new-3\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ]
+ ],
+ "texts": [
+  "I'll look at the project layout first so the answer matches what's actually there.",
+  "The project has no shop code yet. I'll read the project config, the entry scripts, and the placement guidance in the skill.",
+  "Put the shop Remotes in `ReplicatedStorage`, create them from server code, and have the server treat every request as untrusted. Nothing in the project is written yet, so this is a recommendation and I haven't changed any files.\n\n**Where the RemoteEvents go**\n\nThe Rojo mapping in `default.project.json` puts `src/shared` in `ReplicatedStorage/Shared`, `src/client` in `ReplicatedStorage/Client`, and `src/server` in `ServerScriptService/Server`. `placement.md` also says Remotes belong in `ReplicatedStorage`, since they have to be visible to clients.\n\n- Create them in code, not by hand in Studio. Instances made only in Studio aren't in your files, so they won't be in Git or the checks.\n- Have the server create them on startup in a `ReplicatedStorage/Remotes` folder, then have the client use `WaitForChild`. Put the creation in `src/server/init.server.luau` or a `Shop` module it requires.\n- Keep the shared catalog (item IDs, prices, limits) in `src/shared`, so the UI and server read the same data. Keep the purchase logic in `src/server`.\n\n**How the server validates a purchase**\n\nThe client should only send a request like `(itemId, quantity)`. Never accept a price, currency amount, or \"success\" from the client. On each `OnServerEvent`:\n\n1. Check types: `itemId` is a string and `quantity` is a number. Reject anything else.\n2. Check the range: `quantity` is a whole number from 1 to your max. The `% 1 ~= 0` test also rejects NaN and infinity.\n3. Look the item up in the server-side catalog and reject unknown IDs.\n4. Rate-limit per player, so one client can't flood purchase requests.\n5. Load that player's server-side data and check ownership, limits, and funds. Compute the cost from the catalog, not from the request.\n6. Deduct and grant in one step, then send a result event back so the UI can update. Don't let the client drive the result.\n\nFor Robux purchases, grant items only in `MarketplaceService.ProcessReceipt`, keyed by `PurchaseId` and saved before returning `PurchaseGranted`. Don't grant from the client's purchase-finished callback.\n\nSketch of the handler (illustrative; `getProfile`, `rateLimitOk`, and the catalog path are placeholders):\n\n```luau\nbuyItem.OnServerEvent:Connect(function(player, itemId, quantity)\n\tif typeof(itemId) ~= \"string\" or typeof(quantity) ~= \"number\" then return end\n\tif quantity % 1 ~= 0 or quantity < 1 or quantity > 10 then return end\n\tlocal item = Catalog[itemId]\n\tif not item or not rateLimitOk(player) then return end\n\tlocal profile = getProfile(player)\n\tif not profile then return end\n\tlocal cost = item.Price * quantity\n\tif profile.Coins < cost then return end\n\tprofile.Coins -= cost\n\t-- grant the item, then fire the result remote\nend)\n```\n\nI haven't picked a networking library. If you want typed remotes, the `roblox-blink` skill covers that, but the plain RemoteEvent approach above works without it."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Put the shop Remotes in `ReplicatedStorage`, create them from server code, and have the server treat every request as untrusted. Nothing in the project is written yet, so this is a recommendation and I haven't changed any files.\n\n**Where the RemoteEvents go**\n\nThe Rojo mapping in `default.project.json` puts `src/shared` in `ReplicatedStorage/Shared`, `src/client` in `ReplicatedStorage/Client`, and `src/server` in `ServerScriptService/Server`. `placement.md` also says Remotes belong in `ReplicatedStorage`, since they have to be visible to clients.\n\n- Create them in code, not by hand in Studio. Instances made only in Studio aren't in your files, so they won't be in Git or the checks.\n- Have the server create them on startup in a `ReplicatedStorage/Remotes` folder, then have the client use `WaitForChild`. Put the creation in `src/server/init.server.luau` or a `Shop` module it requires.\n- Keep the shared catalog (item IDs, prices, limits) in `src/shared`, so the UI and server read the same data. Keep the purchase logic in `src/server`.\n\n**How the server validates a purchase**\n\nThe client should only send a request like `(itemId, quantity)`. Never accept a price, currency amount, or \"success\" from the client. On each `OnServerEvent`:\n\n1. Check types: `itemId` is a string and `quantity` is a number. Reject anything else.\n2. Check the range: `quantity` is a whole number from 1 to your max. The `% 1 ~= 0` test also rejects NaN and infinity.\n3. Look the item up in the server-side catalog and reject unknown IDs.\n4. Rate-limit per player, so one client can't flood purchase requests.\n5. Load that player's server-side data and check ownership, limits, and funds. Compute the cost from the catalog, not from the request.\n6. Deduct and grant in one step, then send a result event back so the UI can update. Don't let the client drive the result.\n\nFor Robux purchases, grant items only in `MarketplaceService.ProcessReceipt`, keyed by `PurchaseId` and saved before returning `PurchaseGranted`. Don't grant from the client's purchase-finished callback.\n\nSketch of the handler (illustrative; `getProfile`, `rateLimitOk`, and the catalog path are placeholders):\n\n```luau\nbuyItem.OnServerEvent:Connect(function(player, itemId, quantity)\n\tif typeof(itemId) ~= \"string\" or typeof(quantity) ~= \"number\" then return end\n\tif quantity % 1 ~= 0 or quantity < 1 or quantity > 10 then return end\n\tlocal item = Catalog[itemId]\n\tif not item or not rateLimitOk(player) then return end\n\tlocal profile = getProfile(player)\n\tif not profile then return end\n\tlocal cost = item.Price * quantity\n\tif profile.Coins < cost then return end\n\tprofile.Coins -= cost\n\t-- grant the item, then fire the result remote\nend)\n```\n\nI haven't picked a networking library. If you want typed remotes, the `roblox-blink` skill covers that, but the plain RemoteEvent approach above works without it.",
+ "cost": 0.0060868400000000005,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 17151,
+  "cache_read_input_tokens": 50004,
+  "output_tokens": 4312,
+  "output_tokens_details": {
+   "thinking_tokens": 2458
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17151,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3322,
+    "cache_read_input_tokens": 23125,
+    "cache_creation_input_tokens": 3193,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3193
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

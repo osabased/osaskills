@@ -1,0 +1,90 @@
+{
+ "id": "t-neg-tween",
+ "group": "srp-spot",
+ "suite": "srp",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write a TweenService animation that fades this GUI in",
+ "scaffold": "base",
+ "max_turns": 3,
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "ScreenGui|Frame|TweenService"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-1\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-1\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-1\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\t-neg-tween-haiku-old-1\\src\\server\\init.server.luau"
+  ]
+ ],
+ "texts": [
+  "I'll look through the project to find the GUI you mean before writing the tween.",
+  "I can't find the GUI yet, so I haven't written the tween. Here's what I found and what I need from you.\n\n**What I found:** The project is a bare Rojo setup. `src/client/init.client.luau` only prints `\"client\"`, `src/server/init.server.luau` only prints `\"server\"`, and `src/shared/init.luau` returns `{}`. Nothing in the repo defines a ScreenGui or Frame, and `default.project.json` doesn't map `StarterGui`. So the GUI either lives only in Studio, or it hasn't been added to the source yet.\n\n**What I think you want:** a client-side fade-in for one ScreenGui, using TweenService, so it goes from invisible to fully visible when the game starts.\n\n**Questions** (my recommended option is first in each):\n\n1. **Which GUI?** Give me its name and where it sits. Is it in `StarterGui` in Studio, or should I move it into source with a `StarterGui` entry in `default.project.json`?\n2. **Duration and easing:** 0.5s with `Quad` / `Out`, or something else? (This is the look, so I want your call.)\n3. **What gets faded:**\n   - (a) Wrap the GUI in a `CanvasGroup` and tween `GroupTransparency` once. This is the cleanest, but it requires the root to be a CanvasGroup.\n   - (b) Tween every descendant's `BackgroundTransparency`, `TextTransparency`, and `ImageTransparency` to match. This works with any GUI, but it's more code.\n4. **When does it start?** On the player's first load, or on an event (a RemoteEvent from the server, a key press, etc.)?\n\nOnce you answer, I'll put a reusable fade helper in `src/shared` and call it from the client script, and I'll point out any `default.project.json` change it needs."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I can't find the GUI yet, so I haven't written the tween. Here's what I found and what I need from you.\n\n**What I found:** The project is a bare Rojo setup. `src/client/init.client.luau` only prints `\"client\"`, `src/server/init.server.luau` only prints `\"server\"`, and `src/shared/init.luau` returns `{}`. Nothing in the repo defines a ScreenGui or Frame, and `default.project.json` doesn't map `StarterGui`. So the GUI either lives only in Studio, or it hasn't been added to the source yet.\n\n**What I think you want:** a client-side fade-in for one ScreenGui, using TweenService, so it goes from invisible to fully visible when the game starts.\n\n**Questions** (my recommended option is first in each):\n\n1. **Which GUI?** Give me its name and where it sits. Is it in `StarterGui` in Studio, or should I move it into source with a `StarterGui` entry in `default.project.json`?\n2. **Duration and easing:** 0.5s with `Quad` / `Out`, or something else? (This is the look, so I want your call.)\n3. **What gets faded:**\n   - (a) Wrap the GUI in a `CanvasGroup` and tween `GroupTransparency` once. This is the cleanest, but it requires the root to be a CanvasGroup.\n   - (b) Tween every descendant's `BackgroundTransparency`, `TextTransparency`, and `ImageTransparency` to match. This works with any GUI, but it's more code.\n4. **When does it start?** On the player's first load, or on an event (a RemoteEvent from the server, a key press, etc.)?\n\nOnce you answer, I'll put a reusable fade helper in `src/shared` and call it from the client script, and I'll point out any `default.project.json` change it needs.",
+ "cost": 0.00437046,
+ "turns": 7,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13659,
+  "cache_read_input_tokens": 48856,
+  "output_tokens": 2299,
+  "output_tokens_details": {
+   "thinking_tokens": 1117
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13659,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1520,
+    "cache_read_input_tokens": 22023,
+    "cache_creation_input_tokens": 803,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 803
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

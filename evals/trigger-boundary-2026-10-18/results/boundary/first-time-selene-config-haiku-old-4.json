@@ -1,0 +1,117 @@
+{
+ "id": "first-time-selene-config",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Glob",
+   "**/*.{toml,json,lua,luau,md,project.json}"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\selene.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\first-time-selene-config-haiku-old-4\\pesde.toml"
+  ],
+  [
+   "Grep",
+   "selene|generate-roblox-std|roblox\\.yml|roblox\\.toml"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Bash",
+   "where selene; selene --version; rokit --version"
+  ]
+ ],
+ "texts": [
+  "I read this as: set up Selene (the Luau linter) in this project with a `selene.toml` and the Roblox standard library, so it lints Roblox code without flagging Roblox globals. I'll start by looking at what's in the directory.",
+  "There's already a `selene.toml` at the project root. I'll read it along with the other project config files that matter for the setup.",
+  "`selene.toml` already exists with `std = \"roblox\"`, so the task is less about creating it from scratch. The project's skill docs likely cover Selene setup, so I'll check them before changing anything."
+ ],
+ "mcp_calls": null,
+ "denials": [
+  [
+   "Grep",
+   "selene|generate-roblox-std|roblox\\.yml|roblox\\.toml"
+  ]
+ ],
+ "result": null,
+ "cost": 0.00465577,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15556,
+  "cache_read_input_tokens": 48647,
+  "output_tokens": 2115,
+  "output_tokens_details": {
+   "thinking_tokens": 630
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15556,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1033,
+    "cache_read_input_tokens": 23141,
+    "cache_creation_input_tokens": 1582,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1582
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

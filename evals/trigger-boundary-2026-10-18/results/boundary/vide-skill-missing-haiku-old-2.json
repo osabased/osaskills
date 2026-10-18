@@ -1,0 +1,123 @@
+{
+ "id": "vide-skill-missing",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "read:roblox-vide"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/SKILL.md",
+   7099
+  ],
+  [
+   "roblox-resource-acquisition/references/adopting.md",
+   9440
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Grep",
+   "(?i)vide|settings"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\src\\client\\init.client.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\src\\client\\ShopButton.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\SKILL.md"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\.claude\\skills\\roblox-resource-acquisition\\references\\adopting.md"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\default.project.json"
+  ],
+  [
+   "Read",
+   "<runs>\\vide-skill-missing-haiku-old-2\\src\\server\\PlayerData.luau"
+  ]
+ ],
+ "texts": [
+  "I'll start by looking at the project layout and whether Vide is already in use, so I can tell you what I think you want before building.",
+  "Vide is already pinned in `pesde.toml`, and there's a Vide library skill in the resource-acquisition folder that isn't installed under `.claude/skills/`. I'll read the existing client code and that skill next.",
+  "The Vide skill exists in the catalog but isn't installed in this project. I'll check how the catalog says to adopt it, plus the toolchain config, before deciding what to ask you."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00519162,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16568,
+  "cache_read_input_tokens": 46642,
+  "output_tokens": 2822,
+  "output_tokens_details": {
+   "thinking_tokens": 1368
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16568,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1431,
+    "cache_read_input_tokens": 21135,
+    "cache_creation_input_tokens": 4600,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 4600
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

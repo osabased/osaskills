@@ -1,0 +1,72 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ]
+ ],
+ "texts": [
+  "Here's a layout I'd recommend for a new game. It assumes a small team with code in files, not built only in Studio. I haven't looked at any project files, so I'm working from the placement rules alone.\n\n```\nServerScriptService/\n  Main.server.luau          -- one entry: requires and starts server services\n  Services/                 -- ModuleScripts: DataService, CombatService, ShopService...\nServerStorage/              -- server-only templates and modules clients never need\nReplicatedStorage/\n  Shared/                   -- ModuleScripts both sides use: Config, Types, Util, Constants\n  Remotes/                  -- RemoteEvent/RemoteFunction definitions (or one Net module)\n  Packages/                 -- third-party libraries\nStarterPlayer/\n  StarterPlayerScripts/\n    Main.client.luau        -- client entry (LocalScript or Script with RunContext = Client)\n    Controllers/            -- ModuleScripts: InputController, UIController...\nStarterGui/                 -- UI\nReplicatedFirst/            -- loading screen only\n```\n\n**The rules behind it:**\n\n- **Entry points are the only scripts that run.** `Main.server.luau` and `Main.client.luau` start everything else with explicit `require` calls. Put no side effects in ModuleScripts, so load order is visible in one place.\n- **Anything in `ReplicatedStorage` reaches every client.** Shared code and config go there. Secrets, DataStore logic, purchase handling, and authoritative state stay in `ServerScriptService` or `ServerStorage`. Don't put a server-only config module in `Shared/`.\n- **Never put a `LocalScript` in `ReplicatedStorage`.** It won't run there. Client logic goes in `StarterPlayerScripts`, and modules it needs go in `Shared/` or `Controllers/`.\n- **Remotes are the contract.** Define them in one place, and validate every payload on the server: types, ranges, rate, and whether the player is allowed to do the action.\n- **Each environment has its own module state.** Server and client copies of a ModuleScript don't share variables. Don't rely on a module on one side holding state the other side can see.\n- **Name by role.** `*Service` on the server, `*Controller` on the client, and `Shared/` for anything both use. That keeps placement obvious from the name.\n\nBefore I write anything, two questions:\n\n1. Are you building in Studio only, or syncing code from files with Rojo or Script Sync? Rojo is my recommendation if the team will use Git. The folder mapping changes depending on which you choose.\n2. Will more than one person work on this, and do you plan to use Git?"
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's a layout I'd recommend for a new game. It assumes a small team with code in files, not built only in Studio. I haven't looked at any project files, so I'm working from the placement rules alone.\n\n```\nServerScriptService/\n  Main.server.luau          -- one entry: requires and starts server services\n  Services/                 -- ModuleScripts: DataService, CombatService, ShopService...\nServerStorage/              -- server-only templates and modules clients never need\nReplicatedStorage/\n  Shared/                   -- ModuleScripts both sides use: Config, Types, Util, Constants\n  Remotes/                  -- RemoteEvent/RemoteFunction definitions (or one Net module)\n  Packages/                 -- third-party libraries\nStarterPlayer/\n  StarterPlayerScripts/\n    Main.client.luau        -- client entry (LocalScript or Script with RunContext = Client)\n    Controllers/            -- ModuleScripts: InputController, UIController...\nStarterGui/                 -- UI\nReplicatedFirst/            -- loading screen only\n```\n\n**The rules behind it:**\n\n- **Entry points are the only scripts that run.** `Main.server.luau` and `Main.client.luau` start everything else with explicit `require` calls. Put no side effects in ModuleScripts, so load order is visible in one place.\n- **Anything in `ReplicatedStorage` reaches every client.** Shared code and config go there. Secrets, DataStore logic, purchase handling, and authoritative state stay in `ServerScriptService` or `ServerStorage`. Don't put a server-only config module in `Shared/`.\n- **Never put a `LocalScript` in `ReplicatedStorage`.** It won't run there. Client logic goes in `StarterPlayerScripts`, and modules it needs go in `Shared/` or `Controllers/`.\n- **Remotes are the contract.** Define them in one place, and validate every payload on the server: types, ranges, rate, and whether the player is allowed to do the action.\n- **Each environment has its own module state.** Server and client copies of a ModuleScript don't share variables. Don't rely on a module on one side holding state the other side can see.\n- **Name by role.** `*Service` on the server, `*Controller` on the client, and `Shared/` for anything both use. That keeps placement obvious from the name.\n\nBefore I write anything, two questions:\n\n1. Are you building in Studio only, or syncing code from files with Rojo or Script Sync? Rojo is my recommendation if the team will use Git. The folder mapping changes depending on which you choose.\n2. Will more than one person work on this, and do you plan to use Git?",
+ "cost": 0.0035736200000000004,
+ "turns": 3,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 10849,
+  "cache_read_input_tokens": 25542,
+  "output_tokens": 2296,
+  "output_tokens_details": {
+   "thinking_tokens": 1296
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10849,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1812,
+    "cache_read_input_tokens": 16375,
+    "cache_creation_input_tokens": 3641,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3641
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,93 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 2,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ],
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-old-2\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-old-2\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "Here's what I think you want: a new Roblox project in this directory, with Wally as its package manager. That means Rokit pinning the tools, a `wally.toml` and lockfile, and the `Packages` folders mapped into the game. The directory is empty apart from `.claude`, and it isn't a git repo.\n\nI need a few answers before I build anything. My recommendation is listed first for each.\n\n1. **Authoring workflow:**\n   - **Rojo with an external editor (recommended).** Code lives in files, and Wally's `Packages` folders map in through a Rojo project file.\n   - **Studio with Script Sync.**\n   - **A plugin or package rather than a game.** This one needs a different layout.\n2. **Language and checks:**\n   - **Luau with StyLua, Selene and luau-lsp, run from one check command (recommended).**\n   - **Luau with no linting or type checks.**\n   - **roblox-ts.** It has its own npm toolchain and mixes awkwardly with Wally.\n3. **Wally packages to start with:**\n   - **None yet (recommended).** I'd set up the manifest and mapping so you can add packages later.\n   - **Specific ones.** Tell me which, for example a signal, cleanup, Promise or networking library.\n4. **Game name and Wally scope:** Wally needs `scope/name` in `wally.toml`. What should I use? I'd default the name to the folder name.\n5. **Scope of setup:**\n   - **Minimal (recommended for a new project).** Rokit, Wally, Rojo mapping, a `CLAUDE.md` guide and one check command.\n   - **Full.** Everything in minimal, plus hooks, CI, guards and a fresh-agent trial.\n\nI also need to know whether this setup is personal or shared with a team. A personal setup keeps the agent files out of Git and CI. I'll ask that separately after you answer the above."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's what I think you want: a new Roblox project in this directory, with Wally as its package manager. That means Rokit pinning the tools, a `wally.toml` and lockfile, and the `Packages` folders mapped into the game. The directory is empty apart from `.claude`, and it isn't a git repo.\n\nI need a few answers before I build anything. My recommendation is listed first for each.\n\n1. **Authoring workflow:**\n   - **Rojo with an external editor (recommended).** Code lives in files, and Wally's `Packages` folders map in through a Rojo project file.\n   - **Studio with Script Sync.**\n   - **A plugin or package rather than a game.** This one needs a different layout.\n2. **Language and checks:**\n   - **Luau with StyLua, Selene and luau-lsp, run from one check command (recommended).**\n   - **Luau with no linting or type checks.**\n   - **roblox-ts.** It has its own npm toolchain and mixes awkwardly with Wally.\n3. **Wally packages to start with:**\n   - **None yet (recommended).** I'd set up the manifest and mapping so you can add packages later.\n   - **Specific ones.** Tell me which, for example a signal, cleanup, Promise or networking library.\n4. **Game name and Wally scope:** Wally needs `scope/name` in `wally.toml`. What should I use? I'd default the name to the folder name.\n5. **Scope of setup:**\n   - **Minimal (recommended for a new project).** Rokit, Wally, Rojo mapping, a `CLAUDE.md` guide and one check command.\n   - **Full.** Everything in minimal, plus hooks, CI, guards and a fresh-agent trial.\n\nI also need to know whether this setup is personal or shared with a team. A personal setup keeps the agent files out of Git and CI. I'll ask that separately after you answer the above.",
+ "cost": 0.0821094,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16460,
+  "cache_read_input_tokens": 47174,
+  "output_tokens": 1154,
+  "output_tokens_details": {
+   "thinking_tokens": 183
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16460,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 722,
+    "cache_read_input_tokens": 22419,
+    "cache_creation_input_tokens": 3208,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3208
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

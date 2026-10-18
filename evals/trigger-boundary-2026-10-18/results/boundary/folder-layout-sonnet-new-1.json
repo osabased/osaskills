@@ -1,0 +1,89 @@
+{
+ "id": "folder-layout",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "new",
+ "rep": 1,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/placement.md",
+   6318
+  ],
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\placement.md"
+  ],
+  [
+   "Read",
+   "<runs>\\folder-layout-sonnet-new-1\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ]
+ ],
+ "texts": [
+  "Here's the layout I'd start with. It's the default for a project with no structure yet. I haven't looked at an existing project in your working directory.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking library)\nServerScriptService/\n  ServerMain        Script, RunContext = Server\n  Server/           server-only modules (data, validation, game rules)\nServerStorage/\n  Assets/           server-only templates and assets\n```\n\n**Rules behind it**\n- **One startup owner per side.** `ServerMain` and `ClientMain` require the feature modules explicitly. Anyone can then see what starts and in what order. Add separate `Init`/`Start` phases only if ordering actually matters.\n- **Anything in `ReplicatedStorage` reaches every client, source code included.** Keep secrets, DataStores, purchases, validation and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **Client entrypoint:** use a `Script` with `RunContext = Client` in `ReplicatedStorage`. A `LocalScript` placed there never runs. It only works under a player or in `ReplicatedFirst`.\n- **Remotes:** the server must check type, range, ownership and rate on every client-to-server call. Put the validation next to the handler.\n- **`ReplicatedFirst`:** use it only for a loading screen or other very early client code.\n- **Grouping:** once you have several systems, group by feature (`Server/Combat`, `Client/Combat`, `Shared/Combat`). Until then, a flat list per side is fine. Pick one pattern and stick to it.\n- **Naming:** use PascalCase for folders, scripts and module tables, camelCase for functions and locals, and UPPER_SNAKE_CASE for constants.\n\n**Rojo gotcha:** by default, a `*.client.luau` file builds a `LocalScript`, which never runs from `ReplicatedStorage`. Set `\"emitLegacyScripts\": false` in your project file so it builds a `Script` with `RunContext = Client`.\n\nThree answers would let me tailor this and, if you want, build it:\n1. Do you want to author code in Studio only, or in an external editor with Git? I'd recommend Rojo. Script Sync is the alternative. A filesystem source of truth is easier for me to read, check and verify.\n2. What kind of game is it, and does it save player data? That decides whether you need a data layer and how much Remote surface you'll have.\n3. Are you open to third-party libraries (networking, data stores), or do you want plain modules?"
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Here's the layout I'd start with. It's the default for a project with no structure yet. I haven't looked at an existing project in your working directory.\n\n```text\nReplicatedStorage/\n  ClientMain        Script, RunContext = Client\n  Client/           client-only modules (input, camera, UI)\n  Shared/           types, constants, pure logic both sides run\n  Remotes/          RemoteEvents / RemoteFunctions (or created by a networking library)\nServerScriptService/\n  ServerMain        Script, RunContext = Server\n  Server/           server-only modules (data, validation, game rules)\nServerStorage/\n  Assets/           server-only templates and assets\n```\n\n**Rules behind it**\n- **One startup owner per side.** `ServerMain` and `ClientMain` require the feature modules explicitly. Anyone can then see what starts and in what order. Add separate `Init`/`Start` phases only if ordering actually matters.\n- **Anything in `ReplicatedStorage` reaches every client, source code included.** Keep secrets, DataStores, purchases, validation and authoritative state in `ServerScriptService` or `ServerStorage`.\n- **Client entrypoint:** use a `Script` with `RunContext = Client` in `ReplicatedStorage`. A `LocalScript` placed there never runs. It only works under a player or in `ReplicatedFirst`.\n- **Remotes:** the server must check type, range, ownership and rate on every client-to-server call. Put the validation next to the handler.\n- **`ReplicatedFirst`:** use it only for a loading screen or other very early client code.\n- **Grouping:** once you have several systems, group by feature (`Server/Combat`, `Client/Combat`, `Shared/Combat`). Until then, a flat list per side is fine. Pick one pattern and stick to it.\n- **Naming:** use PascalCase for folders, scripts and module tables, camelCase for functions and locals, and UPPER_SNAKE_CASE for constants.\n\n**Rojo gotcha:** by default, a `*.client.luau` file builds a `LocalScript`, which never runs from `ReplicatedStorage`. Set `\"emitLegacyScripts\": false` in your project file so it builds a `Script` with `RunContext = Client`.\n\nThree answers would let me tailor this and, if you want, build it:\n1. Do you want to author code in Studio only, or in an external editor with Git? I'd recommend Rojo. Script Sync is the alternative. A filesystem source of truth is easier for me to read, check and verify.\n2. What kind of game is it, and does it save player data? That decides whether you need a data layer and how much Remote surface you'll have.\n3. Are you open to third-party libraries (networking, data stores), or do you want plain modules?",
+ "cost": 0.0720847,
+ "turns": 5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13551,
+  "cache_read_input_tokens": 43587,
+  "output_tokens": 1351,
+  "output_tokens_details": {
+   "thinking_tokens": 133
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13551,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1002,
+    "cache_read_input_tokens": 18821,
+    "cache_creation_input_tokens": 3897,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3897
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,79 @@
+{
+ "id": "rokit-stylua",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Bash",
+   "rokit --version; rokit list 2>&1 | head -20"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-haiku-old-4\\rokit.toml"
+  ]
+ ],
+ "texts": [
+  "You want `stylua` and `selene` added to the existing `rokit.toml`, each pinned to its latest release. I'll look at the current file first, then check whether Rokit is available to resolve the versions.",
+  "Both tools are already in `rokit.toml`, so I didn't change the file:\n\n```toml\nstylua = \"JohnnyMorganz/StyLua@2.3.1\"\nselene = \"Kampfkarren/selene@0.29.0\"\n```\n\nI couldn't confirm that these are the latest releases. Bash is disabled in this session, so I couldn't run `rokit` to query GitHub, and I have no web access to check the release pages.\n\nTo check and bump them yourself, run this from the repo root:\n\n```\nrokit update\n```\n\n`rokit update` only updates tools already declared in `rokit.toml`. If you want the newest releases written in, run `rokit add JohnnyMorganz/StyLua --force` and `rokit add Kampfkarren/selene --force`. Those commands fetch the latest release and overwrite the existing entries.\n\nIf you'd rather I make the change, enable Bash or give me the latest version numbers and I'll update the two lines."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "Both tools are already in `rokit.toml`, so I didn't change the file:\n\n```toml\nstylua = \"JohnnyMorganz/StyLua@2.3.1\"\nselene = \"Kampfkarren/selene@0.29.0\"\n```\n\nI couldn't confirm that these are the latest releases. Bash is disabled in this session, so I couldn't run `rokit` to query GitHub, and I have no web access to check the release pages.\n\nTo check and bump them yourself, run this from the repo root:\n\n```\nrokit update\n```\n\n`rokit update` only updates tools already declared in `rokit.toml`. If you want the newest releases written in, run `rokit add JohnnyMorganz/StyLua --force` and `rokit add Kampfkarren/selene --force`. Those commands fetch the latest release and overwrite the existing entries.\n\nIf you'd rather I make the change, enable Bash or give me the latest version numbers and I'll update the two lines.",
+ "cost": 0.0026364300000000004,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8130,
+  "cache_read_input_tokens": 42433,
+  "output_tokens": 1171,
+  "output_tokens_details": {
+   "thinking_tokens": 469
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8130,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 523,
+    "cache_read_input_tokens": 16924,
+    "cache_creation_input_tokens": 373,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 373
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

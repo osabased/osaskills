@@ -1,0 +1,79 @@
+{
+ "id": "rokit-stylua",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Bash",
+   "which rokit; rokit --version 2>/dev/null; curl -sL https://api.github.com/repos/JohnnyMorganz/StyLua/releases/latest | grep '\"tag_name\"'; curl -sL https://api.github.com/repos/Kampfkarren/selene/releases/latest | grep '\"tag_name\"'"
+  ],
+  [
+   "Read",
+   "<runs>\\rokit-stylua-haiku-old-3\\rokit.toml"
+  ]
+ ],
+ "texts": [
+  "I'll read the existing `rokit.toml` first, then look up the latest StyLua and Selene releases.",
+  "`rokit.toml` already has both tools, so there's nothing to add. I also couldn't confirm the latest releases, so I haven't changed the file.\n\nThe current pins are:\n\n- `stylua = \"JohnnyMorganz/StyLua@2.3.1\"` (line 4)\n- `selene = \"Kampfkarren/selene@0.29.0\"` (line 5)\n\nI can't check GitHub from this session. Bash is disabled and I have no web tool, so I don't know what the latest StyLua and Selene tags are as of today. I won't guess version numbers.\n\nTo update them, pick one:\n\n1. **Paste the latest tags.** Send me the current StyLua and Selene release tags from their GitHub release pages, and I'll set both pins.\n2. **Run it yourself.** `rokit update stylua selene` upgrades both tools to their latest releases and rewrites the pins. If you'd rather pin by hand, `rokit add --force JohnnyMorganz/StyLua@<version>` and the same for `Kampfkarren/selene` do it too."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "`rokit.toml` already has both tools, so there's nothing to add. I also couldn't confirm the latest releases, so I haven't changed the file.\n\nThe current pins are:\n\n- `stylua = \"JohnnyMorganz/StyLua@2.3.1\"` (line 4)\n- `selene = \"Kampfkarren/selene@0.29.0\"` (line 5)\n\nI can't check GitHub from this session. Bash is disabled and I have no web tool, so I don't know what the latest StyLua and Selene tags are as of today. I won't guess version numbers.\n\nTo update them, pick one:\n\n1. **Paste the latest tags.** Send me the current StyLua and Selene release tags from their GitHub release pages, and I'll set both pins.\n2. **Run it yourself.** `rokit update stylua selene` upgrades both tools to their latest releases and rewrites the pins. If you'd rather pin by hand, `rokit add --force JohnnyMorganz/StyLua@<version>` and the same for `Kampfkarren/selene` do it too.",
+ "cost": 0.0026590500000000005,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8007,
+  "cache_read_input_tokens": 42405,
+  "output_tokens": 1266,
+  "output_tokens_details": {
+   "thinking_tokens": 573
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8007,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 741,
+    "cache_read_input_tokens": 16896,
+    "cache_creation_input_tokens": 278,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 278
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,105 @@
+{
+ "id": "upgrade-pinned-vide",
+ "group": "anchor",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "Vide has a new release, should we bump our pinned version?",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 1,
+ "loaded": [],
+ "reads": [
+  [
+   "roblox-resource-acquisition/libraries/roblox-vide/resource.yaml",
+   1695
+  ],
+  [
+   "roblox-resource-acquisition/references/keeping-current.md",
+   6494
+  ],
+  [
+   "roblox-resource-acquisition/versions.json",
+   3882
+  ]
+ ],
+ "steps": [
+  [
+   "Grep",
+   "(?i)vide"
+  ],
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-1\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\\libraries\\roblox-vide\\resource.yaml"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\\references\\keeping-current.md"
+  ],
+  [
+   "Read",
+   "<runs>\\upgrade-pinned-vide-haiku-old-1\\.claude\\skills\\roblox-resource-acquisition\\versions.json"
+  ],
+  [
+   "Bash",
+   "git ls-remote --tags https://github.com/centau/vide 2>&1 | tail -n 20; echo \"---HEAD\"; git ls-remote https://github.com/centau/vide HEAD 2>&1"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00445486,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15978,
+  "cache_read_input_tokens": 46816,
+  "output_tokens": 1581,
+  "output_tokens_details": {
+   "thinking_tokens": 678
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15978,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 597,
+    "cache_read_input_tokens": 21272,
+    "cache_creation_input_tokens": 3873,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3873
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,93 @@
+{
+ "id": "selene-pin-bump",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 4,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/rokit.toml"
+  ],
+  [
+   "Grep",
+   "selene"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-old-4\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\selene-pin-bump-haiku-old-4\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ],
+  [
+   "Grep",
+   "selene.*0\\.29\\.0|0\\.29\\.0"
+  ]
+ ],
+ "texts": [
+  "I read this as: update the `selene` line in `rokit.toml` to the newest Selene release, leaving other tools alone. Checking the file first.",
+  "The pin is `0.29.0`. Next I'll check the bundled `versions.json` for a recorded latest version, and read the full `rokit.toml`.",
+  "The skill's `versions.json` records Selene `0.32.0` as the latest reviewed release on 2026-10-11. I don't have a way to query GitHub from this session, so I'll use that as the target and flag it as unverified. Updating the pin now."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00289674,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 9147,
+  "cache_read_input_tokens": 42924,
+  "output_tokens": 1275,
+  "output_tokens_details": {
+   "thinking_tokens": 474
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9147,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 493,
+    "cache_read_input_tokens": 17420,
+    "cache_creation_input_tokens": 894,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 894
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}

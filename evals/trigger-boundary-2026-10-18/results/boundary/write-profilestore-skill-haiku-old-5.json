@@ -1,0 +1,103 @@
+{
+ "id": "write-profilestore-skill",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "acquisition",
+ "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "old",
+ "rep": 5,
+ "loaded": [
+  "tool:roblox-resource-acquisition"
+ ],
+ "reads": [
+  [
+   "roblox-resource-acquisition/references/writing-library-skills.md",
+   10848
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/{wally.toml,pesde.toml,aftman.toml,rokit.toml,package.json,*.project.json,wally.lock,pesde.lock}"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ],
+  [
+   "Skill",
+   "roblox-resource-acquisition"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-5\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\write-profilestore-skill-haiku-old-5\\.claude\\skills\\roblox-resource-acquisition\\references\\writing-library-skills.md"
+  ],
+  [
+   "Grep",
+   "(?i)profilestore"
+  ]
+ ],
+ "texts": [
+  "I'll read the project's dependency manifests to find the pinned ProfileStore version, and load the skill that covers writing roblox-* skills.",
+  "The skill says writing a library skill needs your request, which you've made. First I need the pinned ProfileStore version, so I'll read the manifests, the lock, and the writing reference.",
+  "I can't write this skill yet because the project doesn't pin ProfileStore.\n\n- `wally.toml` pins Janitor, LemonSignal and Charm.\n- `pesde.toml` pins Vide (git) and Blink (dev only).\n- There's no `wally.lock` or `pesde.lock`.\n- A search of the whole project finds ProfileStore only in the skill's own eval file and in `structure-roblox-projects/references/checks.md`, which mentions it as a general example.\n\nSo there's no version to pin the skill to. My understanding is that you want a `roblox-profilestore` library skill for the ProfileStore version you use, and that you may not have added it to the project yet. The library skill has to be written from the library's source at that exact version, and I don't have that source here.\n\nPlease answer these, and I'll proceed:\n\n1. **Which version?** Give the exact release (for example `1.x.y` from the Wally or pesde registry, or a git commit). Recommended: the latest release you've reviewed or plan to use. If you're not sure, I can check the current release, but you'd still need to confirm it.\n2. **Where does the pin live?** Recommended: add it to this project's manifest and install it through Wally or pesde, then write the skill against that pin. The other option is to write the skill without adding ProfileStore to the project; the skill would then say the project doesn't declare it, and it can't be checked against a lock.\n3. **Which package?** Recommended: the official ProfileStore package. Tell me if your copy is a fork or a mirror.\n4. **Should the skill also go into the shared catalog** (`osabased/osaskills`) for other projects? Recommended: no for now; keep it in this project's `.claude/skills/` and propose the catalog step later.\n\nOnce you answer, I'll add the pin if you want it, read the library's source at that version, write `roblox-profilestore` with a `resource.yaml` and the `## Check the pin` section, and validate it."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I can't write this skill yet because the project doesn't pin ProfileStore.\n\n- `wally.toml` pins Janitor, LemonSignal and Charm.\n- `pesde.toml` pins Vide (git) and Blink (dev only).\n- There's no `wally.lock` or `pesde.lock`.\n- A search of the whole project finds ProfileStore only in the skill's own eval file and in `structure-roblox-projects/references/checks.md`, which mentions it as a general example.\n\nSo there's no version to pin the skill to. My understanding is that you want a `roblox-profilestore` library skill for the ProfileStore version you use, and that you may not have added it to the project yet. The library skill has to be written from the library's source at that exact version, and I don't have that source here.\n\nPlease answer these, and I'll proceed:\n\n1. **Which version?** Give the exact release (for example `1.x.y` from the Wally or pesde registry, or a git commit). Recommended: the latest release you've reviewed or plan to use. If you're not sure, I can check the current release, but you'd still need to confirm it.\n2. **Where does the pin live?** Recommended: add it to this project's manifest and install it through Wally or pesde, then write the skill against that pin. The other option is to write the skill without adding ProfileStore to the project; the skill would then say the project doesn't declare it, and it can't be checked against a lock.\n3. **Which package?** Recommended: the official ProfileStore package. Tell me if your copy is a fork or a mirror.\n4. **Should the skill also go into the shared catalog** (`osabased/osaskills`) for other projects? Recommended: no for now; keep it in this project's `.claude/skills/` and propose the catalog step later.\n\nOnce you answer, I'll add the pin if you want it, read the library's source at that version, write `roblox-profilestore` with a `resource.yaml` and the `## Check the pin` section, and validate it.",
+ "cost": 0.0049146400000000005,
+ "turns": 9,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15562,
+  "cache_read_input_tokens": 44814,
+  "output_tokens": 2707,
+  "output_tokens_details": {
+   "thinking_tokens": 1182
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15562,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1310,
+    "cache_read_input_tokens": 19306,
+    "cache_creation_input_tokens": 5423,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5423
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "acquisition",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

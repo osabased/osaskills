@@ -1,0 +1,94 @@
+{
+ "id": "setup-wally-new-project",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "set up Wally for a new project",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ],
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ],
+  [
+   "Read",
+   "<runs>\\setup-wally-new-project-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ]
+ ],
+ "texts": [
+  "I'll load the Roblox project-structure skill, since it covers first-time Wally setup.",
+  "My understanding: you want Wally (the Roblox package manager) set up in a new Roblox project. The working directory has nothing in it except `.claude/`, so I'd be starting from scratch. I haven't changed anything yet.\n\nA few answers would change the setup. My recommendation is first in each case.\n\n1. **Project state:** is this a fresh project, or does a place already exist in Studio or elsewhere that this should attach to?\n   - Recommended: fresh project, files in this directory.\n2. **Sync workflow:** how do you want the code to reach Studio?\n   - Recommended: Rojo, with Rokit pinning the tool versions (`rojo`, `wally`, `stylua`, `selene`).\n   - Alternative: Studio Script Sync.\n3. **Packages:** do you already know which Wally packages you want, such as Promise, Signal or Janitor?\n   - Recommended: none yet. I'd set up an empty `wally.toml` and the `Packages` and `ServerPackages` mappings, and you'd add packages when you need them.\n4. **Project name and scope:** what should the Wally package name be, in `scope/name` form? The scope should be your Wally username. If you have no scope yet, I can leave a placeholder for you to fill in.\n5. **Extra tooling:** should I add StyLua, Selene, luau-lsp, a single check command, and a Stop hook?\n   - Recommended: yes, sized small, because you didn't mention a team.\n   - Alternative: Wally and Rojo only.\n6. **Setup type:** is the setup just for you or shared with others?\n   - Recommended: personal, which keeps the agent setup out of Git and CI.\n   - Alternative: shared.\n\nOnce you answer, I'll propose the exact file layout, covering `rokit.toml`, `wally.toml`, `default.project.json` and the folder mappings. I'll build it after you approve."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "My understanding: you want Wally (the Roblox package manager) set up in a new Roblox project. The working directory has nothing in it except `.claude/`, so I'd be starting from scratch. I haven't changed anything yet.\n\nA few answers would change the setup. My recommendation is first in each case.\n\n1. **Project state:** is this a fresh project, or does a place already exist in Studio or elsewhere that this should attach to?\n   - Recommended: fresh project, files in this directory.\n2. **Sync workflow:** how do you want the code to reach Studio?\n   - Recommended: Rojo, with Rokit pinning the tool versions (`rojo`, `wally`, `stylua`, `selene`).\n   - Alternative: Studio Script Sync.\n3. **Packages:** do you already know which Wally packages you want, such as Promise, Signal or Janitor?\n   - Recommended: none yet. I'd set up an empty `wally.toml` and the `Packages` and `ServerPackages` mappings, and you'd add packages when you need them.\n4. **Project name and scope:** what should the Wally package name be, in `scope/name` form? The scope should be your Wally username. If you have no scope yet, I can leave a placeholder for you to fill in.\n5. **Extra tooling:** should I add StyLua, Selene, luau-lsp, a single check command, and a Stop hook?\n   - Recommended: yes, sized small, because you didn't mention a team.\n   - Alternative: Wally and Rojo only.\n6. **Setup type:** is the setup just for you or shared with others?\n   - Recommended: personal, which keeps the agent setup out of Git and CI.\n   - Alternative: shared.\n\nOnce you answer, I'll propose the exact file layout, covering `rokit.toml`, `wally.toml`, `default.project.json` and the folder mappings. I'll build it after you approve.",
+ "cost": 0.0818248,
+ "turns": 6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 16454,
+  "cache_read_input_tokens": 47168,
+  "output_tokens": 1128,
+  "output_tokens_details": {
+   "thinking_tokens": 129
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 16454,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 702,
+    "cache_read_input_tokens": 22413,
+    "cache_creation_input_tokens": 3208,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3208
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

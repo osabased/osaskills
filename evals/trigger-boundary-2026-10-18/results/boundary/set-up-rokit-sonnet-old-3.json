@@ -1,0 +1,99 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "sonnet",
+ "cond": "old",
+ "rep": 3,
+ "loaded": [
+  "tool:structure-roblox-projects"
+ ],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ]
+ ],
+ "steps": [
+  [
+   "Skill",
+   "structure-roblox-projects"
+  ],
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-sonnet-old-3\\scripts\\check.sh"
+  ],
+  [
+   "Bash",
+   "command -v rokit || ls \"$HOME/.rokit/bin\" 2>&1 | head"
+  ]
+ ],
+ "texts": [
+  "You want Rokit installed and a toolchain set up for this new, empty Roblox repo. I'll start with the project-structure skill, since it covers Rokit setup.",
+  "The repo already has config files, so I'll read them and check whether Rokit is installed.",
+  "I couldn't install Rokit, because this session has no tool that can run commands. Bash is disabled and I have no PowerShell tool. The repo isn't empty, though, so the toolchain config is already there.\n\n**What's already in the repo**\n- `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0.\n- `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n- `default.project.json`, `selene.toml`, `stylua.toml` and `wally.toml` are present.\n\n**To install Rokit, run this yourself in PowerShell**\n1. Download the Windows release from https://github.com/rojo-rbx/rokit/releases, or use the install command on the Rokit README.\n2. Run the downloaded `rokit` binary with the `self-install` argument, then open a new terminal so `~\\.rokit\\bin` is on your PATH.\n3. In this repo, run `rokit trust` for each tool author if it prompts, then `rokit install`.\n4. Run `rojo --version` and `stylua --version` to confirm the pinned versions are the ones that run.\n\nI'd rather not paste an install one-liner from memory, because I haven't verified the current URL or flags. If you give me a shell tool or allow Bash, I'll run the install and verify it.\n\n**Problems I noticed in the repo**\n- **Two package managers:** it has both `wally.toml` and `pesde.toml`, and the skill says not to run both on the same packages. `check.sh` only uses Wally. Which one do you want? I'd keep Wally, since `check.sh` already uses it, and delete `pesde.toml`.\n- **Possible gaps:** I saw no `wally.lock`, `.luaurc` or `sourcemap.json` in the first 100 files listed, so they may be missing. I haven't checked.\n- **Missing type check:** `check.sh` doesn't run `luau-lsp analyze`, even though luau-lsp is pinned.\n\nTell me which package manager to keep and whether to add the type-check step. Once you've answered, or given me a shell, I'll make those edits and run the check."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": "I couldn't install Rokit, because this session has no tool that can run commands. Bash is disabled and I have no PowerShell tool. The repo isn't empty, though, so the toolchain config is already there.\n\n**What's already in the repo**\n- `rokit.toml` pins rojo 7.7.1, wally 0.3.2, stylua 2.3.1, selene 0.29.0 and luau-lsp 1.58.0.\n- `scripts/check.sh` runs `rokit install`, `wally install`, `stylua --check src`, `selene src` and `rojo build`.\n- `default.project.json`, `selene.toml`, `stylua.toml` and `wally.toml` are present.\n\n**To install Rokit, run this yourself in PowerShell**\n1. Download the Windows release from https://github.com/rojo-rbx/rokit/releases, or use the install command on the Rokit README.\n2. Run the downloaded `rokit` binary with the `self-install` argument, then open a new terminal so `~\\.rokit\\bin` is on your PATH.\n3. In this repo, run `rokit trust` for each tool author if it prompts, then `rokit install`.\n4. Run `rojo --version` and `stylua --version` to confirm the pinned versions are the ones that run.\n\nI'd rather not paste an install one-liner from memory, because I haven't verified the current URL or flags. If you give me a shell tool or allow Bash, I'll run the install and verify it.\n\n**Problems I noticed in the repo**\n- **Two package managers:** it has both `wally.toml` and `pesde.toml`, and the skill says not to run both on the same packages. `check.sh` only uses Wally. Which one do you want? I'd keep Wally, since `check.sh` already uses it, and delete `pesde.toml`.\n- **Possible gaps:** I saw no `wally.lock`, `.luaurc` or `sourcemap.json` in the first 100 files listed, so they may be missing. I haven't checked.\n- **Missing type check:** `check.sh` doesn't run `luau-lsp analyze`, even though luau-lsp is pinned.\n\nTell me which package manager to keep and whether to add the type-check step. Once you've answered, or given me a shell, I'll make those edits and run the check.",
+ "cost": 0.08309249999999999,
+ "turns": 8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 15644,
+  "cache_read_input_tokens": 46945,
+  "output_tokens": 1581,
+  "output_tokens_details": {
+   "thinking_tokens": 245
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15644,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 862,
+    "cache_read_input_tokens": 22219,
+    "cache_creation_input_tokens": 2592,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2592
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 0,
+ "stderr": "",
+ "written": {},
+ "route": "structure",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

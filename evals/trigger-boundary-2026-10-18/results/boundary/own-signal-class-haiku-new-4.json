@@ -1,0 +1,84 @@
+{
+ "id": "own-signal-class",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "neither",
+ "prompt": "write me a small Signal class, no library, I want to own it",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 4,
+ "loaded": [],
+ "reads": [],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-4\\src\\shared\\init.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-4\\src\\server\\Shop.luau"
+  ],
+  [
+   "Read",
+   "<runs>\\own-signal-class-haiku-new-4\\stylua.toml"
+  ],
+  [
+   "Bash",
+   "cd \"<runs>/own-signal-class-haiku-new-4\" && (which stylua selene luau luau-analyze rokit 2>&1; cat scripts/check.sh | head -40; cat default.project.json)"
+  ]
+ ],
+ "texts": [],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.004925280000000001,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 12002,
+  "cache_read_input_tokens": 45678,
+  "output_tokens": 4135,
+  "output_tokens_details": {
+   "thinking_tokens": 3555
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12002,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 3229,
+    "cache_read_input_tokens": 20143,
+    "cache_creation_input_tokens": 1026,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1026
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "PASS",
+ "cli": "2.1.296 (Claude Code)"
+}

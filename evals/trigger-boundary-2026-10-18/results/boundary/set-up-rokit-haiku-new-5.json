@@ -1,0 +1,117 @@
+{
+ "id": "set-up-rokit",
+ "group": "boundary",
+ "suite": "rra",
+ "kind": "trigger",
+ "expect": "structure",
+ "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+ "scaffold": "game",
+ "max_turns": 3,
+ "clones": [],
+ "model": "haiku",
+ "cond": "new",
+ "rep": 5,
+ "loaded": [],
+ "reads": [
+  [
+   "structure-roblox-projects/references/tooling.md",
+   4265
+  ],
+  [
+   "structure-roblox-projects/versions.json",
+   3236
+  ]
+ ],
+ "steps": [
+  [
+   "Glob",
+   "**/*"
+  ],
+  [
+   "Bash",
+   "where rokit 2>&1; where rojo 2>&1; where aftman 2>&1; echo \"---\"; ls -la ~ 2>&1 | head -30"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\rokit.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\scripts\\check.sh"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\wally.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\pesde.toml"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\default.project.json"
+  ],
+  [
+   "Glob",
+   ".claude/skills/structure-roblox-projects/**/*"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\references\\tooling.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\versions.json"
+  ]
+ ],
+ "texts": [
+  "I'll read the repo first, then check whether Rokit is already installed.",
+  "Bash is disabled in this session, so I can't run the installer directly. I'll read the existing config files and the setup guidance to see what the repo expects.",
+  "The repo already pins its tools in `rokit.toml`. I'll check the skill's tooling guide for the setup steps and whether the pins are current."
+ ],
+ "mcp_calls": null,
+ "denials": [],
+ "result": null,
+ "cost": 0.00403355,
+ "turns": 4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 13394,
+  "cache_read_input_tokens": 45915,
+  "output_tokens": 1790,
+  "output_tokens_details": {
+   "thinking_tokens": 540
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13394,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 370,
+    "cache_read_input_tokens": 20373,
+    "cache_creation_input_tokens": 2188,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2188
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "rc": 1,
+ "stderr": "",
+ "written": {},
+ "route": "neither",
+ "verdict": "FAIL",
+ "cli": "2.1.296 (Claude Code)"
+}
