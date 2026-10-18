@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
+- Behavioral scenarios cover three placement cases. The first is a client entrypoint in ReplicatedStorage, which builds as a `LocalScript` that never runs under default `emitLegacyScripts`. The second is a client-to-server Remote, with server validation and a test that rejects bad input. The third is dev content kept out of a release build. ([#PR](https://github.com/osabased/osaskills/pull/PR))
 - `script-sync.md` covers a Team Create place, where synced disk changes reach teammates live, before review. The agent asks whether the synced place is a shared session, and if it is, recommends a place file of the user's own in a private Git repository: a `team` branch refreshed from the team place, and delivery only when the conflict dialog lists nothing outside the reviewed diff. A behavioral scenario covers a team with no Git. ([#72](https://github.com/osabased/osaskills/pull/72))
 
 ### 2026-10-17
