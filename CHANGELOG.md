@@ -490,6 +490,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## bigger-picture
 
+### 2026-10-18
+
+#### Changed
+
+- The check prints tagged bullets instead of two packed paragraphs. Under **Helps the goal**, each bullet is tagged Done or Next, with "not asked for but needed" for a change the goal needs that the user didn't ask for. Under **Not needed for the goal**, Kept marks a change already made and left in place, and Skipped lists the plan steps dropped, which the user can ask to bring back. The Goal line is one short phrase with no steps. Each tag's changes share one bullet under 20 words, tag included, in place of the 80-word limit, and the check prints without the example's `>` quote markers, which Sonnet had copied. In an eval rerun on Sonnet, all 4 Goal lines ended at the outcome and 17 of 18 bullets were under 20 words; the miss was exactly 20.
+
 ### 2026-10-17
 
 #### Added

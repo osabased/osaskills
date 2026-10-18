@@ -22,6 +22,8 @@ PLAN = """# Plan: wishlist
 5. Show a wishlist count in the header.
 """
 IMPL = re.compile(r"`|\b[\w-]+\.(?:js|html|json|md)\b|\b\w+\(|localStorage|PUT\b|/api/")
+TAGS = ["Done", "Done, not asked for but needed", "Next", "Next, not asked for but needed", "Kept", "Skipped"]
+OFF = "Not needed for the goal"
 
 def clean_env():
     # Drop a parent Claude session's variables so the child uses its own login.
@@ -57,9 +59,25 @@ def turn(cli, prompt, proj, session, first, model, plugin_dir):
                 init=init, stderr=p.stderr[-300:])
 
 def block(text):
-    # The bigger-picture output: from its Goal line through the Off-goal paragraph.
-    m = re.search(r"(?:🎯\s*)?\**Goal(?: \(my reading[^)]*\))?:?\**:?.*?(?:Off-goal:?\**:?[^\n]*(?:\n(?!\n)[^\n]*)*)", text, re.S)
+    # The bigger-picture output: from its Goal line through the bullets under "Not needed for the goal".
+    m = re.search(r"(?:🎯\s*)?\**Goal\b.*?" + OFF + r"[^\n]*(?:\n[ \t>]*\n?[ \t>]*[-*•][^\n]*)*", text, re.S)
     return m.group(0) if m else None
+
+def bullets(out):
+    lines = [re.sub(r"^[\s>]*", "", l) for l in out.splitlines()]
+    return [re.sub(r"^[-*•]\s*", "", l) for l in lines if re.match(r"[-*•]\s", l)]
+
+def shape(out):
+    # Both headings, no quote markers, a Goal line without steps, known tags in the skill's order,
+    # one Skipped, every bullet under 20 words.
+    bs = bullets(out)
+    tags = [b.split(":")[0].strip("* ") for b in bs]
+    known = all(t in TAGS for t in tags)
+    quoted = re.search(r"^\s*>", out, re.M) is not None
+    steps = re.search(r"starting with|start(?:ing)? by|, then\b", out.splitlines()[0], re.I) is not None
+    short = all(len(b.split()) < 20 for b in bs)
+    return ("Helps the goal" in out and not quoted and not steps and known and short and len(tags) <= 6
+            and tags.count("Skipped") <= 1 and tags == sorted(tags, key=TAGS.index)), tags
 
 def grade(case, turns):
     checked = turns[case["check_from"]:]
@@ -68,14 +86,17 @@ def grade(case, turns):
     out = next((b for t in reversed(checked) if (b := block(t["text"]))), None)
     q = {}
     if out:
-        off = out[out.find("Off-goal"):].lower() if "Off-goal" in out else ""
-        q = dict(words=len(re.sub(r"[*🎯⚠️>]", "", out).split()), impl=sorted(set(IMPL.findall(out))),
+        off = out[out.find(OFF):].lower()
+        shape_ok, tags = shape(out)
+        q = dict(words=len(re.sub(r"[*🎯⚠️>]|^\s*[-•]\s", "", out, flags=re.M).split()),
+                 max_bullet_words=max((len(b.split()) for b in bullets(out)), default=0),
+                 shape_ok=shape_ok, tags=tags, impl=sorted(set(IMPL.findall(out))),
                  off_goal_hits=[w for w in case.get("off_goal", []) if w in off])
     e = case["expect"]
     # A check the user can't see doesn't count, so a trigger also needs the printed output.
-    if e == "trigger": ok = loaded_checked and out is not None
+    if e == "trigger": ok = loaded_checked and out is not None and q["shape_ok"]
     elif e == "none": ok = not loaded
-    else: ok = out is not None
+    else: ok = out is not None and q["shape_ok"]
     if ok and case.get("off_goal") and out is not None:
         ok = len(q["off_goal_hits"]) == len(case["off_goal"])
     return ("PASS" if ok else "FAIL"), dict(loaded=loaded, loaded_in_checked=loaded_checked, output=out, **q)
@@ -113,5 +134,6 @@ if __name__ == "__main__":
         (out / f"{r['id']}-{r['run']}.json").write_text(json.dumps(r, indent=1, ensure_ascii=False), encoding="utf-8")
         soft = " (soft)" if r["soft"] else ""
         print(f"{r['verdict']:5} {r['id']:15}{soft:7} run={r['run']} loaded={r['loaded_in_checked']} "
-              f"words={r.get('words')} impl={r.get('impl')} off={r.get('off_goal_hits')} ${r['cost']:.2f}")
+              f"words={r.get('words')} bullet<={r.get('max_bullet_words')} tags={r.get('tags')} "
+              f"impl={r.get('impl')} off={r.get('off_goal_hits')} ${r['cost']:.2f}")
     print("total cost $%.2f" % sum(r["cost"] for r in recs))

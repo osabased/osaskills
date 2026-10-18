@@ -18,30 +18,37 @@ Skip it for a change the user just asked for, a short exchange, or when nothing 
 
 ## Sort the changes
 
-1. **Recover the goal.** Take the user's request and any later corrections, and quote their words where you can. Quote the outcome they want, not the steps they asked for along the way. If the goal is unclear, give your reading and mark it "(my reading, correct me)".
+1. **Recover the goal.** Take the user's request and any later corrections, and state the outcome they want in one short phrase, in their words where you can, without the steps they asked for along the way. If the goal is unclear, give your reading and mark it "(my reading, correct me)".
 2. **Collect the changes.** Include the ones made since the user last weighed in or since the last check, and the ones you're about to make or propose.
-3. **Sort each one.** A change serves the goal when the goal needs it or it directly supports what the user asked for. Say how, in terms of what the user gets. A change the user didn't ask for still serves the goal when the goal needs it; put it under Serves it and say it wasn't asked for. Renames, tidy-ups, refactors and swaps that the goal doesn't need are off-goal, even when they're improvements.
-4. **Act on off-goal changes.** Drop planned ones from the plan and list them as dropped, so the user can ask for them back. Only an explicit ask brings one back; "keep going" means keep going without it. Flag ones already made and leave them in place.
+3. **Sort each one.** A change helps the goal when the goal needs it or it directly supports what the user asked for. Say how, in terms of what the user gets. A change the user didn't ask for still helps when the goal needs it; tag it "not asked for but needed". Renames, tidy-ups, refactors and swaps that the goal doesn't need are not needed for the goal, even when they're improvements.
+4. **Act on changes the goal doesn't need.** Drop planned ones from the plan and list them as Skipped, so the user can ask for them back. Only an explicit ask brings one back; "keep going" means keep going without it. List ones already made as Kept and leave them in place.
 
 ## Format
 
-Write these as normal lines (not a code block):
+Print the check as plain markdown, not in a code block and without the `>` quote markers this example sits in:
 
-> 🎯 **Goal:** "players keep their progress if they disconnect mid-match"
+> 🎯 **Goal:** players keep their progress if they disconnect mid-match
 >
-> **Serves it:** progress now saves the moment a player drops, and retries if that save fails. Planned: rejoin mid-match to confirm progress comes back.
+> **Helps the goal**
+> - Done: progress saves the moment a player drops and loads back when they rejoin
+> - Done, not asked for but needed: a failed save retries
+> - Next: test a mid-match disconnect on a live server
 >
-> ⚠️ **Off-goal:** settings menu was renamed (left in place). Dropped from the plan: folder reorganization and UI library swap; ask to bring either back.
+> ⚠️ **Not needed for the goal**
+> - Kept: settings menu renamed (already done)
+> - Skipped: folder reorganization, UI library swap. Ask to bring either back.
 
-When nothing is off-goal, say so; that is the answer to "why are we touching this?":
+When every change helps the goal, end with this line instead of the second list; that is the answer to "why are we touching this?":
 
-> ⚠️ **Off-goal:** nothing.
+> ⚠️ **Not needed for the goal:** nothing
 
+- End the Goal line at the outcome, even when the user named a first step. Write "players keep their progress if they disconnect mid-match", not "…, starting with a save when they drop"; the steps belong in the bullets.
+- Use only these tags, in this order: Done; Done, not asked for but needed; Next; Next, not asked for but needed; Kept; Skipped.
+- Put all the changes with one tag into one bullet, joined with commas or "and". Keep every bullet, its tag included, under 20 words; aim for about 15. Start a second bullet for that tag only when one can't fit. Name each Kept and Skipped change in a few words, since those are what the user checks.
 - Describe each change by what's different for the user or the product. Leave out file, function and code names and how a change works.
-- Group changes with the same purpose into one phrase, so the whole thing stays within 80 words even with many changes. List off-goal items individually, since those are what the user checks, a few words each.
-- Add nothing after the Off-goal line: no offers, reasons or caveats beyond "ask to bring it back".
+- End the Skipped bullet with "Ask to bring it back." ("either" or "any" for more than one). Add nothing after the last bullet: no offers, reasons or caveats.
 - Use only the two emoji shown, and drop them when the user asks for plain text or the output goes into a file, commit, PR, or another agent's prompt.
 
 ## Keep going
 
-Start the message that ends this turn with the three lines, in the format above, updated with anything you did after the check, even when that message also reports other work. Don't rephrase them into your own summary; the fixed shape is what lets the user find the check. Don't ask for approval or wait. After the lines, carry on with the on-goal work. When the user's question prompted the check, the three lines are the answer; add a sentence only if they asked something they don't cover. When then-what runs this, print it first and let then-what build its recommendation on the result without repeating the buckets.
+Start the message that ends this turn with the check, in the format above, updated with anything you did after it, even when that message also reports other work. Don't rephrase it into your own summary; the fixed shape is what lets the user find it. Don't ask for approval or wait. After the check, carry on with the work that helps the goal. When the user's question prompted the check, the check is the answer; add a sentence only if they asked something it doesn't cover. When then-what runs this, print it first and let then-what build its recommendation on the result without repeating the lists.
