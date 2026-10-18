@@ -108,6 +108,14 @@ Request: "Make this project easier for Claude to work in without me watching."
 
 Assess: asks once whether the setup is shared or personal, recommending personal since others work here. For personal, proposes the pointer in `CLAUDE.local.md`; the guide, check script and guards under `.claude/roblox/`; hooks and the allowlist in `.claude/settings.local.json`; each new path in the exclude file `git rev-parse --git-path info/exclude` names; and pre-push at the path `git rev-parse --git-path hooks/pre-push` names. Adds no CI, leaves the team's `CLAUDE.md`, `.gitignore` and CI untouched, and says the guards don't cover teammates and the setup won't reach other worktrees or cloud sessions. Writes nothing before review.
 
+## Personal setup beside a team AGENTS.md
+
+Fixture: the agent-ready fixture as a Git repository with commits from other authors, a team-written `AGENTS.md` that names the check command and a hard rule, no `CLAUDE.md`, and no agent setup.
+
+Request: "Set this up for Claude, just for me; don't touch the team's files."
+
+Assess: the proposed `CLAUDE.local.md` imports `@AGENTS.md` above the pointer, or the proposal names the `claude-md-and-agents-md` Project instructions setting as the alternative. It says that without either, adding `CLAUDE.local.md` stops Claude Code from reading `AGENTS.md`. Fails if the setup leaves the team's rules unloaded, copies `AGENTS.md` into the local file, or edits or adds a team-tracked file such as `AGENTS.md` or `CLAUDE.md`.
+
 ## Agent-ready under Script Sync
 
 Fixture: a game whose `ServerScriptService.Server` and `ReplicatedStorage.Shared` folders sync through Script Sync to `src/Server` and `src/Shared` in a Git repository. StyLua, Selene and luau-lsp are set up in the editor; there is no project file, check script or CI, and `CLAUDE.md` names the two roots. Server modules require shared ones through `ReplicatedStorage`.
