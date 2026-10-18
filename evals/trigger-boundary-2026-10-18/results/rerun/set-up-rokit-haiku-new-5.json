@@ -20,6 +20,10 @@
    4265
   ],
   [
+   "structure-roblox-projects/references/new-project.md",
+   3446
+  ],
+  [
    "structure-roblox-projects/versions.json",
    3236
   ]
@@ -34,12 +38,12 @@
    "**/*"
   ],
   [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-5\\rokit.toml"
+   "Bash",
+   "where.exe rokit 2>&1; where.exe aftman 2>&1; where.exe foreman 2>&1; echo \"---\"; powershell -NoProfile -Command \"Get-Command rokit -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\""
   ],
   [
    "Read",
-   "<runs>\\set-up-rokit-haiku-new-5\\scripts\\check.sh"
+   "<runs>\\set-up-rokit-haiku-new-5\\rokit.toml"
   ],
   [
    "Read",
@@ -47,38 +51,43 @@
   ],
   [
    "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\references\\new-project.md"
+  ],
+  [
+   "Read",
+   "<runs>\\set-up-rokit-haiku-new-5\\scripts\\check.sh"
+  ],
+  [
+   "Glob",
+   "*.exe"
+  ],
+  [
+   "Read",
    "<runs>\\set-up-rokit-haiku-new-5\\.claude\\skills\\structure-roblox-projects\\versions.json"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-5\\pesde.toml"
-  ],
-  [
-   "Read",
-   "<runs>\\set-up-rokit-haiku-new-5\\wally.toml"
-  ],
-  [
-   "Bash",
-   "command -v rokit && rokit --version; command -v git && git --version; command -v bash; echo \"exit=$?\""
   ]
  ],
  "texts": [
-  "I'll read the repo first, then install Rokit and add the toolchain (Rojo, StyLua, Selene, luau-lsp and whatever else the project needs). Loading the Roblox project-setup skill for the current Rokit guidance.",
-  "Here's what I think you want: install Rokit on this Windows machine, then pin and install the Roblox tools this repo uses in `rokit.toml`, so the project's check command runs. I'll read the existing config and the tooling reference first.",
-  "The repo already has a `rokit.toml` with five tools pinned, so this is mostly installing Rokit and restoring those pins. I also see both `wally.toml` and `pesde.toml`, which the tooling reference says not to run side by side. I'll check whether Rokit is already present."
+  "You want Rokit installed on this machine and a Rokit-managed toolchain (for example Rojo, Wally, StyLua, Selene) set up in this new Roblox project. I'll check the project's current state and follow the repo's setup guidance.",
+  "Bash is disabled in this session, so I can't run the Rokit installer or the toolchain commands myself. I'll read the project's existing toolchain files and the tooling reference so I can tell you exactly what to run.",
+  "The repo already has a `rokit.toml` pinning five tools. I'll check whether Rokit is already installed and compare these pins with the versions the skill was reviewed against."
  ],
  "mcp_calls": null,
- "denials": [],
+ "denials": [
+  [
+   "Glob",
+   "*.exe"
+  ]
+ ],
  "result": null,
- "cost": 0.00519329,
+ "cost": 0.00497338,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 18591,
-  "cache_read_input_tokens": 48099,
-  "output_tokens": 1987,
+  "cache_creation_input_tokens": 17673,
+  "cache_read_input_tokens": 48468,
+  "output_tokens": 1907,
   "output_tokens_details": {
-   "thinking_tokens": 860
+   "thinking_tokens": 639
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -86,7 +95,7 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 18591,
+   "ephemeral_1h_input_tokens": 17673,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
@@ -94,11 +103,11 @@
    {
     "input_tokens": 2,
     "output_tokens": 593,
-    "cache_read_input_tokens": 22558,
-    "cache_creation_input_tokens": 5200,
+    "cache_read_input_tokens": 22923,
+    "cache_creation_input_tokens": 3917,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 5200
+     "ephemeral_1h_input_tokens": 3917
     },
     "type": "message"
    }

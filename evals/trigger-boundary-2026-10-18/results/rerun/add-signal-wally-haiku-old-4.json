@@ -16,11 +16,11 @@
  "steps": [
   [
    "Glob",
-   "**/{wally.toml,wally.lock,default.project.json,*.project.json,aftman.toml,rokit.toml,foreman.toml}"
+   "**/{wally.toml,wally.lock,*.project.json,aftman.toml,rokit.toml,foreman.toml}"
   ],
   [
-   "Glob",
-   "**/*.{lua,luau,toml,json}"
+   "Grep",
+   "Signal|BindableEvent|:Connect\\("
   ],
   [
    "Read",
@@ -35,50 +35,29 @@
    "<runs>\\add-signal-wally-haiku-old-4\\rokit.toml"
   ],
   [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\server\\Shop.luau"
-  ],
-  [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\server\\PlayerData.luau"
-  ],
-  [
    "Grep",
-   "LemonSignal|Signal|Janitor|Charm|Packages|Wally|wally"
+   "Signal|BindableEvent|:Connect\\("
   ],
   [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\shared\\init.luau"
-  ],
-  [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\client\\init.client.luau"
-  ],
-  [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\client\\ShopButton.luau"
-  ],
-  [
-   "Read",
-   "<runs>\\add-signal-wally-haiku-old-4\\src\\server\\init.server.luau"
+   "Glob",
+   "{Packages,DevPackages,wally.lock}/**"
   ]
  ],
  "texts": [
-  "I'll start by looking at the project layout and whether a Wally manifest already exists.",
-  "The manifest already lists `LemonSignal`, so I'll check whether it's installed or referenced anywhere before deciding what \"add\" means here."
+  "I'll start by looking at the project's Wally setup and any existing signal or event code."
  ],
  "mcp_calls": null,
  "denials": [],
  "result": null,
- "cost": 0.00350154,
+ "cost": 0.0030633300000000004,
  "turns": 4,
  "usage": {
   "input_tokens": 6,
-  "cache_creation_input_tokens": 10262,
-  "cache_read_input_tokens": 42904,
-  "output_tokens": 2039,
+  "cache_creation_input_tokens": 9969,
+  "cache_read_input_tokens": 43443,
+  "output_tokens": 1269,
   "output_tokens_details": {
-   "thinking_tokens": 543
+   "thinking_tokens": 513
   },
   "server_tool_use": {
    "web_search_requests": 0,
@@ -86,19 +65,19 @@
   },
   "service_tier": "standard",
   "cache_creation": {
-   "ephemeral_1h_input_tokens": 10262,
+   "ephemeral_1h_input_tokens": 9969,
    "ephemeral_5m_input_tokens": 0
   },
   "inference_geo": "global",
   "iterations": [
    {
     "input_tokens": 2,
-    "output_tokens": 1013,
-    "cache_read_input_tokens": 17374,
-    "cache_creation_input_tokens": 2055,
+    "output_tokens": 355,
+    "cache_read_input_tokens": 17909,
+    "cache_creation_input_tokens": 1227,
     "cache_creation": {
      "ephemeral_5m_input_tokens": 0,
-     "ephemeral_1h_input_tokens": 2055
+     "ephemeral_1h_input_tokens": 1227
     },
     "type": "message"
    }
