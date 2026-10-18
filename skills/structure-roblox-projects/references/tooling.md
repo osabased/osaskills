@@ -1,6 +1,6 @@
 # Tooling
 
-Tool facts here were reviewed against the versions in [`versions.json`](../versions.json). Use this when setting up or changing a tool role a project needs. Keep a project's working tools and pins; adopting or upgrading one follows [keeping current](keeping-current.md). The [check command](checks.md#one-check-command) is where these run.
+Tool facts here were reviewed against the versions in [`versions.json`](../versions.json). Use this when setting up or changing a tool role a project needs. Keep a project's working tools and pins; adopting or upgrading one follows [keeping current](keeping-current.md). The [check command](checks.md#one-check-command) is where these run. The table lists one reviewed tool per role, not a required stack: another tool in a role is fine once its [contract](unfamiliar-stack.md) is worked out.
 
 | Tool | Role |
 | --- | --- |

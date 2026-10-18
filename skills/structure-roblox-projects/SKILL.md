@@ -5,7 +5,7 @@ description: "Structure Roblox/Luau projects and make them agent-ready. Use for 
 
 # Structure Roblox Projects
 
-Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill.
+Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill. Tools named here are examples of a role; a project's stack can be anything, and an [unfamiliar one](references/unfamiliar-stack.md) gets its contract worked out, not assumed.
 
 **First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping this skill current](references/keeping-current.md#keeping-this-skill-current). Skip silently if it can't run.
 
@@ -57,10 +57,11 @@ Be strict only where a mistake is permanent or a security hole. Libraries, the e
 | Formatter, linter, type checker, test runner, packages or tool versions | [Tooling](references/tooling.md) |
 | Move, rename, restructure or migrate | [Migration](references/migration.md) |
 | The project uses ModuleLoader SSA | [SSA](references/ssa.md) |
+| A sync tool, compiler (roblox-ts), loader, framework or test runner these references don't describe | [Unfamiliar stacks](references/unfamiliar-stack.md) |
 | Server Authority or Script Capabilities | [Engine modes](references/engine-modes.md) |
 | Adopting or upgrading a tool or library, or a claim about what is current | [Keeping current](references/keeping-current.md) |
 
-Reviews and designs stay read-only unless the user asks for the change; back each finding with its concrete effect on the project. Plugins, packages and compiler pipelines keep their own host and consumer contracts; use their documentation where these references don't cover them. Running a project's already-pinned tools needs no freshness research.
+Reviews and designs stay read-only unless the user asks for the change; back each finding with its concrete effect on the project. Plugins, packages and compiler pipelines keep their own host and consumer contracts; work them out from their documentation where these references don't cover them ([unfamiliar stacks](references/unfamiliar-stack.md)). Running a project's already-pinned tools needs no freshness research.
 
 ## Companion skill
 

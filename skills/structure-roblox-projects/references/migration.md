@@ -14,7 +14,7 @@ Use the full workflow only when the user asks for a migration, conversion or mig
 - `script.Name`, `GetFullName()`, and registrations derived from names or paths;
 - topology- or identity-sensitive discovery.
 
-Read the specialist reference when the current or target structure crosses its boundary: [Rojo](rojo.md), [Script Sync](script-sync.md), [engine modes](engine-modes.md), [SSA](ssa.md).
+Read the specialist reference when the current or target structure crosses its boundary: [Rojo](rojo.md), [Script Sync](script-sync.md), [engine modes](engine-modes.md), [SSA](ssa.md). For a sync tool, compiler or loader none of them describes, trace its mapping and discovery from its [contract](unfamiliar-stack.md).
 
 ## Write scope
 

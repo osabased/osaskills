@@ -1,6 +1,6 @@
 # Placement
 
-Use to choose an open layout, container, entrypoint, Remote or grouping, or to judge one in a review. During ordinary work, keep a coherent existing structure instead of normalizing it toward these defaults. A project on ModuleLoader SSA follows [ssa.md](ssa.md) for feature placement and lifecycle.
+Use to choose an open layout, container, entrypoint, Remote or grouping, or to judge one in a review. During ordinary work, keep a coherent existing structure instead of normalizing it toward these defaults. A project on ModuleLoader SSA follows [ssa.md](ssa.md) for feature placement and lifecycle; one on another loader or framework follows that tool's discovery and lifecycle rules, worked out as in [unfamiliar stacks](unfamiliar-stack.md).
 
 ## Source of truth
 

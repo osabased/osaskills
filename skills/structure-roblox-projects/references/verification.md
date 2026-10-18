@@ -11,7 +11,7 @@ Use when choosing how to verify a change, setting up tests, or running a Studio 
 | Play-test | Startup, replication, rendering, input | Studio Play with the current code in the place (the Rojo dev build served, Script Sync running, or edited in Studio), by hand or through Studio MCP | No |
 | Multiplayer | Several clients, ordering, latency, Server Authority rollback | Studio's multi-client test with network simulation | No |
 
-Design for the low rungs: split pure logic out of modules that touch Roblox APIs and keep the Roblox-facing shell thin, so most behavior is covered offline and in CI.
+Design for the low rungs: split pure logic out of modules that touch Roblox APIs and keep the Roblox-facing shell thin, so most behavior is covered offline and in CI. The tools in the How column are examples; another runner fills a rung when it reaches the same environment, such as Lune or a Studio edit-mode session, and its contract says which ([unfamiliar stacks](unfamiliar-stack.md)).
 
 ## Test runner facts
 
