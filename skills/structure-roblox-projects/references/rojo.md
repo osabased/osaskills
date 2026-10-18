@@ -26,7 +26,7 @@ default.project.json
 
 Assert the runtime topology the architecture needs: each entrypoint at its intended path with its intended class, appearing exactly once in the whole tree (a second mapping under another name is still a duplicate), and the shared dependencies it requires. A matching name somewhere in the tree doesn't prove parentage. Derive expected paths from the intended architecture, not by copying the current mapping, or the check repeats the mistake. Check the built `.rbxlx`, not only the sourcemap: the two can disagree (see below).
 
-[`check_rojo_artifact.py`](../scripts/check_rojo_artifact.py) checks a text `.rbxlx` and a sourcemap together (Python 3.11+; build both with the project's pinned Rojo):
+[`check_rojo_artifact.py`](../scripts/check_rojo_artifact.py) checks a text `.rbxlx` and a sourcemap together (Python 3.11+; build both with the project's pinned Rojo). Generate its sourcemap with `rojo sourcemap --include-non-scripts`: without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a Remote or a script-free folder is missing and a check on it fails. The editor's `sourcemap.json` can stay scripts-only.
 
 - `--require-path` asserts a full DataModel-relative path in both. A sourcemap rooted below DataModel keeps its root name as the first segment.
 - `--require-path-fragment` and `--forbid-path-fragment` are substring matches, for exclusion classes such as `.story`.

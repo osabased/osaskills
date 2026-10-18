@@ -65,6 +65,11 @@ def parse_class_requirement(value: str) -> ClassRequirement:
 def read_sourcemap(path: Path) -> ArtifactView:
     with path.open("r", encoding="utf-8") as stream:
         root = json.load(stream)
+    if root is None:
+        raise ValueError(
+            "sourcemap is null, which Rojo writes when no script is mapped; "
+            "build it with `rojo sourcemap --include-non-scripts`"
+        )
 
     paths: list[str] = []
     classes: Counter[str] = Counter()
