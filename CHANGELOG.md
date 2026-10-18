@@ -14,7 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
-- `rojo.md` has a table of which project file reads `emitLegacyScripts`, `servePlaceIds`, `blockedPlaceIds` and `globIgnorePaths` when wrappers point at a common tree. Observed on Rojo 7.7.1, the place-ID guards apply only in the file `rojo serve` is given, and a nested tree file's values are dropped. The dev wrapper is now described as holding the serve settings. Before, it was said to add nothing. ([#PR](https://github.com/osabased/osaskills/pull/PR))
+- `rojo.md` has a table of which project file reads `emitLegacyScripts`, `servePlaceIds`, `blockedPlaceIds` and `globIgnorePaths` when wrappers point at a common tree. Observed on Rojo 7.7.1, the place-ID guards apply only in the file `rojo serve` is given, and a nested tree file's values are dropped. The dev wrapper is now described as holding the serve settings. Before, it was said to add nothing. ([#75](https://github.com/osabased/osaskills/pull/75))
 
 ### 2026-10-17
 
