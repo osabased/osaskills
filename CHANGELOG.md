@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `script-sync.md` covers a Team Create place, where synced disk changes reach teammates live, before review. The agent asks whether the synced place is a shared session, and if it is, recommends a place file of the user's own in a private Git repository: a `team` branch refreshed from the team place, and delivery only when the conflict dialog lists nothing outside the reviewed diff. A behavioral scenario covers a team with no Git. ([#72](https://github.com/osabased/osaskills/pull/72))
 
+#### Changed
+
+- Real-Rojo tests fail instead of skipping when `REQUIRE_ROJO=1` is set, which CI and the update steps now set. New real-Rojo tests cover four behaviours the guidance relies on: a wrapper's `emitLegacyScripts` doesn't reach a nested tree, `.local.luau` and `.legacy.luau` build as ModuleScripts, `**/Preview/**` keeps the directory's init module, and `!` negation works in `globIgnorePaths`. The fixture's `rokit.toml` pins 7.7.1, and `script-sync.md` is listed with Rojo's files in `versions.json`, since it makes Rojo claims. ([#PR](https://github.com/osabased/osaskills/pull/PR))
+
 ### 2026-10-17
 
 #### Added

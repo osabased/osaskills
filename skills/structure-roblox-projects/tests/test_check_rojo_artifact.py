@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import functools
 import importlib.util
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -30,6 +32,23 @@ def rojo_runs() -> bool:
         except OSError:
             return False
     return result.returncode == 0
+
+
+ROJO_RUNS = rojo_runs()
+
+
+def needs_rojo(test):
+    """Skip a real-Rojo test where Rojo can't run, or fail it when REQUIRE_ROJO=1."""
+    if ROJO_RUNS:
+        return test
+    if os.environ.get("REQUIRE_ROJO") == "1":
+
+        @functools.wraps(test)
+        def fail(self: unittest.TestCase) -> None:
+            self.fail("REQUIRE_ROJO=1, but `rojo --version` doesn't run outside a toolchain project")
+
+        return fail
+    return unittest.skip("Rojo is not runnable here; set REQUIRE_ROJO=1 to fail instead")(test)
 
 
 def sourcemap(
@@ -213,7 +232,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                     ),
                 )
 
-    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    @needs_rojo
     def test_rojo_thin_profiles_keep_development_and_exclude_it_from_release(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -248,7 +267,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                 "tree": {"$path": "common.project.json"},
             }
             (root / "rokit.toml").write_text(
-                '[tools]\nrojo = "rojo-rbx/rojo@7.7.0"\n', encoding="utf-8"
+                '[tools]\nrojo = "rojo-rbx/rojo@7.7.1"\n', encoding="utf-8"
             )
             for name, project in (
                 ("common.project.json", common_project),
@@ -311,7 +330,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                 ),
             )
 
-    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    @needs_rojo
     def test_rojo_service_beside_root_path_duplicates_only_in_the_place_build(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -355,7 +374,7 @@ class ArtifactCheckerTests(unittest.TestCase):
             )
             self.assertEqual(["place: expected exactly one ReplicatedStorage, found 2"], failures)
 
-    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    @needs_rojo
     def test_rojo_client_script_in_replicated_storage_needs_client_run_context(self) -> None:
         local_script = "'ReplicatedStorage/Shared' is a LocalScript, expected Script"
         for emit_legacy, client_failures, server_context in (
@@ -380,7 +399,7 @@ class ArtifactCheckerTests(unittest.TestCase):
                     ),
                 )
 
-    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    @needs_rojo
     def test_rojo_wrong_run_context_fails_only_in_the_place(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             sourcemap_path, place_path = build_script_fixture(Path(directory), False)
@@ -539,6 +558,119 @@ class RequireClassTests(unittest.TestCase):
                 code, stderr = self.check(requirement)
                 self.assertEqual(2, code)
                 self.assertIn("--require-class", stderr)
+
+class RojoBehaviorTests(unittest.TestCase):
+    @needs_rojo
+    def test_rojo_wrapper_emit_legacy_scripts_does_not_reach_nested_tree(self) -> None:
+        for in_tree, expected in ((False, "LocalScript"), (True, "Script")):
+            with self.subTest(in_tree=in_tree), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "src").mkdir()
+                (root / "src" / "init.client.luau").write_text("print('client')\n", encoding="utf-8")
+                common_project: dict[str, object] = {
+                    "name": "Fixture",
+                    "tree": {
+                        "$className": "DataModel",
+                        "ReplicatedStorage": {
+                            "$className": "ReplicatedStorage",
+                            "Client": {"$path": "src"},
+                        },
+                    },
+                }
+                wrapper_project: dict[str, object] = {
+                    "name": "Fixture Wrapper",
+                    "tree": {"$path": "common.project.json"},
+                }
+                (common_project if in_tree else wrapper_project)["emitLegacyScripts"] = False
+                (root / "common.project.json").write_text(json.dumps(common_project), encoding="utf-8")
+                (root / "wrapper.project.json").write_text(json.dumps(wrapper_project), encoding="utf-8")
+                sourcemap_path, place_path = build_artifacts(self, root, "wrapper.project.json")
+                failures = CHECKER.check_artifacts(
+                    {
+                        "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                        "place": CHECKER.read_rbxlx(place_path),
+                    },
+                    required_classes=[f"ReplicatedStorage/Client={expected}"],
+                )
+                self.assertEqual([], failures)
+
+    @needs_rojo
+    def test_rojo_builds_local_and_legacy_suffixes_as_module_scripts(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "src").mkdir()
+            for name in ("Tool.local.luau", "Old.legacy.luau"):
+                (root / "src" / name).write_text("return {}\n", encoding="utf-8")
+            write_shared_project(root)
+            sourcemap_path, place_path = build_artifacts(self, root, "default.project.json")
+            failures = CHECKER.check_artifacts(
+                {
+                    "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                    "place": CHECKER.read_rbxlx(place_path),
+                },
+                required_classes=[
+                    "ReplicatedStorage/Shared/Tool.local=ModuleScript",
+                    "ReplicatedStorage/Shared/Old.legacy=ModuleScript",
+                ],
+            )
+            self.assertEqual([], failures)
+
+    @needs_rojo
+    def test_rojo_glob_ignore_keeps_init_module_and_honors_negation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preview = root / "src" / "Preview"
+            preview.mkdir(parents=True)
+            for path in (
+                preview / "init.luau",
+                preview / "Child.luau",
+                root / "src" / "Button.story.luau",
+                root / "src" / "Keep.story.luau",
+            ):
+                path.write_text("return {}\n", encoding="utf-8")
+            write_shared_project(
+                root, globIgnorePaths=["**/Preview/**", "**/*.story.luau", "!**/Keep.story.luau"]
+            )
+            sourcemap_path, place_path = build_artifacts(self, root, "default.project.json")
+            failures = CHECKER.check_artifacts(
+                {
+                    "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                    "place": CHECKER.read_rbxlx(place_path),
+                },
+                forbidden_fragments=["Preview/Child", "Button.story"],
+                required_classes=[
+                    "ReplicatedStorage/Shared/Preview=ModuleScript",
+                    "ReplicatedStorage/Shared/Keep.story=ModuleScript",
+                ],
+            )
+            self.assertEqual([], failures)
+
+
+def write_shared_project(root: Path, **fields: object) -> None:
+    project = {
+        "name": "Fixture",
+        **fields,
+        "tree": {
+            "$className": "DataModel",
+            "ReplicatedStorage": {
+                "$className": "ReplicatedStorage",
+                "Shared": {"$path": "src"},
+            },
+        },
+    }
+    (root / "default.project.json").write_text(json.dumps(project), encoding="utf-8")
+
+
+def build_artifacts(test: unittest.TestCase, root: Path, project: str) -> tuple[Path, Path]:
+    sourcemap_path = root / "sourcemap.json"
+    place_path = root / "place.rbxlx"
+    for command in (
+        ["rojo", "sourcemap", project, "--include-non-scripts", "-o", str(sourcemap_path)],
+        ["rojo", "build", project, "-o", str(place_path)],
+    ):
+        result = subprocess.run(command, cwd=root, check=False, capture_output=True, text=True)
+        test.assertEqual(0, result.returncode, result.stderr)
+    return sourcemap_path, place_path
 
 
 if __name__ == "__main__":
