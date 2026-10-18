@@ -70,6 +70,46 @@ def test_statuses_exit_codes_and_cache(tmp_path, monkeypatch, capsys):
     assert len(calls) == 4
 
 
+@pytest.mark.parametrize("reviewed, latest, outdated", [
+    ("1.2.3", "1.2.9", False),
+    ("0.7.4", "0.7.5", False),
+    ("1.2.3", "1.3.0", True),
+    ("0.7.4", "0.8.0", True),
+    ("1.2.3", "2.0.0", True),
+    ("1.2.3", "1.2.3", False),
+    ("1.2.3", "1.2.2", False),
+    ("1.2.3", "1.2.4-rc.1", True),
+    ("1.2.3", "1.3.0-rc.1", True),
+    ("1.2.3-rc.1", "1.2.3", False),
+    ("1.2.3-rc.1", "1.2.4", True),
+])
+def test_patch_only_bumps_are_not_outdated(reviewed, latest, outdated):
+    assert updates.is_outdated(updates.parse_version(reviewed), updates.parse_version(latest)) is outdated
+
+
+def test_patch_bump_is_reported_current_and_unparseable_is_unknown(tmp_path, monkeypatch):
+    monkeypatch.setattr(updates, "lookup", lambda source, allow: ("v1.2.9", "u"))
+    path = write_manifest(tmp_path, [{"id": "a", "name": "A", "source": {"npm": "a"}, "reviewed": "1.2.3"}])
+    assert [r["status"] for r in updates.check([path], None, 24)] == ["current"]
+    monkeypatch.setattr(updates, "lookup", lambda source, allow: ("nightly", "u"))
+    assert [r["status"] for r in updates.check([path], None, 24)] == ["unknown"]
+
+
+def test_default_cache_follows_the_plugin_data_directory(tmp_path, monkeypatch):
+    monkeypatch.delenv("CLAUDE_PLUGIN_DATA", raising=False)
+    assert updates.default_cache() == updates.DEFAULT_CACHE
+    monkeypatch.setenv("CLAUDE_PLUGIN_DATA", str(tmp_path / "data"))
+    assert updates.default_cache() == tmp_path / "data" / "update-check.json"
+
+    calls = []
+    monkeypatch.setattr(updates, "lookup", lambda source, allow: calls.append(source) or ("1.3.0", "u"))
+    path = write_manifest(tmp_path, [{"id": "a", "name": "A", "source": {"npm": "a"}, "reviewed": "1.2.3"}])
+    assert updates.main([str(path)]) == 1
+    assert (tmp_path / "data" / "update-check.json").exists()
+    assert updates.main([str(path)]) == 1
+    assert len(calls) == 1
+
+
 def test_all_unknown_is_exit_2_and_all_current_is_exit_0(tmp_path, monkeypatch):
     monkeypatch.setattr(updates, "lookup", lambda source, allow: (_ for _ in ()).throw(OSError("offline")))
     path = write_manifest(tmp_path, [{"id": "a", "name": "A", "source": {"npm": "a"}, "reviewed": "1.0.0"}])

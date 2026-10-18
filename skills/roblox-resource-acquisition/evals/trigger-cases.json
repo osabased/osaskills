@@ -9,9 +9,14 @@
     {"id": "pesde-install-blink", "should_trigger": true, "query": "set up Blink for networking in this pesde project"},
     {"id": "upgrade-pinned-vide", "should_trigger": true, "query": "Vide has a new release, should we bump our pinned version?"},
     {"id": "devforum-resource", "should_trigger": true, "query": "found this DevForum community resource for pathfinding, is it any good to use?"},
-    {"id": "rokit-stylua", "should_trigger": true, "query": "add StyLua and Selene to the project's rokit toolchain"},
+    {"id": "rokit-stylua", "should_trigger": true, "query": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases"},
     {"id": "library-pin-mismatch", "should_trigger": true, "query": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now"},
     {"id": "roblox-ts-package", "should_trigger": true, "query": "which npm package should I use for state management in roblox-ts"},
+    {"id": "vide-skill-missing", "should_trigger": true, "query": "build this settings screen with Vide; the project has no roblox-vide skill yet"},
+    {"id": "write-profilestore-skill", "should_trigger": true, "query": "write a roblox-profilestore skill for our pinned ProfileStore version"},
+    {"id": "profilestore-wally-toml", "should_trigger": true, "query": "add ProfileStore to our wally.toml"},
+    {"id": "selene-pin-bump", "should_trigger": true, "query": "bump Selene's pinned version in rokit.toml to the latest release"},
+    {"id": "remove-janitor", "should_trigger": true, "query": "we no longer need Janitor, remove it from the project"},
     {"id": "use-adopted-janitor", "should_trigger": false, "query": "use our Janitor to clean up this tween when the frame is destroyed"},
     {"id": "folder-layout", "should_trigger": false, "query": "how should I organize ServerScriptService and ReplicatedStorage for a new game"},
     {"id": "fix-remote-bug", "should_trigger": false, "query": "my RemoteEvent fires twice on the client, help me debug it"},
@@ -19,6 +24,10 @@
     {"id": "npm-react-web", "should_trigger": false, "query": "add a date picker package to my React web app"},
     {"id": "luau-types", "should_trigger": false, "query": "explain Luau type refinement with typeof checks"},
     {"id": "rojo-serve-error", "should_trigger": false, "query": "rojo serve says port 34872 is in use"},
-    {"id": "python-deps", "should_trigger": false, "query": "pin my Python dependencies with uv"}
+    {"id": "python-deps", "should_trigger": false, "query": "pin my Python dependencies with uv"},
+    {"id": "setup-wally-new-project", "should_trigger": false, "query": "set up Wally for a new project"},
+    {"id": "first-time-selene-config", "should_trigger": false, "query": "configure Selene for the first time: selene.toml and the Roblox standard library"},
+    {"id": "set-up-rokit", "should_trigger": false, "query": "install Rokit and set up the toolchain for this new Roblox repo"},
+    {"id": "own-signal-class", "should_trigger": false, "query": "write me a small Signal class, no library, I want to own it"}
   ]
 }

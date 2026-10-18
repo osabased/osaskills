@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `script-sync.md` covers a Team Create place, where synced disk changes reach teammates live, before review. The agent asks whether the synced place is a shared session, and if it is, recommends a place file of the user's own in a private Git repository: a `team` branch refreshed from the team place, and delivery only when the conflict dialog lists nothing outside the reviewed diff. A behavioral scenario covers a team with no Git. ([#72](https://github.com/osabased/osaskills/pull/72))
 
+#### Changed
+
+- The description names first-time Rokit, Wally, pesde, StyLua, Selene, luau-lsp or Lest setup, and sends picking or upgrading a specific package to roblox-resource-acquisition.
+
 ### 2026-10-17
 
 #### Added
@@ -239,6 +243,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - First version: SKILL.md, `practices.md`, `preference-wizard.md` and OpenAI agent metadata. ([69a3285](https://github.com/osabased/osaskills/commit/69a3285))
 
 ## roblox-resource-acquisition
+
+### 2026-10-18
+
+#### Added
+
+- A Write a library skill mode in `SKILL.md`, and links from `writing-library-skills.md` to the GoodSignal and Rojo build examples, each with when to read it.
+- Eval cases for cloning a missing library skill, preferring the catalog pin, a pending install, carrying out an upgrade and a removal, writing a library skill, the boundary with structure-roblox-projects, writing your own Signal class, and freshness reports for used and unused libraries.
+
+#### Changed
+
+- The description covers adding, pinning or upgrading a specific Wally, pesde, npm or Rokit package or tool, and leaves first-time setup of the package manager or toolchain to structure-roblox-projects.
+- The freshness check reports only minor and major releases, and the agent mentions an outdated library only when the task uses it, then offers to update the skill and does so only when asked. The session hook's note says the same. The script skips its run when the hook's note is in context, and shares the hook's cache when `CLAUDE_PLUGIN_DATA` is set.
+- Cloned library skills are staged with the project's changes and committed only when the user asks.
+- A pending install's clone refusal is spelled out in `SKILL.md` step 3: follow the catalog copy under `libraries/` until the lock matches. The full clone rules live only in `library-skills.md`.
+- A behavior claim taken from reading source is labeled as read, not run, instead of being ruled out.
+- The missing-PyYAML error names the script that needs it and the `uv run` route, and an unsupported `pesde.lock` format says to check the pin by hand.
 
 ### 2026-10-17
 

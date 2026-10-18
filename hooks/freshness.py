@@ -44,9 +44,10 @@ def freshness_note() -> str:
         lines.append(f"- {r['name']} ({skill}): reviewed {r['reviewed']}, latest {r['latest']} - {r['url']}")
     lines.append(
         "Only if this session uses one of these skills: mention the relevant item when the task depends on it, "
-        "finish the user's task, then update the skill as its keeping-current reference describes "
-        f"({', '.join(f'{name}/{path}' for name, path in SKILLS.items())}): one pull request per item, "
-        "skipping items that already have an open PR. Never change the user's project pins for this."
+        "finish the user's task, then offer in one sentence to update the skill. Update it only when the user asks, "
+        "as its keeping-current reference describes "
+        f"({', '.join(f'{name}/{path}' for name, path in SKILLS.items())}). "
+        "Never change the user's project pins for this."
     )
     return "\n".join(lines)
 

@@ -5,6 +5,7 @@ Reads one or more versions.json manifests (default: the one beside this script's
 asks the item's source for its latest stable version: the Wally index, the npm registry, or
 GitHub releases (falling back to tags). Use the registry a library actually publishes to;
 some projects stop tagging GitHub releases while still publishing packages.
+Releases that differ from the pin only in the patch number are not reported.
 Standard library only. Results are cached for a day so routine use costs one lookup per day.
 
 Exit codes: 0 everything current; 1 at least one item is outdated; 2 no item could be checked.
@@ -31,6 +32,19 @@ VERSION = re.compile(r"(\d+)\.(\d+)(?:\.(\d+))?(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-
 DEFAULT_MANIFEST = Path(__file__).resolve().parent.parent / "versions.json"
 DEFAULT_CACHE = Path(tempfile.gettempdir()) / "osaskills-update-check.json"
 TIMEOUT = 15
+
+
+def default_cache() -> Path:
+    """The session-start hook's cache file when the plugin data directory is set, so both share lookups."""
+    data_dir = os.environ.get("CLAUDE_PLUGIN_DATA")
+    return Path(data_dir) / "update-check.json" if data_dir else DEFAULT_CACHE
+
+
+def is_outdated(reviewed: tuple[tuple[int, int, int], bool], latest: tuple[tuple[int, int, int], bool]) -> bool:
+    """A newer release counts unless it only bumps the patch of a stable pin."""
+    if latest[0] <= reviewed[0]:
+        return False
+    return reviewed[1] or latest[1] or latest[0][:2] != reviewed[0][:2]
 
 
 def parse_version(text: str) -> tuple[tuple[int, int, int], bool] | None:
@@ -129,6 +143,7 @@ def load_cache(path: Path, max_age: float) -> dict:
 
 def save_cache(path: Path, cache: dict) -> None:
     try:
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(cache, indent=1, sort_keys=True), encoding="utf-8")
     except OSError:
         pass  # A read-only temp dir only costs a repeat lookup.
@@ -167,7 +182,7 @@ def check(manifests: list[Path], cache_path: Path | None, max_age_hours: float) 
             if reviewed is None or current is None:
                 result.update(status="unknown", reason=f"cannot compare {item['reviewed']!r} with {found['latest']!r}")
             else:
-                result.update(latest=found["latest"].lstrip("vV"), url=found["url"], status="outdated" if current[0] > reviewed[0] else "current")
+                result.update(latest=found["latest"].lstrip("vV"), url=found["url"], status="outdated" if is_outdated(reviewed, current) else "current")
         else:
             result.update(status="unknown", reason=found.get("error", "not checked"))
         results.append(result)
@@ -181,7 +196,7 @@ def main(argv=None) -> int:
     parser.add_argument("manifests", nargs="*", type=Path, help="versions.json files (default: this skill's)")
     parser.add_argument("--json", action="store_true", help="print one JSON array instead of text")
     parser.add_argument("--no-cache", action="store_true", help="always query upstream")
-    parser.add_argument("--cache", type=Path, default=DEFAULT_CACHE, help=f"cache file (default {DEFAULT_CACHE})")
+    parser.add_argument("--cache", type=Path, default=default_cache(), help="cache file (default: update-check.json in $CLAUDE_PLUGIN_DATA, else a temp file)")
     parser.add_argument("--max-age-hours", type=float, default=24.0)
     args = parser.parse_args(argv)
     results = check(args.manifests or [DEFAULT_MANIFEST], None if args.no_cache else args.cache, args.max_age_hours)

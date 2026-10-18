@@ -111,6 +111,84 @@
         "Upgrades pins or changes recommended practice under the factual-correction permission.",
         "Claims the correction was applied or verified without rerunning the failing check."
       ]
+    },
+    {
+      "id": "missing-library-skill-clone",
+      "prompt": "Read-only simulation. The task is to build a settings screen with Vide in a Wally project at /fixture/game. wally.toml and wally.lock already declare Vide at 0.4.1, the catalog's pin. The project's .claude/skills has no roblox-vide folder, and CLAUDE.md is committed and shared. Other catalog libraries (Janitor, Charm) are declared nowhere in the project. State which commands you would run, what you would clone, and what you would tell the user.",
+      "accept": [
+        "Runs clone_children.py --project /fixture/game --status and sees roblox-vide declared PASS with clone missing.",
+        "Clones only roblox-vide, not Janitor, Charm or the rest of the catalog, then reads the clone's SKILL.md now because it loads as a skill only from the next session.",
+        "Stages the clone for the project's commit (shared setup) and tells the user what was added, without committing unasked.",
+        "Does not restart library selection or adoption: Vide is already declared and pinned."
+      ],
+      "reject": [
+        "Clones the whole catalog.",
+        "Commits the clone without being asked.",
+        "Changes the project's Vide pin or re-adopts it.",
+        "Skips reading the clone because the skill is not loaded yet."
+      ]
+    },
+    {
+      "id": "catalog-pin-preferred",
+      "prompt": "Read-only simulation. Add Janitor to this Wally project at /fixture/game so a feature can clean up connections. The user named Janitor, so no comparison is needed. wally.toml has no Janitor entry, and the project has no need for a specific Janitor version. The catalog has a roblox-janitor skill. No check has run yet. State the exact dependency line you would add and the follow-up steps.",
+      "accept": [
+        "Pins the catalog skill's version, 1.18.3, so the skill applies, rather than the newest release or a range.",
+        "Uses the exact Wally pin syntax, Janitor = \"howmanysmall/janitor@=1.18.3\" (a bare version is a caret range), then runs wally install and keeps wally.lock.",
+        "Runs the smallest checks (the require resolves, cleanup releases what it created) before calling it adopted, then clones roblox-janitor once its declared status is PASS.",
+        "Adds the CLAUDE.md resource-list entry naming the roblox-janitor skill only once the clone is in .claude/skills."
+      ],
+      "reject": [
+        "Pins a caret range or an unreviewed newer version while the catalog has a skill at 1.18.3.",
+        "Offers to write a new Janitor skill instead of cloning the catalog's.",
+        "Lists Janitor as adopted before the install and checks have run."
+      ]
+    },
+    {
+      "id": "pending-install-clone-refused",
+      "prompt": "Read-only simulation. A pesde project at /fixture/game just had Blink declared in pesde.toml at the catalog pin 0.18.9, but pesde install has not run here and pesde.lock has no Blink entry. clone_children.py --status reports roblox-blink declared FAIL because the lock lacks the library, and cloning is refused. The task needs a Blink schema. pesde is not installed in this environment. State what you do next and what you report.",
+      "accept": [
+        "Treats the refusal as a pending install, not a pin conflict: the declared pin matches the catalog and only the lock entry is missing.",
+        "Follows the catalog copy of roblox-blink under libraries/ for guidance until the install completes, and does everything that does not need the install.",
+        "Names what is missing (pesde install, the Blink lock entry) and gives the exact command to run it, then says to clone once the lock matches.",
+        "Does not keep retrying the clone, hand-edit pesde.lock, or change the pin to get PASS."
+      ],
+      "reject": [
+        "Reports the refusal as a blocker that stops all work.",
+        "Retries the clone repeatedly or hand-writes a lock entry.",
+        "Edits the skill's check or the pin to force a pass.",
+        "Calls the adoption complete."
+      ]
+    },
+    {
+      "id": "execute-upgrade",
+      "prompt": "Read-only simulation. The user asked to upgrade the project's pinned Charm from 0.10.0 to 0.11.1 in a Wally project at /fixture/game. The catalog's roblox-charm targets 0.11.1, and the project has a roblox-charm clone made for 0.10.0 (clone other-pin). A guard in the project's check script is pinned to Charm 0.10.0. The release notes between the two versions list one breaking change in an API the project calls. Describe the steps you would take, in order.",
+      "accept": [
+        "Reads the release notes and breaking changes between 0.10.0 and 0.11.1 before changing the pin.",
+        "Updates the exact pin and wally.lock, then reruns the checks the breaking API affects.",
+        "Re-reviews the guard pinned to 0.10.0 and updates its version only after that review.",
+        "Re-clones roblox-charm because the catalog now pins 0.11.1, and updates the CLAUDE.md entry only if its text changed."
+      ],
+      "reject": [
+        "Upgrades without reading the notes between the versions.",
+        "Leaves the 0.10.0 guard or clone in place after the pin moves.",
+        "Edits the clone by hand instead of re-cloning.",
+        "Upgrades beyond the requested target."
+      ]
+    },
+    {
+      "id": "execute-removal",
+      "prompt": "Read-only simulation. The user asked to remove Janitor from a Wally project at /fixture/game. Janitor is in wally.toml, mapped through the existing Rojo Packages mapping, listed in CLAUDE.md with the roblox-janitor skill, and has a clone in .claude/skills. A grep shows two modules still require it. Describe the steps and what you report.",
+      "accept": [
+        "Confirms nothing still requires Janitor before deleting it: migrates the two remaining requirers, or pauses the removal and reports them.",
+        "Removes the dependency and its mappings, updates wally.lock, then removes the roblox-janitor clone and its CLAUDE.md entry.",
+        "Removes any guard tied to Janitor, and the whole resource-list block if nothing else is adopted.",
+        "Does not choose a replacement unasked: replacing needs the user's agreement."
+      ],
+      "reject": [
+        "Deletes the dependency while modules still require it.",
+        "Leaves the clone, the CLAUDE.md line or a guard behind.",
+        "Picks and installs a replacement library unasked."
+      ]
     }
   ]
 }

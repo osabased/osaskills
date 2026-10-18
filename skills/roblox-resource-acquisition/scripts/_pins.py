@@ -119,7 +119,7 @@ def npm_declared(resource: dict, install: dict, manifest: dict, lock: dict) -> N
 
 def pesde_declared(resource: dict, install: dict, manifest: dict, lock: dict) -> None:
     if lock.get("format") != 2:
-        raise Unavailable(f"pesde.lock is format {lock.get('format')!r}; this check reads format 2")
+        raise Unavailable(f"pesde.lock format {lock.get('format')!r} not supported (expects 2); check the pin by hand")
     environment = manifest.get("target", {}).get("environment")
     if environment not in {"roblox", "lune", "luau"} or lock.get("target") != environment:
         raise ValueError("pesde.toml and pesde.lock name different targets; run pesde install to sync the lock")

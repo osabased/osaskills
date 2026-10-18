@@ -4,22 +4,22 @@ This skill and its catalog of library skills track the latest stable release of 
 
 ## Check
 
-Run once per session, before relying on version-specific guidance. Results are cached for a day, so repeat runs are instant:
+Run once per session from this skill's folder, before relying on version-specific guidance. Results are cached for a day, so repeat runs are instant:
 
 ```sh
-python "PARENT/scripts/check_updates.py"
+python scripts/check_updates.py
 ```
 
-It needs only Python 3.9+ and network access. Exit 0 means everything is current, 1 means something is outdated, and 2 means nothing could be checked. If it can't run (no Python, no network), carry on and don't mention it unless the task depends on a version.
+It needs only Python 3.9+ and network access. It reports minor and major releases; a release that only bumps the patch number isn't reported. Exit 0 means everything is current, 1 means something is outdated, and 2 means nothing could be checked. If it can't run (no Python, no network), carry on and don't mention it unless the task depends on a version.
 
-In a plugin install, a session-start hook runs the same check and adds an "osaskills freshness check" note to the session when something is outdated; treat that note like this script's output.
+In a plugin install, a session-start hook runs the same check and adds an "osaskills freshness check" note to the session when something is outdated. When that note is present, don't run the script; treat the note as its output.
 
 When an item is outdated:
 
-- If the current task depends on it (for example, it uses Janitor and Janitor has a newer release), say so before using the guidance. Then use the project's pinned version as usual; the project's pin is what's installed.
-- Otherwise finish the user's task first, then mention the outdated items in one line.
+- If the current task uses it (for example, it uses Janitor and Janitor has a newer release), say so before using the guidance. Then use the project's pinned version as usual; the project's pin is what's installed.
+- Otherwise don't mention it.
 
-Then update the skill, as below, when you can. Don't hold up the user's task for it.
+After the task, offer in one sentence to update the skill for the items you mentioned. Update it, as below, only when the user asks; never start update work or open a pull request unasked.
 
 ## Update
 
@@ -39,6 +39,7 @@ Do one item (or one group of companions, such as the four Nevermore packages) pe
      - for an asset, `asset_sha256` of the new release file.
    - `SKILL.md`: the pinned version and the `## Check the pin` entries (the validator fails until they state the new pin), the Core API table, the example and the gotchas, so they match the new source. Remove gotchas the release fixed and add new ones.
    - Any affected `references/*.md`.
+   - Volatile facts that drift between releases: Blink's unreliable-payload byte limit (1000 bytes at 0.18.9) and the `pesde.lock` format the pin check reads (format 2).
    - The pin in the [catalog table](library-skills.md) and the repository `README.md` table.
 5. **Verify.**
    - Run `scripts/validate_skill.py libraries/roblox-<lib>`.

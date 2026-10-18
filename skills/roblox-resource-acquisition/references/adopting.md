@@ -23,7 +23,7 @@ Use the project's existing manager. Don't migrate managers as a side effect. Whe
 - **Wally:** add `name = "scope/package@=X.Y.Z"` for an exact pin (a bare `X.Y.Z` is a caret range), run `wally install`, and keep `wally.lock` in version control. Server-only packages go in `[server-dependencies]`. Regenerate type stubs (`wally-package-types`) if the project uses them.
 - **pesde:** add the dependency with an exact version (`version = "=X.Y.Z"`, or a git `rev`), run `pesde install`, and keep `pesde.lock`.
 - **npm (roblox-ts):** `npm install --save-exact <package>@X.Y.Z` and keep `package-lock.json`.
-- **Tools (Rokit):** `rokit add owner/tool@X.Y.Z`, which writes `rokit.toml`. Aftman is unmaintained; keep it only where the project already uses it.
+- **Tools (Rokit):** `rokit add owner/tool@X.Y.Z`, which writes `rokit.toml`. Aftman is unmaintained (as checked 2026-10); keep it only where the project already uses it.
 - **Vendored source or `.rbxm`:** record the source URL, version or commit and SHA-256 next to the file (for example in a header comment or the project guide), and preserve the license notice.
 
 Map the package into the DataModel through the project's existing Rojo mapping (normally `ReplicatedStorage/Packages` and `ServerScriptService/ServerPackages`). Never run install scripts or loaders you haven't inspected.
@@ -45,7 +45,7 @@ Re-check volatile facts (current version, API, deprecation) at adoption time ins
 
 ## Clone the library skill
 
-When the catalog has a skill for the library, run `clone_children.py --project PROJECT --status` and clone it when `declared` is `PASS` (see [library skills](library-skills.md#clone-into-a-project)), then read the clone's `SKILL.md` and commit the clone. While the install is pending, `declared` fails because the lock lacks the library: follow the catalog copy under `libraries/` until then, and clone once the lock matches. When the project pins another version, don't clone; say the catalog's guidance doesn't cover this pin. When the catalog has none, offer to [write one](writing-library-skills.md) in one sentence, and write it only when the user asks.
+When the catalog has a skill for the library, clone it as [library skills](library-skills.md#clone-into-a-project) describes, including pending installs and other pins, and read the clone's `SKILL.md`. When the catalog has none, offer to [write one](writing-library-skills.md) in one sentence, and write it only when the user asks.
 
 ## Keep the resource list in CLAUDE.md
 

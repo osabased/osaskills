@@ -13,7 +13,7 @@ This skill's `libraries/` folder is a catalog of library skills: one `roblox-<li
 | Blink: networking schema compiler | [roblox-blink](../libraries/roblox-blink/SKILL.md) | 0.18.9 |
 | Nevermore UI: Blend, Rx and Brio | [roblox-nevermore-ui](../libraries/roblox-nevermore-ui/SKILL.md) | Blend 12.50.2, Rx 13.34.2, Brio 14.37.2, loader 10.11.3 |
 
-Each skill's `resource.yaml` holds its exact pin and how a project declares it ([contract 2](writing-library-skills.md#resourceyaml)). Its `## Check the pin` section names the manifest entry and lock key that match, so it works without any script. Read each skill's advice-only or executable boundary before relying on it.
+Each skill's `resource.yaml` holds its exact pin and how a project declares it, in the current library-skill format ([contract 2](writing-library-skills.md#resourceyaml), `schema_version: 2`). Its `## Check the pin` section names the manifest entry and lock key that match, so it works without any script. Its `claim_scope` says whether the guidance is `advice-only` (reviewed from source and docs) or `executable-integration` (its examples come from a fixture that runs); read it before relying on the skill. The scripts and their JSON call a library skill a child (`clone_children.py`, the `child` key).
 
 `structure-roblox-projects` is a separate skill, not a library skill.
 
@@ -37,11 +37,11 @@ It needs Python 3.11+ with PyYAML; `uv run --no-project --python ">=3.11" --with
 Cloning writes `PROJECT/.claude/skills/<skill>/` and prints one JSON result per skill:
 
 - `cloned`, `refreshed` (with the changed files) or `current`: read the clone's `SKILL.md` and follow it. It loads as a skill from the next session on.
-- `refused` (exit 1): the folder holds a different skill, the project declares another version, or an existing clone targets another pin and the project doesn't declare the catalog's. Report the reason and leave the folder alone. Never change the project's pin to fit a catalog skill; to move the project to the catalog's version, [upgrade](adopting.md#upgrade-replace-or-remove).
+- `refused` (exit 1): the folder holds a different skill, the project declares another version, or an existing clone targets another pin and the project doesn't declare the catalog's. Report the reason and leave the folder alone. Never change the project's pin to fit a catalog skill; to move the project to the catalog's version, [upgrade](adopting.md#upgrade-replace-or-remove). When the project pins another version, say the catalog's guidance doesn't cover that pin.
 
-An `UNAVAILABLE` comparison still clones; say which check was skipped.
+An `UNAVAILABLE` comparison still clones; say which check was skipped. While an install is pending, the lock lacks the library and `declared` is `FAIL`: follow the catalog copy under `libraries/` until the lock matches, then clone.
 
-Commit clones with the project, so every checkout and cloud session has them. When the project's agent setup is personal to one developer (structure-roblox-projects puts its onboarding pointer in `CLAUDE.local.md`), list each clone in the exclude file `git rev-parse --git-path info/exclude` names instead, and say other checkouts won't have it. A refresh replaces the whole folder, so a local edit lasts only until the next one: fix the catalog instead (see "When a library skill is wrong" in this skill's `SKILL.md`) and re-clone.
+Stage clones with the project's changes and tell the user, so every checkout and cloud session gets them once committed; commit only when the user asks, like any change. When the project's agent setup is personal to one developer (structure-roblox-projects puts its onboarding pointer in `CLAUDE.local.md`), list each clone in the exclude file `git rev-parse --git-path info/exclude` names instead, and say other checkouts won't have it. A refresh replaces the whole folder, so a local edit lasts only until the next one: fix the catalog instead (see "When a library skill is wrong" in this skill's `SKILL.md`) and re-clone.
 
 ## The session hook
 
