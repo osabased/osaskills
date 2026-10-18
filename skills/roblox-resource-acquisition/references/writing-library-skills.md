@@ -10,6 +10,8 @@ Contents: [Before writing](#before-writing) · [SKILL.md](#skillmd) · [resource
 
 Understand the exact pinned library from its canonical source: the problem it solves and doesn't, installation and DataModel placement, the public API the skill will cover, client/server model, lifecycle and cleanup, configuration defaults, dependencies, failure modes, security boundaries, and how a project declares and locks it. A library you chose yourself should have passed its adoption checks first (see [adopting](adopting.md)). Writing a skill doesn't adopt or prove anything.
 
+A contract table from structure-roblox-projects is a starting point, not a skill. Use only its `read` rows quoted from the tool's own docs: Restore feeds `## Check the pin` and the install profile, and Startup, Boundaries and Check feed `## Core API` and `## Gotchas`. Project facts such as mapping paths stay in that project's guide, and everything else on this page still applies.
+
 ## SKILL.md
 
 Start from [the template](../templates/resource-skill-template.md). Name the skill `roblox-<library>` without a version; the pin goes in the body and `resource.yaml`.
@@ -84,4 +86,4 @@ A component cleans only what it created. Package-global schedulers may live for 
 
 ## Install
 
-Write a skill into `<project>/.claude/skills/<name>/` by default, or `~/.claude/skills/<name>/` on an explicit user-wide request. When other projects will use the same pin, also propose it for the catalog at `libraries/<name>/` in `osabased/osaskills` (with push access, as a pull request like those in [keeping current](keeping-current.md#update)); once merged, projects [clone it](library-skills.md#clone-into-a-project). Before writing, look at any existing folder at that path; if it belongs to a different skill, stop and report the collision instead of overwriting it. Keep one editable copy per scope. A new skill may only appear in a new session; confirm it is listed and that `/<name>` invokes it before calling it working.
+Write a skill into `<project>/.claude/skills/<name>/` by default, or `~/.claude/skills/<name>/` on an explicit user-wide request. When other projects will use the same pin, also propose it for the catalog at `libraries/<name>/` in `osabased/osaskills` (with push access, as a pull request like those in [keeping current](keeping-current.md#update)); once merged, projects [clone it](library-skills.md#clone-into-a-project). A skill built from a contract goes straight to that pull request, since the project's guide already holds the contract. Before writing, look at any existing folder at that path; if it belongs to a different skill, stop and report the collision instead of overwriting it. Keep one editable copy per scope. A new skill may only appear in a new session; confirm it is listed and that `/<name>` invokes it before calling it working.

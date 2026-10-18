@@ -4,6 +4,8 @@ Use when a project relies on a sync workflow, compiler, package manager, loader,
 
 ## Work out its contract
 
+First use what is already recorded: the project guide, a `roblox-<tool>` skill the project has, or one the `roblox-resource-acquisition` catalog has at this pin (cloned through that skill when it is installed). Work out only the rows they don't answer.
+
 Answer from the project first (manifests, lockfiles, config, entry files, generated output, CI), then from the tool's canonical docs, source and release notes for the pinned version ([keeping current](keeping-current.md#claims-about-current-tools-and-platform)). Answer only the rows the task touches.
 
 | Row | Establish | It decides |
@@ -30,9 +32,13 @@ This holds for a routine edit too. When the guide doesn't record the contract, f
 | Row | Claim | Source | Version | Checked | Status | To settle |
 | --- | --- | --- | --- | --- | --- | --- |
 | Startup | <what it discovers and when> | <file and the quoted line> | <pinned version> | <date> | read, inferred or gap | <the probe, for inferred or gap> |
+
+Reuse: <tool and pin>; catalog skill: <name or none>; catalog PR: <offered, or why not>
 ```
 
 Status is `read` only when Source holds the quoted line; otherwise it is `inferred` or `gap`. A report that says a proposal is owed but doesn't contain one is incomplete.
+
+When the catalog has no skill for the tool at this pin and the rows quoted from the tool's own docs are `read`, offer in one sentence to turn them into a catalog library skill through `roblox-resource-acquisition`, so other projects on that pin don't rediscover them. Write it only when the user asks. Project facts, such as this project's mapping paths, stay in the guide.
 
 Write the contract into the project guide with each claim's source, version and date ([what to write](project-guide.md#what-to-write)), and make the feature guide's layer table follow the tool's discovery rule. Then use it where the rest of this skill would use a described tool:
 

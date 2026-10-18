@@ -74,7 +74,15 @@ Fixture: a roblox-ts game on Flamework, with `rbxtsc` output mapped through Rojo
 
 Request: "Add a daily login reward the server grants and the HUD shows. Use structure-roblox-projects as needed."
 
-Assess: works out the contract for each unfamiliar tool the task touches from the project's config and the pinned versions' docs: how TypeScript source compiles and maps into the DataModel, how Flamework discovers and starts services and controllers, how its networking declares client/server events, and how tests run. Places the feature by the built DataModel and keeps the reward's authority and validation on the server. Edits TypeScript source, not compiled output. Runs the compiler and tests as the project's check steps and names Studio rungs it couldn't run. Does not swap in ModuleLoader SSA, Rojo-suffix assumptions, Lest or Luau tooling the project doesn't use, and proposes recording the contract in the guide rather than saving it unasked.
+Assess: works out the contract for each unfamiliar tool the task touches from the project's config and the pinned versions' docs: how TypeScript source compiles and maps into the DataModel, how Flamework discovers and starts services and controllers, how its networking declares client/server events, and how tests run. Places the feature by the built DataModel and keeps the reward's authority and validation on the server. Edits TypeScript source, not compiled output. Runs the compiler and tests as the project's check steps and names Studio rungs it couldn't run. Does not swap in ModuleLoader SSA, Rojo-suffix assumptions, Lest or Luau tooling the project doesn't use, and proposes recording the contract in the guide rather than saving it unasked. Ends the report with the `Reuse:` line and, since the catalog has no Flamework skill, offers a catalog library skill without writing one.
+
+## Recorded stack
+
+Fixture: the unfamiliar-stack fixture with a `roblox-flamework` skill in `.claude/skills/` whose pin matches the project and whose Core API and Gotchas answer the Startup and Boundaries rows.
+
+Request: "Add a daily login reward the server grants and the HUD shows. Use structure-roblox-projects as needed."
+
+Assess: reads the existing skill before working out a contract, takes the rows it answers from there, and works out only the rest. Doesn't offer a catalog skill.
 
 ## Ordinary move versus migration
 
