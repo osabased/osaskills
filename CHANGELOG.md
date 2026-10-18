@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to the two Roblox workflow skills, and from 2026-10-17 to bigger-picture and then-what, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
+Notable changes to the two Roblox workflow skills, from 2026-10-17 to bigger-picture and then-what, and from 2026-10-18 to think-tank, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The plugin has no version numbers, so each entry is dated by the day its change reached `main`. Before 2026-09-02 both skills lived at the repository root instead of under `skills/`.
 
@@ -503,3 +503,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 #### Changed
 
 - When the work so far includes changes the user didn't ask for, or the recommendation would be one, then-what loads bigger-picture first and builds its recommendation on the result. ([#67](https://github.com/osabased/osaskills/pull/67))
+
+## think-tank
+
+### 2026-10-18
+
+#### Added
+
+- think-tank puts a question to three fresh panelists, read-only `think-tank-member` agents that don't load CLAUDE.md, then sends each the other two answers for a debate round in which a change of position must name the argument or checked fact behind it. It reports the panel's recommendation with its tally before and after debate, each panelist's final position, where they split, and Claude's own take apart from the panel's. Run it with `/think-tank`, optionally naming a model or one per panelist, an effort, `--lenses` or `--quick`. ([#82](https://github.com/osabased/osaskills/pull/82))
