@@ -5,6 +5,8 @@ This checks the new [bigger-picture](../../skills/bigger-picture/) skill on two 
 - **Output.** Does it print the three-line Goal / Serves it / Off-goal block, in 80 words or fewer, with no file, function or API names, and with the off-goal plan steps listed?
 - **A reminder hook.** Does a UserPromptSubmit hook that nudges the agent every few prompts raise triggering? It was measured and not shipped.
 
+On 2026-10-18 the skill's output changed to tagged bullets, and `harness.py` now grades that shape; see [Tagged bullets](#tagged-bullets-results-tagged-2026-10-18). `results/` and `results-hook/` were graded with the three-line pattern below.
+
 Headless Claude Code 2.1.296 ran each case as one session: `claude -p` for the first turn, then `--resume` for each later one. Every case got a fresh copy of [scaffold/](scaffold/), a small static shop page with products, a header with a "Preferences" link, and a sign-in page. The plugin loaded from this checkout with `--plugin-dir` and `--add-dir`, which takes precedence over an installed osaskills. The parent session's `CLAUDE*`/`ANTHROPIC*` variables were dropped, but the normal user config loaded, including the user's global `CLAUDE.md`. Bash, PowerShell, web search and subagents were denied, and edits were accepted without a prompt.
 
 To rerun, from this folder: `python harness.py --plugin-dir <checkout> [--model sonnet] [--runs N] [--out results] [case-id ...]`. [`cases.json`](cases.json) has the turns, and each run writes one JSON record to `<out>/<model>/<case>-<run>.json`.
@@ -94,6 +96,29 @@ N was meant to be 10. These runs set it to 2 so it fired inside the short cases:
 
 The hook wasn't shipped: it barely moved Haiku, Sonnet already triggers without it, and it would add a line to every plugin user's sessions.
 
+### Tagged bullets (`results-tagged/`, 2026-10-18)
+
+The three-line block packed done, planned and unrequested changes into one "Serves it" paragraph, and made and dropped changes into one "Off-goal" line. The skill now prints a short Goal line that ends at the outcome, then bullets tagged Done, Next, Kept or Skipped under **Helps the goal** and **Not needed for the goal**. Each tag's changes share one bullet, joined with commas or "and". A bullet stays under 20 words, tag included, and a tag gets a second bullet only when one can't fit; this replaced the 80-word limit. The harness's block runs from the Goal line through the bullets under "Not needed for the goal". It passes when both headings are there, there are no `>` quote markers, the Goal line has no "starting with", "start by" or ", then" clause, the tags are known and in the skill's order, there is one Skipped bullet at most, and every bullet is under 20 words.
+
+`results-tagged/` holds exp-slash and pos-plan, twice each on Sonnet. The exp-slash runs used the final skill. The pos-plan runs came one round earlier, before the format rules said to end the Goal line at the outcome.
+
+| Case | Sonnet |
+| --- | --- |
+| exp-slash | 1/2 |
+| pos-plan | 2/2 |
+
+- **Every block had both headings and its tags in order**, with no implementation names. Both pos-plan runs listed the rename and the folder move as Skipped, and built the header count.
+- **All four Goal lines end at the outcome**, such as "your wishlist follows you across devices".
+- **17 of 18 bullets were under 20 words.** The miss was exactly 20, a "not asked for but needed" bullet that ended with a reason: "so a bad load can't overwrite the saved list".
+- **Heart, save and load took one or two Done bullets**, against three in the per-change round below. One exp-slash run still gave each of three unrequested changes its own "not asked for but needed" bullet. Blocks ran 54 and 83 words for pos-plan, and 91 and 82 for exp-slash.
+
+Five earlier rounds shaped the rules. Only the fifth round's pos-plan runs are kept:
+- **One bullet per tag, with a blockquoted example** (exp-slash, pos-plan and pos-unsure). Sonnet copied the `>` markers in all 5 blocks, which renders the Goal line outside the quote and the rest inside it, so the skill now says to print without them. Every run split changes into separate bullets despite the rule. One pos-unsure run answered in its own prose without loading the skill, the same kind of miss as the pos-why run above.
+- **One bullet per change, six at most.** All 4 blocks had the shape, but exp-slash ran 103 and 112 words, with heart, save and load in three bullets and one 25-word bullet.
+- **One bullet per tag, joined with commas, under 20 words**, with the example showing a joined bullet. Heart, save and load took one or two bullets. Two bullets came out at exactly 20 words, both carrying the six-word "Done, not asked for but needed" tag, so the limit now counts the tag.
+- **The limit inside an if-clause** ("if that bullet would reach 20 words, shorten it"). Bullets ran 21 to 26 words, so the limit went back to a plain sentence.
+- **The Goal rule only in Sort the changes** ("without the steps they asked for along the way"). 15 of 16 bullets were under 20 words, but both exp-slash Goal lines kept a "starting with a heart button" clause, so the format rules now say to end the Goal line at the outcome, with a contrast example.
+
 ## Limits
 
 - **Few runs:** 2 per case without the hook, 1 Sonnet run per case with it. Neither is enough to show a small change.
@@ -104,4 +129,5 @@ The hook wasn't shipped: it barely moved Haiku, Sonnet already triggers without 
 - **One project, one goal.** The cases all build the same wishlist in a small web page; longer or messier sessions are untested.
 - **The hook ran at N=2, not 10.** At 10 it fires far later in a session, so these runs say nothing about how a reminder lands after a long stretch of work.
 - **The hook script isn't in the repo.** Its reminder line is quoted above, and its runs used it registered under UserPromptSubmit in `hooks/hooks.json`.
-- **Spend:** about $19 for the earlier rounds, $10.15 for `results/` ($9.41 Sonnet, $0.74 Haiku) and $4.09 for `results-hook/` ($3.50 Sonnet, $0.59 Haiku).
+- **Spend:** about $19 for the earlier rounds, $10.15 for `results/` ($9.41 Sonnet, $0.74 Haiku) and $4.09 for `results-hook/` ($3.50 Sonnet, $0.59 Haiku). The tagged-bullet runs cost $10.08 for the earlier rounds and $1.92 for `results-tagged/`, all Sonnet.
+- **The tagged-bullet runs are Sonnet only**, 2 runs per case, and skip the trigger cases except pos-plan.
