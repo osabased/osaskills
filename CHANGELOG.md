@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - `rojo.md` says to build the checker's sourcemap with `rojo sourcemap --include-non-scripts`. Without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a `--require-class` check on a Remote failed. `check_rojo_artifact.py` now names the flag when a sourcemap is `null`. Before, it said only that sourcemap nodes must be JSON objects. Rojo writes a `null` sourcemap when no script is mapped. A real-Rojo test covers a Remote with and without the flag. ([#73](https://github.com/osabased/osaskills/pull/73))
 - A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#74](https://github.com/osabased/osaskills/pull/74))
+- `rojo.md` has a table of which project file reads `emitLegacyScripts`, `servePlaceIds`, `blockedPlaceIds` and `globIgnorePaths` when wrappers point at a common tree. Observed on Rojo 7.7.1, the place-ID guards apply only in the file `rojo serve` is given, and a nested tree file's values are dropped. The dev wrapper is now described as holding the serve settings. Before, it was said to add nothing. ([#75](https://github.com/osabased/osaskills/pull/75))
 
 ### 2026-10-17
 
