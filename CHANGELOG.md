@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
-- `unfamiliar-stack.md`: a method for any sync tool, compiler, loader, framework or test runner the references don't describe. The agent works out its mapping, startup, boundaries, restore, check and release contract from the project and the pinned version's docs (code it only copied from counts as a gap until the installed package's docs settle it), restores every manifest the check needs, puts a proposed guide diff in its report even after a routine edit, and uses it for placement, checks, guards and moves. ([#69](https://github.com/osabased/osaskills/pull/69))
+- `unfamiliar-stack.md`: a method for any sync tool, compiler, loader, framework or test runner the references don't describe. The agent works out its mapping, startup, boundaries, restore, check and release contract from the project and the pinned version's docs (a row counts as a gap until a quoted line from the tool's docs or type declarations answers it), restores every manifest the check needs, ends its report with a proposed guide diff in a set format even after a routine edit, and uses it for placement, checks, guards and moves. ([#69](https://github.com/osabased/osaskills/pull/69))
 - A behavioral scenario for a roblox-ts and Flamework project. ([#69](https://github.com/osabased/osaskills/pull/69))
 - `check_rojo_artifact.py --require-class PATH=Class[:RunContext]` asserts an instance's class, and for a `Script` its `RunContext` in the built place. It catches a default-settings `init.client.luau` in ReplicatedStorage, which builds as a `LocalScript` that never runs. Tested on Rojo 7.7.1 with `emitLegacyScripts` on and off. ([#66](https://github.com/osabased/osaskills/pull/66))
 

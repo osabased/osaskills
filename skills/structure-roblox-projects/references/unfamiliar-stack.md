@@ -18,13 +18,21 @@ Answer from the project first (manifests, lockfiles, config, entry files, genera
 
 Don't infer behavior from a name or from resemblance to a tool described here: a loader that looks like ModuleLoader still has its own discovery rule, and a compiler's file suffixes may not mean what Rojo's do. When a row has no answer from evidence, name the gap and what would settle it, such as a probe build of one file or a disposable module that logs whether discovery reached it in a play-test.
 
-Copying a neighbouring file's pattern doesn't establish a row: it shows what one file does, not the rule behind it. Before marking a row a gap, read what the installed package ships: its README or docs, its `package.json` and its type declarations. In the report, give each row the task touches one line saying how you know it, and mark a row you only inferred from existing code as a gap.
+Copying a neighbouring file's pattern doesn't establish a row: it shows what one file does, not the rule behind it. For each row the task touches, quote the line from the tool's own docs, README or type declarations (for an npm package, under `node_modules/<package>`) that answers it. A row with no quoted line is a gap, even when existing code suggests the answer.
 
 If restore or the check can't run, report the failing step and the pin behind it. Don't substitute another install, a global tool or an `npx` fetch of a same-named package; a result from a workaround in a scratch copy is reported as unverified.
 
 ## Record and apply it
 
-This holds for a routine edit too. When the guide doesn't record the contract, finish the task, then propose the rows you worked out as a guide diff for review ([save it](project-guide.md#save-it)); don't write it unasked. Put the diff in the final report as a fenced block, each row with its source, version and date. A report that says a proposal is owed but doesn't contain one is incomplete.
+This holds for a routine edit too. When the guide doesn't record the contract, finish the task, then propose the rows you worked out as a guide diff for review ([save it](project-guide.md#save-it)); don't write it unasked. End the report with the diff itself, one line per row:
+
+```markdown
+| Row | Claim | Source | Version | Checked | Status |
+| --- | --- | --- | --- | --- | --- |
+| Startup | <what it discovers and when> | <file and the quoted line> | <pinned version> | <date> | read, inferred or gap |
+```
+
+A report that says a proposal is owed but doesn't contain one is incomplete.
 
 Write the contract into the project guide with each claim's source, version and date ([what to write](project-guide.md#what-to-write)), and make the feature guide's layer table follow the tool's discovery rule. Then use it where the rest of this skill would use a described tool:
 
