@@ -14,6 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Changed
 
+- `rojo.md` says to build the checker's sourcemap with `rojo sourcemap --include-non-scripts`. Without the flag, Rojo 7.7.1 leaves out every instance that isn't a script or an ancestor of one, so a `--require-class` check on a Remote failed. `check_rojo_artifact.py` now names the flag when a sourcemap is `null`. Before, it said only that sourcemap nodes must be JSON objects. Rojo writes a `null` sourcemap when no script is mapped. A real-Rojo test covers a Remote with and without the flag. ([#73](https://github.com/osabased/osaskills/pull/73))
+- A personal setup in a repository with an `AGENTS.md` and no `CLAUDE.md` starts `CLAUDE.local.md` with `@AGENTS.md`. Under Claude Code's default Project instructions setting, a `CLAUDE.local.md` stops `AGENTS.md` from loading, so the pointer alone dropped the team's instructions. A behavioral scenario covers it. ([#74](https://github.com/osabased/osaskills/pull/74))
 - Real-Rojo tests fail instead of skipping when `REQUIRE_ROJO=1` is set, which CI and the update steps now set. New real-Rojo tests cover four behaviours the guidance relies on: a wrapper's `emitLegacyScripts` doesn't reach a nested tree, `.local.luau` and `.legacy.luau` build as ModuleScripts, `**/Preview/**` keeps the directory's init module, and `!` negation works in `globIgnorePaths`. The fixture's `rokit.toml` pins 7.7.1, and `script-sync.md` is listed with Rojo's files in `versions.json`, since it makes Rojo claims. ([#76](https://github.com/osabased/osaskills/pull/76))
 
 ### 2026-10-17

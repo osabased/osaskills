@@ -210,6 +210,13 @@ class ArtifactCheckerTests(unittest.TestCase):
                     with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
                         self.assertEqual(2, CHECKER.main([*base, *extra]))
 
+    def test_null_sourcemap_names_the_non_scripts_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            map_path = Path(directory) / "empty.sourcemap.json"
+            map_path.write_text("null", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "--include-non-scripts"):
+                CHECKER.read_sourcemap(map_path)
+
     def test_malformed_artifact_returns_exit_two(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -414,6 +421,55 @@ class ArtifactCheckerTests(unittest.TestCase):
                 ["place: 'ReplicatedStorage/Shared' has RunContext Client, expected Server"],
                 failures,
             )
+
+    @unittest.skipUnless(rojo_runs(), "Rojo is not runnable here")
+    def test_rojo_sourcemap_keeps_remotes_only_with_non_scripts_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shared = root / "src" / "shared"
+            (shared / "Remotes").mkdir(parents=True)
+            (shared / "Util.luau").write_text("return {}\n", encoding="utf-8")
+            (shared / "Remotes" / "Buy.model.json").write_text(
+                json.dumps({"className": "RemoteEvent"}), encoding="utf-8"
+            )
+            project = {
+                "name": "Fixture",
+                "tree": {
+                    "$className": "DataModel",
+                    "ReplicatedStorage": {
+                        "$className": "ReplicatedStorage",
+                        "Shared": {"$path": "src/shared"},
+                    },
+                },
+            }
+            (root / "default.project.json").write_text(json.dumps(project), encoding="utf-8")
+            place_path = root / "fixture.rbxlx"
+            result = subprocess.run(
+                ["rojo", "build", "-o", str(place_path)], cwd=root, check=False, capture_output=True, text=True
+            )
+            self.assertEqual(0, result.returncode, result.stderr)
+            missing = "sourcemap: 'ReplicatedStorage/Shared/Remotes/Buy' is missing"
+            for flags, expected in (([], [missing]), (["--include-non-scripts"], [])):
+                with self.subTest(flags=flags):
+                    sourcemap_path = root / "sourcemap.json"
+                    result = subprocess.run(
+                        ["rojo", "sourcemap", *flags, "-o", str(sourcemap_path)],
+                        cwd=root,
+                        check=False,
+                        capture_output=True,
+                        text=True,
+                    )
+                    self.assertEqual(0, result.returncode, result.stderr)
+                    self.assertEqual(
+                        expected,
+                        CHECKER.check_artifacts(
+                            {
+                                "sourcemap": CHECKER.read_sourcemap(sourcemap_path),
+                                "place": CHECKER.read_rbxlx(place_path),
+                            },
+                            required_classes=["ReplicatedStorage/Shared/Remotes/Buy=RemoteEvent"],
+                        ),
+                    )
 
 
 def build_script_fixture(directory: Path, emit_legacy: bool) -> tuple[Path, Path]:
