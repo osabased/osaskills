@@ -11,6 +11,7 @@
    "reviewed_on": "2026-10-11",
    "files": [
     "references/rojo.md",
+    "references/script-sync.md",
     "SKILL.md",
     "tests/test_check_rojo_artifact.py"
    ],

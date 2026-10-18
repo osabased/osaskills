@@ -9,7 +9,7 @@ Choose the smallest reliable solution for the actual task, and leave every libra
 
 **Library skill:** a `roblox-<library>` skill such as `roblox-janitor`, pinned to one reviewed version. This skill's [catalog](references/library-skills.md) holds them for Vide, Charm, UI Labs, Bootstrapper, Janitor, LemonSignal, Blink and Nevermore UI. They load only once cloned into a project's `.claude/skills/`.
 
-**Once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed), unless an "osaskills freshness check" note from the plugin's session-start hook is already in context. It reports minor and major releases. Mention an `OUTDATED` library only when the current task uses it, and offer to update the skill as in [keeping current](references/keeping-current.md); do it only when the user asks. Skip silently if it can't run.
+**Library versions:** when a task depends on a library skill's version-specific guidance and the project declares another version, follow the [check](references/keeping-current.md#check). Never change the project's pin to fit the skill.
 
 ## Start with the need
 

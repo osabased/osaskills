@@ -45,7 +45,7 @@ Stage clones with the project's changes and tell the user, so every checkout and
 
 ## The session hook
 
-In a plugin install, a session-start hook runs `--status` on the project. It names clones to add or refresh (a declared library at the catalog pin without a current clone, or a clone that differs from the catalog) and cloned skills whose pin the project's manifest or lock contradicts. Act on it only for libraries the session's task uses. For a mismatch, keep the project's pin, use only API you can confirm at that version, and tell the user.
+In a plugin install, a session-start hook runs `--status` on the project. It names clones to add or refresh (a declared library at the catalog pin without a current clone, or a clone that differs from the catalog) and cloned skills whose pin the project's manifest or lock contradicts. Act on it only for libraries the session's task uses. For a mismatch, keep the project's pin and follow the [check](keeping-current.md#check).
 
 ## Without Python or the plugin
 

@@ -92,6 +92,30 @@ Request: "Move this helper under the feature implementation folder and update ca
 
 Assess: traces and updates affected paths, preserves DataModel behavior, establishes proportionate recovery and checks, and avoids an unrelated full migration inventory.
 
+## Client entrypoint in ReplicatedStorage
+
+Fixture: a Rojo 7.7.1 project with `ReplicatedStorage.Client` mapped to `src/client` and `ServerScriptService.Server` to `src/server`, `emitLegacyScripts` unset, a server entrypoint, and no client entrypoint. The check builds the place.
+
+Request: "Add a client entrypoint that starts the HUD module."
+
+Assess: passes only if the client entrypoint will run. Either it is a `Script` with `RunContext = Client` in `ReplicatedStorage` (an `init.client.luau` there plus `emitLegacyScripts: false` in the file that holds the tree), or it is a `LocalScript` placed under `StarterPlayerScripts`. Before adding it, the agent says that the default setting builds `init.client.luau` as a `LocalScript`, which never runs in `ReplicatedStorage`. It names the change to the other `*.client.luau` and `*.server.luau` files that the setting causes. It asserts the class and `RunContext` in the built place, for example with `check_rojo_artifact.py --require-class`, and names a play-test as the proof that it starts. Fails if it adds a default-settings `init.client.luau` under `ReplicatedStorage`, or reports the entrypoint as working from the build alone.
+
+## Client-to-server Remote
+
+Fixture: a Rojo project with explicit server and client entrypoints, a server-owned `Shop` module holding prices and player coins, an empty `ReplicatedStorage/Remotes` folder, and a test runner the check calls.
+
+Request: "Let players buy an item from the shop UI."
+
+Assess: proposes the Remote before writing it, with its instance path and class, direction, caller and handler, and payload shape. The design keeps price, balance and ownership checks in `ServerScriptService` and trusts only the item ID from the client. The server handler rejects a wrong type, an unknown ID, an unaffordable item and calls past a rate limit. A test feeds the handler accepted and rejected payloads and fails if a rejected one changes coins or inventory. The guide or check gains the Remote's place, built with `rojo sourcemap --include-non-scripts` when the check asserts it there. Fails if the client sends a price or a coin delta, the server accepts the payload unchecked, or the validation has no test.
+
+## Dev content in a release build
+
+Fixture: the thin-wrapper Rojo layout (`common.project.json` with `default.project.json` and `release.project.json`), plus a new `src/client/Debug/init.luau` dev panel and a `Shop.spec.luau`. `release.project.json` ignores only `**/*.story.luau`. The check builds both wrappers but asserts only the dev one.
+
+Request: "Add a debug panel for testing purchases in Studio."
+
+Assess: decides ship or exclude for the panel and the spec, and adds both to the release wrapper's `globIgnorePaths` (`**/Debug` rather than `**/Debug/**`, which keeps the init module). It extends the check to assert in the release build that each dev-only item is absent and each singleton service appears once. It keeps the excluded source in type checks and tests. The panel returns early unless `RunService:IsStudio()`, since the dev sync can reach a published place. Fails if the release build still contains `Debug` or `.spec`, if only the dev build is checked, or if a service is added beside a wrapper's root `$path`.
+
 ## Make a project agent-ready
 
 Fixture: a working Rojo game with StyLua, Selene and luau-lsp configured but no check script, hooks or CI, and a sparse `CLAUDE.md`. A data module names its DataStore with a literal, and the README bans a networking library's client-to-server events because of a receive-side flaw.
@@ -107,6 +131,14 @@ Fixture: the agent-ready fixture as a Git repository with commits from three oth
 Request: "Make this project easier for Claude to work in without me watching."
 
 Assess: asks once whether the setup is shared or personal, recommending personal since others work here. For personal, proposes the pointer in `CLAUDE.local.md`; the guide, check script and guards under `.claude/roblox/`; hooks and the allowlist in `.claude/settings.local.json`; each new path in the exclude file `git rev-parse --git-path info/exclude` names; and pre-push at the path `git rev-parse --git-path hooks/pre-push` names. Adds no CI, leaves the team's `CLAUDE.md`, `.gitignore` and CI untouched, and says the guards don't cover teammates and the setup won't reach other worktrees or cloud sessions. Writes nothing before review.
+
+## Personal setup beside a team AGENTS.md
+
+Fixture: the agent-ready fixture as a Git repository with commits from other authors, a team-written `AGENTS.md` that names the check command and a hard rule, no `CLAUDE.md`, and no agent setup.
+
+Request: "Set this up for Claude, just for me; don't touch the team's files."
+
+Assess: the proposed `CLAUDE.local.md` imports `@AGENTS.md` above the pointer, or the proposal names the `claude-md-and-agents-md` Project instructions setting as the alternative. It says that without either, adding `CLAUDE.local.md` stops Claude Code from reading `AGENTS.md`. Fails if the setup leaves the team's rules unloaded, copies `AGENTS.md` into the local file, or edits or adds a team-tracked file such as `AGENTS.md` or `CLAUDE.md`.
 
 ## Agent-ready under Script Sync
 

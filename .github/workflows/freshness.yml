@@ -1,8 +1,8 @@
 name: Freshness
 
-# Weekly check that the Roblox skills still describe the latest stable release of every
-# tool and library they pin. Outdated items go into one tracking issue; an agent using
-# the skills (or you) updates them through a PR per skills/*/references/**/keeping-current.md.
+# Weekly list of tools and libraries the Roblox skills pin that have a newer stable release
+# than they were reviewed against. Items go into one tracking issue for the maintainer;
+# updates happen on demand through a PR per skills/*/references/**/keeping-current.md.
 
 on:
   schedule:

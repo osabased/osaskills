@@ -7,7 +7,7 @@ description: "Structure Roblox/Luau projects and make them agent-ready. Use for 
 
 Two jobs: put code where Roblox actually runs it, and give a Roblox project what an agent needs to work in it without a human watching. Keep a project's coherent structure, toolchain and pins. The defaults here are for choices the project hasn't made, and stack choices (libraries, frameworks) belong to the project, not to this skill. Tools named here are examples of a role; a project's stack can be anything, and an [unfamiliar one](references/unfamiliar-stack.md) gets its contract worked out, not assumed.
 
-**First, once per session:** run `python scripts/check_updates.py` from this skill's folder (cached for a day, no packages needed). If it prints `OUTDATED`, tell the user which tool has a newer release, and after the task follow [keeping this skill current](references/keeping-current.md#keeping-this-skill-current). Skip silently if it can't run.
+**Tool versions:** when a task depends on a tool's version-specific guidance here, compare the project's pin with the version it was reviewed against, as the [check](references/keeping-current.md#check) says. Never change the project's pins to fit the skill.
 
 ## Facts models get wrong
 

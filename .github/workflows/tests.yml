@@ -74,6 +74,8 @@ jobs:
           chmod +x "$HOME/.local/bin/rojo"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Run tests
+        env:
+          REQUIRE_ROJO: "1"
         run: python -m pytest -q -ra skills/structure-roblox-projects/tests
 
   vod-discovery:

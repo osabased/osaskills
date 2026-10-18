@@ -22,6 +22,7 @@ Before the first write to a project's agent setup, ask once whether it is shared
 A personal setup keeps every piece out of Git:
 
 - The pointer goes in `CLAUDE.local.md`; the team's `CLAUDE.md` and any `AGENTS.md` stay as they are.
+- Where the team has an `AGENTS.md` and no `CLAUDE.md`, start `CLAUDE.local.md` with `@AGENTS.md`. Claude Code reads `AGENTS.md` only when no `CLAUDE.md` or `CLAUDE.local.md` exists, unless the user's **Project instructions** setting is `claude-md-and-agents-md` ([memory docs](https://code.claude.com/docs/en/memory#when-claude-code-reads-agents-md)). So without the import, adding the pointer drops the team's instructions.
 - The guide, the check script and guards live under `AGENT_DIR/roblox/`, and hooks and the allowlist in `.claude/settings.local.json` ([checks](checks.md)).
 - Pre-push goes at the path `git rev-parse --git-path hooks/pre-push` names. If `core.hooksPath` is already set, leave it and report pre-push as not covered.
 - Each file or directory the setup adds, such as `/CLAUDE.local.md` and `/.claude/roblox/`, goes in the exclude file that `git rev-parse --git-path info/exclude` names, which belongs to this clone and is never committed: `printf '%s\n' /CLAUDE.local.md /.claude/roblox/ /.claude/settings.local.json >> "$(git rev-parse --git-path info/exclude)"`. Never exclude all of `/.claude/`, so files the team adds there later still show up. `.gitignore` is the team's.
