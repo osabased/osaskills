@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.11` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.12` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@62b89a54c1dd91e6c5b1aafa3e65901ffa734525"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@67145df0c10ec94f8706f672d872ea6435aa14df"
    ```
 
    On Windows, first stop rhr's background worker if one is running. It is two `python -m rhr.server` processes: one whose command line names the tool's own `roblox-headless-renderer\Scripts\python.exe`, in the folder `uv tool dir` prints, and the Python it starts, whose parent is that one. Stop both, and no other `rhr.server` process, since those belong to other rhr installs, such as a venv. PowerShell lists them: `Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" | Where-Object CommandLine -match 'rhr\.server' | Select-Object ProcessId, ParentProcessId, CommandLine`. While the worker runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -58,7 +58,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.11` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.12` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 

@@ -83,6 +83,7 @@ Translations run longer than English, and short strings the most. The average ex
 - A well that frames art takes the art's aspect ratio, with a `UIAspectRatioConstraint`: in a well of another shape, `ScaleType` Fit only letterboxes it.
 - Pixel art uses `ResampleMode` Pixelated.
 - Roblox UI has no blur, so a soft shadow or glow is an image.
+- Use an Image's id, not a Decal's: Roblox draws nothing for the id of a Decal, a Model or a sound, and neither does rhr. A Decal's `Texture` holds its Image's id. Once rhr has asked Roblox for such an id, `missingAssets` lists it as `not an image`; before that, as `offline` or `not downloaded`.
 - In stories, give images as `rbxassetid://` ids. rhr draws nothing for `rbxasset://` paths or `rbxthumb://` thumbnails, so the reviewer can't judge them ([known gaps](rendering.md#known-gaps)).
 
 ## Layering
