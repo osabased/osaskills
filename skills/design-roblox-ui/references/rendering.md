@@ -4,14 +4,14 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.6` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.10` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@fc3f53f2aa2efbae9e467980a8fa1dbfa9d835fa"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@97b98ccce5d97c008d84d051fb98adbebd6d75c8"
    ```
 
-   On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
+   On Windows, first stop rhr's background worker if one is running. It is two `python -m rhr.server` processes: one whose command line names the tool's own `roblox-headless-renderer\Scripts\python.exe`, in the folder `uv tool dir` prints, and the Python it starts, whose parent is that one. Stop both, and no other `rhr.server` process, since those belong to other rhr installs, such as a venv. PowerShell lists them: `Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" | Where-Object CommandLine -match 'rhr\.server' | Select-Object ProcessId, ParentProcessId, CommandLine`. While the worker runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
 3. `rhr doctor` lists what rhr uses and what is missing, and `rhr setup` installs the missing tools. rhr runs `rojo` in the story's folder, where a Rokit shim fails unless a `rokit.toml` there or above it lists Rojo.
 4. rhr downloads fonts and images through the Studio login on the machine. Without Studio, as in a cloud session or CI, downloads need `RHR_ROBLOX_API_KEY`: an Open Cloud API key, a user key with the `legacy-asset:manage` permission, which the user sets as a secret. Never ask for its value, paste it, or commit it.
 
@@ -30,7 +30,7 @@
 | `tablet` | iPad, 10th generation | 1180 by 820 | None | Yes | Touch | Small |
 | `console` | Xbox | 1920 by 1080 | None | No | Gamepad | Large |
 
-A story reads its preset's input in `UserInputService.PreferredInput`, the `…Enabled` flags and `GetLastInputType`, and its display size in `GuiService.ViewportDisplaySize`. Player settings are Roblox's defaults: Medium text, motion on, and a `PreferredTransparency` of 1. To render another variant, such as a gamepad on desktop or reduced motion, a story passes it in ([input](roblox-checklist.md#input)).
+A story reads its preset's input in `UserInputService.PreferredInput`, the `…Enabled` flags and `GetLastInputType`, its display size in `GuiService.ViewportDisplaySize`, and its gamepads in `GetConnectedGamepads`: Gamepad1 on `console`, none elsewhere. `GuiService:IsTenFootInterface()` is true only on `console`. Player settings are Roblox's defaults: Medium text, motion on, and a `PreferredTransparency` of 1. To render another variant, such as a gamepad on desktop or reduced motion, a story passes it in ([input](roblox-checklist.md#input)).
 
 ## The loop
 
@@ -53,17 +53,17 @@ Also useful:
 - `rhr batch check <target> + ui <target>` runs several commands in one call.
 - An `RhrIgnore` string attribute on an element silences findings about it: `all`, or check ids separated by commas. Say why in your summary.
 - `rhr check --ignore <check id>` leaves a check out of one run, such as `under-touch-controls` for a modal's story ([touch controls](roblox-checklist.md#touch-controls)).
-- `rhr ui --json` reports `missingAssets` and `notes`: what wasn't drawn exactly. `rhr layout --rich` marks text whose font was swapped with `fontSubstituted`. Read both before judging, and pass them to the reviewer with any weight drawn as a faux bold ([known gaps](#known-gaps)); a stand-in font says nothing about the real type.
+- `rhr ui --json` reports `missingAssets` and `notes`: what wasn't drawn exactly. Each image the picture leaves empty is in `missingAssets` with its `reason`, the `rect` it would cover in screen pixels (times `scale` on the PNG), and a `hint` where rhr knows how to get it drawn. `rhr layout --rich` marks text whose font was swapped with `fontSubstituted`. Read both before judging, and pass them to the reviewer with any weight drawn as a faux bold ([known gaps](#known-gaps)); a stand-in font says nothing about the real type.
 - Ask the user before rhr's first download in a project, since it uses their Roblox account. Until then, render with `--offline` (or `RHR_OFFLINE=1`) and list what's missing in the render notes.
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.6` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.10` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
-- An off-axis UIGradient draws too long: about 36% at 45°.
-- `rbxasset://` images draw nothing and aren't listed as missing.
+- A UIGradient on a UIStroke reaches its end colours a few pixels early at each end: rhr ramps across the object, where Studio's ramp runs past it (152 px across a 140 px frame with a 4 px Outer stroke).
+- Images that are files built into the Roblox client (`rbxasset://`) or thumbnails (`rbxthumb://`) draw nothing. `missingAssets` lists each, and `rhr check --min-severity info` reports it as `image-missing`.
 - Tiled and 9-sliced images have hard edges between their pieces, and UICorner on an ImageLabel is aliased.
 - One frame: tweens are drawn at their goals, and springs as they are 0.5 s in.
 - A bold or heavier weight that wasn't downloaded is drawn as a faux bold of a lighter weight the cache has, which usually runs narrower than the real one, and nothing reports it.
@@ -81,12 +81,13 @@ In the checks:
 
 - A finding can call a TextButton an ImageButton; go by its path.
 - Neither the checks nor `rhr hitmap` model `InputSink`. Buttons a story creates start at Activate, Roblox's default; ones from model or place files read None.
+- `under-touch-controls` goes by the preset, so a story that turns the controls off (`GuiService.TouchControlsEnabled = false`) still gets it: check that story with `--ignore under-touch-controls`.
 
 At run time:
 
-- While a story runs, only its target and ScreenGui have sizes: any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0 and don't change, since rhr lays the UI out afterwards. UI that arranges itself from an element's size renders as if it had none, so check it in a play-test.
-- Reading `GuiService.TouchControlsEnabled` errors, and `GuiService:IsTenFootInterface` and `UserInputService:GetConnectedGamepads` are missing.
+- While a story runs, rhr hasn't laid the UI out yet, so values Roblox works out in layout read as they do before layout, and don't change. The story's target and ScreenGui have the area's size and `AbsolutePosition` 0, 0. Any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0, as do `TextBounds`, `AbsoluteContentSize` and a grid's `AbsoluteCellSize`. UI that sizes itself from these renders as if they were zero: size it with AutomaticSize or a layout, which rhr lays out as Roblox does, or check it in a play-test. `TextFits` and an image's `IsLoaded` read true, so a loop that shrinks text until it fits, or waits for an image, goes on.
+- Some reads still error in a story: `ContentText`; a ViewportFrame's `CurrentCamera` (setting one works); and `Image`, `Font`, a UICorner's `CornerRadius` and a few other properties until the story sets them. A deprecated name such as `TextWrap`, `TextColor` or `BackgroundColor` does nothing when set, so `TextWrap = true` leaves the text unwrapped: use the current names (`TextWrapped`, `TextColor3`, `BackgroundColor3`).
 - `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
-What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, on-axis gradients, spring positions at 0.5 s, safe areas, and the touch controls' positions.
+What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, UIGradients (those on text measured at Rotation 0 only), spring positions at 0.5 s, safe areas, and the touch controls' positions.

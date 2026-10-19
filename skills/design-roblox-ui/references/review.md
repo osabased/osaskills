@@ -12,7 +12,7 @@ The reviewer opens every file itself, so send absolute paths.
 - **The criteria:** this skill's [rubric](rubric.md) and [AI tells](ai-tells.md).
 - **Render notes:** what the reviewer can't check for itself:
   - each render's device, size and image scale (`scale` in `rhr ui --json`), the text sizes after the root scale, and how to convert what it measures: divide by the scale;
-  - the [known gaps](rendering.md#known-gaps) that touch this screen, the `missingAssets` and `notes` from `rhr ui --json`, any `fontSubstituted` text in `rhr layout --rich`, and weights drawn as a faux bold;
+  - the [known gaps](rendering.md#known-gaps) that touch this screen, the `missingAssets` and `notes` from `rhr ui --json`, any `fontSubstituted` text in `rhr layout --rich`, and weights drawn as a faux bold. For each image left empty, say where it is in the render, from its `rect`, and what the game shows there;
   - that white stands in for the game world, including the 58-point band along the top, where rhr leaves out Roblox's buttons, and the notch and home-bar areas;
   - the input each render was drawn with, and how the screen sits relative to Roblox's touch controls.
 
@@ -55,8 +55,10 @@ Render notes:
 - Merriweather Heavy wasn't downloaded, so titles are a faux bold of
   Merriweather Regular. Judge their size and placement, not their weight; the
   real font runs a little wider.
-- The header's 45° gradient draws about a third too long. Judge its colours,
-  not its length.
+- The item icons weren't downloaded either: the six empty squares in the
+  phone render's grid hold each item's art in the game.
+- The item cards' 9-sliced frames show hard seams where their pieces meet,
+  which the game doesn't. Judge the frames' size and colour, not their seams.
 
 Read before judging:
 - <project>/docs/design/brief.md

@@ -83,7 +83,7 @@ Translations run longer than English, and short strings the most. The average ex
 - A well that frames art takes the art's aspect ratio, with a `UIAspectRatioConstraint`: in a well of another shape, `ScaleType` Fit only letterboxes it.
 - Pixel art uses `ResampleMode` Pixelated.
 - Roblox UI has no blur, so a soft shadow or glow is an image.
-- In stories, give images as `rbxassetid://` ids. rhr draws nothing for `rbxasset://` paths and doesn't list them as missing ([known gaps](rendering.md#known-gaps)).
+- In stories, give images as `rbxassetid://` ids. rhr draws nothing for `rbxasset://` paths or `rbxthumb://` thumbnails, so the reviewer can't judge them ([known gaps](rendering.md#known-gaps)).
 
 ## Layering
 
