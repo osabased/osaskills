@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.7` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.8` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@0c4abe826aeac8dde4cb4173a50646544adf3341"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@a6f25bec58540522ff904f37ccdd0555d9a6be28"
    ```
 
    On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -30,7 +30,7 @@
 | `tablet` | iPad, 10th generation | 1180 by 820 | None | Yes | Touch | Small |
 | `console` | Xbox | 1920 by 1080 | None | No | Gamepad | Large |
 
-A story reads its preset's input in `UserInputService.PreferredInput`, the `…Enabled` flags and `GetLastInputType`, and its display size in `GuiService.ViewportDisplaySize`. Player settings are Roblox's defaults: Medium text, motion on, and a `PreferredTransparency` of 1. To render another variant, such as a gamepad on desktop or reduced motion, a story passes it in ([input](roblox-checklist.md#input)).
+A story reads its preset's input in `UserInputService.PreferredInput`, the `…Enabled` flags and `GetLastInputType`, its display size in `GuiService.ViewportDisplaySize`, and its gamepads in `GetConnectedGamepads`: Gamepad1 on `console`, none elsewhere. `GuiService:IsTenFootInterface()` is true only on `console`. Player settings are Roblox's defaults: Medium text, motion on, and a `PreferredTransparency` of 1. To render another variant, such as a gamepad on desktop or reduced motion, a story passes it in ([input](roblox-checklist.md#input)).
 
 ## The loop
 
@@ -58,7 +58,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.7` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.8` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
@@ -81,11 +81,11 @@ In the checks:
 
 - A finding can call a TextButton an ImageButton; go by its path.
 - Neither the checks nor `rhr hitmap` model `InputSink`. Buttons a story creates start at Activate, Roblox's default; ones from model or place files read None.
+- `under-touch-controls` goes by the preset, so a story that turns the controls off (`GuiService.TouchControlsEnabled = false`) still gets it: check that story with `--ignore under-touch-controls`.
 
 At run time:
 
 - While a story runs, only its target and ScreenGui have sizes: any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0 and don't change, since rhr lays the UI out afterwards. UI that arranges itself from an element's size renders as if it had none, so check it in a play-test.
-- Reading `GuiService.TouchControlsEnabled` errors, and `GuiService:IsTenFootInterface` and `UserInputService:GetConnectedGamepads` are missing.
 - `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
