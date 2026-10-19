@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.3` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.4` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@a7c8cce57653623456ccdeac4fa4c05f03627993"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@50779e62721cfa1f308d683a67a98c30ab878f0e"
    ```
 
    On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -56,7 +56,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.3` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.4` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
@@ -65,7 +65,7 @@ Drawn differently, laid out right:
 - Tiled and 9-sliced images have hard edges between their pieces, and UICorner on an ImageLabel is aliased.
 - One frame: tweens are drawn at their goals, and springs as they are 0.5 s in.
 - A bold or heavier weight that wasn't downloaded is drawn as a faux bold of a lighter weight the cache has, which usually runs narrower than the real one, and nothing reports it.
-- Every gui is drawn as if its ZIndexBehavior were Sibling. Stories mount in a ScreenGui with Global, as in Studio, and `button-blocked` and `rhr hitmap` follow Global, so a story whose ZIndexes rely on Global can be drawn differently from how it's checked.
+- Under Sibling, a faded or tinted CanvasGroup (GroupTransparency above 0, or a GroupColor3) fades its own UIStroke too and cuts an Outer one off at its edge, where Studio draws that stroke whole and opaque.
 
 Laid out differently:
 
@@ -89,4 +89,4 @@ At run time:
 - `TextService:GetTextSize` is approximate.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
-What matches Studio: layout, a story's area (the same as a running game's), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, on-axis gradients, spring positions at 0.5 s, safe areas, and the touch controls' positions.
+What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, on-axis gradients, spring positions at 0.5 s, safe areas, and the touch controls' positions.
