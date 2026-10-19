@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.9` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.10` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@f832ff73c26c1b4c17506ea22b912be1b3912083"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@97b98ccce5d97c008d84d051fb98adbebd6d75c8"
    ```
 
    On Windows, first stop rhr's background worker if one is running. It is two `python -m rhr.server` processes: one whose command line names the tool's own `roblox-headless-renderer\Scripts\python.exe`, in the folder `uv tool dir` prints, and the Python it starts, whose parent is that one. Stop both, and no other `rhr.server` process, since those belong to other rhr installs, such as a venv. PowerShell lists them: `Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" | Where-Object CommandLine -match 'rhr\.server' | Select-Object ProcessId, ParentProcessId, CommandLine`. While the worker runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -58,11 +58,11 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.9` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.10` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
-- An off-axis UIGradient draws too long: about 36% at 45°.
+- A UIGradient on a UIStroke reaches its end colours a few pixels early at each end: rhr ramps across the object, where Studio's ramp runs past it (152 px across a 140 px frame with a 4 px Outer stroke).
 - Images that are files built into the Roblox client (`rbxasset://`) or thumbnails (`rbxthumb://`) draw nothing. `missingAssets` lists each, and `rhr check --min-severity info` reports it as `image-missing`.
 - Tiled and 9-sliced images have hard edges between their pieces, and UICorner on an ImageLabel is aliased.
 - One frame: tweens are drawn at their goals, and springs as they are 0.5 s in.
@@ -90,4 +90,4 @@ At run time:
 - `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
-What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, on-axis gradients, spring positions at 0.5 s, safe areas, and the touch controls' positions.
+What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, UIGradients (those on text measured at Rotation 0 only), spring positions at 0.5 s, safe areas, and the touch controls' positions.

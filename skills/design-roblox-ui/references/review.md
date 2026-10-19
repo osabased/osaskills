@@ -57,8 +57,8 @@ Render notes:
   real font runs a little wider.
 - The item icons weren't downloaded either: the six empty squares in the
   phone render's grid hold each item's art in the game.
-- The header's 45° gradient draws about a third too long. Judge its colours,
-  not its length.
+- The item cards' 9-sliced frames show hard seams where their pieces meet,
+  which the game doesn't. Judge the frames' size and colour, not their seams.
 
 Read before judging:
 - <project>/docs/design/brief.md
