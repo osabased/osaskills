@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to the two Roblox workflow skills, from 2026-10-17 to bigger-picture and then-what, and from 2026-10-18 to think-tank, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
+Notable changes to the two Roblox workflow skills, from 2026-10-17 to bigger-picture and then-what, from 2026-10-18 to think-tank, and from 2026-10-19 to design-roblox-ui, newest first. Changes to the pinned library skills are listed under roblox-resource-acquisition, whose catalog holds them.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The plugin has no version numbers, so each entry is dated by the day its change reached `main`. Before 2026-09-02 both skills lived at the repository root instead of under `skills/`.
 
@@ -517,3 +517,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 #### Added
 
 - think-tank puts a question to three fresh panelists, read-only `think-tank-member` agents that don't load CLAUDE.md, then sends each the other two answers for a debate round in which a change of position must name the argument or checked fact behind it. It reports the panel's recommendation with its tally before and after debate, each panelist's final position, where they split, and Claude's own take apart from the panel's. Run it with `/think-tank`, optionally naming a model or one per panelist, an effort, `--lenses` or `--quick`. ([#82](https://github.com/osabased/osaskills/pull/82))
+
+## design-roblox-ui
+
+### 2026-10-19
+
+#### Added
+
+- design-roblox-ui takes Roblox game UI from a brief to a reviewed screen, judged from renders rather than code. For new UI, a major screen or a restyle, the agent writes a brief from the user's answers and reference images, renders three style tiles for the user to choose from, turns the pick into a theme module and base components, offers two or three layouts for each major screen, and checks every state with rhr on phone and desktop. A small change inside an existing theme takes a light path: theme tokens only, worst-case content, `rhr check --devices all` and a look at the renders. The project's taste log keeps every pick and its reasons for the next agent. ([#85](https://github.com/osabased/osaskills/pull/85))
+- The `roblox-ui-reviewer` agent reviews a screen on Opus from its renders alone, against the brief, the references, the taste log, a rubric and a list of generic-UI tells, and returns a verdict and at most five ranked fixes a round, for up to three rounds. ([#85](https://github.com/osabased/osaskills/pull/85))
+- Three scripts: `contact_sheet.py` lays renders out side by side, optionally over white, black and busy backdrops; `contrast.py` gives WCAG contrast ratios, including for see-through colours; and `theme_guard.py` fails a project's check on colours, fonts and text sizes written outside the theme module. ([#85](https://github.com/osabased/osaskills/pull/85))
+- The rendering guide pins rhr to a commit of osabased's fork and lists where that build differs from Studio, from side-by-side comparisons. The Roblox checklist's engine defaults were read in Studio on 2026-10-19. ([#85](https://github.com/osabased/osaskills/pull/85))

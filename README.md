@@ -17,7 +17,7 @@ Claude Code leaves auto-update off for third-party marketplaces. To get new vers
 
 ### Cowork / Claude desktop
 
-Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `sharpen` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped. think-tank runs its panelists as the plugin's `think-tank-member` agent, and chat and uploaded skills don't load agents, so it needs a plugin install; it has only been tried in Claude Code.
+Open **Customize → Plugins → Add → Add marketplace**, enter `osabased/osaskills`, then install `osaskills`. You can also zip a single skill folder and upload it in the Skills section of Claude's settings. Before you upload `then-what`, `sharpen` or `vod-discovery` as a zip, delete their `disable-model-invocation: true` line, because claude.ai uploads reject frontmatter keys outside the base skill spec. Scripts may not run in an uploaded skill; the Roblox library skills then fall back to advisory mode and tell you which checks they skipped. think-tank runs its panelists as the plugin's `think-tank-member` agent, and chat and uploaded skills don't load agents, so it needs a plugin install; it has only been tried in Claude Code. design-roblox-ui renders with rhr, which needs a local install, and sends renders to the plugin's `roblox-ui-reviewer` agent, falling back to a general-purpose subagent without it; it too has only been tried in Claude Code.
 
 ### Skills CLI or manual copy
 
@@ -26,7 +26,7 @@ npx skills@latest add osabased/osaskills --agent claude-code
 npx skills@latest add osabased/osaskills --full-depth --skill roblox-vide --agent claude-code
 ```
 
-Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact. The second command adds one Roblox library skill to a project; by hand, copy its folder from `skills/roblox-resource-acquisition/libraries/` into the project's `.claude/skills/`. think-tank also needs its panelist agent: copy `agents/think-tank-member.md` into `.claude/agents/` or `~/.claude/agents/`.
+Run the command from your project root to install into `.claude/skills/`, or add `--global` for `~/.claude/skills/`. `--list` shows the available skills. To install by hand, copy whole skill folders from `skills/` into either location. Keep each folder intact. The second command adds one Roblox library skill to a project; by hand, copy its folder from `skills/roblox-resource-acquisition/libraries/` into the project's `.claude/skills/`. think-tank also needs its panelist agent, and design-roblox-ui its reviewer: copy `agents/think-tank-member.md` or `agents/roblox-ui-reviewer.md` into `.claude/agents/` or `~/.claude/agents/`.
 
 Check that Claude actually loaded a skill: it should appear under `/skills`, and `/<name>` should run it.
 
@@ -40,6 +40,7 @@ Check that Claude actually loaded a skill: it should appear under `/skills`, and
 | You want independent second opinions on a question or plan, with their disagreements shown rather than smoothed over | [think-tank](./skills/think-tank/) | `/think-tank` only |
 | You need to place Roblox code correctly, set up Rojo or Script Sync, start or onboard a project, or make a Roblox repo agent-ready (guide, checks, hooks, CI, play-test verification) | [structure-roblox-projects](./skills/structure-roblox-projects/) | automatic |
 | You want to choose, add, compare, or upgrade a Roblox library or development tool | [roblox-resource-acquisition](./skills/roblox-resource-acquisition/) | automatic |
+| You're building or restyling Roblox game UI and want it to look designed rather than generic: a direction you pick, a theme, and screens checked from phone and desktop renders by a reviewer that never sees the code | [design-roblox-ui](./skills/design-roblox-ui/) | automatic |
 | You need to find moments across long VODs and prepare Premiere markers or a review timeline with alternate POVs | [vod-discovery](./skills/vod-discovery/) | `/vod-discovery` only |
 
 With the plugin, prefix the name: `/osaskills:then-what`.
@@ -65,15 +66,17 @@ Agent-facing project files live in the project's agent directory: `.claude/` if 
 
 ## Staying current
 
-Each Roblox workflow skill's `versions.json` records the release of every tool and library it pins (Rojo, Rokit, Wally, pesde, Lune, Lute, StyLua, Selene, Luau-LSP, Lest, ModuleLoader, and the bundled library guides) that its guidance was last reviewed against. The skills are updated on demand, not on a schedule.
+structure-roblox-projects and roblox-resource-acquisition each record in `versions.json` the release of every tool and library they pin (Rojo, Rokit, Wally, pesde, Lune, Lute, StyLua, Selene, Luau-LSP, Lest, ModuleLoader, and the bundled library guides) that their guidance was last reviewed against. The skills are updated on demand, not on a schedule.
 
 - **When a task depends on a tool's version,** the agent compares your project's pin with that release. For a newer pin it checks the release notes for the claims the task uses and tells you; for an older one it confirms those claims at your version and warns you. It never changes your game project's pins to fit a skill. In a plugin install, a session-start hook notes `rokit.toml` and `aftman.toml` pins that differ, without network access.
 - **When you ask** ("update rojo"), or accept the agent's offer after a task that found a gap, the agent reads the release notes, updates the skill, reruns its checks against the target version, and opens one pull request per item. A fix to a single claim gets its own `Fix <name>: <claim>` pull request. Pull requests need push access to this repository; other installs just report the gap.
 - **Weekly,** the [Freshness workflow](./.github/workflows/freshness.yml) runs `check_updates.py` in CI and keeps an "Outdated skill pins" issue up to date for the maintainer.
 
+design-roblox-ui has no `versions.json`: its [rendering guide](./skills/design-roblox-ui/references/rendering.md) names the rhr build it was checked against and where that build differs from Studio.
+
 The plugin has no fixed version, so each commit is a new version. Turn on auto-update for this marketplace in `/plugin` → Marketplaces to receive merged updates automatically.
 
-[CHANGELOG.md](./CHANGELOG.md) lists notable changes to the two Roblox workflow skills and their library catalog. A pull request that changes either skill or a library skill adds an entry to it.
+[CHANGELOG.md](./CHANGELOG.md) lists notable changes to the Roblox skills and their library catalog, and to bigger-picture, then-what and think-tank. A pull request that changes one of these skills or a library skill adds an entry to it.
 
 ## Scripts
 
@@ -83,7 +86,7 @@ Instruction-only skills need no setup. The Roblox resource checkers need Python 
 uv run --no-project --python ">=3.11" --with pyyaml python .claude/skills/roblox-resource-acquisition/scripts/clone_children.py --help
 ```
 
-Adjust the path to where the skill is installed. `vod-discovery` has its own environment; see its [setup guide](./skills/vod-discovery/references/setup.md).
+Adjust the path to where the skill is installed. design-roblox-ui's scripts need Python 3.11+, and its contact sheet also Pillow, which `--with pillow` adds the same way; its renderer, rhr, installs as its [rendering guide](./skills/design-roblox-ui/references/rendering.md#install) describes. `vod-discovery` has its own environment; see its [setup guide](./skills/vod-discovery/references/setup.md).
 
 ## Repository checks
 
@@ -91,11 +94,12 @@ Adjust the path to where the skill is installed. `vod-discovery` has its own env
 git clone https://github.com/osabased/osaskills.git
 cd osaskills
 uv venv --python 3.13
-uv pip install -r skills/roblox-resource-acquisition/requirements-dev.txt -r skills/vod-discovery/requirements.txt
+uv pip install -r skills/roblox-resource-acquisition/requirements-dev.txt -r skills/design-roblox-ui/requirements-dev.txt -r skills/vod-discovery/requirements.txt
 
 # Roblox skills
 uv run python -m pytest -q -ra skills/roblox-resource-acquisition/tests
 uv run python -m pytest -q -ra skills/structure-roblox-projects/tests
+uv run python -m pytest -q -ra skills/design-roblox-ui/tests
 
 # VOD discovery (no footage, model downloads, or Premiere needed; ffmpeg must be on PATH)
 uv run python -B -m unittest discover -s skills/vod-discovery/tests -p "test_*.py"

@@ -78,6 +78,32 @@ jobs:
           REQUIRE_ROJO: "1"
         run: python -m pytest -q -ra skills/structure-roblox-projects/tests
 
+  design-roblox-ui:
+    name: design-roblox-ui / ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: skills/design-roblox-ui
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python-version: "3.11"
+          - os: windows-latest
+            python-version: "3.14"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: skills/design-roblox-ui/requirements-dev.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run tests
+        run: python -m pytest -q
+
   vod-discovery:
     name: vod-discovery / Python 3.13 + Node 22
     runs-on: ubuntu-latest
