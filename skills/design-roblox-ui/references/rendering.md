@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.6` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.7` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@fc3f53f2aa2efbae9e467980a8fa1dbfa9d835fa"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@0c4abe826aeac8dde4cb4173a50646544adf3341"
    ```
 
    On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -53,17 +53,17 @@ Also useful:
 - `rhr batch check <target> + ui <target>` runs several commands in one call.
 - An `RhrIgnore` string attribute on an element silences findings about it: `all`, or check ids separated by commas. Say why in your summary.
 - `rhr check --ignore <check id>` leaves a check out of one run, such as `under-touch-controls` for a modal's story ([touch controls](roblox-checklist.md#touch-controls)).
-- `rhr ui --json` reports `missingAssets` and `notes`: what wasn't drawn exactly. `rhr layout --rich` marks text whose font was swapped with `fontSubstituted`. Read both before judging, and pass them to the reviewer with any weight drawn as a faux bold ([known gaps](#known-gaps)); a stand-in font says nothing about the real type.
+- `rhr ui --json` reports `missingAssets` and `notes`: what wasn't drawn exactly. Each image the picture leaves empty is in `missingAssets` with its `reason`, the `rect` it would cover in screen pixels (times `scale` on the PNG), and a `hint` where rhr knows how to get it drawn. `rhr layout --rich` marks text whose font was swapped with `fontSubstituted`. Read both before judging, and pass them to the reviewer with any weight drawn as a faux bold ([known gaps](#known-gaps)); a stand-in font says nothing about the real type.
 - Ask the user before rhr's first download in a project, since it uses their Roblox account. Until then, render with `--offline` (or `RHR_OFFLINE=1`) and list what's missing in the render notes.
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.6` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.7` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
 - An off-axis UIGradient draws too long: about 36% at 45°.
-- `rbxasset://` images draw nothing and aren't listed as missing.
+- Images that are files built into the Roblox client (`rbxasset://`) or thumbnails (`rbxthumb://`) draw nothing. `missingAssets` lists each, and `rhr check --min-severity info` reports it as `image-missing`.
 - Tiled and 9-sliced images have hard edges between their pieces, and UICorner on an ImageLabel is aliased.
 - One frame: tweens are drawn at their goals, and springs as they are 0.5 s in.
 - A bold or heavier weight that wasn't downloaded is drawn as a faux bold of a lighter weight the cache has, which usually runs narrower than the real one, and nothing reports it.
