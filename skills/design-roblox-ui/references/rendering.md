@@ -4,14 +4,14 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.8` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.9` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@a6f25bec58540522ff904f37ccdd0555d9a6be28"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@f832ff73c26c1b4c17506ea22b912be1b3912083"
    ```
 
-   On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
+   On Windows, first stop rhr's background worker if one is running. It is two `python -m rhr.server` processes: one whose command line names the tool's own `roblox-headless-renderer\Scripts\python.exe`, in the folder `uv tool dir` prints, and the Python it starts, whose parent is that one. Stop both, and no other `rhr.server` process, since those belong to other rhr installs, such as a venv. PowerShell lists them: `Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" | Where-Object CommandLine -match 'rhr\.server' | Select-Object ProcessId, ParentProcessId, CommandLine`. While the worker runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
 3. `rhr doctor` lists what rhr uses and what is missing, and `rhr setup` installs the missing tools. rhr runs `rojo` in the story's folder, where a Rokit shim fails unless a `rokit.toml` there or above it lists Rojo.
 4. rhr downloads fonts and images through the Studio login on the machine. Without Studio, as in a cloud session or CI, downloads need `RHR_ROBLOX_API_KEY`: an Open Cloud API key, a user key with the `legacy-asset:manage` permission, which the user sets as a secret. Never ask for its value, paste it, or commit it.
 
@@ -58,7 +58,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.8` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.9` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
@@ -85,7 +85,8 @@ In the checks:
 
 At run time:
 
-- While a story runs, only its target and ScreenGui have sizes: any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0 and don't change, since rhr lays the UI out afterwards. UI that arranges itself from an element's size renders as if it had none, so check it in a play-test.
+- While a story runs, rhr hasn't laid the UI out yet, so values Roblox works out in layout read as they do before layout, and don't change. The story's target and ScreenGui have the area's size and `AbsolutePosition` 0, 0. Any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0, as do `TextBounds`, `AbsoluteContentSize` and a grid's `AbsoluteCellSize`. UI that sizes itself from these renders as if they were zero: size it with AutomaticSize or a layout, which rhr lays out as Roblox does, or check it in a play-test. `TextFits` and an image's `IsLoaded` read true, so a loop that shrinks text until it fits, or waits for an image, goes on.
+- Some reads still error in a story: `ContentText`; a ViewportFrame's `CurrentCamera` (setting one works); and `Image`, `Font`, a UICorner's `CornerRadius` and a few other properties until the story sets them. A deprecated name such as `TextWrap`, `TextColor` or `BackgroundColor` does nothing when set, so `TextWrap = true` leaves the text unwrapped: use the current names (`TextWrapped`, `TextColor3`, `BackgroundColor3`).
 - `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
