@@ -8,7 +8,7 @@ What Roblox adds to UI design: screen space that Roblox and the device take, thr
   - `CoreUISafeInsets`, the default, keeps clear of the notches and Roblox's top bar. Use it for anything a player reads or presses.
   - `DeviceSafeInsets` keeps clear of the notches but reaches up behind the top bar's buttons.
   - `None` is the whole screen, notches included: only for full-bleed backgrounds and scrims, nothing a player reads or aims for.
-  - `TopbarSafeInsets` is the part of the top bar beside Roblox's buttons. Its size is `GuiService.TopbarInset`, which changes as Roblox's buttons do, so listen with `GetPropertyChangedSignal` instead of hard-coding it. rhr lays it out as the core area ([known gaps](rendering.md#known-gaps)), so check it in a play-test.
+  - `TopbarSafeInsets` is the part of the top bar beside Roblox's buttons. Its size is `GuiService.TopbarInset`, which changes as Roblox's buttons do, so listen with `GetPropertyChangedSignal` instead of hard-coding it. rhr lays it out as the core area, and its `TopbarInset` is the whole top bar ([known gaps](rendering.md#known-gaps)), so check it in a play-test.
 - Leave `ClipToDeviceSafeArea` on, its default, so nothing slides under a notch.
 - Set `SafeAreaCompatibility` to None on new ScreenGuis, and put a full-bleed background in its own ScreenGui with `ScreenInsets` None, under the content's gui. The default, FullscreenExtension, stretches a frame that covers the safe area out to the screen edges; Roblox keeps it for UI made before notches and recommends insets for new work.
 - Hiding Roblox's own UI with `StarterGui:SetCoreGuiEnabled` or `StarterGui:SetCore("TopbarEnabled", false)` takes away what players expect, such as chat and the player list. Ask the user first.
@@ -30,12 +30,12 @@ On phones and tablets Roblox puts a jump button and a thumbstick in the bottom c
 
 - **Activated.** Connect `Activated`, not `MouseButton1Click`: it fires for a click, a tap and the gamepad's A on a selected button.
 - **The input in use.** Branch on `UserInputService.PreferredInput` (such as KeyboardAndMouse, Touch or Gamepad), which follows what the player is using, rather than `TouchEnabled` or `KeyboardEnabled`, which say what the device has. It changes mid-session when a player picks up a gamepad, so listen with `GetPropertyChangedSignal`.
-- **Input and settings in stories.** rhr renders every device with mouse input, and reading `PreferredInput`, the device's `…Enabled` flags or any [accessibility setting](#accessibility-settings) errors in a story ([known gaps](rendering.md#known-gaps)). Read them in one place, the app root, listen there, and pass them down as props or context, so a story can pass each variant: touch, gamepad, reduced motion.
+- **Input and settings in stories.** rhr renders each preset with its device's input, such as touch on `phone` and a gamepad on `console`, and with Roblox's default [settings](#accessibility-settings) ([devices](rendering.md#devices)). Read input and settings in one place, the app root, listen there, and pass them down as props or context, so a story can render any other variant, such as a gamepad on desktop or reduced motion.
 - **Per input.** Touch has no hover, so every control needs a pressed state. Show button hints, such as a B glyph beside Back, only on gamepad.
 
 Gamepad navigation moves a selection between controls with the stick and D-pad:
 
-- When a screen opens on gamepad, select a control: `GuiService:Select(screen)` selects the screen's visible, selectable descendant with the smallest `SelectionOrder`, or set `GuiService.SelectedObject` directly. Set `SelectedObject` to nil when the screen closes. Selecting on other inputs draws the outline for no one. Select from the code that opens the screen, not the component a story renders: rhr lacks `GuiService:Select`, so a story errors where it's called.
+- When a screen opens on gamepad, select a control: `GuiService:Select(screen)` selects the screen's visible, selectable descendant with the smallest `SelectionOrder`, or set `GuiService.SelectedObject` directly. Set `SelectedObject` to nil when the screen closes. Selecting on other inputs draws the outline for no one.
 - Only pressables are `Selectable`. Buttons and TextBoxes are by default, frames and labels aren't (checked).
 - Draw the selection outline from the theme's `selection`: set `PlayerGui.SelectionImageObject` once for the game, or a control's own `SelectionImageObject`. Size it with Scale, such as `UDim2.fromScale(1, 1)`, so it fits whichever control is selected.
 - Set `NextSelectionUp`, `NextSelectionDown`, `NextSelectionLeft` and `NextSelectionRight` where the automatic order goes wrong, such as between a grid and a sidebar.
@@ -65,7 +65,7 @@ Translations run longer than English, and short strings the most. The average ex
 | Over 70 | 130% |
 
 - Size boxes for it: a 6-letter button label needs room for about 15. Let labels and buttons grow with `AutomaticSize`, wrap with `TextWrapped` where a second line is fine, and keep a fixed box only where the longest translation fits.
-- Measure text with `TextService:GetTextBoundsAsync`, which takes a `FontFace` and yields, so wrap it in `pcall`. `GetTextSize` takes only an `Enum.Font`. Both include the player's text size setting. rhr lacks `GetTextBoundsAsync`, so in a story the `pcall` fails and the code's fallback is what renders.
+- Measure text with `TextService:GetTextBoundsAsync`, which takes a `FontFace` and yields, so wrap it in `pcall`. `GetTextSize` takes only an `Enum.Font`. Both include the player's text size setting. rhr only estimates both ([known gaps](rendering.md#known-gaps)), so a box sized from them can look too tight or too loose in a render: check it in a play-test.
 - Truncate (`TextTruncate` AtEnd) only where the full text is shown elsewhere, such as a details panel. Usernames and display names run to 20 characters.
 - Keep lines under about 80 characters, or 40 in Chinese, Japanese and Korean, and centre only short lines.
 - Format every number with one function, so coins read the same on every screen.
@@ -95,7 +95,7 @@ Translations run longer than English, and short strings the most. The average ex
 
 ## Accessibility settings
 
-Players set these in Roblox's Settings menu, in the app or during a game, and can change them while playing, so listen to each with `GetPropertyChangedSignal`. Roblox's [accessibility guide](https://create.roblox.com/docs/production/publishing/accessibility) has samples. Reading any of them errors in rhr stories, so read them at the app root and pass them down ([input](#input)).
+Players set these in Roblox's Settings menu, in the app or during a game, and can change them while playing, so listen to each with `GetPropertyChangedSignal`. Roblox's [accessibility guide](https://create.roblox.com/docs/production/publishing/accessibility) has samples. rhr stories get Roblox's defaults, so read them at the app root and pass them down, where a story can pass another value ([input](#input)).
 
 - **Text size:** `GuiService.PreferredTextSize`, Medium by default, then Large, Larger and Largest. Roblox grows TextSize itself, except for TextScaled text and past a UITextSizeConstraint's `MaxTextSize`, so never cap text a player reads. Boxes with `AutomaticSize` grow to fit, and `TextWrapped` text wraps inside its box. Let boxes grow, and check Largest in a play-test, set from Text Size in the in-game Settings menu.
 - **Reduced motion:** `GuiService.ReducedMotionEnabled`. Snap movement to its end, with a tween time of 0, or fade instead of moving.

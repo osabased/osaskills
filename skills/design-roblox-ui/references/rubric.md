@@ -61,6 +61,6 @@ For a small change inside an existing theme, on the [light path](../SKILL.md#lig
 - Gamepad navigation: where selection starts and the order it moves in.
 - The live world behind the UI, unless the render is laid over a screenshot of the game.
 - Text at the player's largest text size ([accessibility settings](roblox-checklist.md#accessibility-settings)).
-- Touch and gamepad layouts: rhr renders every device with mouse input, so they show only when a story passes the input kind in as a prop ([input](roblox-checklist.md#input)).
+- A device used with another input, such as a gamepad on desktop, unless a story passes the input kind in ([input](roblox-checklist.md#input)).
 
 These are checked in a Studio play-test and in the user's review. Say in your summary which of them the change touches and whether you checked them.

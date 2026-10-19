@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.4` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.6` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@50779e62721cfa1f308d683a67a98c30ab878f0e"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@fc3f53f2aa2efbae9e467980a8fa1dbfa9d835fa"
    ```
 
    On Windows, first stop rhr's background worker if one is running, a `python -m rhr.server` process. While it runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -21,14 +21,16 @@
 
 `--device` picks one preset; `rhr check --devices all`, or a list such as `phone,tablet`, checks several at once. The presets were measured in Studio's device emulator, and each has a 58-point top bar.
 
-| Device | Modelled on | Screen | Notches and home bar (left, top, right, bottom) | Touch controls |
-| --- | --- | --- | --- | --- |
-| `desktop` | A 1080p monitor | 1920 by 1080 | None | No |
-| `laptop` | An average laptop | 1366 by 768 | None | No |
-| `phone` | iPhone 16 | 852 by 393 | 59, 0, 59, 21 | Yes |
-| `android` | Galaxy A16 | 780 by 360 | 47, 0, 47, 21 | Yes |
-| `tablet` | iPad, 10th generation | 1180 by 820 | None | Yes |
-| `console` | Xbox | 1920 by 1080 | None | No |
+| Device | Modelled on | Screen | Notches and home bar (left, top, right, bottom) | Touch controls | Input | Display size |
+| --- | --- | --- | --- | --- | --- | --- |
+| `desktop` | A 1080p monitor | 1920 by 1080 | None | No | Keyboard and mouse | Medium |
+| `laptop` | An average laptop | 1366 by 768 | None | No | Keyboard and mouse | Medium |
+| `phone` | iPhone 16 | 852 by 393 | 59, 0, 59, 21 | Yes | Touch | Small |
+| `android` | Galaxy A16 | 780 by 360 | 47, 0, 47, 21 | Yes | Touch | Small |
+| `tablet` | iPad, 10th generation | 1180 by 820 | None | Yes | Touch | Small |
+| `console` | Xbox | 1920 by 1080 | None | No | Gamepad | Large |
+
+A story reads its preset's input in `UserInputService.PreferredInput`, the `…Enabled` flags and `GetLastInputType`, and its display size in `GuiService.ViewportDisplaySize`. Player settings are Roblox's defaults: Medium text, motion on, and a `PreferredTransparency` of 1. To render another variant, such as a gamepad on desktop or reduced motion, a story passes it in ([input](roblox-checklist.md#input)).
 
 ## The loop
 
@@ -56,7 +58,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.4` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.6` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
@@ -71,22 +73,20 @@ Laid out differently:
 
 - Roblox's top-bar buttons aren't drawn. On Studio's iPhone 16 they take about 208 points of the top bar's left end.
 - A TopbarSafeInsets gui is laid out as the core area.
+- `GuiService.TopbarInset` is the whole top bar between the notches, where a game's starts after Roblox's buttons, so UI placed by it sits further left than in a game.
 - `workspace.CurrentCamera.ViewportSize` is the whole screen. Studio's phone emulation leaves out the side notches: 750 by 401 on its iPhone 16.
 - The `phone` preset is 852 by 393 with 59-point notches, where Studio's iPhone 16 measured 874 by 401 with 62. rhr's is a little tighter, so a layout that fits it fits Studio's.
 
 In the checks:
 
-- Device checks such as `under-notch` and `under-touch-controls` ignore clipping, so a row cut off at a scroll edge is reported where it can't be seen.
-- `invisible-content` reports a frame drawn only by its UIStroke, at info severity.
 - A finding can call a TextButton an ImageButton; go by its path.
-- Neither the checks nor `rhr hitmap` model `InputSink`, and buttons read it as None, where Roblox's default is Activate.
+- Neither the checks nor `rhr hitmap` model `InputSink`. Buttons a story creates start at Activate, Roblox's default; ones from model or place files read None.
 
 At run time:
 
-- Every device runs with mouse input, and GetLastInputType returns MouseButton1 ([input](roblox-checklist.md#input)).
-- Reading a player or device setting errors: `UserInputService` PreferredInput, TouchEnabled, GamepadEnabled, KeyboardEnabled and MouseEnabled; `GuiService` ViewportDisplaySize, PreferredTextSize, ReducedMotionEnabled, PreferredTransparency, TopbarInset and TouchControlsEnabled. Read them at the app root and pass them down, so stories pass each variant.
-- `GuiService:Select`, `GuiService:IsTenFootInterface`, `UserInputService:GetConnectedGamepads` and `TextService:GetTextBoundsAsync` are missing.
-- `TextService:GetTextSize` is approximate.
+- While a story runs, only its target and ScreenGui have sizes: any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0 and don't change, since rhr lays the UI out afterwards. UI that arranges itself from an element's size renders as if it had none, so check it in a play-test.
+- Reading `GuiService.TouchControlsEnabled` errors, and `GuiService:IsTenFootInterface` and `UserInputService:GetConnectedGamepads` are missing.
+- `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
 What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, on-axis gradients, spring positions at 0.5 s, safe areas, and the touch controls' positions.

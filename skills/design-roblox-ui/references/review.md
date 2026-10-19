@@ -14,7 +14,7 @@ The reviewer opens every file itself, so send absolute paths.
   - each render's device, size and image scale (`scale` in `rhr ui --json`), the text sizes after the root scale, and how to convert what it measures: divide by the scale;
   - the [known gaps](rendering.md#known-gaps) that touch this screen, the `missingAssets` and `notes` from `rhr ui --json`, any `fontSubstituted` text in `rhr layout --rich`, and weights drawn as a faux bold;
   - that white stands in for the game world, including the 58-point band along the top, where rhr leaves out Roblox's buttons, and the notch and home-bar areas;
-  - that every device was rendered with mouse input, and how the screen sits relative to Roblox's touch controls.
+  - the input each render was drawn with, and how the screen sits relative to Roblox's touch controls.
 
   Notes, and in later rounds each fix's status, state only what the build does: the reviewer takes them as fact and can't check them.
 - **The round:** the screen's job and content ranking from the brief, the round number, and in later rounds what changed.
@@ -44,8 +44,8 @@ Renders:
 - <renders>/style-guide-phone.png: the theme's style guide
 
 Render notes:
-- Rendered with rhr. Every device used mouse input, so no touch or gamepad
-  hints show.
+- Rendered with rhr: the phone with touch input and the desktop with a mouse,
+  so no gamepad hints show.
 - Divide what you measure in the desktop render by 0.78. Body text is 20 on
   phone and 25 on desktop, after the UI scale.
 - White stands in for the game world, including the band along the top, where

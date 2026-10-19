@@ -170,7 +170,7 @@ ScreenGui
 
 - The app's root passes in `workspace.CurrentCamera.ViewportSize` and `GuiService.ViewportDisplaySize`, and again whenever either changes. The camera's viewport, rather than each gui's own area, gives every ScreenGui the same scale whatever its insets.
 - `ViewportDisplaySize` sorts screens by kind: Small for phones, tablets and handhelds, Medium for laptops and monitors, Large for TVs.
-- Reading `ViewportDisplaySize` errors in rhr stories ([known gaps](rendering.md#known-gaps)), so a story passes a display size itself. Medium gives every preset but `console` the scale a game would; a game ranked for console gets a console story that passes Large.
+- Each rhr device preset has its kind's display size ([devices](rendering.md#devices)), so a story that passes both in, as the app's root does, gets the scale a game would.
 - Inside the root, components use Offset in tokens. Scale is only for layout regions, such as a sidebar that takes a third of the width. A UISizeConstraint caps a panel's width on wide screens.
 - The factors put `body` and `label` (20) at 25 on a 1080p desktop and 36 on a 1080p TV. The [Xbox Accessibility Guidelines](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/101) measure text from the top of its ascenders to the bottom of its descenders. In Builder Sans that is 0.72 of the TextSize, so 25 and 36 give 18 and 26 pixels, the guidelines' minimums for PC and console. `caption` (14) lands at 17.5 and 25, below them. In a game ranked for PC or console, use captions for nothing a player needs, or raise the token.
 
