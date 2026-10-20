@@ -516,7 +516,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 #### Added
 
-- An eval in `evals/think-tank-traps-2026-10-19/` compares think-tank's default panel with one Opus session. It uses four questions whose confident answer is wrong and two whose obvious answer is right. The panel got 8 of 8 trap answers right and a single session 5 of 12, at about 8 times the cost and time. Both got every control right. Round 1 already had a right majority in every panel run, and panelists looked things up where the single sessions answered from memory, so the gain came from checking sources rather than the debate.
+- An eval in `evals/think-tank-traps-2026-10-19/` compares think-tank's default panel with one Opus session. It uses four questions whose confident answer is wrong and two whose obvious answer is right. The panel got 8 of 8 trap answers right and a single session 5 of 12, at about 8 times the cost and time. Both got every control right. Round 1 already had a right majority in every panel run, and panelists looked things up where the single sessions answered from memory, so the gain came from checking sources rather than the debate. ([#90](https://github.com/osabased/osaskills/pull/90))
 
 ### 2026-10-19
 
