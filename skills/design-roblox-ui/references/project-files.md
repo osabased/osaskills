@@ -20,11 +20,11 @@ About a page, read before every design task and sent to the reviewer. It says wh
 - platforms, ranked;
 - the feel: three words for it, two it must not be;
 - fixed constraints, including the size and aspect ratio of any art the UI frames;
-- the references: what to take from each and what to leave, then what they share;
+- the references: what to take from each and what to leave, then what they share, or that the user had none;
 - the screens, with a job and ranked content for each major one;
 - assumptions you made, dated, so the user can correct them.
 
-Write what the references share in words and hex values, not only as images. `refs/` is often gitignored, and an agent without the images, such as a cloud session, still has the words.
+Write what the references share in words and in the hex values `palette.py` measures, not only as images. `refs/` is often gitignored, and an agent without the images, such as a cloud session, still has the words.
 
 An example, for a made-up game:
 

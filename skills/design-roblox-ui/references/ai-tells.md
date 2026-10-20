@@ -2,6 +2,8 @@
 
 A tell is a default used without a reason: what an editor, a template or a model produces when nobody decides. Players don't name tells, but they feel the result, a game that looks like every other prototype. When the brief or the taste log asks for one of these, it's a choice, not a tell: keep it.
 
+The entries are written for calm UI. Many Roblox games, especially for younger players, are loud on purpose: saturated colour, chunky display type, thick strokes and outlined text. When the user picked a bold direction ([style tiles](process.md#style-tiles)), those traits are its style rather than tells. Judge them by what holds in any style: one construction for depth, one outline weight, and colour spent by rank, so the accent and currencies still stand out.
+
 Each entry says what the tell looks like, why it reads as unchosen, and a better move.
 
 ## Panels and surfaces
@@ -17,14 +19,14 @@ Each entry says what the tell looks like, why it reads as unchosen, and a better
 - **Pure black and white.** `#000000` text on `#FFFFFF`. Beside a tinted palette they look harsh and flat. Take the darkest and lightest colours from the palette, tinted toward it ([colour roles](theme.md#colour-roles)).
 - **Traffic lights.** Stock red, yellow and green for loss, warning and gain, straight from a colour picker. They clash with any palette that isn't made of primaries. Keep the meanings, tune each hue toward the palette, and check it with `contrast.py`.
 - **The purple-blue gradient.** Violet fading to blue on buttons and headers, so common in generated and template UI that it reads as no choice at all. Unless the brief asks for it, use the palette's accent, flat or with a small step in lightness.
-- **Everything saturated.** Every colour at full strength, so nothing stands out. Saturation is emphasis: keep surfaces muted and spend strong colour on the accent, currencies and rarities.
+- **Everything saturated.** Every colour at full strength, so nothing stands out. Saturation is emphasis: keep surfaces quieter than the accent, currencies and rarities, which get the strongest colour.
 - **Colour as the only signal.** Locked items only greyer, rarity only a border colour, errors only red. Players with colour-vision deficiencies miss them, and so does anyone on a dim phone in sunlight. Pair colour with a shape, an icon, a label or a position.
 
 ## Text and type
 
 - **One font at one weight.** Everything in the stock font at one weight, with hierarchy from size alone. It reads as flat and could be any game. Use a display face for titles and big numbers, a plain one for reading, and two or three weights ([type](theme.md#type)).
 - **TextScaled everywhere.** Every label scaled to its box, so sizes drift from row to row and ignore the player's text size setting. Use the type scale, and keep TextScaled for display numbers that must fill a box.
-- **Outlines as a crutch.** A thick black stroke on all text, to make it read over anything. Over the world, such as a HUD number or a nameplate, an outline can be a fair choice. On a solid panel it does nothing for contrast and adds noise. Fix legibility with the surface behind the text.
+- **Outlines as a crutch.** A thick black stroke on all text, to make it read over anything. Over the world, such as a HUD number or a nameplate, an outline can be a fair choice. On a solid panel it does nothing for contrast and adds noise, unless outlined text is the picked style. Fix legibility with the surface behind the text.
 - **Emoji as icons.** 🪙 for coins and ⚙️ for settings. They come in their own style, ignore the theme's colours, and sit on the text's baseline instead of centred. Use icons from one family, as white images tinted from the theme ([images](roblox-checklist.md#images)).
 - **Placeholder copy.** "Item Name", "Description goes here", "Button". It hides how real text fits, and it ships more often than anyone means it to. Use real strings at worst-case length.
 - **All-caps sentences.** Whole lines in capitals. Runs of capitals are slower to read and they shout. Keep capitals for short labels, if the style tile chose them, and write sentences in sentence case.

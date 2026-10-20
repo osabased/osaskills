@@ -41,19 +41,21 @@ Offer a default for anything they don't know; for a Roblox game, that is phone f
 
 References are how the user's eye gets into the work. Ask the user to put 3 to 8 images in `docs/design/refs/`, other games, screenshots, illustration, anything, each with a note on what they like in it ("the chunky numbers", "how the HUD stays out of the way"). Don't download images yourself; if the user names a game, ask for screenshots.
 
-Open each image and write down in the brief what they share: hex colours sampled from them, corner shapes, type (weight, case, width), density, how the UI sits over the game world, and how much is decoration. Take traits, not designs: a game's layout answered that game's needs, and copying its look copies its identity.
+Open each image and write down in the brief what they share: their colours as hex, corner shapes, type (weight, case, width), density, how the UI sits over the game world, and how much is decoration. Measure the colours with `palette.py` ([tools](../SKILL.md#tools)), whose last section is what the images share: a colour read by eye from a picture is a guess, and the theme's palette is built from these values. An accent can cover too little of an image to make the list; when the images have one, run it again with a lower `--min-share`. Take traits, not designs: a game's layout answered that game's needs, and copying its look copies its identity.
 
 Reference images are usually other studios' work. In a public repository, add `docs/design/refs/` to `.gitignore` and say so in the brief.
 
+If the user has no references, don't wait for some. Say so in the brief, and make the [style tiles](#style-tiles) from the feel words, the players and the constraints alone. The picked tile then stands in for the references: it is what the reviewer is [calibrated](#calibrate-the-reviewer) on.
+
 ## Calibrate the reviewer
 
-Once per project, before the first review, check how the reviewer's eye differs from the user's. Send the reviewer ([review](review.md)) the user's favourite reference with the brief, as if it were a screen to review. It should mostly approve. Write down what it flags that the user likes anyway under "Reviewer calibration" in the taste log. Every later review gets that list, so the reviewer stops fighting the house style.
+Once per project, before the first review, check how the reviewer's eye differs from the user's. Send the reviewer ([review](review.md)) the user's favourite reference with the brief, as if it were a screen to review. It should mostly approve. Write down what it flags that the user likes anyway under "Reviewer calibration" in the taste log. Every later review gets that list, so the reviewer stops fighting the house style. With no references, calibrate right after the style-tile pick, on the picked tile's render.
 
 ## Style tiles
 
 A style tile is one specimen board showing a direction's palette, type and components, with no real screen's layout. It makes directions cheap to compare, and the user picks a look before any screen depends on it.
 
-Make three directions. Give each a name and a one-line bet ("Field journal: warm paper, ink outlines, hand-set numbers"). Vary them on shape, colour, type, surface and density, so the user chooses between real alternatives: one close to the references, one bolder than the brief asks.
+Make three directions. Give each a name and a one-line bet ("Field journal: warm paper, ink outlines, hand-set numbers"). Space them from calm to bold on shape, colour, type, surface and density, so the user chooses between real alternatives, with one close to the references wherever they sit. Make the bold one as loud as the brief's "not" words allow, the way many Roblox games are: saturated colour, chunky display type, thick strokes and outlined text. Younger players often expect that end, so give it the same care as the others rather than making it a foil.
 
 Every tile shows the same specimen content, so the comparison is fair:
 

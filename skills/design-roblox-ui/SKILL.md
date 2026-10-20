@@ -55,8 +55,9 @@ The project guide can move any of these; their formats are in [project files](re
 
 - **rhr** renders stories and places to PNG and checks them for overflowing text, low contrast, small targets and unsafe areas. [Rendering](references/rendering.md) has the version to install and the gaps to discount.
 - **Contact sheet:** `uv run --no-project --with pillow python <skill>/scripts/contact_sheet.py --help`. Lays renders out in one labelled image, optionally over white, black and busy backdrops, so options compare side by side.
-- **Contrast:** `python <skill>/scripts/contrast.py --help`. WCAG contrast ratios for colour pairs, including see-through panels.
-- **Raw-value guard:** `python <skill>/scripts/theme_guard.py --help`. Fails on colours, fonts and text sizes written outside the theme module; copy it into the project and run it from the project's check ([guard](references/theme.md#the-raw-value-guard)).
+- **Palette:** `uv run --no-project --with pillow python <skill>/scripts/palette.py --help`. Measures the main colours of reference images as hex, with each one's share, so the brief's palette comes from the images rather than a guess at them.
+- **Contrast:** `uv run --no-project python <skill>/scripts/contrast.py --help`. WCAG contrast ratios for colour pairs, including see-through panels.
+- **Raw-value guard:** `uv run --no-project python <skill>/scripts/theme_guard.py --help`. Fails on colours, fonts and text sizes written outside the theme module, in Luau files only; copy it into the project and run it from the project's check ([guard](references/theme.md#the-raw-value-guard)).
 - **Reviewer:** the `osaskills:roblox-ui-reviewer` agent, or `roblox-ui-reviewer` outside the plugin, critiques the renders cold, without the code ([review](references/review.md)).
 
 ## References

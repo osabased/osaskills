@@ -101,7 +101,9 @@ def test_json_output(cli, contrast):
 
 
 def _theme_examples() -> list[list[str]]:
-    lines = re.findall(r"^python <skill>/scripts/contrast\.py (.+)$", THEME_MD.read_text(encoding="utf-8"), re.MULTILINE)
+    lines = re.findall(
+        r"^uv run --no-project python <skill>/scripts/contrast\.py (.+)$", THEME_MD.read_text(encoding="utf-8"), re.MULTILINE
+    )
     assert len(lines) == 3
     return [shlex.split(line) for line in lines]
 

@@ -94,6 +94,7 @@ If the reviewer can't be continued, spawn a new one with round 1's material, the
 - Apply each major fix, unless it contradicts the brief or the taste log. Decline those, and tell the user in your summary.
 - Apply the minor fixes you agree with that cost little. Decline the rest with a reason; the reviewer reads it next round.
 - A fix's diagnosis can be right while its numbers are off. Check its measurements against `rhr layout`, and fix the cause of what the reviewer saw: buy buttons that looked 2 px apart were 8 apart, with 3 px strokes drawn outside each.
+- A fix to render an item that wasn't drawn, such as art rhr didn't download, is done before the user's review, whatever its severity. Ask the user before rhr's first download ([the loop](rendering.md#the-loop)), render with the art, and look at it yourself; send the renders as another round if the art changes how the screen reads.
 - Don't change the direction because the reviewer doubts it. Pass the doubt to the user, with the reviewer's reason.
 - A Rework verdict goes to the user before you rework anything, since it questions a choice they made.
 - After applying fixes, [check and look](process.md#check-and-look) again before the next round.
@@ -120,6 +121,8 @@ Five fixes is a cap, not a target, and a screen that's ready gets Ship with none
 The user picked the direction. If you doubt the direction itself, say so once, in the verdict's sentence, and keep the fixes within it.
 
 The render notes list what the renderer draws differently from Roblox; those aren't faults of the screen. Anything else that looks like the renderer rather than the design goes under Render doubts, not Fixes.
+
+Ship means the screen is ready as players will see it, so it needs the brief's top two items drawn. When the render notes say one isn't, such as art that wasn't downloaded, the verdict is at most Ship after fixes, and one fix is to render that item before the screen ships.
 
 In later rounds you're sent new renders and what happened to each earlier fix. Check each fix in the renders, look for anything the changes broke, and don't repeat a declined fix unless its reason doesn't hold; then say why it doesn't.
 

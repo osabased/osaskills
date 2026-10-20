@@ -36,6 +36,11 @@ def contact_sheet():
     return load_script("contact_sheet")
 
 
+@pytest.fixture(scope="session")
+def palette():
+    return load_script("palette")
+
+
 @pytest.fixture()
 def cli(capsys):
     """Run a script's main() and return (exit code, stdout, stderr)."""
