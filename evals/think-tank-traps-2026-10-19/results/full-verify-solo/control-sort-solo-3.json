@@ -1,0 +1,104 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "solo",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): tie-breaker for a stable priority sort\nopus · session effort · one panelist\n\n### Recommendation\nYou don't need the tie-breaker, as long as `orders` is already in arrival order. Python guarantees that `sorted()` is stable: items with equal keys keep the order they had in the input. So `key=lambda o: o.priority` already keeps equal-priority orders in arrival order. This still holds if you later sort with `reverse=True`.\n\nThe tie-breaker only changes the result when the list isn't in arrival order. That can happen if the list comes from:\n- a set;\n- a database query with no `ORDER BY`;\n- several sources merged together;\n- concurrent producers;\n- an earlier sort by some other field.\n\nIn those cases stability just keeps the wrong order, so you need `(o.priority, o.arrival_index)`. The index has to be recorded when each order arrives. Using `enumerate` at sort time only copies the current list order, so it adds nothing.\n\nOther suggestions from the panelist:\n- If you keep the plain key, add a comment that FIFO among ties relies on the stable sort, plus a test with equal priorities.\n- Watch for `priority` values that don't compare cleanly: NaN, mixed types, or a custom `__lt__` that isn't a proper ordering. A tie-breaker won't fix those.\n- If this ever moves to `heapq` or `PriorityQueue`, you will need a tie-breaker, because heaps aren't stable.\n\nChecked:\n- **Stability is guaranteed:** confirmed. The docs for `sorted()` say it \"is guaranteed to be stable\", and `list.sort()` and the Sorting HOWTO say the same.\n- **`reverse=True` stays stable:** confirmed. The HOWTO says reverse \"still maintains sort stability\".\n- **`heapq` needs a tie-breaker:** confirmed. The `heapq` docs' priority-queue notes use an entry count for exactly this reason.\n\nI checked these from my knowledge of the Python docs and didn't re-fetch the pages this session.\n\n### Panelist\n\"Don't add it. Python's documented stable sort already keeps ties in arrival order, provided the list is built in arrival order. If that isn't guaranteed, add the arrival-index tie-breaker.\" High confidence on the stability guarantee, medium on the overall recommendation because how the list is built is unknown.\n\n### My take\nI agree, and the panelist didn't change my view: I had the same leaning and the same caveat before it answered. The real question is \"is my input list in arrival order?\", not \"do I need a tie-breaker?\".\n\nIf the orders are appended as they come in, keep your current code and add a one-line comment. If they come from a database or a merge, add the tie-breaker; it costs almost nothing. I'd lean slightly more towards adding it than the panelist does in one case: when an arrival timestamp or sequence number already exists on the record. Then the tuple key states the requirement directly in the code, and it keeps working if someone later changes how the list is built.",
+ "texts": [
+  "## Brief\n\n> **Question:** In a Python project (not available to read; there are no files to look at), a list of order records is sorted by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should the developer add the arrival index to the sort key as a tie-breaker, e.g. `key=lambda o: (o.priority, o.arrival_index)`, or something similar?\n>\n> **Context:** That is all the information available. Nothing else is known about how the list is built or what kind of value `priority` is.\n>\n> **What a useful answer looks like:** A clear recommendation (add it / don't / it depends on X) with the reasoning behind it. Say which facts your position depends on, and name any assumptions about the codebase that would change the answer. Cite authoritative sources where they matter. End with a one-line **Position:** and your confidence.\n\nAsking one opus panelist at session effort.\nMy leaning before the answer: it's usually unnecessary, because Python's sort is guaranteed stable. It only helps if the list isn't already in arrival order.",
+  "## Think tank (solo): tie-breaker for a stable priority sort\nopus · session effort · one panelist\n\n### Recommendation\nYou don't need the tie-breaker, as long as `orders` is already in arrival order. Python guarantees that `sorted()` is stable: items with equal keys keep the order they had in the input. So `key=lambda o: o.priority` already keeps equal-priority orders in arrival order. This still holds if you later sort with `reverse=True`.\n\nThe tie-breaker only changes the result when the list isn't in arrival order. That can happen if the list comes from:\n- a set;\n- a database query with no `ORDER BY`;\n- several sources merged together;\n- concurrent producers;\n- an earlier sort by some other field.\n\nIn those cases stability just keeps the wrong order, so you need `(o.priority, o.arrival_index)`. The index has to be recorded when each order arrives. Using `enumerate` at sort time only copies the current list order, so it adds nothing.\n\nOther suggestions from the panelist:\n- If you keep the plain key, add a comment that FIFO among ties relies on the stable sort, plus a test with equal priorities.\n- Watch for `priority` values that don't compare cleanly: NaN, mixed types, or a custom `__lt__` that isn't a proper ordering. A tie-breaker won't fix those.\n- If this ever moves to `heapq` or `PriorityQueue`, you will need a tie-breaker, because heaps aren't stable.\n\nChecked:\n- **Stability is guaranteed:** confirmed. The docs for `sorted()` say it \"is guaranteed to be stable\", and `list.sort()` and the Sorting HOWTO say the same.\n- **`reverse=True` stays stable:** confirmed. The HOWTO says reverse \"still maintains sort stability\".\n- **`heapq` needs a tie-breaker:** confirmed. The `heapq` docs' priority-queue notes use an entry count for exactly this reason.\n\nI checked these from my knowledge of the Python docs and didn't re-fetch the pages this session.\n\n### Panelist\n\"Don't add it. Python's documented stable sort already keeps ties in arrival order, provided the list is built in arrival order. If that isn't guaranteed, add the arrival-index tie-breaker.\" High confidence on the stability guarantee, medium on the overall recommendation because how the list is built is unknown.\n\n### My take\nI agree, and the panelist didn't change my view: I had the same leaning and the same caveat before it answered. The real question is \"is my input list in arrival order?\", not \"do I need a tie-breaker?\".\n\nIf the orders are appended as they come in, keep your current code and add a one-line comment. If they come from a database or a merge, add the tie-breaker; it costs almost nothing. I'd lean slightly more towards adding it than the panelist does in one case: when an arrival timestamp or sequence number already exists on the record. Then the tuple key states the requirement directly in the code, and it keeps working if someone later changes how the list is built."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "a6da797b94f5b4373",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "**Question:** In a Python project (not available to read; there are no files to look at), a list of order records is sorted by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should the developer add the arrival index to the sort key as a tie-breaker, e.g. `key=lambda o: (o.priority, o.arrival_index)`, or something similar?\n\n**Context:** That is all the information available. Nothing else is known about how the list is built or what kind of value `priority` is.\n\n**What a useful answer looks like:** A clear recommendation (add it / don't / it depends on X) with the reasoning behind it. Say which facts your position depends on, and name any assumptions about the codebase that would change the answer. Cite authoritative sources where they matter. End with a one-line **Position:** and your confidence.",
+     "reply": "**Position:** No tie-breaker is needed for correctness. Python guarantees that `sorted()` is stable, so orders with equal priority keep the order they had in the input list. That only gives arrival order if the input list is already in arrival order, and that one fact decides the answer. If it isn't guaranteed, add the tie-breaker.\n\n**Reasoning:**\n- **Stability is part of the language spec, not an accident of the implementation.** The Python docs for the built-in `sorted()` say: \"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal\" (docs.python.org/3/library/functions.html#sorted). `list.sort()` has the same guarantee (docs.python.org/3/library/stdtypes.html#list.sort), and the Sorting HOWTO says \"Sorts are guaranteed to be stable\" (docs.python.org/3/howto/sorting.html). This holds for every conforming Python, not just CPython's Timsort/Powersort.\n- **`reverse=True` keeps it stable too.** The docs say the elements are sorted \"as if each comparison were reversed\", so equal-priority orders still keep their input order. Switching to descending priority later won't break FIFO among ties.\n- **The tie-breaker only adds safety in one case.** `(o.priority, o.arrival_index)` gives the same result as the current code whenever the list is in arrival order. It is only better when the list is not in arrival order. In that case it is required, and stability alone would just keep the wrong order.\n\n**Assumptions that change the answer:**\n1. **How the list is built (the main one).** Add the tie-breaker if `orders` could come from:\n   - a `set`;\n   - a database query with no `ORDER BY`;\n   - several sources merged together;\n   - concurrent producers whose appends don't match arrival time;\n   - an earlier sort or shuffle by some other field.\n   It also gives protection if someone later changes how the list is built.\n2. **Whether an arrival index exists at all.** The brief says nothing about one. If there isn't one, the \"fix\" means adding a field or using `enumerate` at ingestion. Using `enumerate` at sort time just records the current list order, so it adds nothing over stability.\n3. **What `priority` is.** Stability assumes the comparisons form a consistent order. If `priority` can be a float NaN, has a custom `__lt__` that isn't a proper order, or mixes types (`TypeError`), neither version is correct. The fix there is to clean up the key, not to add a tie-breaker.\n4. **Changes to the sort later.** If someone replaces this with `heapq` or a `PriorityQueue`, or sorts somewhere else in a way that isn't stable, the guarantee is gone. Heaps are not stable, and that is exactly why the `heapq` docs recommend an entry-count tie-breaker.\n\n**What I'd do:** If the list is built in arrival order (for example, appended as orders come in), keep `key=lambda o: o.priority` and add a comment that FIFO among equal priorities relies on Python's guaranteed sort stability. A test with equal priorities would protect that. If the arrival order isn't guaranteed and an arrival index or timestamp exists, use the tuple key. It costs almost nothing, as long as the index is unique and comparable.\n\n**Risks and unknowns:** Everything depends on whether the input list is in arrival order, and the brief doesn't say. If it isn't, my \"don't add it\" becomes \"you must add it\". I'm not unsure about stability itself: it's documented.\n\n**Position:** Don't add it. Python's documented stable sort already keeps ties in arrival order, provided the list is built in arrival order. If that isn't guaranteed, add the arrival-index tie-breaker. **Confidence:** high on the stability guarantee; medium on the overall recommendation, because how the list is built is unknown."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.1700506,
+ "turns": 2,
+ "minutes": 0.7,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 9653,
+  "cache_read_input_tokens": 27926,
+  "output_tokens": 2153,
+  "output_tokens_details": {
+   "thinking_tokens": 370
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9653,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1255,
+    "cache_read_input_tokens": 17550,
+    "cache_creation_input_tokens": 2479,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2479
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 4073,
+   "cacheReadInputTokens": 31988,
+   "cacheCreationInputTokens": 10642,
+   "webSearchRequests": 0,
+   "costUSD": 0.1700506,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 994,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

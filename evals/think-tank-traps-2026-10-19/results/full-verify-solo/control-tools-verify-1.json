@@ -1,0 +1,104 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "verify",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "For blocking file edits, `tools: Read, Grep, Glob` is enough. You don't need anything else for that. I checked the current subagents page at code.claude.com/docs/en/sub-agents.\n\n**What I verified in the docs:**\n\n- **`tools` is an allowlist.** Only the tools you list are available. The docs' own code-reviewer example, `tools: Read, Grep, Glob, Bash`, is described as unable to \"edit files, write files, or use any MCP tools.\" Your list doesn't include Bash either, so it's tighter than their read-only example.\n- **Skills are blocked.** The docs say leaving `Skill` out of `tools` stops the subagent from invoking skills. Skills can't be used as a back door.\n- **It works in the background too.** Background subagents (the default) keep only a fixed set of built-in tools. Read, Grep and Glob are on that list, so your agent has the same three tools whether it runs in the foreground or the background.\n- **A misspelled tool name doesn't open everything up.** If no entry in `tools` matches a real tool, Claude Code \"usually\" refuses to launch the subagent and shows an error. It doesn't fall back to all tools.\n- **Hooks are the one way to run code without a listed tool.** A `hooks` entry in the subagent's frontmatter runs shell commands. Don't add hooks to the auditor and nothing changes.\n\n**One real risk (my inference from the docs):** if the `tools` key is missing, the subagent gets every available tool. That includes a typo like `tool:` or frontmatter that doesn't parse, for example when the `---` lines are missing or the YAML is broken. In that case the agent silently gets Edit, Write, Bash and the rest, and there's no error. This is the most likely way your setup would fail, so check the key spelling and the `---` delimiters.\n\n**Optional backstop:** add `disallowedTools: Edit, Write, NotebookEdit, Bash, PowerShell`. The docs say this list is applied first, then `tools` is resolved against what's left. With a correct `tools` line it changes nothing. It protects you if someone later adds Bash or removes the `tools` line.\n\n**What I couldn't verify:**\n\n- I couldn't see your `auditor.md` because it isn't in this directory. Everything above assumes the frontmatter parses correctly.\n- **Permission modes:** the docs say a subagent inherits `bypassPermissions`/`acceptEdits` from the main session. They don't say outright that the `tools` allowlist still applies in those modes. I'm fairly confident it does, because those modes only skip approval prompts and don't add tools, but that's my reasoning, not a quote.\n- **Forks** get the main session's full tool set. A fork isn't your auditor, though: it's a copy of the main session, not something started from `auditor.md`. So this doesn't affect your definition, but don't assume every delegated task runs through the auditor.\n\nSources:\n- [Claude Code docs: Subagents](https://code.claude.com/docs/en/sub-agents)",
+ "texts": [
+  "For blocking file edits, `tools: Read, Grep, Glob` is enough. You don't need anything else for that. I checked the current subagents page at code.claude.com/docs/en/sub-agents.\n\n**What I verified in the docs:**\n\n- **`tools` is an allowlist.** Only the tools you list are available. The docs' own code-reviewer example, `tools: Read, Grep, Glob, Bash`, is described as unable to \"edit files, write files, or use any MCP tools.\" Your list doesn't include Bash either, so it's tighter than their read-only example.\n- **Skills are blocked.** The docs say leaving `Skill` out of `tools` stops the subagent from invoking skills. Skills can't be used as a back door.\n- **It works in the background too.** Background subagents (the default) keep only a fixed set of built-in tools. Read, Grep and Glob are on that list, so your agent has the same three tools whether it runs in the foreground or the background.\n- **A misspelled tool name doesn't open everything up.** If no entry in `tools` matches a real tool, Claude Code \"usually\" refuses to launch the subagent and shows an error. It doesn't fall back to all tools.\n- **Hooks are the one way to run code without a listed tool.** A `hooks` entry in the subagent's frontmatter runs shell commands. Don't add hooks to the auditor and nothing changes.\n\n**One real risk (my inference from the docs):** if the `tools` key is missing, the subagent gets every available tool. That includes a typo like `tool:` or frontmatter that doesn't parse, for example when the `---` lines are missing or the YAML is broken. In that case the agent silently gets Edit, Write, Bash and the rest, and there's no error. This is the most likely way your setup would fail, so check the key spelling and the `---` delimiters.\n\n**Optional backstop:** add `disallowedTools: Edit, Write, NotebookEdit, Bash, PowerShell`. The docs say this list is applied first, then `tools` is resolved against what's left. With a correct `tools` line it changes nothing. It protects you if someone later adds Bash or removes the `tools` line.\n\n**What I couldn't verify:**\n\n- I couldn't see your `auditor.md` because it isn't in this directory. Everything above assumes the frontmatter parses correctly.\n- **Permission modes:** the docs say a subagent inherits `bypassPermissions`/`acceptEdits` from the main session. They don't say outright that the `tools` allowlist still applies in those modes. I'm fairly confident it does, because those modes only skip approval prompts and don't add tools, but that's my reasoning, not a quote.\n- **Forks** get the main session's full tool set. A fork isn't your auditor, though: it's a copy of the main session, not something started from `auditor.md`. So this doesn't affect your definition, but don't assume every delegated task runs through the auditor.\n\nSources:\n- [Claude Code docs: Subagents](https://code.claude.com/docs/en/sub-agents)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch,WebSearch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.17723199999999997,
+ "turns": 4,
+ "minutes": 0.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 13663,
+  "cache_read_input_tokens": 63921,
+  "output_tokens": 2446,
+  "output_tokens_details": {
+   "thinking_tokens": 909
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13663,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1692,
+    "cache_read_input_tokens": 20214,
+    "cache_creation_input_tokens": 3825,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3825
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 2446,
+   "cacheReadInputTokens": 63921,
+   "cacheCreationInputTokens": 13663,
+   "webSearchRequests": 0,
+   "costUSD": 0.17104019999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 909,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 35648,
+   "outputTokens": 5254,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0061918,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2561,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

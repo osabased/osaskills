@@ -1,0 +1,112 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "verify",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "For file modification, yes, that's enough. `tools:` works as an allowlist, so the auditor gets only Read, Grep and Glob. It has no Edit, Write, NotebookEdit, Bash, PowerShell, MCP tools, Skill tool, or ability to spawn other subagents (the `Agent` tool). I checked this against the current subagents page (code.claude.com/docs/en/sub-agents) today.\n\n**What I confirmed in the docs:**\n- **`tools` is an allowlist.** The docs describe it as \"Tools the subagent can use… Inherits every tool available to subagents if omitted.\" Their own allowlist example says that subagent \"can't edit files, write files, or use any MCP tools.\"\n- **No spawning.** \"Listing `Agent` in `tools` lets that subagent spawn subagents of its own.\" You haven't listed it, so the auditor can't hand work to an agent that can write.\n- **No skills.** To stop a subagent using skills, the docs say to \"omit `Skill` from the `tools` list.\"\n- **A typo fails safely.** If nothing in `tools` matches a real tool, Claude Code \"usually refuses to launch the subagent.\" The page doesn't say what happens if only some entries are misspelled.\n- **Background runs don't add tools.** Running in the background only removes tools; Read, Grep and Glob stay.\n\n**Optional extra layer:** add a denylist so the agent stays read-only even if someone later widens `tools`:\n```yaml\ntools: Read, Grep, Glob\ndisallowedTools: Write, Edit, NotebookEdit, Bash, PowerShell\n```\nThe docs say `disallowedTools` is applied first and \"A tool listed in both is removed,\" so this can't backfire.\n\n**Things that would break the guarantee later:**\n- **Adding Bash or PowerShell.** Shell commands can write files. The docs' own \"read-only\" code-reviewer example includes Bash, so read-only there just means no Edit or Write. If you ever need a shell, add a `PreToolUse` hook or `permissions.deny` rules. The docs say those rules \"apply to the main conversation and to subagents.\"\n- **Adding `Agent` or `Skill`.** Either one gives the auditor an indirect way to get tools you didn't grant.\n- **Adding `mcpServers`.** The docs don't say whether servers listed there get past the `tools` allowlist, so I'd leave that field out.\n- **Anyone who can edit the file.** It sits in `.claude/agents/` in the repo, so anyone with write access there can change the frontmatter.\n\n**What I couldn't confirm:**\n- The page says that on macOS, Linux and WSL a subagent \"can also receive the Glob and Grep tools when the main conversation doesn't have them.\" I didn't read the linked section on this. It only adds search tools, so it doesn't affect writing.\n- I didn't fetch the hooks or permissions reference pages. My points about hooks and deny rules come only from what the subagents page says.\n\nOne thing outside the subagent's control: the main conversation can still act on the auditor's findings and edit files itself. If you need to prevent that too, it's a session-level permission setting, not something the subagent file can do.",
+ "texts": [
+  "For file modification, yes, that's enough. `tools:` works as an allowlist, so the auditor gets only Read, Grep and Glob. It has no Edit, Write, NotebookEdit, Bash, PowerShell, MCP tools, Skill tool, or ability to spawn other subagents (the `Agent` tool). I checked this against the current subagents page (code.claude.com/docs/en/sub-agents) today.\n\n**What I confirmed in the docs:**\n- **`tools` is an allowlist.** The docs describe it as \"Tools the subagent can use… Inherits every tool available to subagents if omitted.\" Their own allowlist example says that subagent \"can't edit files, write files, or use any MCP tools.\"\n- **No spawning.** \"Listing `Agent` in `tools` lets that subagent spawn subagents of its own.\" You haven't listed it, so the auditor can't hand work to an agent that can write.\n- **No skills.** To stop a subagent using skills, the docs say to \"omit `Skill` from the `tools` list.\"\n- **A typo fails safely.** If nothing in `tools` matches a real tool, Claude Code \"usually refuses to launch the subagent.\" The page doesn't say what happens if only some entries are misspelled.\n- **Background runs don't add tools.** Running in the background only removes tools; Read, Grep and Glob stay.\n\n**Optional extra layer:** add a denylist so the agent stays read-only even if someone later widens `tools`:\n```yaml\ntools: Read, Grep, Glob\ndisallowedTools: Write, Edit, NotebookEdit, Bash, PowerShell\n```\nThe docs say `disallowedTools` is applied first and \"A tool listed in both is removed,\" so this can't backfire.\n\n**Things that would break the guarantee later:**\n- **Adding Bash or PowerShell.** Shell commands can write files. The docs' own \"read-only\" code-reviewer example includes Bash, so read-only there just means no Edit or Write. If you ever need a shell, add a `PreToolUse` hook or `permissions.deny` rules. The docs say those rules \"apply to the main conversation and to subagents.\"\n- **Adding `Agent` or `Skill`.** Either one gives the auditor an indirect way to get tools you didn't grant.\n- **Adding `mcpServers`.** The docs don't say whether servers listed there get past the `tools` allowlist, so I'd leave that field out.\n- **Anyone who can edit the file.** It sits in `.claude/agents/` in the repo, so anyone with write access there can change the frontmatter.\n\n**What I couldn't confirm:**\n- The page says that on macOS, Linux and WSL a subagent \"can also receive the Glob and Grep tools when the main conversation doesn't have them.\" I didn't read the linked section on this. It only adds search tools, so it doesn't affect writing.\n- I didn't fetch the hooks or permissions reference pages. My points about hooks and deny rules come only from what the subagents page says.\n\nOne thing outside the subagent's control: the main conversation can still act on the auditor's findings and edit files itself. If you need to prevent that too, it's a session-level permission setting, not something the subagent file can do."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch,WebSearch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.24039800000000003,
+ "turns": 6,
+ "minutes": 1.5,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 17512,
+  "cache_read_input_tokens": 89642,
+  "output_tokens": 3325,
+  "output_tokens_details": {
+   "thinking_tokens": 1391
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17512,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2012,
+    "cache_read_input_tokens": 25862,
+    "cache_creation_input_tokens": 2026,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2026
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 3325,
+   "cacheReadInputTokens": 89642,
+   "cacheCreationInputTokens": 17512,
+   "webSearchRequests": 0,
+   "costUSD": 0.22456440000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1391,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 106831,
+   "outputTokens": 10301,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0158336,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4544,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

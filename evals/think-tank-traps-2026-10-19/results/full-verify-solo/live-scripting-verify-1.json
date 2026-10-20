@@ -1,0 +1,112 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "verify",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "You'll probably see the edits show up for your collaborators right away. With default settings there's nothing to commit. One part of this I couldn't confirm in the official docs, explained below.\n\n**Confirmed in Roblox's [Collaboration docs](https://create.roblox.com/docs/projects/collaboration):**\n- **Live Scripting is the default.** The page says \"Live Scripting is enabled by default.\" Collaborators edit the same scripts in real time, and each person's cursor shows in their own color. Since you haven't changed the settings, this is your mode.\n- **Committing only exists in Drafts mode, which is off by default.** In Drafts mode, script edits stay local until you commit them from the Drafts window. You turn it on in File > Experience Settings with \"Enable Drafts Mode.\" Everyone has to leave the session for the switch to apply.\n- **Saving is for history, not for sharing.** In Live Scripting, edits auto-save every 5 minutes, or when you press Ctrl+S, into Script History. That records versions; it doesn't control when others see a change.\n\n**Confirmed in Roblox's [Studio MCP server docs](https://create.roblox.com/docs/studio/mcp):**\n- The MCP server is built into Studio and edits the scripts in your open session. The editing tool is `multi_edit`, and `script_grep` searches across scripts. A rename across several scripts would use these.\n\n**Not confirmed:**\n- Neither page says how MCP edits behave in Team Create, Live Scripting or Drafts. I'm inferring that MCP edits sync live like your own typing, because they change the same scripts in your Live Scripting session. I didn't find a doc that states this.\n\n**What this means for the rename:**\n- Your collaborators will see the renamed function appear in their open scripts as it happens, and there's no commit step to review it first.\n- If they're working in the same scripts, the edits could collide with their typing. For a short time some scripts may be updated and others not, so if someone runs a playtest then, it could break.\n- Tell them before you start, or do it while they're out of those scripts. If you want to review changes before others get them, Drafts mode does that, but everyone has to leave the session to switch.\n\nI also looked at a third-party [Obby.fun blog post](https://www.obby.fun/blog/roblox-studio-team-create) (Oct 6, 2026) that describes the same live vs. Drafts split. I relied on Roblox's own docs above.\n\nSources:\n- [Roblox Creator Docs – Collaboration](https://create.roblox.com/docs/projects/collaboration)\n- [Roblox Creator Docs – Studio MCP server](https://create.roblox.com/docs/studio/mcp)\n- [Roblox Creator Docs – Studio overview](https://create.roblox.com/docs/studio.md)\n- [Obby.fun – Roblox Studio Team Create](https://www.obby.fun/blog/roblox-studio-team-create)",
+ "texts": [
+  "You'll probably see the edits show up for your collaborators right away. With default settings there's nothing to commit. One part of this I couldn't confirm in the official docs, explained below.\n\n**Confirmed in Roblox's [Collaboration docs](https://create.roblox.com/docs/projects/collaboration):**\n- **Live Scripting is the default.** The page says \"Live Scripting is enabled by default.\" Collaborators edit the same scripts in real time, and each person's cursor shows in their own color. Since you haven't changed the settings, this is your mode.\n- **Committing only exists in Drafts mode, which is off by default.** In Drafts mode, script edits stay local until you commit them from the Drafts window. You turn it on in File > Experience Settings with \"Enable Drafts Mode.\" Everyone has to leave the session for the switch to apply.\n- **Saving is for history, not for sharing.** In Live Scripting, edits auto-save every 5 minutes, or when you press Ctrl+S, into Script History. That records versions; it doesn't control when others see a change.\n\n**Confirmed in Roblox's [Studio MCP server docs](https://create.roblox.com/docs/studio/mcp):**\n- The MCP server is built into Studio and edits the scripts in your open session. The editing tool is `multi_edit`, and `script_grep` searches across scripts. A rename across several scripts would use these.\n\n**Not confirmed:**\n- Neither page says how MCP edits behave in Team Create, Live Scripting or Drafts. I'm inferring that MCP edits sync live like your own typing, because they change the same scripts in your Live Scripting session. I didn't find a doc that states this.\n\n**What this means for the rename:**\n- Your collaborators will see the renamed function appear in their open scripts as it happens, and there's no commit step to review it first.\n- If they're working in the same scripts, the edits could collide with their typing. For a short time some scripts may be updated and others not, so if someone runs a playtest then, it could break.\n- Tell them before you start, or do it while they're out of those scripts. If you want to review changes before others get them, Drafts mode does that, but everyone has to leave the session to switch.\n\nI also looked at a third-party [Obby.fun blog post](https://www.obby.fun/blog/roblox-studio-team-create) (Oct 6, 2026) that describes the same live vs. Drafts split. I relied on Roblox's own docs above.\n\nSources:\n- [Roblox Creator Docs – Collaboration](https://create.roblox.com/docs/projects/collaboration)\n- [Roblox Creator Docs – Studio MCP server](https://create.roblox.com/docs/studio/mcp)\n- [Roblox Creator Docs – Studio overview](https://create.roblox.com/docs/studio.md)\n- [Obby.fun – Roblox Studio Team Create](https://www.obby.fun/blog/roblox-studio-team-create)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/projects/collaboration"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Team Create live scripting collaborative editing default commit drafts 2026"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio MCP server create.roblox.com docs edit scripts"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/studio/mcp"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.17258920000000003,
+ "turns": 6,
+ "minutes": 0.7,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 10857,
+  "cache_read_input_tokens": 83993,
+  "output_tokens": 2142,
+  "output_tokens_details": {
+   "thinking_tokens": 569
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 10857,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1205,
+    "cache_read_input_tokens": 20605,
+    "cache_creation_input_tokens": 628,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 628
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 2142,
+   "cacheReadInputTokens": 83993,
+   "cacheCreationInputTokens": 10857,
+   "webSearchRequests": 0,
+   "costUSD": 0.1465346,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 569,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 40826,
+   "outputTokens": 3944,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0260546,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1625,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

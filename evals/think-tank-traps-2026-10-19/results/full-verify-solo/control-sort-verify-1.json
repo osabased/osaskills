@@ -1,0 +1,104 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "verify",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**No, you don't need the tie-breaker.** `sorted()` is guaranteed to be stable, so orders with equal `priority` keep the order they had in the input list. `sorted(orders, key=lambda o: o.priority)` already does what you want.\n\n**What I checked in the official docs (docs.python.org/3, which currently shows Python 3.15.0):**\n\n- **`sorted()` is guaranteed stable.** The built-in functions page says: *\"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"*\n- **The guarantee covers `key=` sorts.** The Sorting Techniques page says: *\"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\"* Its example uses `key=itemgetter(0)`.\n- **`reverse=True` keeps it stable too.** The same page says: *\"The reverse parameter still maintains sort stability (so that records with equal keys retain the original order).\"* So `sorted(orders, key=lambda o: o.priority, reverse=True)` still keeps equal-priority orders in arrival order. Negating the key (`-o.priority`) is also stable.\n\n**Not from the docs:** stability keeps the order of the input list, not the actual arrival order. Those are only the same if `orders` is already in arrival order. If the list is built in a way that can reorder it, stability won't fix that. Examples: from a set, merged from several sources, or from a database query without `ORDER BY`. In those cases, use a real arrival field such as a timestamp or sequence number: `key=lambda o: (o.priority, o.arrival_seq)`. A tie-breaker based on `enumerate` wouldn't help, because it records list position, which is the same thing stability already preserves.\n\nI didn't look at your project's code, since it isn't in this directory.",
+ "texts": [
+  "**No, you don't need the tie-breaker.** `sorted()` is guaranteed to be stable, so orders with equal `priority` keep the order they had in the input list. `sorted(orders, key=lambda o: o.priority)` already does what you want.\n\n**What I checked in the official docs (docs.python.org/3, which currently shows Python 3.15.0):**\n\n- **`sorted()` is guaranteed stable.** The built-in functions page says: *\"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"*\n- **The guarantee covers `key=` sorts.** The Sorting Techniques page says: *\"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\"* Its example uses `key=itemgetter(0)`.\n- **`reverse=True` keeps it stable too.** The same page says: *\"The reverse parameter still maintains sort stability (so that records with equal keys retain the original order).\"* So `sorted(orders, key=lambda o: o.priority, reverse=True)` still keeps equal-priority orders in arrival order. Negating the key (`-o.priority`) is also stable.\n\n**Not from the docs:** stability keeps the order of the input list, not the actual arrival order. Those are only the same if `orders` is already in arrival order. If the list is built in a way that can reorder it, stability won't fix that. Examples: from a set, merged from several sources, or from a database query without `ORDER BY`. In those cases, use a real arrival field such as a timestamp or sequence number: `key=lambda o: (o.priority, o.arrival_seq)`. A tie-breaker based on `enumerate` wouldn't help, because it records list position, which is the same thing stability already preserves.\n\nI didn't look at your project's code, since it isn't in this directory."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/howto/sorting.html"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/library/functions.html"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.10219539999999999,
+ "turns": 4,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8095,
+  "cache_read_input_tokens": 43273,
+  "output_tokens": 1146,
+  "output_tokens_details": {
+   "thinking_tokens": 160
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8095,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 761,
+    "cache_read_input_tokens": 16731,
+    "cache_creation_input_tokens": 1740,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1740
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 1146,
+   "cacheReadInputTokens": 43273,
+   "cacheCreationInputTokens": 8095,
+   "webSearchRequests": 0,
+   "costUSD": 0.0963586,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 160,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 46488,
+   "outputTokens": 2376,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0058368,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1069,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

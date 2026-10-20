@@ -1,0 +1,105 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "solo",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): arrival-index tie-breaker in sort key\nopus · session effort · one panelist\n\n### Recommendation\nDon't add the tie-breaker as long as `orders` is already in arrival order when you sort it. Python's `sorted()` is guaranteed stable, so orders with the same priority keep their input order. The tuple key would also add a dependency on `arrival_index` being present, unique and correct. It can break the rule if someone later adds `reverse=True`: that would reverse arrival order within each priority, unless the key were changed to `(-o.priority, o.arrival_index)`. The plain key with `reverse=True` stays stable.\n\nAdd the tie-breaker if:\n- the list may not be in arrival order (it comes from a set, a DB query without `ORDER BY`, merged queues, or an earlier sort), or\n- the sort might move to something that isn't stable by default, such as a SQL `ORDER BY`, pandas `sort_values`, or NumPy's default sort.\n\nIf you want the rule visible in the code, a comment plus a test that equal-priority orders come out in arrival order does that better than a redundant key.\n\nChecked (against the Python docs as I know them; I didn't fetch them during this run):\n- `sorted()` and `list.sort()` are documented as guaranteed stable. The Sorting HOWTO says sorts have been guaranteed stable since Python 2.2. Correct.\n- `reverse=True` keeps equal items in their original order, as the docs say. Correct.\n- pandas `sort_values` defaults to `kind=\"quicksort\"`, and NumPy's default sort isn't stable. Correct.\n\n### Panelist\n\"Don't add the tie-breaker, because Python's sort is guaranteed stable, unless the input list is not already in arrival order (or the sort may move to a non-stable sort); in that case add `arrival_index` and handle `reverse` carefully.\" High confidence that Python's sort is stable; medium confidence in the recommendation, because it depends on where the list comes from.\n\n### My take\nI agree, and the panelist didn't move me. It's the same leaning I gave at launch: stability makes the key unnecessary as long as the input is already in arrival order. The `reverse=True` point is the most useful thing it added. It's a concrete case where the \"safer\" tuple key quietly breaks the rule it was meant to protect. So the one thing to check in your project is where `orders` comes from. If it's a list you append to as orders arrive, keep the code as it is and add a test. If it comes from a database or gets merged from several sources, add the tie-breaker.",
+ "texts": [
+  "**Brief for the panelist:**\n\n> A developer sorts a list of order records in Python by priority with `sorted(orders, key=lambda o: o.priority)`. Orders that share a priority must stay in the order they arrived. They're asking whether to add the arrival index to the sort key as a tie-breaker, e.g. something like `key=lambda o: (o.priority, o.arrival_index)`.\n>\n> The project isn't available to read. All you know about it is what's written here. Don't search the local filesystem for it.\n>\n> A useful answer: a clear recommendation (add the tie-breaker or don't), the reasons for it, any conditions or assumptions that would change it, and which facts your position depends on. End with a one-line \"Position:\" statement and your confidence.\n\nAsking one opus panelist at session effort.\nMy leaning before the answer: no, the tie-breaker isn't needed. Python's `sorted` is guaranteed stable, so equal priorities keep their input order. That only holds if the input list is already in arrival order.",
+  "The panelist is working on it. I'll report once its answer is in.",
+  "## Think tank (solo): arrival-index tie-breaker in sort key\nopus · session effort · one panelist\n\n### Recommendation\nDon't add the tie-breaker as long as `orders` is already in arrival order when you sort it. Python's `sorted()` is guaranteed stable, so orders with the same priority keep their input order. The tuple key would also add a dependency on `arrival_index` being present, unique and correct. It can break the rule if someone later adds `reverse=True`: that would reverse arrival order within each priority, unless the key were changed to `(-o.priority, o.arrival_index)`. The plain key with `reverse=True` stays stable.\n\nAdd the tie-breaker if:\n- the list may not be in arrival order (it comes from a set, a DB query without `ORDER BY`, merged queues, or an earlier sort), or\n- the sort might move to something that isn't stable by default, such as a SQL `ORDER BY`, pandas `sort_values`, or NumPy's default sort.\n\nIf you want the rule visible in the code, a comment plus a test that equal-priority orders come out in arrival order does that better than a redundant key.\n\nChecked (against the Python docs as I know them; I didn't fetch them during this run):\n- `sorted()` and `list.sort()` are documented as guaranteed stable. The Sorting HOWTO says sorts have been guaranteed stable since Python 2.2. Correct.\n- `reverse=True` keeps equal items in their original order, as the docs say. Correct.\n- pandas `sort_values` defaults to `kind=\"quicksort\"`, and NumPy's default sort isn't stable. Correct.\n\n### Panelist\n\"Don't add the tie-breaker, because Python's sort is guaranteed stable, unless the input list is not already in arrival order (or the sort may move to a non-stable sort); in that case add `arrival_index` and handle `reverse` carefully.\" High confidence that Python's sort is stable; medium confidence in the recommendation, because it depends on where the list comes from.\n\n### My take\nI agree, and the panelist didn't move me. It's the same leaning I gave at launch: stability makes the key unnecessary as long as the input is already in arrival order. The `reverse=True` point is the most useful thing it added. It's a concrete case where the \"safer\" tuple key quietly breaks the rule it was meant to protect. So the one thing to check in your project is where `orders` comes from. If it's a list you append to as orders arrive, keep the code as it is and add a test. If it comes from a database or gets merged from several sources, add the tie-breaker."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "ab192b63de9bf687a",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "A developer sorts a list of order records in Python by priority with `sorted(orders, key=lambda o: o.priority)`. Orders that share a priority must stay in the order they arrived. They're asking whether to add the arrival index to the sort key as a tie-breaker, e.g. something like `key=lambda o: (o.priority, o.arrival_index)`.\n\nThe project isn't available to read. All you know about it is what's written here. Don't search the local filesystem for it.\n\nA useful answer: a clear recommendation (add the tie-breaker or don't), the reasons for it, any conditions or assumptions that would change it, and which facts your position depends on. End with a one-line \"Position:\" statement and your confidence.",
+     "reply": "**Position:** Don't add the tie-breaker, as long as `orders` is already in arrival order when you sort it. Python's sort is guaranteed stable, so orders with the same priority already keep the order they arrived in. Add `arrival_index` only if the list's current order is not arrival order.\n\n**Reasoning:**\n- **Stability is guaranteed, not a side effect of the implementation.** The Python docs say `sorted()` and `list.sort()` are stable: items that compare equal keep their relative order. The Sorting HOWTO relies on this for multi-pass sorts. Every Python version since 2.2 has this guarantee, and other implementations like PyPy must provide it too. So `sorted(orders, key=lambda o: o.priority)` already meets the requirement.\n- **The tie-breaker adds a dependency you don't need.** It only works if every order has an `arrival_index` that is correct, unique and comparable. If that field is missing, duplicated or computed differently somewhere, the sort becomes wrong. The current code depends only on the list order.\n- **The tuple key can break the requirement if the sort changes later.** If someone switches to `reverse=True` for highest priority first, `(o.priority, o.arrival_index)` also reverses arrival order within each priority. That breaks the rule you care about. With the plain key, `reverse=True` keeps equal items in their original order, because Python's reverse sort is still stable. The tuple version would need `(-o.priority, o.arrival_index)` instead, which is easy to get wrong.\n- Speed and memory are not a real factor either way. Keys are computed once per item, and building a tuple costs little.\n\n**When I'd change my answer and add the tie-breaker:**\n1. **The list isn't in arrival order.** Examples: it's built from a set or a DB query without `ORDER BY`, merged from several queues or threads, read from an unordered API, or sorted by something else earlier. Stability keeps whatever order the input has. It cannot recover arrival order that's already lost. This is the real question to check.\n2. **The sort might move off Python's built-in sort.** For example, to a database `ORDER BY`, pandas (`sort_values` is only stable with `kind=\"stable\"` or `\"mergesort\"`), NumPy's default quicksort, or another language. An explicit key keeps the rule intact if that happens.\n3. **The team wants the rule written into the code.** If so, a comment and a test that sorts equal-priority orders and checks they come out in arrival order are usually better than a redundant key. If you do add the key, add the test as well.\n\n**Risks and unknowns:** Everything depends on one fact I can't check: that `orders` is in arrival order right before the sort. If it isn't, or might not always be, add the tie-breaker. I'm also assuming `priority` values compare cleanly (no mixed types, no `None`) and that this is the built-in sort, not a dataframe or ORM sort.\n\n**Confidence:** High on the language fact; Python's sort stability is documented and guaranteed. Medium on the recommendation itself, because it depends on where the list comes from, which I can't see.\n\nPosition: Don't add the tie-breaker, because Python's sort is guaranteed stable, unless the input list is not already in arrival order (or the sort may move to a non-stable sort); in that case add `arrival_index` and handle `reverse` carefully. Confidence: high on the stability guarantee, medium on the recommendation."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.1673576,
+ "turns": 1,
+ "minutes": 0.7,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 1670,
+  "cache_read_input_tokens": 18790,
+  "output_tokens": 1302,
+  "output_tokens_details": {
+   "thinking_tokens": 454
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 1670,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 4,
+    "output_tokens": 1302,
+    "cache_read_input_tokens": 18790,
+    "cache_creation_input_tokens": 1670,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1670
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 3590,
+   "cacheReadInputTokens": 50778,
+   "cacheCreationInputTokens": 11022,
+   "webSearchRequests": 0,
+   "costUSD": 0.1673576,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 907,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

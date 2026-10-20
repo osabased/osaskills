@@ -1,0 +1,112 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "verify",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Short answer: they'll see the edits right away. With default settings there's no commit step.** Team Create starts with Live Scripting on and Drafts mode off. \"Commit\" only exists in Drafts mode. So as Claude renames the function across your scripts, your two collaborators will see each script change as it's made, including the in-between state where some scripts use the new name and others still use the old one.\n\n**What I checked in Roblox's current docs:**\n\n- **Live Scripting is on by default.** Verified on the collaboration page: \"Live Scripting is enabled by default.\" It \"lets collaborators code together in real time.\"\n- **Drafts mode is off by default.** Verified: \"Drafts Mode is disabled by default.\" Drafts are what let you \"edit and test scripts without affecting the game for others.\" They're saved locally until you commit them.\n- **Turning on Drafts mode.** Verified: it's under File → Experience Settings → Enable Drafts Mode. All collaborators have to exit the session before the change takes effect.\n- **Saving vs. publishing.** Partly verified. The docs say collaborative sessions auto-save to the cloud. They give two different intervals (four minutes in one place, five in another). They don't directly say how this relates to the published game. As far as I know, players only get the changes when you publish, but I didn't find a sentence confirming that.\n\n**What I couldn't verify:**\n\n- **How the Studio MCP server behaves in Team Create.** Roblox's MCP page doesn't mention Team Create, Live Scripting or Drafts. It only says MCP clients \"can read and modify content in your open Roblox places.\" Its only script-editing tool is `multi_edit`. I'm assuming its edits act like normal live edits, which is very likely but not documented.\n- **Whether MCP edits go into your drafts if you turn Drafts mode on.** The docs don't say. Test it on one script before relying on it.\n\n**Practical advice:** Since your collaborators will see the rename while it's half done, tell them before you start. If one of them runs a playtest partway through, it could break on calls to the old name. If you'd rather review the whole change before anyone sees it, turn on Drafts mode first (everyone has to rejoin) and check that the MCP edits actually land in your drafts.\n\nSources:\n- [Collaboration (Roblox Creator Docs)](https://create.roblox.com/docs/projects/collaboration)\n- [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/studio/mcp)\n- [Studio MCP (markdown version)](https://create.roblox.com/docs/en-us/studio/mcp.md)",
+ "texts": [
+  "**Short answer: they'll see the edits right away. With default settings there's no commit step.** Team Create starts with Live Scripting on and Drafts mode off. \"Commit\" only exists in Drafts mode. So as Claude renames the function across your scripts, your two collaborators will see each script change as it's made, including the in-between state where some scripts use the new name and others still use the old one.\n\n**What I checked in Roblox's current docs:**\n\n- **Live Scripting is on by default.** Verified on the collaboration page: \"Live Scripting is enabled by default.\" It \"lets collaborators code together in real time.\"\n- **Drafts mode is off by default.** Verified: \"Drafts Mode is disabled by default.\" Drafts are what let you \"edit and test scripts without affecting the game for others.\" They're saved locally until you commit them.\n- **Turning on Drafts mode.** Verified: it's under File → Experience Settings → Enable Drafts Mode. All collaborators have to exit the session before the change takes effect.\n- **Saving vs. publishing.** Partly verified. The docs say collaborative sessions auto-save to the cloud. They give two different intervals (four minutes in one place, five in another). They don't directly say how this relates to the published game. As far as I know, players only get the changes when you publish, but I didn't find a sentence confirming that.\n\n**What I couldn't verify:**\n\n- **How the Studio MCP server behaves in Team Create.** Roblox's MCP page doesn't mention Team Create, Live Scripting or Drafts. It only says MCP clients \"can read and modify content in your open Roblox places.\" Its only script-editing tool is `multi_edit`. I'm assuming its edits act like normal live edits, which is very likely but not documented.\n- **Whether MCP edits go into your drafts if you turn Drafts mode on.** The docs don't say. Test it on one script before relying on it.\n\n**Practical advice:** Since your collaborators will see the rename while it's half done, tell them before you start. If one of them runs a playtest partway through, it could break on calls to the old name. If you'd rather review the whole change before anyone sees it, turn on Drafts mode first (everyone has to rejoin) and check that the MCP edits actually land in your drafts.\n\nSources:\n- [Collaboration (Roblox Creator Docs)](https://create.roblox.com/docs/projects/collaboration)\n- [Connect to the Roblox Studio MCP server](https://create.roblox.com/docs/studio/mcp)\n- [Studio MCP (markdown version)](https://create.roblox.com/docs/en-us/studio/mcp.md)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/projects/collaboration"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio MCP server script edits collaborative editing Team Create drafts"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/studio/mcp"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/projects/collaboration"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.145854,
+ "turns": 6,
+ "minutes": 1.0,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 9928,
+  "cache_read_input_tokens": 62945,
+  "output_tokens": 1885,
+  "output_tokens_details": {
+   "thinking_tokens": 339
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9928,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1114,
+    "cache_read_input_tokens": 19198,
+    "cache_creation_input_tokens": 1106,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1106
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 1885,
+   "cacheReadInputTokens": 62945,
+   "cacheCreationInputTokens": 9928,
+   "webSearchRequests": 0,
+   "costUSD": 0.129745,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 339,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 36185,
+   "outputTokens": 4981,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.016109,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 3103,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

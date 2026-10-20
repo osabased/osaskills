@@ -1,0 +1,104 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "verify",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "For the tools themselves, yes, that's enough. `tools: Read, Grep, Glob` is an allowlist, so the auditor gets no Edit, Write, Bash, MCP tools, Agent or Skill. But a few other things can undo it, and I couldn't check your actual `auditor.md` because it isn't in this directory.\n\n## Claims I verified (official docs, code.claude.com/docs/en/sub-agents, fetched today)\n\n1. **`tools` is an allowlist.** The docs say \"use the `tools` field as an allowlist.\" Their own example, `tools: Read, Grep, Glob, Bash`, is described as an agent that \"can't edit files, write files, or use any MCP tools.\" Your list is narrower still.\n2. **Leaving out `tools` gives the agent everything.** It \"inherits every tool available to subagents if omitted.\" So the `tools:` line has to stay, spelled exactly like that.\n3. **No Bash, which matters.** The docs say a `disallowedTools` entry like `Bash(git push *)` removes Bash entirely, and blocking only some commands needs settings deny rules or a hook. Your agent doesn't have Bash, so this doesn't affect you. Don't add Bash \"just to run grep,\" because then a tool list alone can't keep it read-only.\n4. **It can't start other subagents or use skills.** Leaving `Agent` out stops it from spawning subagents, which might have write tools. Leaving `Skill` out stops it from invoking skills. Both are out of your list.\n5. **Don't add `memory:`.** When memory is enabled, \"Read, Write, and Edit tools are automatically enabled so the subagent can manage its memory files.\" The docs don't say whether this overrides a `tools` allowlist, so treat `memory` as giving the agent write access, even if only to its memory folder.\n6. **`permissionMode` doesn't make it read-only.** If the main conversation is in `bypassPermissions`, `acceptEdits` or auto mode, the subagent uses that mode and your `permissionMode` is ignored. That's another reason to rely on the tool list, not on permission prompts.\n\n## Recommended frontmatter\n\n```yaml\n---\nname: auditor\ndescription: ...\ntools: Read, Grep, Glob\ndisallowedTools: Write, Edit, NotebookEdit, Bash, PowerShell, Agent, Skill\n---\n```\n\nThe `disallowedTools` line is optional. It does nothing as long as the `tools` line is right, but it keeps those tools blocked if someone later deletes or broadens the `tools` line. If both fields are set, the denylist is applied first.\n\n## Not verified / caveats\n\n- I couldn't see your file, so I don't know if the frontmatter is valid YAML or if it already has `memory`, `mcpServers` or `hooks`.\n- The docs don't say whether `memory` overrides the allowlist. I'm assuming the cautious answer.\n- This only controls the subagent's own tools. Nothing stops the main conversation from editing files based on what the auditor reports.\n\nIf you paste the file or give me its path, I can check it against these points.",
+ "texts": [
+  "For the tools themselves, yes, that's enough. `tools: Read, Grep, Glob` is an allowlist, so the auditor gets no Edit, Write, Bash, MCP tools, Agent or Skill. But a few other things can undo it, and I couldn't check your actual `auditor.md` because it isn't in this directory.\n\n## Claims I verified (official docs, code.claude.com/docs/en/sub-agents, fetched today)\n\n1. **`tools` is an allowlist.** The docs say \"use the `tools` field as an allowlist.\" Their own example, `tools: Read, Grep, Glob, Bash`, is described as an agent that \"can't edit files, write files, or use any MCP tools.\" Your list is narrower still.\n2. **Leaving out `tools` gives the agent everything.** It \"inherits every tool available to subagents if omitted.\" So the `tools:` line has to stay, spelled exactly like that.\n3. **No Bash, which matters.** The docs say a `disallowedTools` entry like `Bash(git push *)` removes Bash entirely, and blocking only some commands needs settings deny rules or a hook. Your agent doesn't have Bash, so this doesn't affect you. Don't add Bash \"just to run grep,\" because then a tool list alone can't keep it read-only.\n4. **It can't start other subagents or use skills.** Leaving `Agent` out stops it from spawning subagents, which might have write tools. Leaving `Skill` out stops it from invoking skills. Both are out of your list.\n5. **Don't add `memory:`.** When memory is enabled, \"Read, Write, and Edit tools are automatically enabled so the subagent can manage its memory files.\" The docs don't say whether this overrides a `tools` allowlist, so treat `memory` as giving the agent write access, even if only to its memory folder.\n6. **`permissionMode` doesn't make it read-only.** If the main conversation is in `bypassPermissions`, `acceptEdits` or auto mode, the subagent uses that mode and your `permissionMode` is ignored. That's another reason to rely on the tool list, not on permission prompts.\n\n## Recommended frontmatter\n\n```yaml\n---\nname: auditor\ndescription: ...\ntools: Read, Grep, Glob\ndisallowedTools: Write, Edit, NotebookEdit, Bash, PowerShell, Agent, Skill\n---\n```\n\nThe `disallowedTools` line is optional. It does nothing as long as the `tools` line is right, but it keeps those tools blocked if someone later deletes or broadens the `tools` line. If both fields are set, the denylist is applied first.\n\n## Not verified / caveats\n\n- I couldn't see your file, so I don't know if the frontmatter is valid YAML or if it already has `memory`, `mcpServers` or `hooks`.\n- The docs don't say whether `memory` overrides the allowlist. I'm assuming the cautious answer.\n- This only controls the subagent's own tools. Nothing stops the main conversation from editing files based on what the auditor reports.\n\nIf you paste the file or give me its path, I can check it against these points."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch,WebSearch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.161503,
+ "turns": 4,
+ "minutes": 0.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 12744,
+  "cache_read_input_tokens": 65095,
+  "output_tokens": 1772,
+  "output_tokens_details": {
+   "thinking_tokens": 231
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12744,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1059,
+    "cache_read_input_tokens": 21382,
+    "cache_creation_input_tokens": 1738,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1738
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 1772,
+   "cacheReadInputTokens": 65095,
+   "cacheCreationInputTokens": 12744,
+   "webSearchRequests": 0,
+   "costUSD": 0.150443,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 231,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 71220,
+   "outputTokens": 7876,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.01106,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2731,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

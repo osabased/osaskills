@@ -1,0 +1,130 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "solo",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): is `tools: Read, Grep, Glob` enough for a read-only subagent?\nopus · session effort · one panelist\n\n### Recommendation\nYes, that line is enough to stop the subagent itself from modifying files. `tools` is an allowlist: Claude Code uses it to decide which tools the subagent has at all, before any permission mode comes into play. None of Read, Grep or Glob can write, and with `tools` set the subagent gets no inherited tools, no MCP tools and no Agent tool for spawning others. A misspelled name only leaves it with fewer tools, never more. If no name in the list matches a real tool, the subagent usually fails to launch with an error.\n\nThe remaining risks come from outside the `tools` line:\n- **The main conversation acting on the auditor's report.** The main session can still edit files. If \"never modify\" should cover the whole session, you need `permissions.deny` rules or plan mode there.\n- **Session-wide hooks.** Hooks from your settings also run inside subagents. A hook script that writes files would do so regardless of the subagent's tools.\n- **Name shadowing.** Another agent definition named `auditor` from managed settings or `--agents` takes priority over yours. Run `/agents` to check which one is active.\n- **Someone editing the definition file itself.** Version control handles that.\n\nAdding `disallowedTools` would be redundant. Avoid adding an `mcpServers` field, because the docs don't say outright that the allowlist also filters tools from servers added that way.\n\nChecked: the subagents docs page (code.claude.com/docs/en/sub-agents):\n- **Allowlist:** `tools` lists the tools \"the subagent can use\", and it \"inherits every tool available to subagents if omitted\".\n- **Near-identical example:** the docs' `safe-researcher` example, which also allows Bash, \"can't edit files, write files, or use any MCP tools\". Their read-only `code-improver` example uses exactly `tools: Read, Grep, Glob`.\n- **Spawning:** \"If you omit `Agent` from the `tools` list entirely, the agent can't spawn any subagents.\"\n- **Typos:** if nothing resolves, the subagent \"usually refuses to launch\". The docs don't cover the case where only some names are misspelled.\n- **Permission modes:** these are documented as separate from the tool list and never add tools back. Background subagents get extra filtering that can only remove tools.\n- **Not checked:** the panelist's claim that session hooks fire inside subagents.\n\n### Panelist\n\"The `tools: Read, Grep, Glob` line is enough on its own to stop this subagent from modifying files, with caveats about name shadowing, session-wide hooks and the parent acting on its output, which need main-session permission rules if the guarantee should cover the whole session.\" Confidence: high.\n\n### My take\nI agree, and it didn't move me from my launch leaning, which was \"enough for the subagent itself\". It did sharpen one caveat. The practical gap isn't in the frontmatter but in the main conversation acting on the auditor's report. If you need a session-wide guarantee rather than one for this agent, add deny rules for `Edit`/`Write` in settings. The panelist's other caveats (name shadowing, hooks) are real but edge cases.\n\nThe harness flagged the panelist's reply for phrases like `bypassPermissions` and `permissions.deny`. I read it, and those phrases are just part of its answer about permission modes. It contained no instructions aimed at me or you.",
+ "texts": [
+  "Here is the brief for the panelist:\n\n> **Question:** A user has written a Claude Code subagent definition at `.claude/agents/auditor.md` in their project. Its YAML frontmatter has `tools: Read, Grep, Glob`. The requirement is that this subagent must never modify files. Is that `tools` line enough to guarantee it, or does it need more (other frontmatter fields, settings, hooks, permission rules, or anything else)?\n>\n> **Context:** The project isn't available to you. The question is about how Claude Code subagents and their `tools` field behave in general. Don't look for the file in your working directory. Claude Code's official documentation on subagents, settings, permissions and hooks is the authoritative source, and you can search and fetch it.\n>\n> **What a useful answer looks like:** A direct verdict (enough / not enough / enough with caveats). Explain how the `tools` field is enforced, and cover any ways the subagent could still end up modifying files despite it, such as inherited tools, MCP tools, a misspelled tool name, spawning other agents, or the parent acting on its output. For each one, say whether it's a real risk and what would close it. Recommend concrete additions only if they're warranted. Cite the documentation where you can, and name the facts your position depends on most.\n\nAsking one opus panelist at session effort.\nMy leaning: the `tools` allowlist is enforced by the harness, so it's enough for the subagent itself. Defense-in-depth (deny rules, hooks) is optional extra.",
+  "## Think tank (solo): is `tools: Read, Grep, Glob` enough for a read-only subagent?\nopus · session effort · one panelist\n\n### Recommendation\nYes, that line is enough to stop the subagent itself from modifying files. `tools` is an allowlist: Claude Code uses it to decide which tools the subagent has at all, before any permission mode comes into play. None of Read, Grep or Glob can write, and with `tools` set the subagent gets no inherited tools, no MCP tools and no Agent tool for spawning others. A misspelled name only leaves it with fewer tools, never more. If no name in the list matches a real tool, the subagent usually fails to launch with an error.\n\nThe remaining risks come from outside the `tools` line:\n- **The main conversation acting on the auditor's report.** The main session can still edit files. If \"never modify\" should cover the whole session, you need `permissions.deny` rules or plan mode there.\n- **Session-wide hooks.** Hooks from your settings also run inside subagents. A hook script that writes files would do so regardless of the subagent's tools.\n- **Name shadowing.** Another agent definition named `auditor` from managed settings or `--agents` takes priority over yours. Run `/agents` to check which one is active.\n- **Someone editing the definition file itself.** Version control handles that.\n\nAdding `disallowedTools` would be redundant. Avoid adding an `mcpServers` field, because the docs don't say outright that the allowlist also filters tools from servers added that way.\n\nChecked: the subagents docs page (code.claude.com/docs/en/sub-agents):\n- **Allowlist:** `tools` lists the tools \"the subagent can use\", and it \"inherits every tool available to subagents if omitted\".\n- **Near-identical example:** the docs' `safe-researcher` example, which also allows Bash, \"can't edit files, write files, or use any MCP tools\". Their read-only `code-improver` example uses exactly `tools: Read, Grep, Glob`.\n- **Spawning:** \"If you omit `Agent` from the `tools` list entirely, the agent can't spawn any subagents.\"\n- **Typos:** if nothing resolves, the subagent \"usually refuses to launch\". The docs don't cover the case where only some names are misspelled.\n- **Permission modes:** these are documented as separate from the tool list and never add tools back. Background subagents get extra filtering that can only remove tools.\n- **Not checked:** the panelist's claim that session hooks fire inside subagents.\n\n### Panelist\n\"The `tools: Read, Grep, Glob` line is enough on its own to stop this subagent from modifying files, with caveats about name shadowing, session-wide hooks and the parent acting on its output, which need main-session permission rules if the guarantee should cover the whole session.\" Confidence: high.\n\n### My take\nI agree, and it didn't move me from my launch leaning, which was \"enough for the subagent itself\". It did sharpen one caveat. The practical gap isn't in the frontmatter but in the main conversation acting on the auditor's report. If you need a session-wide guarantee rather than one for this agent, add deny rules for `Edit`/`Write` in settings. The panelist's other caveats (name shadowing, hooks) are real but edge cases.\n\nThe harness flagged the panelist's reply for phrases like `bypassPermissions` and `permissions.deny`. I read it, and those phrases are just part of its answer about permission modes. It contained no instructions aimed at me or you."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ],
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "a4a880a8239ce8003",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebFetch",
+    "WebFetch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "**Question:** A user has written a Claude Code subagent definition at `.claude/agents/auditor.md` in their project. Its YAML frontmatter has `tools: Read, Grep, Glob`. The requirement is that this subagent must never modify files. Is that `tools` line enough to guarantee it, or does it need more (other frontmatter fields, settings, hooks, permission rules, or anything else)?\n\n**Context:** The project isn't available to you. The question is about how Claude Code subagents and their `tools` field behave in general. Don't look for the file in your working directory. Claude Code's official documentation on subagents, settings, permissions and hooks is the authoritative source, and you can search and fetch it.\n\n**What a useful answer looks like:** A direct verdict (enough / not enough / enough with caveats). Explain how the `tools` field is enforced, and cover any ways the subagent could still end up modifying files despite it, such as inherited tools, MCP tools, a misspelled tool name, spawning other agents, or the parent acting on its output. For each one, say whether it's a real risk and what would close it. Recommend concrete additions only if they're warranted. Cite the documentation where you can, and name the facts your position depends on most.\n\nEnd your answer with a line starting \"Position:\" that states your final position in one sentence, followed by your confidence (low/medium/high).",
+     "reply": "I read this as asking about the subagent's own tool calls. The parent conversation is a separate agent with its own permissions, so I treat it as outside what the `tools` line can control.\n\n**Position:** Enough, with caveats. `tools: Read, Grep, Glob` is an allowlist that Claude Code enforces when it builds the subagent's tool pool, and none of those three tools can write. You don't need any other frontmatter, settings, hooks or permission rules for the subagent itself. The remaining risks come from things around the file, not from the `tools` line.\n\n**Reasoning:**\n- **How it's enforced.** The subagents page (https://code.claude.com/docs/en/sub-agents) defines `tools` as the tools \"the subagent can use\". The full pool is inherited only when the field is omitted. This is a filter on which tools exist for the subagent, not a prompt instruction or permission prompt. So `permissionMode`, including an inherited `bypassPermissions`, can't add tools back. The docs' own `safe-researcher` example (`Read, Grep, Glob, Bash`) is described as unable to \"edit files, write files, or use any MCP tools\", and this list is stricter because it has no Bash.\n- **Inherited tools.** Not a risk. Inheritance only happens when `tools` is omitted.\n- **MCP tools.** Not a risk. They join the pool only through `tools` entries like `mcp__server__*`. One gap: the docs don't explicitly say that servers added through the `mcpServers` field still pass the allowlist. It's strongly implied, so just don't add `mcpServers`.\n- **Spawning other agents.** Not a risk. The docs say \"omit `Agent` from its `tools` list\" to keep a subagent from spawning, and this list does omit it. The `Skill` tool is also absent, so skills can't add a route either.\n- **Misspelled tool name.** This fails closed. A misspelled entry gives the subagent fewer tools, never more. If nothing resolves, it \"usually fails to launch with an error\". A typo can only weaken the agent, never let it write.\n- **Background mode.** This filter only removes tools, so it can't add any.\n\n**Risks and unknowns (what would close each):**\n1. **Name shadowing (real but uncommon).** A same-named `auditor` from managed settings or `--agents` outranks `.claude/agents/`. A second file in the same directory with the same `name` gets picked by filesystem read order. Close it by keeping the name unique and checking with `/agents`.\n2. **Parent acting on the output (real, and outside the subagent).** The auditor's report goes back to the main conversation, which can edit files. If \"never modify\" is meant to cover the whole session, you need `permissions.deny` rules (e.g. `Edit`, `Write`, plus Bash rules) or plan mode for the main conversation. Frontmatter can't do that.\n3. **Session-wide hooks.** Hooks in `settings.json` also fire inside subagents. A hook script that writes files runs as the hook, not as a subagent tool call. Review them if this matters to you.\n4. **Edits to the definition itself.** Anyone, or any agent, with write access can change `.claude/agents/auditor.md`. Version control or code review handles that.\n5. **Optional extra layer.** `disallowedTools: Write, Edit, NotebookEdit, Bash, Agent` is harmless, but it's redundant once `tools` is set, because the deny list is removed first and the allowlist is then resolved against what's left. A frontmatter `PreToolUse` hook adds little, and it's skipped until the folder is trusted anyway.\n\nThe fact my position depends on most: the allowlist decides which tools the subagent has at all, before any permission mode applies. If the docs or a test showed MCP tools from `mcpServers` getting past the allowlist, I'd recommend adding `disallowedTools: mcp__*`.\n\n**Confidence:** High for the subagent itself. The docs state the allowlist semantics directly and give a near-identical read-only example. The only inferred part is the `mcpServers` interaction.\n\nPosition: The `tools: Read, Grep, Glob` line is enough on its own to stop this subagent from modifying files, with caveats about name shadowing, session-wide hooks and the parent acting on its output, which need main-session permission rules if the guarantee should cover the whole session. Confidence: high."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.2936796,
+ "turns": 4,
+ "minutes": 1.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 13718,
+  "cache_read_input_tokens": 70157,
+  "output_tokens": 3103,
+  "output_tokens_details": {
+   "thinking_tokens": 552
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 13718,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1262,
+    "cache_read_input_tokens": 21452,
+    "cache_creation_input_tokens": 2642,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2642
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 16,
+   "outputTokens": 5553,
+   "cacheReadInputTokens": 95367,
+   "cacheCreationInputTokens": 21109,
+   "webSearchRequests": 0,
+   "costUSD": 0.2768964,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1093,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 106792,
+   "outputTokens": 12208,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0167832,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 5633,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

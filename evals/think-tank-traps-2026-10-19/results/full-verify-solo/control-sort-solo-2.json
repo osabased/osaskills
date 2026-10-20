@@ -1,0 +1,104 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "solo",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): Add arrival index as a sort tie-breaker?\nopus · session effort · one panelist\n\n### Recommendation\nDon't add it, as long as `orders` is already in arrival order when it reaches the sort. Python guarantees that `sorted()` is stable, so orders with the same priority already keep their input order. A key of `(priority, arrival_index)` built from `enumerate(orders)` would only repeat that order, at the cost of extra code. Instead, add a one-line comment saying you rely on stability, and a unit test with two or more same-priority orders that checks their output order.\n\nThe answer changes in two cases, and then you need an explicit tie-breaker on a real arrival field, such as `received_at` or a sequence number, not the list position:\n- **The list isn't reliably in arrival order.** Examples: a SQL query without `ORDER BY`, a set or dict merge, concurrent producers, or an earlier sort on another field.\n- **The sort moves somewhere that isn't stable by default.** pandas `sort_values` and numpy `sort`/`argsort` default to quicksort, so pass `kind=\"stable\"`. SQL `ORDER BY priority` leaves ties unordered. `heapq` and `PriorityQueue` aren't stable, so push `(priority, seq, order)` tuples.\n\nThe panelist adds that an explicit key is a reasonable style choice when the order has to hold beyond this one sort, for example when results are persisted, paginated or compared across systems. It doesn't count that as a correctness need.\n\nChecked:\n- **`sorted()` is guaranteed stable:** confirmed. The Python docs say \"The built-in `sorted()` function is guaranteed to be stable\", and the Sorting HOWTO says sorts are guaranteed stable from Python 2.2 on. I'm going from my knowledge of the docs; I didn't fetch them this session.\n- **`reverse=True` keeps stability:** confirmed. The docs say the reverse parameter \"still maintains sort stability\".\n- **pandas and numpy default to non-stable sorts:** confirmed. Both default to `kind=\"quicksort\"`.\n- **The list reaches the sort in arrival order:** not checked. The project isn't here, and this is the assumption the whole recommendation depends on.\n\n### Panelist\n\"No. If `orders` is already in arrival order, you don't need the tie-breaker. Python's `sorted()` and `list.sort()` are guaranteed stable, so orders with the same priority keep their relative input order. Add a short comment and a test instead. The answer changes only if the input list isn't reliably in arrival order. In that case you need a real arrival field, not the list position.\" High confidence that `sorted()` is stable; medium on the overall recommendation, because it depends on where `orders` comes from.\n\n### My take\nI agree, and my leaning before launch was the same, so the panelist didn't move me. It did sharpen one point I'd have left vague: a tie-breaker built from list position can't fix anything. If the list is in arrival order, stability already does the job. If it isn't, the position index carries the wrong order. So the useful choice is between relying on stability and keying on a real arrival timestamp or sequence number. Before you decide, check where `orders` comes from. If it's a database query, make sure the query has an `ORDER BY` on arrival. That's where this kind of bug usually hides, not in the Python sort.",
+ "texts": [
+  "**Brief:**\n\n> A developer has a Python list of order records and sorts it by priority with `sorted(orders, key=lambda o: o.priority)`. Requirement: orders with the same priority must stay in the order they arrived. They are asking whether they should add the arrival index to the sort key as a tie-breaker (e.g. a key of `(priority, arrival_index)`).\n>\n> The project isn't available to read. No files in the working directory are relevant.\n>\n> A useful answer: a clear yes/no recommendation with reasons, the conditions under which the answer would change, any caveats worth knowing, and what (if anything) they should change in the code. State which facts your position depends on and your confidence.\n\nAsking one opus panelist at session effort.\nMy leaning: it isn't needed if the list is already in arrival order, because Python's sort is stable. An explicit tie-breaker only matters if the list's order might not match arrival order.",
+  "## Think tank (solo): Add arrival index as a sort tie-breaker?\nopus · session effort · one panelist\n\n### Recommendation\nDon't add it, as long as `orders` is already in arrival order when it reaches the sort. Python guarantees that `sorted()` is stable, so orders with the same priority already keep their input order. A key of `(priority, arrival_index)` built from `enumerate(orders)` would only repeat that order, at the cost of extra code. Instead, add a one-line comment saying you rely on stability, and a unit test with two or more same-priority orders that checks their output order.\n\nThe answer changes in two cases, and then you need an explicit tie-breaker on a real arrival field, such as `received_at` or a sequence number, not the list position:\n- **The list isn't reliably in arrival order.** Examples: a SQL query without `ORDER BY`, a set or dict merge, concurrent producers, or an earlier sort on another field.\n- **The sort moves somewhere that isn't stable by default.** pandas `sort_values` and numpy `sort`/`argsort` default to quicksort, so pass `kind=\"stable\"`. SQL `ORDER BY priority` leaves ties unordered. `heapq` and `PriorityQueue` aren't stable, so push `(priority, seq, order)` tuples.\n\nThe panelist adds that an explicit key is a reasonable style choice when the order has to hold beyond this one sort, for example when results are persisted, paginated or compared across systems. It doesn't count that as a correctness need.\n\nChecked:\n- **`sorted()` is guaranteed stable:** confirmed. The Python docs say \"The built-in `sorted()` function is guaranteed to be stable\", and the Sorting HOWTO says sorts are guaranteed stable from Python 2.2 on. I'm going from my knowledge of the docs; I didn't fetch them this session.\n- **`reverse=True` keeps stability:** confirmed. The docs say the reverse parameter \"still maintains sort stability\".\n- **pandas and numpy default to non-stable sorts:** confirmed. Both default to `kind=\"quicksort\"`.\n- **The list reaches the sort in arrival order:** not checked. The project isn't here, and this is the assumption the whole recommendation depends on.\n\n### Panelist\n\"No. If `orders` is already in arrival order, you don't need the tie-breaker. Python's `sorted()` and `list.sort()` are guaranteed stable, so orders with the same priority keep their relative input order. Add a short comment and a test instead. The answer changes only if the input list isn't reliably in arrival order. In that case you need a real arrival field, not the list position.\" High confidence that `sorted()` is stable; medium on the overall recommendation, because it depends on where `orders` comes from.\n\n### My take\nI agree, and my leaning before launch was the same, so the panelist didn't move me. It did sharpen one point I'd have left vague: a tie-breaker built from list position can't fix anything. If the list is in arrival order, stability already does the job. If it isn't, the position index carries the wrong order. So the useful choice is between relying on stability and keying on a real arrival timestamp or sequence number. Before you decide, check where `orders` comes from. If it's a database query, make sure the query has an `ORDER BY` on arrival. That's where this kind of bug usually hides, not in the Python sort."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "ac9506d216ec4a660",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "A developer has a Python list of order records and sorts it by priority with `sorted(orders, key=lambda o: o.priority)`. Requirement: orders with the same priority must stay in the order they arrived. They are asking whether they should add the arrival index to the sort key as a tie-breaker (e.g. a key of `(priority, arrival_index)`).\n\nThe project isn't available to read. No files in the working directory are relevant.\n\nA useful answer: a clear yes/no recommendation with reasons, the conditions under which the answer would change, any caveats worth knowing, and what (if anything) they should change in the code. State which facts your position depends on and your confidence.",
+     "reply": "**Position:** No. If `orders` is already in arrival order, you don't need the tie-breaker. Python's `sorted()` and `list.sort()` are guaranteed stable, so orders with the same priority keep their relative input order. Add a short comment and a test instead. The answer changes only if the input list isn't reliably in arrival order. In that case you need a real arrival field, not the list position.\n\n**Reasoning:**\n- **Stability is guaranteed, not incidental.** The Python docs say \"The built-in `sorted()` function is guaranteed to be stable\" (library/functions.html, `sorted`). The Sorting HOWTO says the same about `list.sort()` and builds multi-pass sorting on it. This is a language guarantee and has held since 2.2, so it isn't a CPython detail that could change.\n- **`reverse=True` stays stable.** Equal items keep their original order when you sort descending. So `sorted(orders, key=lambda o: o.priority, reverse=True)` is also safe.\n- **Adding `(priority, arrival_index)` gains nothing** if the index comes from `enumerate(orders)`. It encodes the same order that stability already keeps. It also adds a tuple per element and more code to misread, and a reader may wrongly assume stability isn't trusted.\n- **What I'd change:** leave the sort as it is and add:\n  - a comment: `# sorted() is stable: equal priorities keep arrival order`\n  - a unit test with two or more same-priority orders that asserts their output order. That pins the requirement down so a future refactor can't silently break it.\n\n**When the answer flips (use an explicit tie-breaker):**\n1. **The list isn't in arrival order.** For example, it comes from a SQL query without `ORDER BY`, from a set or dict merge, from concurrent producers, or from an earlier sort on another field. Stability only keeps whatever order went in. Then key on a real arrival attribute: `key=lambda o: (o.priority, o.received_at)` or a sequence number. A position index taken after the order was lost doesn't help.\n2. **The sort moves somewhere that isn't stable by default.**\n   - pandas `sort_values` and numpy `argsort`/`sort` default to quicksort, which isn't stable. Pass `kind=\"stable\"`, or for pandas `\"mergesort\"`.\n   - SQL `ORDER BY priority` guarantees nothing for ties. You need `ORDER BY priority, arrival_id`.\n   - `heapq` and `PriorityQueue` aren't stable either. Push `(priority, seq, order)` tuples, which also avoids comparing order objects.\n3. **Mixed directions using a negated key.** Something like `key=lambda o: (-o.priority, ...)` is still fine for stability. It only matters if you build compound keys anyway.\n4. **The order must be deterministic outside this one sort.** Examples are when results are persisted, paginated or compared across systems. An explicit arrival key makes the intent self-documenting and safe to move between systems. That's a fair style reason to add one even when Python doesn't need it, but it isn't a correctness requirement.\n\n**Risks and unknowns:** My position rests on one assumption: the list arrives at the sort already in arrival order. I can't check that because the project isn't available. If the records come from a database query or any unordered source, the current code may already be wrong, and stability won't fix it. I'd also change my answer if the \"sort\" is really pandas, numpy, SQL or a heap rather than `sorted()`.\n\n**Confidence:** High on the core fact. Python's `sorted()` is documented as guaranteed stable, including with `key=` and `reverse=True`. Medium on the overall recommendation, because it depends on where `orders` comes from, which I couldn't see."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.1615376,
+ "turns": 2,
+ "minutes": 0.7,
+ "usage": {
+  "input_tokens": 4,
+  "cache_creation_input_tokens": 9432,
+  "cache_read_input_tokens": 27926,
+  "output_tokens": 2167,
+  "output_tokens_details": {
+   "thinking_tokens": 393
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9432,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1437,
+    "cache_read_input_tokens": 17550,
+    "cache_creation_input_tokens": 2258,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2258
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 3753,
+   "cacheReadInputTokens": 31988,
+   "cacheCreationInputTokens": 10352,
+   "webSearchRequests": 0,
+   "costUSD": 0.1615376,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 734,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}
