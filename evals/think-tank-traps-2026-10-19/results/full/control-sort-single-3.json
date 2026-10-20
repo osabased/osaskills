@@ -1,0 +1,76 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "single",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, you don't need it. Python's `sorted()` and `list.sort()` are guaranteed stable, so records with equal keys keep their original relative order. If `orders` is already in arrival order, `sorted(orders, key=lambda o: o.priority)` keeps same-priority orders in arrival order.\n\n**Points to check:**\n\n- **`reverse=True` is still stable.** `sorted(orders, key=..., reverse=True)` keeps equal elements in their original order; it doesn't reverse them. Negating the key (`key=lambda o: -o.priority`) also keeps the order.\n- **This only works if the input list is in arrival order.** If `orders` came from a set, an unordered query, a dict built in some other order, or a merge of several sources, stability just preserves that wrong order. In that case, sort by an arrival field such as `key=lambda o: (o.priority, o.arrival_ts)`.\n- **Other sorting methods may not be stable.** `heapq` isn't stable, and neither is SQL `ORDER BY priority` without a second column. pandas `sort_values` is only stable with `kind=\"stable\"` (or `\"mergesort\"`). For a priority queue, add a counter: `heapq.heappush(h, (o.priority, next(counter), o))`.\n\n**When an explicit tie-breaker is still worth it:** if the order really matters, for example for fairness or auditing, adding a timestamp or sequence number to the key makes the rule visible in the code. It also keeps working if someone later replaces the in-memory sort with a database query or a heap. If the plain `sorted()` call stays, a one-line comment like `# relies on sort stability to keep arrival order` does the same job.",
+ "texts": [
+  "No, you don't need it. Python's `sorted()` and `list.sort()` are guaranteed stable, so records with equal keys keep their original relative order. If `orders` is already in arrival order, `sorted(orders, key=lambda o: o.priority)` keeps same-priority orders in arrival order.\n\n**Points to check:**\n\n- **`reverse=True` is still stable.** `sorted(orders, key=..., reverse=True)` keeps equal elements in their original order; it doesn't reverse them. Negating the key (`key=lambda o: -o.priority`) also keeps the order.\n- **This only works if the input list is in arrival order.** If `orders` came from a set, an unordered query, a dict built in some other order, or a merge of several sources, stability just preserves that wrong order. In that case, sort by an arrival field such as `key=lambda o: (o.priority, o.arrival_ts)`.\n- **Other sorting methods may not be stable.** `heapq` isn't stable, and neither is SQL `ORDER BY priority` without a second column. pandas `sort_values` is only stable with `kind=\"stable\"` (or `\"mergesort\"`). For a priority queue, add a counter: `heapq.heappush(h, (o.priority, next(counter), o))`.\n\n**When an explicit tie-breaker is still worth it:** if the order really matters, for example for fairness or auditing, adding a timestamp or sequence number to the key makes the rule visible in the code. It also keeps working if someone later replaces the in-memory sort with a database query or a heap. If the plain `sorted()` call stays, a one-line comment like `# relies on sort stability to keep arrival order` does the same job."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.062087199999999995,
+ "turns": 1,
+ "minutes": 0.2,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5768,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 693,
+  "output_tokens_details": {
+   "thinking_tokens": 140
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5768,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 693,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5768,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5768
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 693,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5768,
+   "webSearchRequests": 0,
+   "costUSD": 0.062087199999999995,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 140,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

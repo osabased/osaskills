@@ -1,0 +1,76 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "single",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, you don't need it. Python's `sorted()` and `list.sort()` are **guaranteed stable**: items with equal keys keep their original relative order. The language docs promise this, so it isn't an implementation detail. If `orders` is already in arrival order, this works as is:\n\n```python\nsorted(orders, key=lambda o: o.priority)\n```\n\nAdding `enumerate` indices to the key would make the sort slower and harder to read without changing the result.\n\n**When you would need a tie-breaker:** stability keeps whatever order the input has. If `orders` might not be in arrival order, add a tie-breaker. That can happen if the list was built from a set, merged from several sources, or loaded from a database query with no `ORDER BY`. In that case, use a real arrival field, not the list position:\n\n```python\nsorted(orders, key=lambda o: (o.priority, o.arrived_at))\n```\n\n**Two smaller points:**\n- `reverse=True` also keeps equal items in their original order, so `sorted(orders, key=lambda o: o.priority, reverse=True)` still keeps ties in arrival order.\n- If this rule matters to the business, write a short test with two same-priority orders. That way a later change, such as moving the sort into SQL or a different language, can't silently break it.",
+ "texts": [
+  "No, you don't need it. Python's `sorted()` and `list.sort()` are **guaranteed stable**: items with equal keys keep their original relative order. The language docs promise this, so it isn't an implementation detail. If `orders` is already in arrival order, this works as is:\n\n```python\nsorted(orders, key=lambda o: o.priority)\n```\n\nAdding `enumerate` indices to the key would make the sort slower and harder to read without changing the result.\n\n**When you would need a tie-breaker:** stability keeps whatever order the input has. If `orders` might not be in arrival order, add a tie-breaker. That can happen if the list was built from a set, merged from several sources, or loaded from a database query with no `ORDER BY`. In that case, use a real arrival field, not the list position:\n\n```python\nsorted(orders, key=lambda o: (o.priority, o.arrived_at))\n```\n\n**Two smaller points:**\n- `reverse=True` also keeps equal items in their original order, so `sorted(orders, key=lambda o: o.priority, reverse=True)` still keeps ties in arrival order.\n- If this rule matters to the business, write a short test with two same-priority orders. That way a later change, such as moving the sort into SQL or a different language, can't silently break it."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.059907199999999994,
+ "turns": 1,
+ "minutes": 0.1,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5768,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 584,
+  "output_tokens_details": {
+   "thinking_tokens": 170
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5768,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 584,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5768,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5768
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 584,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5768,
+   "webSearchRequests": 0,
+   "costUSD": 0.059907199999999994,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 170,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

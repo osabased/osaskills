@@ -1,0 +1,76 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, you don't need it. Python's `sorted()` and `list.sort()` are guaranteed stable. When two items have equal keys, they keep their original relative order. This is part of the language specification, not an implementation detail, so you can rely on it.\n\n```python\nsorted(orders, key=lambda o: o.priority)\n```\n\nAs long as `orders` is already in arrival order, same-priority orders stay in arrival order.\n\n**Things to watch out for:**\n\n- **The input has to be in arrival order.** A stable sort only keeps the order it's given. If `orders` comes from a set, from merged sources, or from a database query without `ORDER BY`, it may not be in arrival order. In that case you do need a real tie-breaker, and it should be something meaningful like an arrival timestamp or sequence number, not `enumerate` over a list that's already scrambled:\n  ```python\n  sorted(orders, key=lambda o: (o.priority, o.arrived_at))\n  ```\n- **`reverse=True` is still stable.** `sorted(orders, key=..., reverse=True)` keeps equal items in their original order; it doesn't flip them. You don't need to negate the priority to protect the tie order.\n- **Making it explicit is optional.** If you want the intent visible to readers, or protection against someone later swapping in a non-stable sort (for example, some pandas/NumPy sort modes or a different language), adding the index is harmless:\n  ```python\n  sorted(enumerate(orders), key=lambda p: (p[1].priority, p[0]))\n  ```\n  But it's redundant with the built-in sort, so a comment like `# stable: ties keep arrival order` usually does the job.",
+ "texts": [
+  "No, you don't need it. Python's `sorted()` and `list.sort()` are guaranteed stable. When two items have equal keys, they keep their original relative order. This is part of the language specification, not an implementation detail, so you can rely on it.\n\n```python\nsorted(orders, key=lambda o: o.priority)\n```\n\nAs long as `orders` is already in arrival order, same-priority orders stay in arrival order.\n\n**Things to watch out for:**\n\n- **The input has to be in arrival order.** A stable sort only keeps the order it's given. If `orders` comes from a set, from merged sources, or from a database query without `ORDER BY`, it may not be in arrival order. In that case you do need a real tie-breaker, and it should be something meaningful like an arrival timestamp or sequence number, not `enumerate` over a list that's already scrambled:\n  ```python\n  sorted(orders, key=lambda o: (o.priority, o.arrived_at))\n  ```\n- **`reverse=True` is still stable.** `sorted(orders, key=..., reverse=True)` keeps equal items in their original order; it doesn't flip them. You don't need to negate the priority to protect the tie order.\n- **Making it explicit is optional.** If you want the intent visible to readers, or protection against someone later swapping in a non-stable sort (for example, some pandas/NumPy sort modes or a different language), adding the index is harmless:\n  ```python\n  sorted(enumerate(orders), key=lambda p: (p[1].priority, p[0]))\n  ```\n  But it's redundant with the built-in sort, so a comment like `# stable: ties keep arrival order` usually does the job."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0623312,
+ "turns": 1,
+ "minutes": 0.2,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5766,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 706,
+  "output_tokens_details": {
+   "thinking_tokens": 161
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5766,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 706,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5766,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5766
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 706,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5766,
+   "webSearchRequests": 0,
+   "costUSD": 0.0623312,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 161,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

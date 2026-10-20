@@ -1,0 +1,93 @@
+{
+ "id": "local-md-agents",
+ "kind": "trap",
+ "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+ "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+ "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+ "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, there's one real downside. By default, adding a `CLAUDE.local.md` makes Claude Code stop reading your `AGENTS.md`.\n\nClaude Code only reads `AGENTS.md` as a fallback, when there's no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in your working directory or any folder above it. A `CLAUDE.local.md` counts for that check. So once you add it, your sessions would load only your personal notes and drop the team instructions. Your teammates wouldn't be affected, since the file is gitignored, but you would be. The [memory docs](https://code.claude.com/docs/en/memory#agents-md) describe exactly this case.\n\nThere are two fixes:\n\n1. **Import it from your local file.** Put this at the top of `CLAUDE.local.md`:\n   ```markdown\n   @AGENTS.md\n\n   ## My personal notes\n   ...\n   ```\n   This only touches this repo and needs no settings change.\n\n2. **Change the setting.** In `/config`, set **Project instructions** to `claude-md-and-agents-md`. Claude Code then always reads both. This setting lives in your user-level settings, so it applies to every project, not just this one.\n\nEither way, run `/memory` in your next session and check that both files are listed.\n\nA smaller point: a gitignored `CLAUDE.local.md` only exists in the checkout where you created it. If you use git worktrees, your notes won't follow you. The docs suggest keeping the notes in your home directory and importing them instead.",
+ "texts": [
+  "Yes, there's one real downside. By default, adding a `CLAUDE.local.md` makes Claude Code stop reading your `AGENTS.md`.\n\nClaude Code only reads `AGENTS.md` as a fallback, when there's no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in your working directory or any folder above it. A `CLAUDE.local.md` counts for that check. So once you add it, your sessions would load only your personal notes and drop the team instructions. Your teammates wouldn't be affected, since the file is gitignored, but you would be. The [memory docs](https://code.claude.com/docs/en/memory#agents-md) describe exactly this case.\n\nThere are two fixes:\n\n1. **Import it from your local file.** Put this at the top of `CLAUDE.local.md`:\n   ```markdown\n   @AGENTS.md\n\n   ## My personal notes\n   ...\n   ```\n   This only touches this repo and needs no settings change.\n\n2. **Change the setting.** In `/config`, set **Project instructions** to `claude-md-and-agents-md`. Claude Code then always reads both. This setting lives in your user-level settings, so it applies to every project, not just this one.\n\nEither way, run `/memory` in your next session and check that both files are listed.\n\nA smaller point: a gitignored `CLAUDE.local.md` only exists in the checkout where you created it. If you use git worktrees, your notes won't follow you. The docs suggest keeping the notes in your home directory and importing them instead."
+ ],
+ "steps": [
+  [
+   "Glob",
+   "*"
+  ],
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/memory"
+  ],
+  [
+   "Grep",
+   "AGENTS\\.md|CLAUDE\\.local"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.17003279999999998,
+ "turns": 5,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 15842,
+  "cache_read_input_tokens": 62024,
+  "output_tokens": 1543,
+  "output_tokens_details": {
+   "thinking_tokens": 457
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 15842,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 609,
+    "cache_read_input_tokens": 18279,
+    "cache_creation_input_tokens": 7939,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 7939
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 1543,
+   "cacheReadInputTokens": 62024,
+   "cacheCreationInputTokens": 15842,
+   "webSearchRequests": 0,
+   "costUSD": 0.17003279999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 457,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

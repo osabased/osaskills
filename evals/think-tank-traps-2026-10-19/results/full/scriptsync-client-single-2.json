@@ -1,0 +1,107 @@
+{
+ "id": "scriptsync-client",
+ "kind": "trap",
+ "prompt": "We're using Roblox Studio's Script Sync. I'm putting our client controller at `client/Controller.client.luau`, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client`. It should run once per player. Anything wrong with this setup?",
+ "truth": "Yes. Under Script Sync a `.client.luau` file becomes a Script with RunContext Client, and in StarterPlayerScripts that runs twice. Use `.local.luau`, which becomes a LocalScript, or sync the client folder somewhere a RunContext script runs once, such as ReplicatedStorage.",
+ "trap": "Nothing wrong: a client script in StarterPlayerScripts runs once per player.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "single",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, there's one real problem: with this setup the controller will run **twice per player**, not once.\n\n**Why:** In Script Sync, the file suffix decides what kind of script you get. A `.client.luau` file doesn't become a `LocalScript`. It becomes a `Script` with `RunContext = Client`. Scripts like that run anywhere in the place, and that includes the Starter containers themselves. When a player joins, StarterPlayerScripts copies its contents into that player's `PlayerScripts`. Roblox's RunContext announcement says that in this case \"both the original scripts and their copies will run.\" So the copy in `StarterPlayerScripts.Client` runs, and so does the copy in `PlayerScripts.Client`. That gives you duplicate connections, duplicate UI, and so on.\n\n**Fix (choose one):**\n- **Rename it to `client/Controller.local.luau`.** The `.local.luau` suffix creates a real `LocalScript`, and LocalScripts only run from the per-player copy. This is what Roblox recommends for Starter containers. It's the smallest change and leaves your folder mapping as it is.\n- **Or keep `.client.luau` but sync the folder somewhere that isn't a Starter container,** such as `ReplicatedFirst` or `ReplicatedStorage`. A Client-RunContext script there runs once on each client. Use this if you'd rather standardize on RunContext scripts.\n\nDon't use `.legacy.luau` either. A Legacy-context `Script` in StarterPlayerScripts behaves like a server script and won't run on the client at all.\n\nThe rest of the setup is fine:\n- StarterPlayerScripts is the right container for \"once per player.\" Its contents are copied when the player joins, not each time they respawn. StarterCharacterScripts is the one that re-runs on every spawn.\n- The `client/` directory will sync as a plain `Folder` named `Client`, which is fine. Just make sure there's no `init*.luau` file directly inside `client/`. If there is, the folder becomes a script instead of a Folder.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [creator-docs sync.md on GitHub](https://github.com/Roblox/creator-docs/blob/main/content/en-us/scripting/sync.md)\n- [[Live] Script RunContext – DevForum](https://devforum.roblox.com/t/live-script-runcontext/1938784)\n- [Script RunContext vs LocalScript – DevForum](https://devforum.roblox.com/t/2507053)\n- [roblox-core reference](https://skillsmp.com/creators/nonlooped/roblox-suite/roblox-core)",
+ "texts": [
+  "Yes, there's one real problem: with this setup the controller will run **twice per player**, not once.\n\n**Why:** In Script Sync, the file suffix decides what kind of script you get. A `.client.luau` file doesn't become a `LocalScript`. It becomes a `Script` with `RunContext = Client`. Scripts like that run anywhere in the place, and that includes the Starter containers themselves. When a player joins, StarterPlayerScripts copies its contents into that player's `PlayerScripts`. Roblox's RunContext announcement says that in this case \"both the original scripts and their copies will run.\" So the copy in `StarterPlayerScripts.Client` runs, and so does the copy in `PlayerScripts.Client`. That gives you duplicate connections, duplicate UI, and so on.\n\n**Fix (choose one):**\n- **Rename it to `client/Controller.local.luau`.** The `.local.luau` suffix creates a real `LocalScript`, and LocalScripts only run from the per-player copy. This is what Roblox recommends for Starter containers. It's the smallest change and leaves your folder mapping as it is.\n- **Or keep `.client.luau` but sync the folder somewhere that isn't a Starter container,** such as `ReplicatedFirst` or `ReplicatedStorage`. A Client-RunContext script there runs once on each client. Use this if you'd rather standardize on RunContext scripts.\n\nDon't use `.legacy.luau` either. A Legacy-context `Script` in StarterPlayerScripts behaves like a server script and won't run on the client at all.\n\nThe rest of the setup is fine:\n- StarterPlayerScripts is the right container for \"once per player.\" Its contents are copied when the player joins, not each time they respawn. StarterCharacterScripts is the one that re-runs on every spawn.\n- The `client/` directory will sync as a plain `Folder` named `Client`, which is fine. Just make sure there's no `init*.luau` file directly inside `client/`. If there is, the folder becomes a script instead of a Folder.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [creator-docs sync.md on GitHub](https://github.com/Roblox/creator-docs/blob/main/content/en-us/scripting/sync.md)\n- [[Live] Script RunContext – DevForum](https://devforum.roblox.com/t/live-script-runcontext/1938784)\n- [Script RunContext vs LocalScript – DevForum](https://devforum.roblox.com/t/2507053)\n- [roblox-core reference](https://skillsmp.com/creators/nonlooped/roblox-suite/roblox-core)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Script Sync .client.luau file extension LocalScript RunContext"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio \"Script Sync\" file naming server.luau client.luau documentation"
+  ],
+  [
+   "WebFetch",
+   "https://devforum.roblox.com/t/live-script-runcontext/1938784"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.1953616,
+ "turns": 5,
+ "minutes": 0.9,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 11331,
+  "cache_read_input_tokens": 85585,
+  "output_tokens": 3120,
+  "output_tokens_details": {
+   "thinking_tokens": 1729
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11331,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1135,
+    "cache_read_input_tokens": 20981,
+    "cache_creation_input_tokens": 726,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 726
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 3120,
+   "cacheReadInputTokens": 85585,
+   "cacheCreationInputTokens": 11331,
+   "webSearchRequests": 0,
+   "costUSD": 0.170205,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1729,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 36041,
+   "outputTokens": 3105,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0251566,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1578,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

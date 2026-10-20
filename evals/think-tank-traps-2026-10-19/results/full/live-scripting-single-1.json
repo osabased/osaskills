@@ -1,0 +1,99 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "You probably can't assume either one. It depends on which script-editing mode your place is in, and Roblox's own sources disagree about what the default is right now.\n\n**The two modes:**\n\n- **Live scripting:** your collaborators see edits in real time as they're made. Nothing gets committed. Changes auto-save about every 5 minutes, or when someone presses Ctrl+S.\n- **Drafts (the older collaborative editing):** edits stay in a local draft on your machine. Nobody else sees them until you commit, which you do by selecting the scripts in the Drafts window and clicking Commit. You can also right-click a draft and choose \"Compare with server\" to check it before committing.\n\n**Which one you're in:** older Roblox posts say collaborative editing (Drafts) was turned on by default in Team Create. The later Live Scripting beta announcement says Live Scripting would become the new default. Since you haven't changed anything, your place is on whichever default applied when it was set up, plus any later rollout changes. If you're on a current Studio version, Live Scripting is the more likely answer, but I couldn't confirm it. The quickest check is to make a trivial edit to a script. If it shows up in a Drafts window waiting to be committed, you're in Drafts mode. If it doesn't, and a collaborator sees the change on their screen, you're in Live mode.\n\n**What this means for a rename across several scripts:**\n\n- **In Live mode,** your collaborators will watch the rename happen one script at a time. Partway through, some scripts will call the new name and others the old one. Anyone who playtests during that gap could hit errors. Someone typing in one of those scripts at the same moment could also clash with the edits. Tell them before you start, or ask them to stay out of those scripts until it's finished.\n- **In Drafts mode,** nothing reaches them until you commit. Commit all the edited scripts together so the shared version never contains a half-finished rename.\n\nEither way, have Claude list every script it changed so you can check the list before you share or commit anything.\n\nSources:\n- [Roblox Docs – Collaboration](https://create.roblox.com/docs/studio/collaboration)\n- [Live Scripting Beta (DevForum)](https://devforum.roblox.com/t/live-scripting-beta/2640607)\n- [Collaborative Editing updates (DevForum)](https://devforum.roblox.com/t/collaborative-editing-updates/504014)\n- [Team Create (legacy docs)](https://developer.roblox.com/articles/Team-Create)\n- [Roblox Studio Team Create guide – obby.fun](https://www.obby.fun/blog/roblox-studio-team-create)",
+ "texts": [
+  "You probably can't assume either one. It depends on which script-editing mode your place is in, and Roblox's own sources disagree about what the default is right now.\n\n**The two modes:**\n\n- **Live scripting:** your collaborators see edits in real time as they're made. Nothing gets committed. Changes auto-save about every 5 minutes, or when someone presses Ctrl+S.\n- **Drafts (the older collaborative editing):** edits stay in a local draft on your machine. Nobody else sees them until you commit, which you do by selecting the scripts in the Drafts window and clicking Commit. You can also right-click a draft and choose \"Compare with server\" to check it before committing.\n\n**Which one you're in:** older Roblox posts say collaborative editing (Drafts) was turned on by default in Team Create. The later Live Scripting beta announcement says Live Scripting would become the new default. Since you haven't changed anything, your place is on whichever default applied when it was set up, plus any later rollout changes. If you're on a current Studio version, Live Scripting is the more likely answer, but I couldn't confirm it. The quickest check is to make a trivial edit to a script. If it shows up in a Drafts window waiting to be committed, you're in Drafts mode. If it doesn't, and a collaborator sees the change on their screen, you're in Live mode.\n\n**What this means for a rename across several scripts:**\n\n- **In Live mode,** your collaborators will watch the rename happen one script at a time. Partway through, some scripts will call the new name and others the old one. Anyone who playtests during that gap could hit errors. Someone typing in one of those scripts at the same moment could also clash with the edits. Tell them before you start, or ask them to stay out of those scripts until it's finished.\n- **In Drafts mode,** nothing reaches them until you commit. Commit all the edited scripts together so the shared version never contains a half-finished rename.\n\nEither way, have Claude list every script it changed so you can check the list before you share or commit anything.\n\nSources:\n- [Roblox Docs – Collaboration](https://create.roblox.com/docs/studio/collaboration)\n- [Live Scripting Beta (DevForum)](https://devforum.roblox.com/t/live-scripting-beta/2640607)\n- [Collaborative Editing updates (DevForum)](https://devforum.roblox.com/t/collaborative-editing-updates/504014)\n- [Team Create (legacy docs)](https://developer.roblox.com/articles/Team-Create)\n- [Roblox Studio Team Create guide – obby.fun](https://www.obby.fun/blog/roblox-studio-team-create)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Team Create collaborative editing scripts live scripting drafts commit default"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.1334322,
+ "turns": 3,
+ "minutes": 0.6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8301,
+  "cache_read_input_tokens": 44159,
+  "output_tokens": 2316,
+  "output_tokens_details": {
+   "thinking_tokens": 1262
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8301,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1239,
+    "cache_read_input_tokens": 17624,
+    "cache_creation_input_tokens": 1053,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1053
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 2316,
+   "cacheReadInputTokens": 44159,
+   "cacheCreationInputTokens": 8301,
+   "webSearchRequests": 0,
+   "costUSD": 0.12158380000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1262,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 13744,
+   "outputTokens": 948,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.0118484,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 271,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

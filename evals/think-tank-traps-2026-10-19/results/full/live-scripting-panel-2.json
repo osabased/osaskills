@@ -1,0 +1,230 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "panel",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank: Team Create MCP edits, live or after commit?\nopus, sonnet, sonnet · session effort · identical brief · debate skipped at 3–0\n\n### Recommendation (3–0)\n**Your collaborators will see the edits right away, and there's nothing to commit.** Since January 2024, Team Create uses Live Scripting by default. Script edits sync to everyone in real time. Committing only exists in Drafts mode, which is off unless someone turns it on. Saving (autosave every 5 minutes, or Ctrl+S) doesn't control when people see changes. It only adds entries to Script History.\n\nThe one caveat all three raised is how the MCP edits get written. Live Scripting is built on `ScriptEditorService:UpdateSourceAsync`. Roblox warns that plugins writing the deprecated `Script.Source` \"will face discrepancies in script values.\" None of the panelists could confirm which of the two the MCP `multi_edit` tool uses.\n\nThe steps they agree on:\n1. Check File › Experience Settings › Enable Drafts Mode is off.\n2. Warn your collaborators. Halfway through the rename, some scripts will use the new name and others the old one, so their playtests can break. Ask them to close the affected scripts while it runs.\n3. Have Claude `script_grep` for the old name before and after the rename.\n4. Press Ctrl+S first so Script History has a rollback point. Don't rely on Ctrl+Z.\n\nChecked:\n- **The default.** The [collaboration docs](https://create.roblox.com/docs/projects/collaboration) say, word for word, \"Live Scripting is enabled by default\" and \"Drafts Mode is disabled by default.\" Commit appears only in the Drafts section. Confirmed.\n- **When it changed.** The [Live Scripting full release post](https://devforum.roblox.com/t/live-scripting-full-release/2816335) is dated 30 Jan 2024. It says \"Live Scripting is now the default scripting experience in Studio when Team Create is enabled,\" and it carries the `Script.Source` warning. Confirmed. The post doesn't say how existing places that already had the old Collaborative Editing were handled.\n\n### Panel\n- **A** (opus): \"The collaborators will see the edits right away. At current defaults, Team Create uses Live Scripting, where script changes sync in real time and there is no commit step at all. Committing only exists in Drafts mode, which is off by default. The main exception is an edit path that writes `Script.Source` directly. Those writes can fall out of sync with what collaborators have open.\" High confidence on the default, medium on the MCP write path and on older places.\n- **B** (sonnet): \"At current defaults, collaborators should see the edits right away, with no commit step. Live Scripting is on by default in Team Create, and Drafts mode (the one with Commit) is off by default. The exception is that a raw `Script.Source` write may lag for a collaborator who has that script open.\" Medium-high confidence.\n- **C** (sonnet): \"Almost certainly right away. Live Scripting has been the Team Create default since January 2024, and the Drafts \"commit\" step only exists if someone has turned on Drafts mode. The one real caveat is how the MCP server writes the source, which I could not confirm.\" Medium-high confidence.\n\n### Where they split\nThey didn't split on the answer. Only A raised one extra point: in a place created before 2024, when Collaborative Editing (drafts and commit) was the default, Drafts mode might still be on even though nobody changed anything. The announcement doesn't say whether older places were switched over. Looking at the setting in Experience Settings settles it.\n\n### My take\nI agree with the panel, and the checks made me more sure of the leaning I started with. One point matters more for you than the panel let on. You asked about committing, which suggests you know the older model. If your place dates from before 2024, A's caveat is the one to act on. \"We never touched the settings\" could mean Drafts mode is still on from back then, and in that case the answer flips: edits stay local until you commit them. Spend ten seconds checking File › Experience Settings before you start.\n\nIf Drafts mode is off, assume each script changes for everyone the moment Claude edits it. Tell your collaborators first, and have Claude use `multi_edit`, or `UpdateSourceAsync` if it writes Luau, rather than assigning `.Source`.",
+ "texts": [
+  "**Brief**\n\n> **Question:** A user's Roblox place is open in Team Create, with two other people editing at the same time. Nobody has changed any of the collaborative editing settings, so everything is at Roblox's current defaults (today is 2026-10-19). The user plans to have Claude, an AI agent, rename a function across several scripts using the Roblox Studio MCP server, which drives Studio through a plugin and edits script sources. The user wants to know: **will the collaborators see those script edits right away, or only after the user commits them?**\n>\n> **Context:** The project isn't on this machine, so there are no local files to read. Answer from Roblox's documentation, announcements, DevForum posts and how the Studio MCP server works. Things that may matter: what the current default script-collaboration behaviour in Team Create is, and whether it has changed over time; whether edits made programmatically through a plugin or MCP (for example, setting `Script.Source` or using `ScriptEditorService`) follow the same path as edits typed in the script editor; and anything that would make the answer differ from one script to another, or depending on whether a collaborator has the script open.\n>\n> **What a useful answer looks like:** a direct answer (right away, after commit, or \"it depends on X\"), the mechanism behind it, sources with dates, any practical steps the user should take before running a multi-script rename while others are editing, and how confident you are, including which facts your answer depends on.\n\nConvening opus, sonnet, sonnet panelists at session effort, identical brief, with debate.\n\nMy leaning before the panel: I think the answer depends on whether Roblox's newer real-time collaborative scripting has replaced the older Drafts/commit model as the default. I lean toward \"right away\", but I'm not confident.",
+  "The three panelists are researching in the background. I'll wait for all three answers before starting the debate round.",
+  "Panelist B is back. Waiting for A and C.",
+  "Panelist C is back. Waiting for A.",
+  "The panel agreed 3–0 in round 1, so I'm skipping the debate round. Before writing it up, I'm checking the two facts the answer rests on.",
+  "## Think tank: Team Create MCP edits, live or after commit?\nopus, sonnet, sonnet · session effort · identical brief · debate skipped at 3–0\n\n### Recommendation (3–0)\n**Your collaborators will see the edits right away, and there's nothing to commit.** Since January 2024, Team Create uses Live Scripting by default. Script edits sync to everyone in real time. Committing only exists in Drafts mode, which is off unless someone turns it on. Saving (autosave every 5 minutes, or Ctrl+S) doesn't control when people see changes. It only adds entries to Script History.\n\nThe one caveat all three raised is how the MCP edits get written. Live Scripting is built on `ScriptEditorService:UpdateSourceAsync`. Roblox warns that plugins writing the deprecated `Script.Source` \"will face discrepancies in script values.\" None of the panelists could confirm which of the two the MCP `multi_edit` tool uses.\n\nThe steps they agree on:\n1. Check File › Experience Settings › Enable Drafts Mode is off.\n2. Warn your collaborators. Halfway through the rename, some scripts will use the new name and others the old one, so their playtests can break. Ask them to close the affected scripts while it runs.\n3. Have Claude `script_grep` for the old name before and after the rename.\n4. Press Ctrl+S first so Script History has a rollback point. Don't rely on Ctrl+Z.\n\nChecked:\n- **The default.** The [collaboration docs](https://create.roblox.com/docs/projects/collaboration) say, word for word, \"Live Scripting is enabled by default\" and \"Drafts Mode is disabled by default.\" Commit appears only in the Drafts section. Confirmed.\n- **When it changed.** The [Live Scripting full release post](https://devforum.roblox.com/t/live-scripting-full-release/2816335) is dated 30 Jan 2024. It says \"Live Scripting is now the default scripting experience in Studio when Team Create is enabled,\" and it carries the `Script.Source` warning. Confirmed. The post doesn't say how existing places that already had the old Collaborative Editing were handled.\n\n### Panel\n- **A** (opus): \"The collaborators will see the edits right away. At current defaults, Team Create uses Live Scripting, where script changes sync in real time and there is no commit step at all. Committing only exists in Drafts mode, which is off by default. The main exception is an edit path that writes `Script.Source` directly. Those writes can fall out of sync with what collaborators have open.\" High confidence on the default, medium on the MCP write path and on older places.\n- **B** (sonnet): \"At current defaults, collaborators should see the edits right away, with no commit step. Live Scripting is on by default in Team Create, and Drafts mode (the one with Commit) is off by default. The exception is that a raw `Script.Source` write may lag for a collaborator who has that script open.\" Medium-high confidence.\n- **C** (sonnet): \"Almost certainly right away. Live Scripting has been the Team Create default since January 2024, and the Drafts \"commit\" step only exists if someone has turned on Drafts mode. The one real caveat is how the MCP server writes the source, which I could not confirm.\" Medium-high confidence.\n\n### Where they split\nThey didn't split on the answer. Only A raised one extra point: in a place created before 2024, when Collaborative Editing (drafts and commit) was the default, Drafts mode might still be on even though nobody changed anything. The announcement doesn't say whether older places were switched over. Looking at the setting in Experience Settings settles it.\n\n### My take\nI agree with the panel, and the checks made me more sure of the leaning I started with. One point matters more for you than the panel let on. You asked about committing, which suggests you know the older model. If your place dates from before 2024, A's caveat is the one to act on. \"We never touched the settings\" could mean Drafts mode is still on from back then, and in that case the answer flips: edits stay local until you commit them. Spend ten seconds checking File › Experience Settings before you start.\n\nIf Drafts mode is off, assume each script changes for everyone the moment Claude edits it. Tell your collaborators first, and have Claude use `multi_edit`, or `UpdateSourceAsync` if it writes Luau, rather than assigning `.Source`."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ],
+  [
+   "Agent",
+   "Panelist B"
+  ],
+  [
+   "Agent",
+   "Panelist C"
+  ],
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/projects/collaboration"
+  ],
+  [
+   "WebFetch",
+   "https://devforum.roblox.com/t/live-scripting-full-release/2816335"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "a38ee294f1b62cf73",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebSearch",
+    "WebSearch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "turns": [
+    {
+     "prompt": "**Question:** A user's Roblox place is open in Team Create, with two other people editing at the same time. Nobody has changed any of the collaborative editing settings, so everything is at Roblox's current defaults (today is 2026-10-19). The user plans to have Claude, an AI agent, rename a function across several scripts using the Roblox Studio MCP server, which drives Studio through a plugin and edits script sources. The user wants to know: **will the collaborators see those script edits right away, or only after the user commits them?**\n\n**Context:** The project isn't on this machine, so there are no local files to read. Answer from Roblox's documentation, announcements, DevForum posts and how the Studio MCP server works. Things that may matter: what the current default script-collaboration behaviour in Team Create is, and whether it has changed over time; whether edits made programmatically through a plugin or MCP (for example, setting `Script.Source` or using `ScriptEditorService`) follow the same path as edits typed in the script editor; and anything that would make the answer differ from one script to another, or depending on whether a collaborator has the script open.\n\n**What a useful answer looks like:** a direct answer (right away, after commit, or \"it depends on X\"), the mechanism behind it, sources with dates, any practical steps the user should take before running a multi-script rename while others are editing, and how confident you are, including which facts your answer depends on.",
+     "reply": "**Position:** The collaborators will see the edits right away. At current defaults, Team Create uses Live Scripting, where script changes sync in real time and there is no commit step at all. Committing only exists in Drafts mode, which is off by default. The main exception is an edit path that writes `Script.Source` directly. Those writes can fall out of sync with what collaborators have open.\n\n**Reasoning:**\n- **Default mode.** Roblox's \"Live Scripting Full Release\" post (DevForum, 30 Jan 2024, https://devforum.roblox.com/t/live-scripting-full-release/2816335) says \"Live Scripting is now the default scripting experience in Studio when Team Create is enabled\". The current collaboration docs (https://create.roblox.com/docs/projects/collaboration) say \"Live Scripting is enabled by default\" and \"Drafts Mode is disabled by default.\" The history matters: Collaborative Editing, later renamed Drafts, used to hold edits back until you committed them. Live Scripting arrived as a beta in October 2023 and replaced it as the default in January 2024. I found nothing from 2025 or 2026 reversing that.\n- **Saving is not committing.** Live Scripting autosaves every 5 minutes, when a script is closed, and on Ctrl/Cmd+S. That only creates entries in Script History. It does not decide when others see the changes, which happens live.\n- **The edit path matters.** Live Scripting \"is based on the new ScriptEditorService:UpdateSourceAsync API, our recommended method for editing script source\". The same post warns that \"Plugins that use the now deprecated Script.Source will face discrepancies in script values.\" So an edit made through `UpdateSourceAsync` behaves like typing in the editor and shows up live. A raw `Script.Source =` write, for example from Luau run through `execute_luau`, may not match what a collaborator sees in an open editor. It can also be overwritten when their editor later saves. That's my inference from Roblox's warning; I found no documentation of the exact behaviour.\n- **The MCP tools.** The built-in Studio MCP server (https://create.roblox.com/docs/studio/mcp) has a dedicated `multi_edit` script tool. The docs don't say which API it uses, but a first-party tool is very likely to use `UpdateSourceAsync`. The older archived `studio-rust-mcp-server` only had `run_code`, so any edit went through whatever Luau the agent wrote.\n\n**Practical steps before the rename:**\n1. In File > Experience Settings, check that Drafts Mode is off. If it's on, the answer flips: edits stay local until committed, and you get merge prompts.\n2. Tell Claude to use `multi_edit`, or `ScriptEditorService:UpdateSourceAsync` if it writes Luau. It should not assign `Script.Source`.\n3. Warn the collaborators. Each script changes as it's edited, so partway through the rename some callers will use the new name and others the old one. Their playtests could break, and their cursors may jump in scripts they have open. Ideally they close the affected scripts or pause playtesting.\n4. Before starting, save or publish a version, or press Ctrl+S on each affected script, so Script History has a rollback point.\n5. Afterwards, search all scripts for the old name to confirm nothing was missed.\n\n**Risks and unknowns:**\n- My answer depends most on Drafts Mode really being off in this place. \"Nobody changed settings\" might not guarantee that for an old place. Collaborative Editing used to be the default, and I couldn't confirm that the 2024 rollout switched existing places that already had it on. Checking the setting takes ten seconds and settles it.\n- I haven't confirmed which API `multi_edit` uses internally.\n- How a raw `Source` write behaves when a collaborator has the script open is inferred from Roblox's \"discrepancies\" warning, not documented.\n\n**Confidence:** High that the default is real-time with no commit step, since two current first-party sources agree. Medium on the plugin and MCP edit path and on the old-place caveat."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  },
+  {
+   "agent_id": "aa7c0eedb02d4fc8f",
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "turns": [
+    {
+     "prompt": "**Question:** A user's Roblox place is open in Team Create, with two other people editing at the same time. Nobody has changed any of the collaborative editing settings, so everything is at Roblox's current defaults (today is 2026-10-19). The user plans to have Claude, an AI agent, rename a function across several scripts using the Roblox Studio MCP server, which drives Studio through a plugin and edits script sources. The user wants to know: **will the collaborators see those script edits right away, or only after the user commits them?**\n\n**Context:** The project isn't on this machine, so there are no local files to read. Answer from Roblox's documentation, announcements, DevForum posts and how the Studio MCP server works. Things that may matter: what the current default script-collaboration behaviour in Team Create is, and whether it has changed over time; whether edits made programmatically through a plugin or MCP (for example, setting `Script.Source` or using `ScriptEditorService`) follow the same path as edits typed in the script editor; and anything that would make the answer differ from one script to another, or depending on whether a collaborator has the script open.\n\n**What a useful answer looks like:** a direct answer (right away, after commit, or \"it depends on X\"), the mechanism behind it, sources with dates, any practical steps the user should take before running a multi-script rename while others are editing, and how confident you are, including which facts your answer depends on.",
+     "reply": "**Position:** Almost certainly right away. Live Scripting has been the Team Create default since January 2024, and the Drafts \"commit\" step only exists if someone has turned on Drafts mode. The one real caveat is how the MCP server writes the source, which I could not confirm.\n\n**Reasoning:**\n- **Current default.** Roblox's collaboration docs say \"Live Scripting is enabled by default\" and \"Drafts mode (off by default)\" ([docs](https://create.roblox.com/docs/studio/collaboration)). Collaborators edit in real time with colored cursors. Drafts mode is the one where you commit scripts to a shared repository. It is enabled in File > Experience Settings > Enable Drafts Mode, and all collaborators must exit and rejoin for it to take effect.\n- **History.** The older \"Collaborative Editing\" drafts and commit model, from about 2019 to 2020, was renamed Drafts. Live Scripting was in beta from 2023-10-10 ([beta thread](https://devforum.roblox.com/t/live-scripting-beta/2640607)). It became the default with Team Create on 2024-01-30, and the old script-lock mode was phased out ([full release](https://devforum.roblox.com/t/live-scripting-full-release/2816335)). Older guides that mention commits are out of date unless Drafts is on.\n- **MCP edits.** Roblox's Studio MCP docs say scripts are edited with `multi_edit`, and `execute_luau` can also run code ([MCP docs](https://create.roblox.com/docs/en-us/studio/mcp.md)). It runs inside your Studio via a plugin, so it is a plugin edit, not something done on a collaborator's machine.\n- **Which API the edits go through.** Live Scripting is built on `ScriptEditorService:UpdateSourceAsync`, which Roblox calls \"our recommended method\". The same post warns that plugins using the deprecated `Script.Source` \"will face discrepancies in script values\". My inference, not documented, is that a `Source` write to a script someone has open could conflict with that open document instead of merging cleanly.\n- **Per script.** The docs don't distinguish open from closed scripts. In theory, a script a collaborator has open is the riskiest case, because their editor is a live document being merged into.\n- **Saving is separate from visibility.** Edits show up for collaborators immediately, but autosave runs only every 5 minutes or on close. Ctrl+S forces a save to Script Version History. Edits are also not live in published servers until someone publishes.\n\n**Practical steps:**\n1. Check File > Experience Settings to confirm Drafts mode is off. If it is on, the edits stay in your local drafts and collaborators see nothing until you commit. Use the Drafts window to commit, and watch for collaborator commits that need Merge From Server.\n2. Tell the two collaborators what you're doing, and ask them to close the affected scripts or avoid editing them.\n3. Use `script_grep` first to list every call site and confirm the rename covers them all, including calls from other scripts and string references like `require` paths or remote names.\n4. Do one script first and check that your collaborators see it. Then do the rest.\n5. Save with Ctrl+S, and check Script Version History so you can roll back. Don't count on Ctrl+Z, because Roblox's MCP docs don't say whether these edits are undoable.\n6. Don't publish until the rename has been checked as a whole.\n\n**Risks and unknowns:**\n- I could not find documentation on whether `multi_edit` uses `UpdateSourceAsync` or `Script.Source`. This is the fact my answer depends most on. If it uses `Source`, results with open scripts could be inconsistent.\n- Roblox could have changed defaults after my sources. The Drafts bug reports I saw look unofficial, but the Drafts versus Live distinction should still be right.\n- Someone on the team may have enabled Drafts mode without your knowing. The brief says nobody changed settings, but it's worth checking.\n- A bandwidth-starved session can turn the editor read-only, which could make edits fail.\n- I would change my mind if I found official text saying plugin or MCP edits skip Live Scripting, or that they need a manual save to propagate.\n\n**Confidence:** Medium-high that the answer is \"right away\" under default settings. Medium on the plugin and MCP edge cases, because they are inferred.\n\nSources: [Collaboration docs](https://create.roblox.com/docs/studio/collaboration), [Live Scripting Full Release](https://devforum.roblox.com/t/live-scripting-full-release/2816335), [Live Scripting Beta](https://devforum.roblox.com/t/live-scripting-beta/2640607), [Studio MCP docs](https://create.roblox.com/docs/en-us/studio/mcp.md), [ScriptEditorService reference](https://create.roblox.com/docs/reference/engine/classes/ScriptEditorService)."
+    }
+   ],
+   "description": "Panelist C",
+   "model": "sonnet",
+   "effort": null,
+   "type": "think-tank-member"
+  },
+  {
+   "agent_id": "ae2421fe4e72b7ba3",
+   "models": [
+    "claude-sonnet-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebSearch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "turns": [
+    {
+     "prompt": "**Question:** A user's Roblox place is open in Team Create, with two other people editing at the same time. Nobody has changed any of the collaborative editing settings, so everything is at Roblox's current defaults (today is 2026-10-19). The user plans to have Claude, an AI agent, rename a function across several scripts using the Roblox Studio MCP server, which drives Studio through a plugin and edits script sources. The user wants to know: **will the collaborators see those script edits right away, or only after the user commits them?**\n\n**Context:** The project isn't on this machine, so there are no local files to read. Answer from Roblox's documentation, announcements, DevForum posts and how the Studio MCP server works. Things that may matter: what the current default script-collaboration behaviour in Team Create is, and whether it has changed over time; whether edits made programmatically through a plugin or MCP (for example, setting `Script.Source` or using `ScriptEditorService`) follow the same path as edits typed in the script editor; and anything that would make the answer differ from one script to another, or depending on whether a collaborator has the script open.\n\n**What a useful answer looks like:** a direct answer (right away, after commit, or \"it depends on X\"), the mechanism behind it, sources with dates, any practical steps the user should take before running a multi-script rename while others are editing, and how confident you are, including which facts your answer depends on.",
+     "reply": "**Position:** At current defaults, collaborators should see the edits right away, with no commit step. Live Scripting is on by default in Team Create, and Drafts mode (the one with Commit) is off by default. The exception is that a raw `Script.Source` write may lag for a collaborator who has that script open.\n\n**Reasoning:**\n- The Creator Hub collaboration docs say \"Live Scripting is enabled by default\" and \"Drafts Mode is disabled by default.\" Drafts mode is turned on in File > Experience Settings, and Commit exists only in Drafts mode. Source: https://create.roblox.com/docs/projects/collaboration\n- History: Live Scripting started as an opt-in beta on 2023-10-10 (`EditorLiveScript`). https://devforum.roblox.com/t/live-scripting-beta/2640607\n- It became the Team Create default on 2024-01-30 (the \"Live Scripting Full Release\" post). The old Collaborative Editing mode was renamed Drafts and made opt-in. https://devforum.roblox.com/t/live-scripting-full-release/2816335\n- Older advice that collaborative scripting (drafts and commit) is the default is out of date.\n- Mechanism: Live Scripting is built on `ScriptEditorService:UpdateSourceAsync`. A script's text is shared live, and the server autosaves it every 5 minutes and on close. Collaborators see the changes as they are applied. Autosave only matters for version history and persistence.\n- Studio MCP: Roblox's official server (https://create.roblox.com/docs/studio/mcp) provides `multi_edit`, `script_read` and `script_grep`. Its docs don't say how edits are applied or mention Team Create. I'm inferring that it works like any other plugin, so the Live Scripting path applies.\n- Per-script and per-collaborator differences:\n  - **Script.Source:** The Live Scripting post warns that plugins writing `Script.Source` \"may show discrepancies.\" `UpdateSourceAsync` is the recommended path. If the plugin uses raw `Source`, a collaborator with the script open might see a stale or odd buffer.\n  - **Open scripts:** Scripts nobody has open are simply updated. For open scripts, the editor buffer is what is shared.\n  - **Drafts mode:** If any collaborator has turned Drafts mode on, the setting is place-wide. In that case nothing would go live until committed, and the Drafts window would show pending changes.\n\n**Practical steps:**\n1. Check File > Experience Settings and confirm \"Enable Drafts Mode\" is off. Check that no one has pending drafts.\n2. Tell the collaborators, and ask them to avoid the affected scripts, or close them, during the rename.\n3. Run `script_grep` first to list every call site, including `require` users and string-based references such as RemoteEvent names or `:Invoke` strings.\n4. Make the edits in one `multi_edit` batch per script, then run `script_grep` again to confirm no old names are left.\n5. Press Ctrl+S, or wait for autosave, so the changes are saved. Script Version History is the undo for other people's view.\n6. Don't rely on Ctrl+Z. Undo history is local to one user.\n7. Consider a published or local backup first.\n\n**Risks and unknowns:**\n- I could not confirm whether the official MCP plugin uses `UpdateSourceAsync` or `Script.Source`. This is the biggest unknown.\n- Roblox's docs don't spell out how plugin writes are broadcast. I'm inferring that they follow the Live Scripting path.\n- A July 2026 DevForum request (https://devforum.roblox.com/t/make-draftsservice-pluginsecurity/4730729) describes agent edits in Drafts-mode places. It says the committed `.Source` can lag the editor buffer there. That confirms the \"different if Drafts is on\" case, but it doesn't settle plain Live Scripting.\n- A team could have set Drafts mode on without the user knowing. That would flip the answer to \"only after each collaborator commits.\"\n- I couldn't see anything newer than mid-2026 that changes the default. A default change since then would change my answer.\n\n**Confidence:** Medium-high that the default is \"right away\" (official docs, and two Roblox announcements agree). Medium on plugin-write behaviour, because it rests on inference."
+    }
+   ],
+   "description": "Panelist B",
+   "model": "sonnet",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "cost": 0.8169532000000002,
+ "turns": 4,
+ "minutes": 2.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 3921,
+  "cache_read_input_tokens": 86391,
+  "output_tokens": 2247,
+  "output_tokens_details": {
+   "thinking_tokens": 290
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 3921,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1650,
+    "cache_read_input_tokens": 29881,
+    "cache_creation_input_tokens": 1346,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1346
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 40,
+   "outputTokens": 9770,
+   "cacheReadInputTokens": 273999,
+   "cacheCreationInputTokens": 35954,
+   "webSearchRequests": 0,
+   "costUSD": 0.49268280000000003,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2266,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-sonnet-5-5": {
+   "inputTokens": 28,
+   "outputTokens": 5879,
+   "cacheReadInputTokens": 124324,
+   "cacheCreationInputTokens": 21245,
+   "webSearchRequests": 0,
+   "costUSD": 0.1243909,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 219,
+   "canonicalModel": "claude-sonnet-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 303985,
+   "outputTokens": 38962,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 15,
+   "costUSD": 0.19987950000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 19542,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

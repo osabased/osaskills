@@ -1,0 +1,76 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Yes, Claude will wait for all three answers before it carries on.** One caveat: I'm going by how the Agent tool is documented in my own session. I can't check v2.1.296 specifically.\n\n**Why it works:**\n- With `run_in_background: false`, each Agent call runs in the foreground, so Claude doesn't get its next turn until that agent has finished.\n- When several tool calls go out in one message, they run at the same time, and Claude's next turn starts only after all of their results are back. So the three subagents run in parallel, and Claude sees all three answers together before it does the comparison.\n\n**What to keep or change:**\n\n1. **Keep `run_in_background: false` explicitly on every call.** In current versions, subagents run in the background by default. If the skill leaves the parameter out, or a later edit drops it, Claude gets the results one at a time as notifications. It might then start comparing, or talk to the user, before all three are in. Since your skill depends on having all three, this flag is the important part.\n2. **Keep all three calls in one message.** If the skill's wording lets Claude spawn them one after another, you still get correct results, but they run one at a time and take about three times as long. Say plainly in the skill: \"launch all three in a single message.\"\n3. **Add a guard in the skill text.** For example: \"Do not compare until you have all three agents' results. If any are missing or failed, say so instead of guessing.\" That covers cases where an agent errors out or the user interrupts it, so Claude doesn't fill the gap with a made-up answer.\n4. **Make the outputs easy to compare (optional).** Give each subagent the same output structure, such as a verdict, confidence and key reasons. Then the comparison step compares like with like.\n\nIf you want certainty for v2.1.296 specifically, run the skill once and check that the comparison message comes after all three agent results in the transcript.",
+ "texts": [
+  "**Yes, Claude will wait for all three answers before it carries on.** One caveat: I'm going by how the Agent tool is documented in my own session. I can't check v2.1.296 specifically.\n\n**Why it works:**\n- With `run_in_background: false`, each Agent call runs in the foreground, so Claude doesn't get its next turn until that agent has finished.\n- When several tool calls go out in one message, they run at the same time, and Claude's next turn starts only after all of their results are back. So the three subagents run in parallel, and Claude sees all three answers together before it does the comparison.\n\n**What to keep or change:**\n\n1. **Keep `run_in_background: false` explicitly on every call.** In current versions, subagents run in the background by default. If the skill leaves the parameter out, or a later edit drops it, Claude gets the results one at a time as notifications. It might then start comparing, or talk to the user, before all three are in. Since your skill depends on having all three, this flag is the important part.\n2. **Keep all three calls in one message.** If the skill's wording lets Claude spawn them one after another, you still get correct results, but they run one at a time and take about three times as long. Say plainly in the skill: \"launch all three in a single message.\"\n3. **Add a guard in the skill text.** For example: \"Do not compare until you have all three agents' results. If any are missing or failed, say so instead of guessing.\" That covers cases where an agent errors out or the user interrupts it, so Claude doesn't fill the gap with a made-up answer.\n4. **Make the outputs easy to compare (optional).** Give each subagent the same output structure, such as a verdict, confidence and key reasons. Then the comparison step compares like with like.\n\nIf you want certainty for v2.1.296 specifically, run the skill once and check that the comparison message comes after all three agent results in the transcript."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.07327120000000001,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5806,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1237,
+  "output_tokens_details": {
+   "thinking_tokens": 637
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5806,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1237,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5806,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5806
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1237,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5806,
+   "webSearchRequests": 0,
+   "costUSD": 0.07327120000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 637,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

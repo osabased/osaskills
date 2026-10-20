@@ -1,0 +1,97 @@
+{
+ "id": "local-md-agents",
+ "kind": "trap",
+ "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+ "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+ "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+ "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74.",
+ "arm": "single",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, there's one real downside: **adding a `CLAUDE.local.md` makes Claude Code stop loading your `AGENTS.md`.** I checked the current Claude Code memory docs (code.claude.com/docs/en/memory).\n\nClaude Code only reads `AGENTS.md` when it finds no `CLAUDE.md` file in your working directory or any directory above it. A `CLAUDE.local.md` counts as one, and so do `CLAUDE.md` and `.claude/CLAUDE.md`. From the docs:\n\n> | An `AGENTS.md` and a `CLAUDE.md` or `CLAUDE.local.md` in your working directory or above it | Your `CLAUDE.md` files only |\n\nSo once you add the file, your sessions would get your personal notes and none of the shared project instructions. Nothing errors, so it's easy to miss.\n\n**Fixes** (pick one):\n\n1. **Import AGENTS.md from your local file.** Put this line at the top of `CLAUDE.local.md`:\n   ```\n   @AGENTS.md\n   ```\n   Then add your personal instructions below it. This is the simplest option and only affects you.\n\n2. **Change the setting so both files load.** In `/config`, set **Project instructions** to `claude-md-and-agents-md`. Or put this in `~/.claude/settings.json` (Claude Code ignores this key in project and local settings files):\n   ```json\n   {\n     \"pluginConfigs\": {\n       \"cc-plugin-agents-md@builtin\": {\n         \"options\": { \"instructionFiles\": \"claude-md-and-agents-md\" }\n       }\n     }\n   }\n   ```\n   This applies to every repo you open, and Claude Code won't load an `AGENTS.md` twice if you also import it.\n\n3. **Skip the repo file.** If your notes aren't specific to this repo, put them in `~/.claude/CLAUDE.md`. That file loads alongside `AGENTS.md`, so nothing changes. The catch is that it applies to all your projects.\n\nTo check that it's working, start an interactive session in the repo and run `/memory` to see which instruction files loaded. If Claude Code is using the `AGENTS.md` fallback, the session also shows a line like `no CLAUDE.md found; AGENTS.md loaded: ...`.\n\nGitignoring `CLAUDE.local.md` is fine. Two smaller points: reading `AGENTS.md` directly needs Claude Code v2.1.277 or later, and `AGENTS.local.md` isn't read, so you can't use that name for personal notes instead.",
+ "texts": [
+  "Yes, there's one real downside: **adding a `CLAUDE.local.md` makes Claude Code stop loading your `AGENTS.md`.** I checked the current Claude Code memory docs (code.claude.com/docs/en/memory).\n\nClaude Code only reads `AGENTS.md` when it finds no `CLAUDE.md` file in your working directory or any directory above it. A `CLAUDE.local.md` counts as one, and so do `CLAUDE.md` and `.claude/CLAUDE.md`. From the docs:\n\n> | An `AGENTS.md` and a `CLAUDE.md` or `CLAUDE.local.md` in your working directory or above it | Your `CLAUDE.md` files only |\n\nSo once you add the file, your sessions would get your personal notes and none of the shared project instructions. Nothing errors, so it's easy to miss.\n\n**Fixes** (pick one):\n\n1. **Import AGENTS.md from your local file.** Put this line at the top of `CLAUDE.local.md`:\n   ```\n   @AGENTS.md\n   ```\n   Then add your personal instructions below it. This is the simplest option and only affects you.\n\n2. **Change the setting so both files load.** In `/config`, set **Project instructions** to `claude-md-and-agents-md`. Or put this in `~/.claude/settings.json` (Claude Code ignores this key in project and local settings files):\n   ```json\n   {\n     \"pluginConfigs\": {\n       \"cc-plugin-agents-md@builtin\": {\n         \"options\": { \"instructionFiles\": \"claude-md-and-agents-md\" }\n       }\n     }\n   }\n   ```\n   This applies to every repo you open, and Claude Code won't load an `AGENTS.md` twice if you also import it.\n\n3. **Skip the repo file.** If your notes aren't specific to this repo, put them in `~/.claude/CLAUDE.md`. That file loads alongside `AGENTS.md`, so nothing changes. The catch is that it applies to all your projects.\n\nTo check that it's working, start an interactive session in the repo and run `/memory` to see which instruction files loaded. If Claude Code is using the `AGENTS.md` fallback, the session also shows a line like `no CLAUDE.md found; AGENTS.md loaded: ...`.\n\nGitignoring `CLAUDE.local.md` is fine. Two smaller points: reading `AGENTS.md` directly needs Claude Code v2.1.277 or later, and `AGENTS.local.md` isn't read, so you can't use that name for personal notes instead."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/memory"
+  ],
+  [
+   "Grep",
+   "AGENTS\\.md|CLAUDE\\.local|place of|fallback|instead of"
+  ],
+  [
+   "Grep",
+   "^#+ AGENTS\\.md"
+  ],
+  [
+   "Grep",
+   "Choose which instruction files load"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.16310280000000002,
+ "turns": 6,
+ "minutes": 0.5,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 11676,
+  "cache_read_input_tokens": 102534,
+  "output_tokens": 2457,
+  "output_tokens_details": {
+   "thinking_tokens": 538
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 11676,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 862,
+    "cache_read_input_tokens": 20946,
+    "cache_creation_input_tokens": 1106,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1106
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 12,
+   "outputTokens": 2457,
+   "cacheReadInputTokens": 102534,
+   "cacheCreationInputTokens": 11676,
+   "webSearchRequests": 0,
+   "costUSD": 0.16310280000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 538,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

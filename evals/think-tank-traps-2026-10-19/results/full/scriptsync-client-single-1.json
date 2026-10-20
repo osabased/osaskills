@@ -1,0 +1,103 @@
+{
+ "id": "scriptsync-client",
+ "kind": "trap",
+ "prompt": "We're using Roblox Studio's Script Sync. I'm putting our client controller at `client/Controller.client.luau`, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client`. It should run once per player. Anything wrong with this setup?",
+ "truth": "Yes. Under Script Sync a `.client.luau` file becomes a Script with RunContext Client, and in StarterPlayerScripts that runs twice. Use `.local.luau`, which becomes a LocalScript, or sync the client folder somewhere a RunContext script runs once, such as ReplicatedStorage.",
+ "trap": "Nothing wrong: a client script in StarterPlayerScripts runs once per player.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, there's one problem: the file suffix. In Studio's Script Sync, `.client.luau` doesn't make a LocalScript.\n\nAccording to the Script Sync docs, the suffixes map like this:\n\n| File | Instance |\n|---|---|\n| `name.luau` | ModuleScript |\n| `name.server.luau` | Script, RunContext = Server |\n| `name.client.luau` | **Script, RunContext = Client** |\n| `name.local.luau` | **LocalScript** |\n| `name.legacy.luau` | Script, RunContext = Legacy |\n\nThis is different from Rojo's default, where `.client.luau` gives you a LocalScript. That's probably where the expectation comes from.\n\n**Why it matters here:** A Script with RunContext = Client runs wherever the client can see it, not only in the usual LocalScript containers. StarterPlayerScripts replicates to the client, and its contents are also copied into each player's `PlayerScripts`. So your controller will likely run twice on each client: once from `StarterPlayerScripts.Client` and once from the copy in `PlayerScripts.Client`. That means duplicate connections, duplicate UI, and so on. The docs page doesn't spell out this double-run, but it's a known gotcha with Client-RunContext scripts in Starter containers. You can confirm it quickly with a `print` in a play test.\n\n**Fix:** Rename the file to `client/Controller.local.luau`. It becomes a LocalScript, which only runs from `PlayerScripts`, so it runs once per player.\n\nThe rest of the setup is fine. A Folder named `Client` under StarterPlayerScripts is normal, and LocalScripts inside it run after it's copied to `PlayerScripts`. Keep in mind Script Sync is still a Studio beta (File → Beta Features → Script Sync), so check the suffix table again if it changes later.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [[Live] Script RunContext – DevForum](https://devforum.roblox.com/t/1938784)",
+ "texts": [
+  "Yes, there's one problem: the file suffix. In Studio's Script Sync, `.client.luau` doesn't make a LocalScript.\n\nAccording to the Script Sync docs, the suffixes map like this:\n\n| File | Instance |\n|---|---|\n| `name.luau` | ModuleScript |\n| `name.server.luau` | Script, RunContext = Server |\n| `name.client.luau` | **Script, RunContext = Client** |\n| `name.local.luau` | **LocalScript** |\n| `name.legacy.luau` | Script, RunContext = Legacy |\n\nThis is different from Rojo's default, where `.client.luau` gives you a LocalScript. That's probably where the expectation comes from.\n\n**Why it matters here:** A Script with RunContext = Client runs wherever the client can see it, not only in the usual LocalScript containers. StarterPlayerScripts replicates to the client, and its contents are also copied into each player's `PlayerScripts`. So your controller will likely run twice on each client: once from `StarterPlayerScripts.Client` and once from the copy in `PlayerScripts.Client`. That means duplicate connections, duplicate UI, and so on. The docs page doesn't spell out this double-run, but it's a known gotcha with Client-RunContext scripts in Starter containers. You can confirm it quickly with a `print` in a play test.\n\n**Fix:** Rename the file to `client/Controller.local.luau`. It becomes a LocalScript, which only runs from `PlayerScripts`, so it runs once per player.\n\nThe rest of the setup is fine. A Folder named `Client` under StarterPlayerScripts is normal, and LocalScripts inside it run after it's copied to `PlayerScripts`. Keep in mind Script Sync is still a Studio beta (File → Beta Features → Script Sync), so check the suffix table again if it changes later.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [[Live] Script RunContext – DevForum](https://devforum.roblox.com/t/1938784)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Script Sync file extensions .client.luau RunContext LocalScript"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/en-us/scripting/sync.md"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.14744030000000002,
+ "turns": 4,
+ "minutes": 0.7,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 9622,
+  "cache_read_input_tokens": 64134,
+  "output_tokens": 2234,
+  "output_tokens_details": {
+   "thinking_tokens": 1195
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9622,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 818,
+    "cache_read_input_tokens": 19369,
+    "cache_creation_input_tokens": 629,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 629
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 2234,
+   "cacheReadInputTokens": 64134,
+   "cacheCreationInputTokens": 9622,
+   "webSearchRequests": 0,
+   "costUSD": 0.1345148,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1195,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 17700,
+   "outputTokens": 2311,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.0129255,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1174,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

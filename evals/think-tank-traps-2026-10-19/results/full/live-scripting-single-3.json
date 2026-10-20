@@ -1,0 +1,76 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "single",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Short answer: if you've left the defaults alone, they'll only see the changes after you commit.**\n\nNew Team Create places have **Collaborative Editing** turned on by default. With it on:\n\n- Script edits are **drafts** that stay local to your Studio session. The shared copy of the script, which collaborators run in playtests and which gets published, doesn't change until you commit.\n- To commit, open **View → Drafts**, select the scripts, and choose **Commit**. You can also right-click a script in the Explorer. Commit all the renamed scripts together. If you commit some and not others, collaborators can end up with call sites that point to a function name that no longer exists.\n- Collaborators can still see that a script is being edited from the presence indicators. If someone opens the same script while you have an uncommitted draft, they could get a merge conflict when one of you commits.\n\n**What I'm unsure about: how the Studio MCP writes the code.** The draft system is built around edits in the Script Editor. Plugin-based tools, which is what the MCP uses, can write code in different ways. One is `ScriptEditorService:UpdateSourceAsync`, which works with drafts. Another is setting `.Source` directly, and I can't confirm from here how that interacts with drafts in your Studio version. Before the full rename, I'd run a quick test:\n\n1. Have Claude make a trivial edit to one script, like adding a comment.\n2. Check whether that script appears in your Drafts window as uncommitted.\n3. Ask a collaborator whether they can see the change before you commit.\n\nIf it shows up as a draft and they can't see it, you're fine. If it bypasses drafts, warn your collaborators before the rename so nobody runs or edits those scripts halfway through.\n\nI couldn't check your actual settings or the MCP's write method because the project isn't in this directory. To confirm Collaborative Editing is on, look in **File → Game Settings** (the Team Create / Collaborative Editing option, depending on your Studio version).",
+ "texts": [
+  "**Short answer: if you've left the defaults alone, they'll only see the changes after you commit.**\n\nNew Team Create places have **Collaborative Editing** turned on by default. With it on:\n\n- Script edits are **drafts** that stay local to your Studio session. The shared copy of the script, which collaborators run in playtests and which gets published, doesn't change until you commit.\n- To commit, open **View → Drafts**, select the scripts, and choose **Commit**. You can also right-click a script in the Explorer. Commit all the renamed scripts together. If you commit some and not others, collaborators can end up with call sites that point to a function name that no longer exists.\n- Collaborators can still see that a script is being edited from the presence indicators. If someone opens the same script while you have an uncommitted draft, they could get a merge conflict when one of you commits.\n\n**What I'm unsure about: how the Studio MCP writes the code.** The draft system is built around edits in the Script Editor. Plugin-based tools, which is what the MCP uses, can write code in different ways. One is `ScriptEditorService:UpdateSourceAsync`, which works with drafts. Another is setting `.Source` directly, and I can't confirm from here how that interacts with drafts in your Studio version. Before the full rename, I'd run a quick test:\n\n1. Have Claude make a trivial edit to one script, like adding a comment.\n2. Check whether that script appears in your Drafts window as uncommitted.\n3. Ask a collaborator whether they can see the change before you commit.\n\nIf it shows up as a draft and they can't see it, you're fine. If it bypasses drafts, warn your collaborators before the rename so nobody runs or edits those scripts halfway through.\n\nI couldn't check your actual settings or the MCP's write method because the project isn't in this directory. To confirm Collaborative Editing is on, look in **File → Game Settings** (the Team Create / Collaborative Editing option, depending on your Studio version)."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0805272,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5783,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1609,
+  "output_tokens_details": {
+   "thinking_tokens": 965
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5783,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1609,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5783,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5783
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1609,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5783,
+   "webSearchRequests": 0,
+   "costUSD": 0.0805272,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 965,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

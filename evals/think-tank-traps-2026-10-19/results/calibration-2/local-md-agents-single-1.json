@@ -1,0 +1,76 @@
+{
+ "id": "local-md-agents",
+ "kind": "trap",
+ "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+ "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+ "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+ "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Mostly fine. One thing could quietly break your setup, though, and you should check it.\n\n**The risk: AGENTS.md might stop loading.** Claude Code is built around `CLAUDE.md`. In setups like yours, AGENTS.md often gets picked up only because no CLAUDE.md exists. If that's how your version finds it, adding a `CLAUDE.local.md` could count as \"a CLAUDE file exists,\" and AGENTS.md would stop loading. Nothing would error. Claude would just stop following the shared repo instructions. I can't test this against your project from here, so check it yourself:\n\n1. Add `CLAUDE.local.md`, then start a new session in the repo.\n2. Run `/memory`, or ask Claude what instruction files it has loaded.\n3. Confirm AGENTS.md is still listed alongside the new file.\n\n**If AGENTS.md drops out**, put `@AGENTS.md` at the top of `CLAUDE.local.md` so it gets imported explicitly. Only do this if it actually disappeared. If both already load, the import would add AGENTS.md twice.\n\n**Smaller things:**\n- **Git worktrees:** a gitignored file isn't carried into new worktrees, so your personal instructions won't be there unless you copy them over.\n- **Gitignore choice:** a line in `.gitignore` is committed, so teammates will see it. To keep it fully private, use `.git/info/exclude` or your global gitignore instead. Claude Code may also add the `.gitignore` entry for you when it creates the file.\n- **Scope:** if the instructions are really about how you work everywhere, not about this repo, `~/.claude/CLAUDE.md` is a better home and avoids the AGENTS.md question entirely.",
+ "texts": [
+  "Mostly fine. One thing could quietly break your setup, though, and you should check it.\n\n**The risk: AGENTS.md might stop loading.** Claude Code is built around `CLAUDE.md`. In setups like yours, AGENTS.md often gets picked up only because no CLAUDE.md exists. If that's how your version finds it, adding a `CLAUDE.local.md` could count as \"a CLAUDE file exists,\" and AGENTS.md would stop loading. Nothing would error. Claude would just stop following the shared repo instructions. I can't test this against your project from here, so check it yourself:\n\n1. Add `CLAUDE.local.md`, then start a new session in the repo.\n2. Run `/memory`, or ask Claude what instruction files it has loaded.\n3. Confirm AGENTS.md is still listed alongside the new file.\n\n**If AGENTS.md drops out**, put `@AGENTS.md` at the top of `CLAUDE.local.md` so it gets imported explicitly. Only do this if it actually disappeared. If both already load, the import would add AGENTS.md twice.\n\n**Smaller things:**\n- **Git worktrees:** a gitignored file isn't carried into new worktrees, so your personal instructions won't be there unless you copy them over.\n- **Gitignore choice:** a line in `.gitignore` is committed, so teammates will see it. To keep it fully private, use `.git/info/exclude` or your global gitignore instead. Claude Code may also add the `.gitignore` entry for you when it creates the file.\n- **Scope:** if the instructions are really about how you work everywhere, not about this repo, `~/.claude/CLAUDE.md` is a better home and avoids the AGENTS.md question entirely."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0754312,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5801,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1347,
+  "output_tokens_details": {
+   "thinking_tokens": 769
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5801,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1347,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5801,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5801
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1347,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5801,
+   "webSearchRequests": 0,
+   "costUSD": 0.0754312,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 769,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,76 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "single",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Yes, that's enough for the subagent itself.** The `tools` field is an allowlist. When it's present, the subagent gets only the tools you list. `Read`, `Grep`, and `Glob` can't change anything on disk, and nothing that can write is included:\n\n- No `Edit`, `Write`, or `NotebookEdit`\n- No `Bash` (the big one, since a shell can modify anything)\n- No `Agent`, so it can't hand work to a subagent that has write access\n- No `Skill`, and no MCP tools. MCP tools are only inherited when you leave `tools` out entirely.\n\n**Things to check so it actually takes effect:**\n\n1. **The frontmatter has to parse.** It needs `---` delimiters at the top of the file, valid YAML, and a `name` and `description` alongside `tools`. If it's malformed, the agent may not load as you intended.\n2. **Tool names are case-sensitive.** `read, grep` won't match. Yours look right.\n3. **Don't delete the `tools` line later.** Without it, the subagent inherits *every* tool from the main session, including Bash and Edit. That's the most likely way this breaks in the future.\n4. **Verify it.** Run `/agents` in that project and confirm the auditor shows only those three tools. Then ask it to create a file as a test; it should report that it has no tool to do that.\n\n**Optional extra safety:**\n\n- Newer Claude Code versions also support `disallowedTools` (a denylist) and `permissionMode` in subagent frontmatter. `disallowedTools: Edit, Write, Bash, NotebookEdit` would be a second guard if someone loosens `tools` later. Check that your version supports it, and confirm with `/agents`.\n- `permissions.deny` rules in `.claude/settings.json` give a guarantee at the settings level, but they apply to the whole session, not just this agent. Only use them if nothing in that project should be editing.\n\n**What it doesn't cover:**\n\n- Being read-only doesn't stop the auditor from *reading* sensitive files like `.env` or credentials. If that matters, add `permissions.deny` rules such as `Read(./.env)`.\n- It only restricts the auditor. If the main session acts on the auditor's report, the main session can still edit files.",
+ "texts": [
+  "**Yes, that's enough for the subagent itself.** The `tools` field is an allowlist. When it's present, the subagent gets only the tools you list. `Read`, `Grep`, and `Glob` can't change anything on disk, and nothing that can write is included:\n\n- No `Edit`, `Write`, or `NotebookEdit`\n- No `Bash` (the big one, since a shell can modify anything)\n- No `Agent`, so it can't hand work to a subagent that has write access\n- No `Skill`, and no MCP tools. MCP tools are only inherited when you leave `tools` out entirely.\n\n**Things to check so it actually takes effect:**\n\n1. **The frontmatter has to parse.** It needs `---` delimiters at the top of the file, valid YAML, and a `name` and `description` alongside `tools`. If it's malformed, the agent may not load as you intended.\n2. **Tool names are case-sensitive.** `read, grep` won't match. Yours look right.\n3. **Don't delete the `tools` line later.** Without it, the subagent inherits *every* tool from the main session, including Bash and Edit. That's the most likely way this breaks in the future.\n4. **Verify it.** Run `/agents` in that project and confirm the auditor shows only those three tools. Then ask it to create a file as a test; it should report that it has no tool to do that.\n\n**Optional extra safety:**\n\n- Newer Claude Code versions also support `disallowedTools` (a denylist) and `permissionMode` in subagent frontmatter. `disallowedTools: Edit, Write, Bash, NotebookEdit` would be a second guard if someone loosens `tools` later. Check that your version supports it, and confirm with `/agents`.\n- `permissions.deny` rules in `.claude/settings.json` give a guarantee at the settings level, but they apply to the whole session, not just this agent. Only use them if nothing in that project should be editing.\n\n**What it doesn't cover:**\n\n- Being read-only doesn't stop the auditor from *reading* sensitive files like `.env` or credentials. If that matters, add `permissions.deny` rules such as `Read(./.env)`.\n- It only restricts the auditor. If the main session acts on the auditor's report, the main session can still edit files."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0765672,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5763,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1419,
+  "output_tokens_details": {
+   "thinking_tokens": 671
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5763,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1419,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5763,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5763
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1419,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5763,
+   "webSearchRequests": 0,
+   "costUSD": 0.0765672,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 671,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

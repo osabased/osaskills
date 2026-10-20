@@ -1,0 +1,76 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "single",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Yes, it should wait, as long as the skill really sets `run_in_background: false` on all three calls.** I can't check v2.1.296 itself. I'm going by the Agent tool's rules in this session, and I don't know which version I'm running.\n\n**Why it waits**\n- With `run_in_background: false`, each Agent call runs in the foreground. Its result comes back as a normal tool result.\n- If the three calls are in one message, they run at the same time. Claude's next turn only starts once all three results are back, so it has all three answers when it does the comparison.\n\n**What I'd change or check**\n1. **Keep the flag on every call.** In current versions, subagents run in the background by default. If a call leaves the flag out, or the model drops it while following the skill, that agent returns straight away with only a name. Claude then carries on and gets the real answer later as a notification, which breaks the comparison. Make the skill's wording explicit, for example: \"Launch all three with `run_in_background: false` in a single message.\"\n2. **Add a fallback instruction.** Something like: \"Do not compare until you have all three full answers. If any agent was backgrounded, wait for its completion notification first.\" This covers flag drift, and a user manually sending a running agent to the background (I believe interactive sessions let you do that).\n3. **Keep the three calls in one message.** If they're split across turns, they run one after another. The result is still correct, but it's about three times slower.\n4. **Test once on the version your users run.** Run the skill in v2.1.296 and check that the turn after the launch contains three full results, not three \"started in background\" acknowledgements. The tool's behaviour has changed between versions before, so a quick test is worth more than my reading of the current rules.\n\nI haven't looked at your skill file because it isn't in this directory. If you paste the relevant part, I can check the wording.",
+ "texts": [
+  "**Yes, it should wait, as long as the skill really sets `run_in_background: false` on all three calls.** I can't check v2.1.296 itself. I'm going by the Agent tool's rules in this session, and I don't know which version I'm running.\n\n**Why it waits**\n- With `run_in_background: false`, each Agent call runs in the foreground. Its result comes back as a normal tool result.\n- If the three calls are in one message, they run at the same time. Claude's next turn only starts once all three results are back, so it has all three answers when it does the comparison.\n\n**What I'd change or check**\n1. **Keep the flag on every call.** In current versions, subagents run in the background by default. If a call leaves the flag out, or the model drops it while following the skill, that agent returns straight away with only a name. Claude then carries on and gets the real answer later as a notification, which breaks the comparison. Make the skill's wording explicit, for example: \"Launch all three with `run_in_background: false` in a single message.\"\n2. **Add a fallback instruction.** Something like: \"Do not compare until you have all three full answers. If any agent was backgrounded, wait for its completion notification first.\" This covers flag drift, and a user manually sending a running agent to the background (I believe interactive sessions let you do that).\n3. **Keep the three calls in one message.** If they're split across turns, they run one after another. The result is still correct, but it's about three times slower.\n4. **Test once on the version your users run.** Run the skill in v2.1.296 and check that the turn after the launch contains three full results, not three \"started in background\" acknowledgements. The tool's behaviour has changed between versions before, so a quick test is worth more than my reading of the current rules.\n\nI haven't looked at your skill file because it isn't in this directory. If you paste the relevant part, I can check the wording."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0815112,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5796,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1653,
+  "output_tokens_details": {
+   "thinking_tokens": 1062
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5796,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1653,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5796,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5796
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1653,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5796,
+   "webSearchRequests": 0,
+   "costUSD": 0.0815112,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1062,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

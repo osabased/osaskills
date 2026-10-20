@@ -1,0 +1,76 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "single",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes. Three Agent calls in one message with `run_in_background: false` start at the same time. Each call blocks until its subagent finishes, and Claude's next step happens only after all three results come back. So the comparison step will see all three answers.\n\nI'm going by how the Agent tool works in the Claude Code build I'm running now. I can't check v2.1.296 specifically, and nothing in this directory shows your skill. A quick test run on that version would confirm it.\n\n**What I'd keep or change:**\n\n1. **Keep `run_in_background: false` on every call.** Subagents run in the background by default. If one call leaves the flag out, it returns right away. That answer then arrives later as a notification, possibly after Claude has already started comparing.\n2. **Don't use `isolation: \"remote\"` on these agents.** Remote agents always run in the background, whatever the flag says.\n3. **Keep all three calls in one message.** That's what makes them run in parallel. If Claude spreads them across turns, they run one after another: still correct, just slower.\n4. **Say what to do if an agent fails.** If one errors out or returns nothing, the skill should tell Claude whether to compare the other two, retry, or stop. Otherwise Claude has to guess.\n5. **Ask for a fixed answer format.** For example, \"End with a line `VERDICT: …`\". The final report is the only thing that comes back to the main conversation, so a consistent structure makes the comparison much more reliable.\n6. **Expect the wait to be noticeable.** Foreground calls hold up the turn until the slowest agent finishes. Users can still press Esc to interrupt.\n\nIf those hold, the skill's main assumption is fine, and only points 4 and 5 are worth adding.",
+ "texts": [
+  "Yes. Three Agent calls in one message with `run_in_background: false` start at the same time. Each call blocks until its subagent finishes, and Claude's next step happens only after all three results come back. So the comparison step will see all three answers.\n\nI'm going by how the Agent tool works in the Claude Code build I'm running now. I can't check v2.1.296 specifically, and nothing in this directory shows your skill. A quick test run on that version would confirm it.\n\n**What I'd keep or change:**\n\n1. **Keep `run_in_background: false` on every call.** Subagents run in the background by default. If one call leaves the flag out, it returns right away. That answer then arrives later as a notification, possibly after Claude has already started comparing.\n2. **Don't use `isolation: \"remote\"` on these agents.** Remote agents always run in the background, whatever the flag says.\n3. **Keep all three calls in one message.** That's what makes them run in parallel. If Claude spreads them across turns, they run one after another: still correct, just slower.\n4. **Say what to do if an agent fails.** If one errors out or returns nothing, the skill should tell Claude whether to compare the other two, retry, or stop. Otherwise Claude has to guess.\n5. **Ask for a fixed answer format.** For example, \"End with a line `VERDICT: …`\". The final report is the only thing that comes back to the main conversation, so a consistent structure makes the comparison much more reliable.\n6. **Expect the wait to be noticeable.** Foreground calls hold up the turn until the slowest agent finishes. Users can still press Esc to interrupt.\n\nIf those hold, the skill's main assumption is fine, and only points 4 and 5 are worth adding."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0728912,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5796,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1222,
+  "output_tokens_details": {
+   "thinking_tokens": 660
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5796,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1222,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5796,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5796
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1222,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5796,
+   "webSearchRequests": 0,
+   "costUSD": 0.0728912,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 660,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

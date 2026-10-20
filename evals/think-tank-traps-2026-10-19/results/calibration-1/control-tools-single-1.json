@@ -1,0 +1,76 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, that's enough. `tools:` is an allowlist, so the subagent only gets the tools you name. Read, Grep and Glob can't write, edit or run anything. Because Bash isn't listed, it also can't change files through shell commands like `echo > file`, `sed -i` or `git checkout`.\n\nThe list works as long as Claude Code actually reads it. A few things can quietly break that:\n\n- **Frontmatter has to parse.** If you leave out `tools`, the subagent gets every tool the main thread has, including Edit, Write, Bash and MCP tools. If the YAML is malformed and the agent still loads, you could end up with that default. Keep the frontmatter between `---` lines at the very top, with `name:` and `description:` filled in.\n- **Tool names are case-sensitive.** `Read, Grep, Glob` is correct. A misspelled name just means that tool isn't available. It won't fail open.\n- **Name collisions.** If a user-level agent (`~/.claude/agents/`) or a plugin agent has the same `name`, make sure the one that runs is yours. A project-level agent normally wins over a user-level one.\n- **Run `/agents` to check.** It shows the tools the agent actually has, which is quicker than reasoning about it.\n\nWhat the list doesn't cover:\n\n- **The main agent can still edit files.** The restriction applies only to the subagent. If the main conversation reads the auditor's report and decides to \"fix\" things, it uses its own tools. If that matters, say in the auditor's prompt that it only reports and never suggests applying fixes, or handle it in your main workflow.\n- **Hooks.** Hooks in your `settings.json` (for example, a PreToolUse hook that runs a script) still fire on the subagent's tool calls. That's your own config, not the agent writing files, but a hook that writes things will still run.\n- **Read-only isn't side-effect-free.** Read can open any file the process can reach, including `.env` files and keys. Nothing gets modified, but the contents end up in the transcript. If the auditor shouldn't see secrets, add `deny` rules such as `Read(./.env)` in your settings permissions.\n\nYou don't need `permissionMode` or extra deny rules for Edit and Write. The allowlist already removes those tools.",
+ "texts": [
+  "Yes, that's enough. `tools:` is an allowlist, so the subagent only gets the tools you name. Read, Grep and Glob can't write, edit or run anything. Because Bash isn't listed, it also can't change files through shell commands like `echo > file`, `sed -i` or `git checkout`.\n\nThe list works as long as Claude Code actually reads it. A few things can quietly break that:\n\n- **Frontmatter has to parse.** If you leave out `tools`, the subagent gets every tool the main thread has, including Edit, Write, Bash and MCP tools. If the YAML is malformed and the agent still loads, you could end up with that default. Keep the frontmatter between `---` lines at the very top, with `name:` and `description:` filled in.\n- **Tool names are case-sensitive.** `Read, Grep, Glob` is correct. A misspelled name just means that tool isn't available. It won't fail open.\n- **Name collisions.** If a user-level agent (`~/.claude/agents/`) or a plugin agent has the same `name`, make sure the one that runs is yours. A project-level agent normally wins over a user-level one.\n- **Run `/agents` to check.** It shows the tools the agent actually has, which is quicker than reasoning about it.\n\nWhat the list doesn't cover:\n\n- **The main agent can still edit files.** The restriction applies only to the subagent. If the main conversation reads the auditor's report and decides to \"fix\" things, it uses its own tools. If that matters, say in the auditor's prompt that it only reports and never suggests applying fixes, or handle it in your main workflow.\n- **Hooks.** Hooks in your `settings.json` (for example, a PreToolUse hook that runs a script) still fire on the subagent's tool calls. That's your own config, not the agent writing files, but a hook that writes things will still run.\n- **Read-only isn't side-effect-free.** Read can open any file the process can reach, including `.env` files and keys. Nothing gets modified, but the contents end up in the transcript. If the auditor shouldn't see secrets, add `deny` rules such as `Read(./.env)` in your settings permissions.\n\nYou don't need `permissionMode` or extra deny rules for Edit and Write. The allowlist already removes those tools."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0749472,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5773,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1334,
+  "output_tokens_details": {
+   "thinking_tokens": 586
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5773,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1334,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5773,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5773
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1334,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5773,
+   "webSearchRequests": 0,
+   "costUSD": 0.0749472,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 586,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

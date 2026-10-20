@@ -1,0 +1,76 @@
+{
+ "id": "rojo-sourcemap",
+ "kind": "trap",
+ "prompt": "In our Roblox project on Rojo 7.7.1, a CI check confirms that `ReplicatedStorage.Remotes.BuyItem`, a RemoteEvent defined in `src/shared/Remotes/BuyItem.model.json`, exists. The check runs `rojo sourcemap default.project.json -o sourcemap.json` and looks for that instance path in the JSON. Is this a sound approach, or will it bite us?",
+ "truth": "It will fail. By default `rojo sourcemap` includes only scripts and their ancestors, so a RemoteEvent with no script under it is left out. Generate the sourcemap with `--include-non-scripts`.",
+ "trap": "Sound: the sourcemap lists every instance the project maps.",
+ "source": "Observed on Rojo 7.7.1 for #73 (structure-roblox-projects rojo.md).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "It will bite you. By default, `rojo sourcemap` leaves your RemoteEvent out of the output.\n\n## The problem: sourcemaps only include scripts by default\n\n`rojo sourcemap` was built for tooling like luau-lsp, so it only emits script instances (`Script`, `LocalScript`, `ModuleScript`) and the folders above them. Anything else gets dropped, including a `RemoteEvent` from a `.model.json`. A folder like `Remotes` that holds no scripts gets dropped too.\n\nSo with the command as written, `ReplicatedStorage.Remotes.BuyItem` won't be in `sourcemap.json`, even if the file is correct. You need the flag that includes non-scripts:\n\n```\nrojo sourcemap default.project.json --include-non-scripts -o sourcemap.json\n```\n\nIf the check passes today without that flag, look at how it matches. It's probably doing a substring search for `\"BuyItem\"` and hitting something else, such as a `BuyItem` ModuleScript or handler. In that case it's a false positive and isn't checking what you think it is.\n\n## Other things to get right\n\n1. **Walk the tree; don't grep the file.** The sourcemap is a nested tree of `{ name, className, filePaths, children }`. No field holds a dotted path like `ReplicatedStorage.Remotes.BuyItem`. Start at the root (the DataModel), go through `children` matching `name` at each level, and check `className == \"RemoteEvent\"` on the last node. Otherwise a `Folder` or `ModuleScript` named `BuyItem` would pass.\n2. **Check the mapping in your project file.** Many templates map `src/shared` to `ReplicatedStorage.Shared`, which would make the real path `ReplicatedStorage.Shared.Remotes.BuyItem`. Confirm that your `default.project.json` maps `src/shared` straight onto `ReplicatedStorage`.\n3. **The name comes from the filename.** In Rojo 7, `BuyItem.model.json` becomes an instance named `BuyItem`, whatever `Name` field might be inside the file. Renaming the file renames the instance.\n4. **It checks what Rojo will build, not what exists at runtime.** The check proves the project tree contains the instance. It says nothing about whether the properties are valid. It also won't catch a server script that later destroys or replaces the instance. For a \"this file is wired into the tree correctly\" check, that's fine.\n\n## Bottom line\n\nThe approach is sound as a static check, as long as you add `--include-non-scripts`, walk the tree by `name`, and assert `className`. Without the flag, it either fails every time or, if the matching is loose, passes for the wrong reason.\n\nAs a cross-check, `rojo build default.project.json -o out.rbxlx` and an XML query for the instance would test the same thing from the built place file. The fixed sourcemap check is enough on its own, though.",
+ "texts": [
+  "It will bite you. By default, `rojo sourcemap` leaves your RemoteEvent out of the output.\n\n## The problem: sourcemaps only include scripts by default\n\n`rojo sourcemap` was built for tooling like luau-lsp, so it only emits script instances (`Script`, `LocalScript`, `ModuleScript`) and the folders above them. Anything else gets dropped, including a `RemoteEvent` from a `.model.json`. A folder like `Remotes` that holds no scripts gets dropped too.\n\nSo with the command as written, `ReplicatedStorage.Remotes.BuyItem` won't be in `sourcemap.json`, even if the file is correct. You need the flag that includes non-scripts:\n\n```\nrojo sourcemap default.project.json --include-non-scripts -o sourcemap.json\n```\n\nIf the check passes today without that flag, look at how it matches. It's probably doing a substring search for `\"BuyItem\"` and hitting something else, such as a `BuyItem` ModuleScript or handler. In that case it's a false positive and isn't checking what you think it is.\n\n## Other things to get right\n\n1. **Walk the tree; don't grep the file.** The sourcemap is a nested tree of `{ name, className, filePaths, children }`. No field holds a dotted path like `ReplicatedStorage.Remotes.BuyItem`. Start at the root (the DataModel), go through `children` matching `name` at each level, and check `className == \"RemoteEvent\"` on the last node. Otherwise a `Folder` or `ModuleScript` named `BuyItem` would pass.\n2. **Check the mapping in your project file.** Many templates map `src/shared` to `ReplicatedStorage.Shared`, which would make the real path `ReplicatedStorage.Shared.Remotes.BuyItem`. Confirm that your `default.project.json` maps `src/shared` straight onto `ReplicatedStorage`.\n3. **The name comes from the filename.** In Rojo 7, `BuyItem.model.json` becomes an instance named `BuyItem`, whatever `Name` field might be inside the file. Renaming the file renames the instance.\n4. **It checks what Rojo will build, not what exists at runtime.** The check proves the project tree contains the instance. It says nothing about whether the properties are valid. It also won't catch a server script that later destroys or replaces the instance. For a \"this file is wired into the tree correctly\" check, that's fine.\n\n## Bottom line\n\nThe approach is sound as a static check, as long as you add `--include-non-scripts`, walk the tree by `name`, and assert `className`. Without the flag, it either fails every time or, if the matching is loose, passes for the wrong reason.\n\nAs a cross-check, `rojo build default.project.json -o out.rbxlx` and an XML query for the instance would test the same thing from the built place file. The fixed sourcemap check is enough on its own, though."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0874112,
+ "turns": 1,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5846,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1928,
+  "output_tokens_details": {
+   "thinking_tokens": 960
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5846,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1928,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5846,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5846
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1928,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5846,
+   "webSearchRequests": 0,
+   "costUSD": 0.0874112,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 960,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

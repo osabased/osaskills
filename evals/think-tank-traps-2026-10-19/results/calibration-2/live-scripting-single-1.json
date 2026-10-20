@@ -1,0 +1,99 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "They'll see the edits right away. There's no commit step with the default settings.\n\nRoblox's current Collaboration docs say **Live Scripting is on by default** in Team Create. Everyone edits the same shared scripts, and each person's changes show up for the others in real time. Studio also autosaves every 5 minutes, and Ctrl+S saves manually; saves are logged in Script History.\n\nCommits only apply in **Drafts mode**, which is **off by default** and turned on under File > Experience Settings. In that mode your script changes stay on your machine until you commit them. Since you haven't changed anything, you aren't using it.\n\nWhat this means for the rename:\n\n- **Your collaborators will see each script change as it's made**, not all at once at the end. Partway through, some scripts will use the new name and some the old one. If someone playtests during that window, they could get errors.\n- **The docs don't cover edits made by plugins or tools.** The Studio MCP edits scripts from code rather than through the Script Editor, and the docs don't say how that kind of edit behaves. In Live Scripting I'd expect it to reach the shared copy immediately too, but I haven't confirmed that.\n- **Collaborators who have an affected script open could clash with the rename.** If they're typing in that script at the same moment, their edits and Claude's could collide.\n\n**Before you start:** tell your two collaborators the rename is about to happen, ask them to stay out of those scripts and not playtest until you say it's done, and do the whole rename in one pass. If you'd rather have a commit step, you could switch on Drafts mode first. That's an experience-wide setting, though, so check with them before changing it.\n\nSource: [Roblox Creator Docs – Collaboration](https://create.roblox.com/docs/projects/collaboration)",
+ "texts": [
+  "They'll see the edits right away. There's no commit step with the default settings.\n\nRoblox's current Collaboration docs say **Live Scripting is on by default** in Team Create. Everyone edits the same shared scripts, and each person's changes show up for the others in real time. Studio also autosaves every 5 minutes, and Ctrl+S saves manually; saves are logged in Script History.\n\nCommits only apply in **Drafts mode**, which is **off by default** and turned on under File > Experience Settings. In that mode your script changes stay on your machine until you commit them. Since you haven't changed anything, you aren't using it.\n\nWhat this means for the rename:\n\n- **Your collaborators will see each script change as it's made**, not all at once at the end. Partway through, some scripts will use the new name and some the old one. If someone playtests during that window, they could get errors.\n- **The docs don't cover edits made by plugins or tools.** The Studio MCP edits scripts from code rather than through the Script Editor, and the docs don't say how that kind of edit behaves. In Live Scripting I'd expect it to reach the shared copy immediately too, but I haven't confirmed that.\n- **Collaborators who have an affected script open could clash with the rename.** If they're typing in that script at the same moment, their edits and Claude's could collide.\n\n**Before you start:** tell your two collaborators the rename is about to happen, ask them to stay out of those scripts and not playtest until you say it's done, and do the whole rename in one pass. If you'd rather have a commit step, you could switch on Drafts mode first. That's an experience-wide setting, though, so check with them before changing it.\n\nSource: [Roblox Creator Docs – Collaboration](https://create.roblox.com/docs/projects/collaboration)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/projects/collaboration"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.1212616,
+ "turns": 3,
+ "minutes": 0.5,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8484,
+  "cache_read_input_tokens": 44808,
+  "output_tokens": 2150,
+  "output_tokens_details": {
+   "thinking_tokens": 1300
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8484,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 744,
+    "cache_read_input_tokens": 18275,
+    "cache_creation_input_tokens": 585,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 585
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 2150,
+   "cacheReadInputTokens": 44808,
+   "cacheCreationInputTokens": 8484,
+   "webSearchRequests": 0,
+   "costUSD": 0.1198576,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1300,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 8585,
+   "outputTokens": 1091,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.001404,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 720,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}
