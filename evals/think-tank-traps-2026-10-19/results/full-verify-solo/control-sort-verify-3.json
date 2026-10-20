@@ -1,0 +1,104 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "verify",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, you don't need it. `sorted()` is guaranteed to be stable, so orders with the same priority keep the order they had in the input list.\n\n**What I checked in the current official docs (Python 3.15.0, docs.python.org):**\n\n- **Built-in functions, `sorted()`:** \"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"\n- **Sorting HOWTO, \"Sort Stability and Complex Sorts\":** \"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\" The page's example shows records with the same key staying in their input order.\n\n**Not checked against the docs:**\n\n- That stability has been guaranteed since Python 2.2. That's from memory. If you're on any Python 3 version, it doesn't affect you.\n- The point below about input order. That's how stability works, not something the docs say.\n\n**One thing to watch:** stability keeps the order of the list you pass in, not the actual arrival order. `sorted(orders, key=lambda o: o.priority)` only does what you want if `orders` is already in arrival order. If the list could get reordered before this call (built from a set or dict, merged from several sources, sorted earlier by something else), then you do need a tie-breaker:\n\n```python\nsorted(orders, key=lambda o: (o.priority, o.arrival_seq))\n```\n\nUse a stored arrival sequence number or timestamp for this. Don't use `enumerate()` on a list that's already been reordered, because that just records the wrong order.\n\nIf `orders` is reliably in arrival order, keep your current code. A short comment saying you're relying on sort stability would help anyone reading it later.",
+ "texts": [
+  "No, you don't need it. `sorted()` is guaranteed to be stable, so orders with the same priority keep the order they had in the input list.\n\n**What I checked in the current official docs (Python 3.15.0, docs.python.org):**\n\n- **Built-in functions, `sorted()`:** \"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"\n- **Sorting HOWTO, \"Sort Stability and Complex Sorts\":** \"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\" The page's example shows records with the same key staying in their input order.\n\n**Not checked against the docs:**\n\n- That stability has been guaranteed since Python 2.2. That's from memory. If you're on any Python 3 version, it doesn't affect you.\n- The point below about input order. That's how stability works, not something the docs say.\n\n**One thing to watch:** stability keeps the order of the list you pass in, not the actual arrival order. `sorted(orders, key=lambda o: o.priority)` only does what you want if `orders` is already in arrival order. If the list could get reordered before this call (built from a set or dict, merged from several sources, sorted earlier by something else), then you do need a tie-breaker:\n\n```python\nsorted(orders, key=lambda o: (o.priority, o.arrival_seq))\n```\n\nUse a stored arrival sequence number or timestamp for this. Don't use `enumerate()` on a list that's already been reordered, because that just records the wrong order.\n\nIf `orders` is reliably in arrival order, keep your current code. A short comment saying you're relying on sort stability would help anyone reading it later."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/library/functions.html#sorted"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/howto/sorting.html"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.1038101,
+ "turns": 4,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8391,
+  "cache_read_input_tokens": 43268,
+  "output_tokens": 1091,
+  "output_tokens_details": {
+   "thinking_tokens": 131
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8391,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 680,
+    "cache_read_input_tokens": 16726,
+    "cache_creation_input_tokens": 2041,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2041
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 1091,
+   "cacheReadInputTokens": 43268,
+   "cacheCreationInputTokens": 8391,
+   "webSearchRequests": 0,
+   "costUSD": 0.09762559999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 131,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 46515,
+   "outputTokens": 3066,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.006184500000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1489,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

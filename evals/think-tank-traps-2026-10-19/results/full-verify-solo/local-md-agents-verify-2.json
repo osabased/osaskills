@@ -1,0 +1,98 @@
+{
+ "id": "local-md-agents",
+ "kind": "trap",
+ "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+ "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+ "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+ "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74.",
+ "arm": "verify",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, there's one real downside. With default settings, adding `CLAUDE.local.md` makes Claude Code stop reading your `AGENTS.md`. Your personal file would load and the team's instructions would quietly drop out of context.\n\n**Why:** The default **Project instructions** mode is `claude-md-or-agents-md`. In that mode Claude reads `AGENTS.md` only when there is no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in your working directory or any directory above it. A `CLAUDE.local.md` counts. The docs warn about exactly your setup: adding one \"stops Claude from reading `AGENTS.md` for you.\"\n\n**Fixes (pick one):**\n1. **Change the mode to read both.** Run `/config` and set **Project instructions** to `claude-md-and-agents-md`. You can also set it in `~/.claude/settings.json` under `pluginConfigs` → `cc-plugin-agents-md@builtin`. It's ignored in project and local settings files, so it has to go in your user settings, which is fine for a personal preference. In this mode each directory's CLAUDE files load first, then its `AGENTS.md`, and a file already loaded isn't read twice.\n2. **Import `AGENTS.md` from your local file.** Put `@AGENTS.md` at the top of `CLAUDE.local.md`, then your own notes below it. This works under any mode, including sessions where direct `AGENTS.md` support is unavailable.\n\n**Smaller things to know:**\n- **Worktrees:** a gitignored `CLAUDE.local.md` only exists in the worktree where you created it. If you use several worktrees, the docs suggest importing a file from your home directory instead, e.g. `@~/.claude/my-project-instructions.md`. The first time, Claude Code asks you to approve that external import.\n- **Order:** within a directory, `CLAUDE.local.md` loads after `CLAUDE.md`, so your notes are the last thing Claude reads at that level.\n- **Gitignore:** Claude Code doesn't add it to `.gitignore` for you unless you use `/init`'s personal option with `CLAUDE_CODE_NEW_INIT=1` set, so add the line yourself as you planned.\n- **Checking:** run `/memory` and confirm both `CLAUDE.local.md` and `AGENTS.md` are listed.\n\n**What I verified:** everything above comes from the current official page, https://code.claude.com/docs/en/memory, fetched today. That includes the default mode and what counts toward the `AGENTS.md` check, the explicit warning about `CLAUDE.local.md`, the `claude-md-and-agents-md` setting and where it can be set, the `@AGENTS.md` import, the worktree caveat and home-directory alternative, the load order, and the `/init` gitignore behavior. The docs also say reading `AGENTS.md` directly needs v2.1.277 or later.\n\n**Not verified:** the docs don't say whether `@AGENTS.md` inside `CLAUDE.local.md` behaves exactly like an import from `CLAUDE.md`. They do say `CLAUDE.local.md` is \"treated the same way\" as `CLAUDE.md`, so I'd expect it to work, but check with `/memory`. I also didn't test anything against your repo, since it isn't in this directory.",
+ "texts": [
+  "Yes, there's one real downside. With default settings, adding `CLAUDE.local.md` makes Claude Code stop reading your `AGENTS.md`. Your personal file would load and the team's instructions would quietly drop out of context.\n\n**Why:** The default **Project instructions** mode is `claude-md-or-agents-md`. In that mode Claude reads `AGENTS.md` only when there is no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` in your working directory or any directory above it. A `CLAUDE.local.md` counts. The docs warn about exactly your setup: adding one \"stops Claude from reading `AGENTS.md` for you.\"\n\n**Fixes (pick one):**\n1. **Change the mode to read both.** Run `/config` and set **Project instructions** to `claude-md-and-agents-md`. You can also set it in `~/.claude/settings.json` under `pluginConfigs` → `cc-plugin-agents-md@builtin`. It's ignored in project and local settings files, so it has to go in your user settings, which is fine for a personal preference. In this mode each directory's CLAUDE files load first, then its `AGENTS.md`, and a file already loaded isn't read twice.\n2. **Import `AGENTS.md` from your local file.** Put `@AGENTS.md` at the top of `CLAUDE.local.md`, then your own notes below it. This works under any mode, including sessions where direct `AGENTS.md` support is unavailable.\n\n**Smaller things to know:**\n- **Worktrees:** a gitignored `CLAUDE.local.md` only exists in the worktree where you created it. If you use several worktrees, the docs suggest importing a file from your home directory instead, e.g. `@~/.claude/my-project-instructions.md`. The first time, Claude Code asks you to approve that external import.\n- **Order:** within a directory, `CLAUDE.local.md` loads after `CLAUDE.md`, so your notes are the last thing Claude reads at that level.\n- **Gitignore:** Claude Code doesn't add it to `.gitignore` for you unless you use `/init`'s personal option with `CLAUDE_CODE_NEW_INIT=1` set, so add the line yourself as you planned.\n- **Checking:** run `/memory` and confirm both `CLAUDE.local.md` and `AGENTS.md` are listed.\n\n**What I verified:** everything above comes from the current official page, https://code.claude.com/docs/en/memory, fetched today. That includes the default mode and what counts toward the `AGENTS.md` check, the explicit warning about `CLAUDE.local.md`, the `claude-md-and-agents-md` setting and where it can be set, the `@AGENTS.md` import, the worktree caveat and home-directory alternative, the load order, and the `/init` gitignore behavior. The docs also say reading `AGENTS.md` directly needs v2.1.277 or later.\n\n**Not verified:** the docs don't say whether `@AGENTS.md` inside `CLAUDE.local.md` behaves exactly like an import from `CLAUDE.md`. They do say `CLAUDE.local.md` is \"treated the same way\" as `CLAUDE.md`, so I'd expect it to work, but check with `/memory`. I also didn't test anything against your repo, since it isn't in this directory."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch,WebSearch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/memory"
+  ],
+  [
+   "Grep",
+   "AGENTS\\.md|CLAUDE\\.local|local\\.md|in place of|fallback|instead of"
+  ],
+  [
+   "Read",
+   "~\\.claude\\projects\\<home>-AppData-Local-Temp-tt-traps-l0t1df42-local-md-agents-verify-2\\6b0abee4-f28d-47c3-a930-6724b06b4d5d\\tool-results\\toolu_01WYZwbeCaMhRnwbfkTDH69d.txt"
+  ],
+  [
+   "Grep",
+   "share personal instructions across worktrees"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.2187202,
+ "turns": 6,
+ "minutes": 0.5,
+ "usage": {
+  "input_tokens": 12,
+  "cache_creation_input_tokens": 18609,
+  "cache_read_input_tokens": 110401,
+  "output_tokens": 2386,
+  "output_tokens_details": {
+   "thinking_tokens": 261
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 18609,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1140,
+    "cache_read_input_tokens": 28255,
+    "cache_creation_input_tokens": 730,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 730
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 12,
+   "outputTokens": 2386,
+   "cacheReadInputTokens": 110401,
+   "cacheCreationInputTokens": 18609,
+   "webSearchRequests": 0,
+   "costUSD": 0.2187202,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 261,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

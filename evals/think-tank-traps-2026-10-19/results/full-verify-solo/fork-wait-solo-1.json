@@ -1,0 +1,144 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "solo",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): will a skill wait for three `run_in_background: false` subagents?\nopus · session effort · one panelist\n\n### Recommendation\nNo. On v2.1.296 in an interactive terminal, fork mode is on by default. While it's on, subagents spawned from the main conversation start in the background, and `run_in_background: false` doesn't stop that. Each answer comes back as its own completion notification in a later turn. So Claude finishes the turn where it spawns the three agents without any of their answers, and it might start comparing after only one or two arrive.\n\nThe panelist recommends these changes:\n- **Drop the assumption.** Remove `run_in_background: false` and anything that expects answers to come back inside the tool call.\n- **Say how to wait.** Tell Claude that answers arrive as separate notifications. It should keep track of which have arrived, give a one-line status and end its turn, and not compare, summarise or fill in a missing answer until all three are in. It shouldn't use sleep or polling. If an agent fails, it should tell the user and ask whether to retry or compare the two it has.\n- **Name the agent type, and never `fork`.** A fork inherits the whole conversation, so its answer wouldn't be independent.\n- **Tell users how to force blocking.** `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` makes Claude wait for every subagent, but it turns off all background work, Ctrl+B included. `CLAUDE_CODE_FORK_SUBAGENT=0` is a weaker option, because Ctrl+B or `CLAUDE_AUTO_BACKGROUND_TASKS` can still move an agent to the background.\n\nChecked:\n- **Subagents start in the background in the terminal: confirmed.** The [subagents docs](https://code.claude.com/docs/en/sub-agents) say: \"With nothing configured, a subagent that Claude spawns from your main conversation starts in the background.\" For interactive terminal sessions, the docs say that letting Claude wait requires turning off fork mode, \"which is on by default\". Results reach Claude \"as a completion notification in a later turn\".\n- **Fork mode was already on in the terminal: confirmed for v2.1.302.** That changelog entry says fork mode was turned on elsewhere \"as they already are in the terminal\". It also says the terminal runs the main conversation's subagents in the background \"rather than let Claude choose\". I couldn't find the panelist's v2.1.232 start date in the part of the changelog I could read, so I haven't confirmed that v2.1.296 specifically had it on. The wording of v2.1.302 strongly suggests it did.\n- **The two settings: confirmed.** The docs back the `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` behaviour and the `CLAUDE_CODE_FORK_SUBAGENT=0` option.\n- **Not checked:** whether fork mode removes the `run_in_background` parameter entirely. The panelist got this second-hand. Either way, the call doesn't block.\n\n### Panelist\n\"No, not as the skill describes it. On v2.1.296 in an interactive terminal with default settings, fork mode is on, so the three subagents start in the background no matter what `run_in_background` says. Their answers come back as separate completion notifications in later turns. The skill should stop relying on `run_in_background: false` and tell Claude to hold off comparing until all three answers have arrived.\" Medium-high confidence.\n\n### My take\nThe panelist changed my mind. Before launching I leaned towards yes, it waits, because my own `run_in_background: false` call in this session did return synchronously. But this session isn't an ordinary interactive terminal, and the docs are clear that the terminal behaves differently. I agree with the rewrite.\n\nThe most important change is telling Claude explicitly to wait for all three notifications, and what to do while it waits. That makes the skill correct whether or not the agents end up in the background, so it doesn't depend on any setting. Mention the environment variables to users as an option, not a requirement.\n\nOn the agent type: name whatever suits your skill. If independence matters, use a read-only type over `general-purpose`, and never `fork`.",
+ "texts": [
+  "Brief for the panelist:\n\n> **Question.** A user has written a Claude Code skill. Its instructions tell Claude to spawn three subagents in a single message using the Agent tool, each with `run_in_background: false`, and then compare their three answers. The skill assumes Claude will have all three answers before it moves on to the comparison. The skill's users run Claude Code v2.1.296 in an ordinary interactive terminal session, not headless or SDK mode.\n>\n> Answer two things:\n> 1. In that setup, will Claude actually wait for all three answers before carrying on, as the skill expects? Cover any conditions where it would not, for example if a \"synchronous\" agent can end up running in the background, or if results can arrive later as notifications.\n> 2. Should the skill author change anything in the skill's instructions? If so, what exactly?\n>\n> **Context.** The skill's project is not in the current working directory, so don't look for it there. Base your answer on how the Claude Code Agent tool and the `run_in_background` parameter behave, using official Claude Code documentation, changelogs, issue trackers, or other reliable sources you can find. Say what you verified and what you're inferring.\n>\n> **What a useful answer looks like.** A direct yes/no/\"it depends\" on whether Claude waits, the specific behaviour or documentation it rests on, any edge cases, and concrete wording changes if you recommend any. End with a one-line Position, your confidence, and the facts your position most depends on.\n\nAsking one opus panelist at session effort.\nMy leaning: yes, it waits. `false` makes the calls blocking, and calls in one message run concurrently. The skill could still say \"if any answer arrives later as a notification, wait for it,\" in case an agent gets backgrounded.",
+  "## Think tank (solo): will a skill wait for three `run_in_background: false` subagents?\nopus · session effort · one panelist\n\n### Recommendation\nNo. On v2.1.296 in an interactive terminal, fork mode is on by default. While it's on, subagents spawned from the main conversation start in the background, and `run_in_background: false` doesn't stop that. Each answer comes back as its own completion notification in a later turn. So Claude finishes the turn where it spawns the three agents without any of their answers, and it might start comparing after only one or two arrive.\n\nThe panelist recommends these changes:\n- **Drop the assumption.** Remove `run_in_background: false` and anything that expects answers to come back inside the tool call.\n- **Say how to wait.** Tell Claude that answers arrive as separate notifications. It should keep track of which have arrived, give a one-line status and end its turn, and not compare, summarise or fill in a missing answer until all three are in. It shouldn't use sleep or polling. If an agent fails, it should tell the user and ask whether to retry or compare the two it has.\n- **Name the agent type, and never `fork`.** A fork inherits the whole conversation, so its answer wouldn't be independent.\n- **Tell users how to force blocking.** `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` makes Claude wait for every subagent, but it turns off all background work, Ctrl+B included. `CLAUDE_CODE_FORK_SUBAGENT=0` is a weaker option, because Ctrl+B or `CLAUDE_AUTO_BACKGROUND_TASKS` can still move an agent to the background.\n\nChecked:\n- **Subagents start in the background in the terminal: confirmed.** The [subagents docs](https://code.claude.com/docs/en/sub-agents) say: \"With nothing configured, a subagent that Claude spawns from your main conversation starts in the background.\" For interactive terminal sessions, the docs say that letting Claude wait requires turning off fork mode, \"which is on by default\". Results reach Claude \"as a completion notification in a later turn\".\n- **Fork mode was already on in the terminal: confirmed for v2.1.302.** That changelog entry says fork mode was turned on elsewhere \"as they already are in the terminal\". It also says the terminal runs the main conversation's subagents in the background \"rather than let Claude choose\". I couldn't find the panelist's v2.1.232 start date in the part of the changelog I could read, so I haven't confirmed that v2.1.296 specifically had it on. The wording of v2.1.302 strongly suggests it did.\n- **The two settings: confirmed.** The docs back the `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` behaviour and the `CLAUDE_CODE_FORK_SUBAGENT=0` option.\n- **Not checked:** whether fork mode removes the `run_in_background` parameter entirely. The panelist got this second-hand. Either way, the call doesn't block.\n\n### Panelist\n\"No, not as the skill describes it. On v2.1.296 in an interactive terminal with default settings, fork mode is on, so the three subagents start in the background no matter what `run_in_background` says. Their answers come back as separate completion notifications in later turns. The skill should stop relying on `run_in_background: false` and tell Claude to hold off comparing until all three answers have arrived.\" Medium-high confidence.\n\n### My take\nThe panelist changed my mind. Before launching I leaned towards yes, it waits, because my own `run_in_background: false` call in this session did return synchronously. But this session isn't an ordinary interactive terminal, and the docs are clear that the terminal behaves differently. I agree with the rewrite.\n\nThe most important change is telling Claude explicitly to wait for all three notifications, and what to do while it waits. That makes the skill correct whether or not the agents end up in the background, so it doesn't depend on any setting. Mention the environment variables to users as an option, not a requirement.\n\nOn the agent type: name whatever suits your skill. If independence matters, use a read-only type over `general-purpose`, and never `fork`."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ],
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/changelog"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "a47fa8e2f3fe4a9db",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "Grep",
+    "WebFetch",
+    "WebFetch",
+    "WebFetch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "**Question.** A user has written a Claude Code skill. Its instructions tell Claude to spawn three subagents in a single message using the Agent tool, each with `run_in_background: false`, and then compare their three answers. The skill assumes Claude will have all three answers before it moves on to the comparison. The skill's users run Claude Code v2.1.296 in an ordinary interactive terminal session, not headless or SDK mode.\n\nAnswer two things:\n1. In that setup, will Claude actually wait for all three answers before carrying on, as the skill expects? Cover any conditions where it would not, for example if a \"synchronous\" agent can end up running in the background, or if results can arrive later as notifications.\n2. Should the skill author change anything in the skill's instructions? If so, what exactly?\n\n**Context.** The skill's project is not in the current working directory, so don't look for it there. Base your answer on how the Claude Code Agent tool and the `run_in_background` parameter behave, using official Claude Code documentation, changelogs, issue trackers, or other reliable sources you can find. Say what you verified and what you're inferring.\n\n**What a useful answer looks like.** A direct yes/no/\"it depends\" on whether Claude waits, the specific behaviour or documentation it rests on, any edge cases, and concrete wording changes if you recommend any. End with a one-line Position, your confidence, and the facts your position most depends on.",
+     "reply": "**Position:** No, not as the skill describes it. On v2.1.296 in an interactive terminal with default settings, fork mode is on, so the three subagents start in the background no matter what `run_in_background` says. Their answers come back as separate completion notifications in later turns. The skill should stop relying on `run_in_background: false` and tell Claude to hold off comparing until all three answers have arrived.\n\n**Reasoning:**\n- **Verified, in the official subagents docs** (code.claude.com/docs/en/sub-agents):\n  - \"With nothing configured, a subagent that Claude spawns from your main conversation starts in the background.\"\n  - \"While fork mode is on, Claude also can't wait for a subagent in interactive terminal, VS Code, or desktop sessions.\" Fork mode has been on by default in the terminal since v2.1.232, so it is on in v2.1.296.\n  - \"A background subagent's results reach Claude as a completion notification in a later turn.\"\n- **Verified in the changelog:** the v2.1.232 notes say non-teammate agent spawns in interactive sessions run in the background by default. The v2.1.302 entry refers to the terminal as already running the main conversation's subagents \"in the background … rather than let Claude choose.\"\n- **Second-hand, not checked in the current docs:** issue #81439 (reported on v2.1.220, closed \"not planned\") quotes the docs as saying \"fork mode removes the `run_in_background` parameter from the `Agent` tool.\" If that still holds, the skill's `run_in_background: false` refers to a parameter Claude doesn't have, and it has no effect. Either way the outcome is the same: it won't block.\n- **What this means for the skill (my inference):**\n  - Claude finishes the spawning turn with no answers in hand.\n  - The answers then arrive one at a time over later turns.\n  - The skill's instructions don't say to wait, so Claude may compare after the first one or two answers, say \"waiting\", or guess the missing ones.\n- **Even with fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`), a foreground agent can still end up in the background:**\n  - the user presses Ctrl+B;\n  - `CLAUDE_AUTO_BACKGROUND_TASKS=1` moves a subagent to the background after about 2 minutes (env-vars docs).\n  - Only `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` makes Claude wait for every subagent, and it turns off all background work for the session.\n- **A second risk from fork mode (inferred):** Claude can choose `subagent_type: \"fork\"`. Forks inherit the whole conversation, which would spoil three independent answers.\n\n**What I would change in the skill:**\n1. Remove `run_in_background: false` and anything that assumes the answers come back inside the same tool call.\n2. Replace the step with wording like this:\n   > \"In one message, spawn three agents with `subagent_type: general-purpose` (never `fork`). They will usually run in the background, and each result arrives as a separate completion notification. Keep track of which of the three have reported. Until all three have, don't compare, summarise, or fill in a missing answer. Give a one-line status and end your turn. Don't use sleep or polling. Start the comparison only in the turn where the third result arrives. If an agent fails or is stopped, say so and ask the user whether to retry or compare the two you have.\"\n3. Add a note for users: if they need a strictly blocking run, set `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`. This is the only setting that guarantees waiting, at the cost of all background work. `CLAUDE_CODE_FORK_SUBAGENT=0` is weaker, because Ctrl+B and auto-backgrounding can still move an agent to the background.\n\n**Risks and unknowns:**\n- My position depends most on fork mode being on by default in the terminal at v2.1.296, which the docs date to v2.1.232. If a user has set `CLAUDE_CODE_FORK_SUBAGENT=0` or `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, Claude can block, and the answer becomes \"mostly yes\".\n- I did not confirm that the `run_in_background` parameter is removed from the current tool schema. That claim comes from an issue quoting older docs.\n- How reliably Claude holds off until all three notifications arrive is my inference, not documented behaviour.\n\n**Confidence:** Medium-high. The current official docs state plainly that Claude can't wait in interactive terminal sessions while fork mode is on, and the changelog dates support it. The remaining uncertainty is about exact schema details and how Claude behaves across turns.\n\nSources: [Subagents docs](https://code.claude.com/docs/en/sub-agents), [Env vars](https://code.claude.com/docs/en/env-vars), [Changelog](https://code.claude.com/docs/en/changelog), [2.1.232 summary](https://claudekit.io/en/updates/claude-code-2-1-232/), [Issue 81439](https://claudeissues.com/issue/81439-claude-code-fork-subagent-1-silently-overrides-the-documented-teammate-foregroun)"
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.5254674,
+ "turns": 5,
+ "minutes": 3.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 14120,
+  "cache_read_input_tokens": 71175,
+  "output_tokens": 3959,
+  "output_tokens_details": {
+   "thinking_tokens": 874
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 14120,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1699,
+    "cache_read_input_tokens": 21943,
+    "cache_creation_input_tokens": 2553,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2553
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 24,
+   "outputTokens": 9300,
+   "cacheReadInputTokens": 182550,
+   "cacheCreationInputTokens": 37734,
+   "webSearchRequests": 0,
+   "costUSD": 0.453636,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2278,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 289004,
+   "outputTokens": 45862,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0718314,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 32544,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

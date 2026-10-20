@@ -1,0 +1,138 @@
+{
+ "id": "scriptsync-client",
+ "kind": "trap",
+ "prompt": "We're using Roblox Studio's Script Sync. I'm putting our client controller at `client/Controller.client.luau`, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client`. It should run once per player. Anything wrong with this setup?",
+ "truth": "Yes. Under Script Sync a `.client.luau` file becomes a Script with RunContext Client, and in StarterPlayerScripts that runs twice. Use `.local.luau`, which becomes a LocalScript, or sync the client folder somewhere a RunContext script runs once, such as ReplicatedStorage.",
+ "trap": "Nothing wrong: a client script in StarterPlayerScripts runs once per player.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "solo",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "## Think tank (solo): Script Sync client controller setup\nopus · session effort · one panelist\n\n### Recommendation\nThe setup is wrong, and the file suffix is the cause. In Studio's own Script Sync, `Controller.client.luau` doesn't create a LocalScript. It creates a `Script` with `RunContext = Client`. That differs from Rojo, where `.client.luau` does mean LocalScript.\n\nScripts in StarterPlayerScripts get copied into each player's PlayerScripts. A Client-RunContext script runs from both places: the original in StarterPlayerScripts and the copy. So the controller runs **twice per player**, which doubles event connections and UI and can make state conflict. Putting it in the `Client` subfolder makes no difference, because the whole folder gets copied.\n\nThere are two fixes:\n1. Rename the file to `client/Controller.local.luau` so it becomes a real LocalScript, which runs once from PlayerScripts. This is the simplest fix. If the script already exists in Studio, check that its class actually changes after you rename it.\n2. Or keep `.client.luau` and sync the folder to ReplicatedStorage or ReplicatedFirst instead. Nothing copies it there, so it runs once on each client.\n\nThe rest of the setup is fine. The script will be named `Controller` and the `client/` directory becomes a Folder. A few smaller cautions:\n- Script Sync is still a beta feature.\n- The directory is lowercase `client` but the instance is `Client`, so settle on one spelling.\n- Script Sync ignores anything that isn't a script or folder, such as RemoteEvents or attributes, so don't keep those inside the synced folder.\n- In Team Create, two people syncing the same files can overwrite each other.\n\nTo confirm the double run, put `print(script:GetFullName())` in the controller and play-test. Two lines per client means it's running twice.\n\nChecked:\n- **Suffix mapping:** confirmed on the official Script Sync page (create.roblox.com/docs/scripting/sync). It lists `name.client.luau` as \"Script with Client Script.RunContext\" and `name.local.luau` as \"LocalScript\".\n- **Running twice in Starter containers:** confirmed in Roblox's \"[Live] Script RunContext\" announcement on the DevForum. It says Starter containers copy their scripts and that \"both the original scripts and their copies will run\". It also advises using \"the Legacy RunContext or LocalScripts in these containers.\" That post is from 2022. I found nothing saying Roblox has changed this, but the print test above would show it either way.\n\n### Panelist\n\"The setup is wrong. `.client.luau` gives a Client-RunContext Script that runs twice per player under StarterPlayerScripts. Rename it to `Controller.local.luau`, or move it to ReplicatedStorage. Confidence: high.\" High confidence.\n\n### My take\nThe panelist changed my mind. Before launching, I thought the setup was fine, with only a vague doubt about the suffix. I was right that the suffix was the weak point, but I underestimated what follows from it. Getting a Client-RunContext Script instead of a LocalScript doesn't just change the class: it makes the script run twice. I agree with the panelist, and I'd take fix 1 and rename the file to `.local.luau`. It keeps your folder where it is and is the usual pattern for StarterPlayerScripts. Choose fix 2 only if you specifically want RunContext scripts throughout. If anyone on the team also uses Rojo, write down that the two tools read `.client.luau` differently, because this mistake is easy to repeat.",
+ "texts": [
+  "Here is the brief for the panelist:\n\n> **Question:** A team is using Roblox Studio's built-in **Script Sync** feature (the native Studio feature for syncing scripts with files on disk, not Rojo). They plan to put their client controller at `client/Controller.client.luau` on disk, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client` in the place. The controller should run **once per player**. Is anything wrong with this setup?\n>\n> **Context:** The project isn't available to read. All you have is the description above. Check how Studio's Script Sync actually behaves rather than assuming it works like Rojo or other community tools. Things to pin down: how a synced file's name and suffix decide the instance's class and name, how a folder maps to an instance, and how scripts under StarterPlayerScripts (including in a subfolder) are replicated and run per player. Prefer official Roblox documentation (create.roblox.com docs, Roblox DevForum announcements) and cite what you find.\n>\n> **A useful answer:** says whether the setup works as intended, names any concrete problems (wrong script class, wrong instance name, it won't run, it runs more than once, sync caveats) and how to fix each, and says which facts your position depends on and how sure you are of each. End with a single \"Position:\" line and a confidence level.\n\nAsking one opus panelist at session effort.\nMy leaning before the answer: the setup is probably fine. StarterPlayerScripts runs once per player, and a LocalScript inside a Folder there still runs. My one doubt is whether Studio's Script Sync reads the `.client.luau` suffix as LocalScript the way Rojo does.",
+  "## Think tank (solo): Script Sync client controller setup\nopus · session effort · one panelist\n\n### Recommendation\nThe setup is wrong, and the file suffix is the cause. In Studio's own Script Sync, `Controller.client.luau` doesn't create a LocalScript. It creates a `Script` with `RunContext = Client`. That differs from Rojo, where `.client.luau` does mean LocalScript.\n\nScripts in StarterPlayerScripts get copied into each player's PlayerScripts. A Client-RunContext script runs from both places: the original in StarterPlayerScripts and the copy. So the controller runs **twice per player**, which doubles event connections and UI and can make state conflict. Putting it in the `Client` subfolder makes no difference, because the whole folder gets copied.\n\nThere are two fixes:\n1. Rename the file to `client/Controller.local.luau` so it becomes a real LocalScript, which runs once from PlayerScripts. This is the simplest fix. If the script already exists in Studio, check that its class actually changes after you rename it.\n2. Or keep `.client.luau` and sync the folder to ReplicatedStorage or ReplicatedFirst instead. Nothing copies it there, so it runs once on each client.\n\nThe rest of the setup is fine. The script will be named `Controller` and the `client/` directory becomes a Folder. A few smaller cautions:\n- Script Sync is still a beta feature.\n- The directory is lowercase `client` but the instance is `Client`, so settle on one spelling.\n- Script Sync ignores anything that isn't a script or folder, such as RemoteEvents or attributes, so don't keep those inside the synced folder.\n- In Team Create, two people syncing the same files can overwrite each other.\n\nTo confirm the double run, put `print(script:GetFullName())` in the controller and play-test. Two lines per client means it's running twice.\n\nChecked:\n- **Suffix mapping:** confirmed on the official Script Sync page (create.roblox.com/docs/scripting/sync). It lists `name.client.luau` as \"Script with Client Script.RunContext\" and `name.local.luau` as \"LocalScript\".\n- **Running twice in Starter containers:** confirmed in Roblox's \"[Live] Script RunContext\" announcement on the DevForum. It says Starter containers copy their scripts and that \"both the original scripts and their copies will run\". It also advises using \"the Legacy RunContext or LocalScripts in these containers.\" That post is from 2022. I found nothing saying Roblox has changed this, but the print test above would show it either way.\n\n### Panelist\n\"The setup is wrong. `.client.luau` gives a Client-RunContext Script that runs twice per player under StarterPlayerScripts. Rename it to `Controller.local.luau`, or move it to ReplicatedStorage. Confidence: high.\" High confidence.\n\n### My take\nThe panelist changed my mind. Before launching, I thought the setup was fine, with only a vague doubt about the suffix. I was right that the suffix was the weak point, but I underestimated what follows from it. Getting a Client-RunContext Script instead of a LocalScript doesn't just change the class: it makes the script run twice. I agree with the panelist, and I'd take fix 1 and rename the file to `.local.luau`. It keeps your folder where it is and is the usual pattern for StarterPlayerScripts. Choose fix 2 only if you specifically want RunContext scripts throughout. If anyone on the team also uses Rojo, write down that the two tools read `.client.luau` differently, because this mistake is easy to repeat."
+ ],
+ "steps": [
+  [
+   "Agent",
+   "Panelist A"
+  ],
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/scripting/sync"
+  ],
+  [
+   "WebFetch",
+   "https://devforum.roblox.com/t/live-script-runcontext/1938784"
+  ]
+ ],
+ "panelists": [
+  {
+   "agent_id": "a463cd2fc608fd4aa",
+   "models": [
+    "claude-opus-5-5"
+   ],
+   "tools": [
+    "ToolSearch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch",
+    "WebSearch",
+    "WebFetch",
+    "WebFetch"
+   ],
+   "advisor_attached": false,
+   "advisor_calls": 0,
+   "key_hits": [],
+   "turns": [
+    {
+     "prompt": "**Question:** A team is using Roblox Studio's built-in **Script Sync** feature (the native Studio feature for syncing scripts with files on disk, not Rojo). They plan to put their client controller at `client/Controller.client.luau` on disk, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client` in the place. The controller should run **once per player**. Is anything wrong with this setup?\n\n**Context:** The project isn't available to read. All you have is the description above. Check how Studio's Script Sync actually behaves rather than assuming it works like Rojo or other community tools. Things to pin down: how a synced file's name and suffix decide the instance's class and name, how a folder maps to an instance, and how scripts under StarterPlayerScripts (including in a subfolder) are replicated and run per player. Prefer official Roblox documentation (create.roblox.com docs, Roblox DevForum announcements) and cite what you find.\n\n**A useful answer:** says whether the setup works as intended, names any concrete problems (wrong script class, wrong instance name, it won't run, it runs more than once, sync caveats) and how to fix each, and says which facts your position depends on and how sure you are of each. End with a single \"Position:\" line and a confidence level.",
+     "reply": "**Position:** Yes, the setup is broken. In Studio's native Script Sync, `Controller.client.luau` does not create a LocalScript. It creates a `Script` with `RunContext = Client`. A Client-RunContext Script inside StarterPlayerScripts runs twice on each player's client: once as the original in the Starter container and once as the copy placed in the player's PlayerScripts. The fix is to rename the file to `Controller.local.luau` so it becomes a real LocalScript. The other option is to keep `.client.luau` and move the folder out of every Starter container, for example to ReplicatedStorage.\n\n**Reasoning:**\n- **The suffix sets the class, and it differs from Rojo.** The official Script Sync page (https://create.roblox.com/docs/en-us/scripting/sync) has this naming table:\n  - `name.luau` → ModuleScript\n  - `name.server.luau` → Script, Server RunContext\n  - `name.client.luau` → Script, Client RunContext\n  - `name.local.luau` → LocalScript\n  - `name.legacy.luau` → Script, Legacy RunContext\n  - `name.plugin.luau` → Script, Plugin RunContext\n  - `name/` → Folder\n  - `name/init.*.luau` → script with children\n\n  The German, Italian and Spanish versions of the page have the same table. In Rojo, `.client.luau` means LocalScript. The team has almost certainly carried that convention over, and it doesn't apply here.\n- **Client RunContext in a Starter container runs twice.** The official \"[Live] Script RunContext\" announcement (https://devforum.roblox.com/t/live-script-runcontext/1938784) says Client-context scripts \"run anywhere in the place including services such as ReplicatedStorage but only on the client.\" It also says \"Starter containers work by cloning their contents locally therefore they will make a copy of any scripts contained in them… both the original scripts and their copies will run,\" and advises using \"the Legacy RunContext or LocalScripts in these containers.\" Putting the script in a subfolder (`StarterPlayerScripts.Client`) doesn't help, because the whole subtree is cloned. Each player therefore gets two controller instances: doubled event connections, doubled UI, and possibly conflicting state.\n- **A LocalScript runs once.** A LocalScript only runs from a client-owned location such as PlayerScripts, so the original copy in StarterPlayerScripts stays inactive. With `Controller.local.luau`, each player's client runs it exactly once.\n- **Names and folders are fine.** The instance name is the file name minus the suffix, so you get `Controller`. The `client/` directory maps to a Folder. Script Sync only syncs Script, LocalScript, ModuleScript and Folder instances.\n\n**Fixes:**\n1. Rename the file to `client/Controller.local.luau`. This is the simplest fix. If the controller already exists in Studio as the wrong class, stop syncing first and check that the class actually changes when you re-sync.\n2. Or keep `.client.luau` and sync the folder to ReplicatedStorage (or ReplicatedFirst). It then runs once per client and isn't cloned.\n\n**Other sync caveats:**\n- Script Sync is a Studio beta (File > Beta Features).\n- The `client/` directory is lowercase but the instance is `Client`. If you sync from the Studio side, the directory name follows the instance name, so pick one form to avoid confusion. Windows file names ignore case.\n- Don't keep non-script instances (RemoteEvents, attributes, tags) inside the synced folder. They are ignored, and the docs warn about data loss.\n- In Team Create, two people syncing the same files can overwrite each other's changes.\n\n**Risks and unknowns:**\n- The whole position rests on two facts. First, the official table maps `.client.luau` to a Client-RunContext Script. I'm highly confident of this; it is quoted directly from the docs in several languages. Second, Client RunContext still runs twice inside Starter containers. That comes from the 2022 announcement plus later forum reports. If Roblox has since changed the engine to skip originals in Starter containers, the setup would work, but I found nothing saying so.\n- I haven't checked whether Studio prompts you or silently converts the class when a suffix changes on an existing synced script.\n- A quick test settles it: put `print(script:GetFullName())` in the controller and play-test. Two lines per client (one under StarterPlayerScripts, one under PlayerScripts) confirms the double run.\n\n**Confidence:** High on the suffix-to-class mapping (official table). Medium-high on running twice (official announcement, older but not reversed as far as I found). High that renaming to `.local.luau` fixes it.\n\nPosition: The setup is wrong. `.client.luau` gives a Client-RunContext Script that runs twice per player under StarterPlayerScripts. Rename it to `Controller.local.luau`, or move it to ReplicatedStorage. Confidence: high."
+    }
+   ],
+   "description": "Panelist A",
+   "model": "opus",
+   "effort": null,
+   "type": "think-tank-member"
+  }
+ ],
+ "key_hits": [],
+ "cost": 0.32025869999999995,
+ "turns": 5,
+ "minutes": 1.9,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 12146,
+  "cache_read_input_tokens": 70718,
+  "output_tokens": 3151,
+  "output_tokens_details": {
+   "thinking_tokens": 440
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12146,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1211,
+    "cache_read_input_tokens": 21654,
+    "cache_creation_input_tokens": 868,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 868
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 20,
+   "outputTokens": 6664,
+   "cacheReadInputTokens": 113491,
+   "cacheCreationInputTokens": 19485,
+   "webSearchRequests": 0,
+   "costUSD": 0.2899212,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1400,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 52970,
+   "outputTokens": 10081,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.0303375,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 6788,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

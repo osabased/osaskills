@@ -1,0 +1,104 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "verify",
+ "rep": 2,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**No, you don't need the tie-breaker.** `sorted(orders, key=lambda o: o.priority)` already keeps orders with the same priority in the order they came in, as long as `orders` is in arrival order to begin with.\n\n**What I checked in the current Python 3 docs (docs.python.org, fetched today):**\n\n1. **`sorted()` is guaranteed stable.** The built-in functions page says: *\"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"* Python promises this; it isn't just how the current implementation happens to behave.\n2. **Records with the same key keep their order.** The Sorting HOWTO says: *\"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\"*\n3. **Adding an index is an old workaround.** The HOWTO describes putting an index `i` into the sort tuple (the \"Decorate-Sort-Undecorate\" pattern) to make sorts stable. It then says: *\"Now that Python sorting provides key-functions, this technique is not often needed.\"*\n4. **`reverse=True` doesn't break this.** The docs say `reverse` sorts \"as if each comparison were reversed\", so items with equal keys still keep their arrival order. Calling `reversed()` on the result afterwards is different: it would flip the order of ties too.\n\n**When an index would still make sense (my own reasoning, not from the docs):**\n- **The list isn't in arrival order.** Stability keeps whatever order the input list already has. If `orders` was shuffled, merged from several sources, or built from a set or a database query without `ORDER BY`, stability won't give you arrival order. In that case, sort by a real arrival field such as `key=lambda o: (o.priority, o.received_at)`. A field like that is better than `enumerate`, because an index from `enumerate` only records the list's current order.\n- **You want the rule written into the code.** A key like `(o.priority, o.seq)` makes the tie-break obvious to anyone reading it and keeps working if the sort is later moved to a database or another language. Without it, you're relying on a guarantee that's easy to miss.\n\nI couldn't look at your project because it isn't in this directory. So I can't say whether your `orders` list really is in arrival order when it reaches the sort. That's the one thing to check.",
+ "texts": [
+  "**No, you don't need the tie-breaker.** `sorted(orders, key=lambda o: o.priority)` already keeps orders with the same priority in the order they came in, as long as `orders` is in arrival order to begin with.\n\n**What I checked in the current Python 3 docs (docs.python.org, fetched today):**\n\n1. **`sorted()` is guaranteed stable.** The built-in functions page says: *\"The built-in `sorted()` function is guaranteed to be stable. A sort is stable if it guarantees not to change the relative order of elements that compare equal.\"* Python promises this; it isn't just how the current implementation happens to behave.\n2. **Records with the same key keep their order.** The Sorting HOWTO says: *\"Sorts are guaranteed to be stable. That means that when multiple records have the same key, their original order is preserved.\"*\n3. **Adding an index is an old workaround.** The HOWTO describes putting an index `i` into the sort tuple (the \"Decorate-Sort-Undecorate\" pattern) to make sorts stable. It then says: *\"Now that Python sorting provides key-functions, this technique is not often needed.\"*\n4. **`reverse=True` doesn't break this.** The docs say `reverse` sorts \"as if each comparison were reversed\", so items with equal keys still keep their arrival order. Calling `reversed()` on the result afterwards is different: it would flip the order of ties too.\n\n**When an index would still make sense (my own reasoning, not from the docs):**\n- **The list isn't in arrival order.** Stability keeps whatever order the input list already has. If `orders` was shuffled, merged from several sources, or built from a set or a database query without `ORDER BY`, stability won't give you arrival order. In that case, sort by a real arrival field such as `key=lambda o: (o.priority, o.received_at)`. A field like that is better than `enumerate`, because an index from `enumerate` only records the list's current order.\n- **You want the rule written into the code.** A key like `(o.priority, o.seq)` makes the tie-break obvious to anyone reading it and keeps working if the sort is later moved to a database or another language. Without it, you're relying on a guarantee that's easy to miss.\n\nI couldn't look at your project because it isn't in this directory. So I can't say whether your `orders` list really is in arrival order when it reaches the sort. That's the one thing to check."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/library/functions.html#sorted"
+  ],
+  [
+   "WebFetch",
+   "https://docs.python.org/3/howto/sorting.html"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.1062821,
+ "turns": 4,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8362,
+  "cache_read_input_tokens": 43267,
+  "output_tokens": 1234,
+  "output_tokens_details": {
+   "thinking_tokens": 110
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8362,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 877,
+    "cache_read_input_tokens": 16725,
+    "cache_creation_input_tokens": 2013,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 2013
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 1234,
+   "cacheReadInputTokens": 43267,
+   "cacheCreationInputTokens": 8362,
+   "webSearchRequests": 0,
+   "costUSD": 0.1002534,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 110,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 46462,
+   "outputTokens": 2765,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0060287,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1163,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

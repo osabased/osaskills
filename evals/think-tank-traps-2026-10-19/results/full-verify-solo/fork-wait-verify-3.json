@@ -1,0 +1,112 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "verify",
+ "rep": 3,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Short answer: no.** On v2.1.296 in an interactive terminal, the docs say Claude can't wait for subagents, so the skill won't block until all three answers are in.\n\n## What the docs say\n\nThese come from the official pages I fetched today: [sub-agents](https://code.claude.com/docs/en/sub-agents), [env-vars](https://code.claude.com/docs/en/env-vars) and [skills](https://code.claude.com/docs/en/skills).\n\n1. **Fork mode is on by default in interactive terminal sessions from v2.1.232.** Your users' v2.1.296 is past that.\n2. **While fork mode is on, Claude can't wait for a subagent** in interactive terminal, VS Code or desktop sessions. Both the sub-agents page and the `CLAUDE_CODE_FORK_SUBAGENT` entry say this.\n3. **Subagents start in the background by default.** Each result reaches Claude as a completion notification in a later turn. Claude waits for that notification before reporting that subagent's result.\n4. **Two settings let Claude wait:**\n   - `CLAUDE_CODE_FORK_SUBAGENT=0` in `settings.json` `env`, then restart `claude`.\n   - `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`. Claude then waits for every subagent, but this turns off all background features, including the `run_in_background` parameter and Ctrl+B.\n5. **A skill with `context: fork` and `background: false` blocks the invoking turn** until its subagent finishes (v2.1.218+).\n6. **Nested subagents:** in an interactive terminal, a subagent that launches background subagents waits for their results before it finishes. Only its summary comes back to the main conversation.\n\n## What I inferred but didn't verify\n\n- **`run_in_background: false` is probably not honoured.** No page says this directly. It follows from point 2.\n- **Your comparison step may run early.** The three results will probably arrive as separate notifications over several turns. Claude might compare after the first or second one instead of waiting for all three. The docs don't describe how Claude handles several pending notifications.\n- **I didn't test any of this on v2.1.296.** My own tool description says `run_in_background: false` blocks, but I can't confirm that matches your users' setup. The docs above are the better guide.\n\n## What I'd change\n\n**Recommended: move the fan-out into a subagent.** Give the skill `context: fork` and `background: false`, and have that subagent spawn the three subagents and do the comparison. By points 5 and 6, the user's turn blocks until the skill's subagent finishes, and that subagent waits for its three. No settings change is needed. Before you ship it, check:\n- The skill's subagent doesn't see the conversation history, so SKILL.md must contain everything the task needs.\n- The agent type you set in `agent` needs access to the Agent tool, and nesting must be allowed under `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. I didn't check either default.\n- Try it once on v2.1.296.\n\n**Fallbacks:**\n- **Tell the skill to handle background results.** Add something like: \"The three answers arrive as separate completion notifications. Don't compare until all three have arrived; keep track of which are still pending.\" This works with default settings but depends on Claude following the instruction.\n- **Have users set `CLAUDE_CODE_FORK_SUBAGENT=0`.** This is the documented way to let Claude wait. It's a per-user settings change, and it also stops Claude starting forks on its own.\n\nI'd avoid `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` unless users already want background tasks off, since it disables every background feature.",
+ "texts": [
+  "**Short answer: no.** On v2.1.296 in an interactive terminal, the docs say Claude can't wait for subagents, so the skill won't block until all three answers are in.\n\n## What the docs say\n\nThese come from the official pages I fetched today: [sub-agents](https://code.claude.com/docs/en/sub-agents), [env-vars](https://code.claude.com/docs/en/env-vars) and [skills](https://code.claude.com/docs/en/skills).\n\n1. **Fork mode is on by default in interactive terminal sessions from v2.1.232.** Your users' v2.1.296 is past that.\n2. **While fork mode is on, Claude can't wait for a subagent** in interactive terminal, VS Code or desktop sessions. Both the sub-agents page and the `CLAUDE_CODE_FORK_SUBAGENT` entry say this.\n3. **Subagents start in the background by default.** Each result reaches Claude as a completion notification in a later turn. Claude waits for that notification before reporting that subagent's result.\n4. **Two settings let Claude wait:**\n   - `CLAUDE_CODE_FORK_SUBAGENT=0` in `settings.json` `env`, then restart `claude`.\n   - `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`. Claude then waits for every subagent, but this turns off all background features, including the `run_in_background` parameter and Ctrl+B.\n5. **A skill with `context: fork` and `background: false` blocks the invoking turn** until its subagent finishes (v2.1.218+).\n6. **Nested subagents:** in an interactive terminal, a subagent that launches background subagents waits for their results before it finishes. Only its summary comes back to the main conversation.\n\n## What I inferred but didn't verify\n\n- **`run_in_background: false` is probably not honoured.** No page says this directly. It follows from point 2.\n- **Your comparison step may run early.** The three results will probably arrive as separate notifications over several turns. Claude might compare after the first or second one instead of waiting for all three. The docs don't describe how Claude handles several pending notifications.\n- **I didn't test any of this on v2.1.296.** My own tool description says `run_in_background: false` blocks, but I can't confirm that matches your users' setup. The docs above are the better guide.\n\n## What I'd change\n\n**Recommended: move the fan-out into a subagent.** Give the skill `context: fork` and `background: false`, and have that subagent spawn the three subagents and do the comparison. By points 5 and 6, the user's turn blocks until the skill's subagent finishes, and that subagent waits for its three. No settings change is needed. Before you ship it, check:\n- The skill's subagent doesn't see the conversation history, so SKILL.md must contain everything the task needs.\n- The agent type you set in `agent` needs access to the Agent tool, and nesting must be allowed under `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`. I didn't check either default.\n- Try it once on v2.1.296.\n\n**Fallbacks:**\n- **Tell the skill to handle background results.** Add something like: \"The three answers arrive as separate completion notifications. Don't compare until all three have arrived; keep track of which are still pending.\" This works with default settings but depends on Claude following the instruction.\n- **Have users set `CLAUDE_CODE_FORK_SUBAGENT=0`.** This is the documented way to let Claude wait. It's a per-user settings change, and it also stops Claude starting forks on its own.\n\nI'd avoid `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` unless users already want background tasks off, since it disables every background feature."
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebFetch,WebSearch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/env-vars"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/skills"
+  ]
+ ],
+ "panelists": [],
+ "key_hits": [],
+ "cost": 0.2438005,
+ "turns": 6,
+ "minutes": 1.2,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 17222,
+  "cache_read_input_tokens": 88933,
+  "output_tokens": 3586,
+  "output_tokens_details": {
+   "thinking_tokens": 1549
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 17222,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2195,
+    "cache_read_input_tokens": 24374,
+    "cache_creation_input_tokens": 3224,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 3224
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 3586,
+   "cacheReadInputTokens": 88933,
+   "cacheCreationInputTokens": 17222,
+   "webSearchRequests": 0,
+   "costUSD": 0.22732259999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1549,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 113489,
+   "outputTokens": 10258,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 0,
+   "costUSD": 0.0164779,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4901,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}
