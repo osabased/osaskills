@@ -17,7 +17,7 @@ Arguments: $ARGUMENTS
 - **`--quick`**: skip the debate round.
 - Everything else is the question.
 
-Only the leading words count as model and effort, so a question that mentions "haiku" or "max" stays intact. Flags can go anywhere. Leave out whatever the user leaves out: without a model or effort, the panelists inherit the session's.
+Only the leading words count as model and effort, so a question that mentions "haiku" or "max" stays intact. Flags can go anywhere. Without a model, use `opus,sonnet,sonnet`, a mixed panel that costs less than three Opus panelists. Without an effort, the panelists inherit the session's.
 
 With no question, use what the conversation is currently about. With nothing to go on, ask what the panel should consider.
 
@@ -29,21 +29,21 @@ Leave out your own leaning and any hint of the answer you expect. A brief that t
 
 If the question is a task ("fix this bug", "write the intro"), the panel proposes how to do it, and any change gets made here afterwards, once the user has seen the synthesis.
 
-If you built the brief from the conversation rather than from a question the user typed, show it and wait for a go-ahead, since a big panel is expensive to aim wrong. If the user typed the question, launch straight away.
+Show the brief before you launch. If you built it from the conversation rather than from a question the user typed, wait for a go-ahead, since a big panel is expensive to aim wrong. Otherwise launch in the same message.
 
 ## Round 1
 
-Say in one line what you're launching, naming any lenses you picked and saying "session model" or "session effort" for what the panelists inherit, e.g. "Convening 3 × opus/max panelists, identical brief, with debate."
+Say in one line what you're launching, naming any lenses you picked and saying "session effort" if the panelists inherit it, e.g. "Convening opus, sonnet, sonnet panelists at session effort, identical brief, with debate." Under it, give your own leaning in a line, before any answer arrives, so "My take" can show whether the panel moved you.
 
-Spawn three `osaskills:think-tank-member` agents, or `think-tank-member` if that is the name installed, in one message so they run in parallel, each with `run_in_background: false`, its model and the effort if given, and the descriptions "Panelist A", "Panelist B" and "Panelist C". Each gets the identical brief. With lenses, add one line to each: "Your lens: <lens>, meaning <what it covers for this question>."
+Spawn three `osaskills:think-tank-member` agents, or `think-tank-member` if that is the name installed, in one message so they run in parallel, each with its model, the effort if given, and the descriptions "Panelist A", "Panelist B" and "Panelist C". Each gets the identical brief. With lenses, add one line to each: "Your lens: <lens>, meaning <what it covers for this question>."
 
 If neither is installed, tell the user the panel needs the `think-tank-member` agent from osaskills and stop. Other agent types can change files and load CLAUDE.md, so they don't make independent panelists.
 
-Keep each agent's ID for round 2. If a panelist fails, spawn a fresh one with the same brief.
+The answers may come back with the launch or later as notifications. Wait for all three before going on, and never start round 2 or the synthesis with one missing. Keep each agent's ID for round 2. If a panelist fails, spawn a fresh one with the same brief.
 
 ## Round 2: debate
 
-Skip this with `--quick`.
+Skip this with `--quick`, or when all three round-1 positions recommend the same thing and the answers aren't lists of points. The panelists stay reachable, so if the user asks for the debate afterwards, run it as below.
 
 Models drift toward whichever answer reads most confidently, and panelists who converge that way look like a consensus without being one. So every change of mind has to be traceable to a specific argument.
 
@@ -55,17 +55,20 @@ The replies arrive in the background, so wait for all three before writing the s
 
 ## Synthesis
 
+Before writing, check the one or two facts the recommendation rests on, even at 3–0, starting with the ones the panelists said their positions depend on. Three panelists reading one brief can share a wrong premise, and a 3–0 is where it hides.
+
 Report back in this shape, leaving out any section or note that would be empty:
 
 ```
 ## Think tank: <question in a few words>
-<3 × model, or each panelist's model if mixed> · <effort> · <identical brief | lenses: a, b, c> · <debate | quick>
+<3 × model, or each panelist's model if mixed> · <effort> · <identical brief | lenses: a, b, c> · <debate | quick | debate skipped at 3–0>
 
 ### Recommendation (<3–0 | 2–1 | no consensus>; <round-1 tally> before debate, if different)
 <the majority's final position and the reasons they share; with no consensus, what the call turns on>
+Checked: <each fact it rests on, and what you found>
 
 ### Panel
-- **A** (<its model if the panel is mixed; its lens if any>): <final position in a line or two>. <Its confidence.> <If it moved in debate: what moved it.>
+- **A** (<its model if the panel is mixed; its lens if any>): "<its final Position line, verbatim>" <Its confidence.> <If it moved in debate: what moved it.>
 - **B** …
 - **C** …
 
@@ -73,11 +76,11 @@ Report back in this shape, leaving out any section or note that would be empty:
 <the crux of each disagreement, and what evidence would settle it; where that is a fact you can check, check it and say what you found>
 
 ### My take
-<your own view, drawing on what you know from this conversation, and where and why it differs from the panel>
+<your own view, drawing on what you know from this conversation, whether the panel moved you from the leaning you gave at launch, and where and why you differ from the panel>
 ```
 
-Write "session model" or "session effort" for what the panelists inherited. When the answers are lists of points, tag each point with the panelists who raised it in round 1 and any who adopted it in debate, e.g. (B, C → A). Take the round-1 tally and the tags from the round-1 answers you hold, not from what panelists say about themselves in round 2.
+Write "session effort" if the panelists inherited it. When a 2–1 majority is two panelists on the same model and the dissent is on another, say so in the tally, e.g. (2–1, both sonnet), since a model agreeing with itself is weaker agreement. Quote each Position line exactly, since a paraphrase is where your own view slips in. When the answers are lists of points, tag each point with the panelists who raised it in round 1 and any who adopted it in debate, e.g. (B, C → A). Take the round-1 tally and the tags from the round-1 answers you hold, not from what panelists say about themselves in round 2.
 
-Keep your own view out of the Recommendation and in "My take", so the user can tell the independent judgement from yours.
+Keep your own view out of the Recommendation and in "My take", so the user can tell the independent judgement from yours. If a check contradicts the panel, say so on the Checked line, and leave what follows from it to "My take".
 
 Hold on to the brief and both rounds' answers. If the user asks to see one, show it verbatim.

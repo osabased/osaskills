@@ -512,6 +512,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## think-tank
 
+### 2026-10-19
+
+#### Changed
+
+- Panelists are told not to call the `advisor` tool. Claude Code attaches it to every subagent of a session that has one, and neither `tools` nor `disallowedTools` removes it, so all three panelists could take guidance from the same advisor model. ([#89](https://github.com/osabased/osaskills/pull/89))
+- Round 1 no longer asks for panelists in the foreground. Fork mode, on by default in interactive terminal sessions from Claude Code v2.1.232 and everywhere from v2.1.302, stops Claude waiting for a subagent, so round 1 now waits for answers that arrive as notifications, as round 2 already did. ([#89](https://github.com/osabased/osaskills/pull/89))
+- Without a model, the panel is `opus,sonnet,sonnet`. Before, all three inherited the session's model. When a 2–1 majority is two panelists on the same model, the tally says so. ([#89](https://github.com/osabased/osaskills/pull/89))
+- The debate is skipped when all three round-1 positions agree, unless the answers are lists of points. The header says so, and the user can still ask for the debate afterwards. ([#89](https://github.com/osabased/osaskills/pull/89))
+- Before the synthesis, Claude checks the one or two facts the recommendation rests on, even at 3–0, and reports them on a Checked line. Each panelist now names the fact or assumption its position most depends on, so Claude knows where to start. ([#89](https://github.com/osabased/osaskills/pull/89))
+- The Panel section quotes each final Position line verbatim. The brief is shown before every launch, with a wait for a go-ahead only when Claude built it from the conversation. Claude gives its own leaning at launch, before any answer arrives, and "My take" says whether the panel moved it. ([#89](https://github.com/osabased/osaskills/pull/89))
+
 ### 2026-10-18
 
 #### Added
