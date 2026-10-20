@@ -4,11 +4,11 @@
 
 ## Install
 
-1. `rhr --version` should print `1.0.0rc1+osabased.13` or a later `osabased` build.
+1. `rhr --version` should print `1.0.0rc1+osabased.14` or a later `osabased` build.
 2. Otherwise, ask the user, then install the fork at the commit this skill was checked against:
 
    ```sh
-   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@42a76c29309799dce4eff81a927961440f94596f"
+   uv tool install --force "git+https://github.com/osabased/roblox-headless-renderer@acaa3176a58d2bfec3ce547670b6f2e59c8f5194"
    ```
 
    On Windows, first stop rhr's background worker if one is running. It is two `python -m rhr.server` processes: one whose command line names the tool's own `roblox-headless-renderer\Scripts\python.exe`, in the folder `uv tool dir` prints, and the Python it starts, whose parent is that one. Stop both, and no other `rhr.server` process, since those belong to other rhr installs, such as a venv. PowerShell lists them: `Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" | Where-Object CommandLine -match 'rhr\.server' | Select-Object ProcessId, ParentProcessId, CommandLine`. While the worker runs, the install fails partway with "Access is denied" and leaves rhr broken until an install succeeds.
@@ -58,7 +58,7 @@ Also useful:
 
 ## Known gaps
 
-Where rhr `1.0.0rc1+osabased.13` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
+Where rhr `1.0.0rc1+osabased.14` differs from Studio. Discount these when you look, and list the ones a screen touches in the reviewer's render notes.
 
 Drawn differently, laid out right:
 
@@ -84,9 +84,10 @@ In the checks:
 
 At run time:
 
-- While a story runs, rhr hasn't laid the UI out yet, so values Roblox works out in layout read as they do before layout, and don't change. The story's target and ScreenGui have the area's size and `AbsolutePosition` 0, 0. Any other element's `AbsoluteSize` and `AbsolutePosition` read 0, 0, as do `TextBounds`, `AbsoluteContentSize` and a grid's `AbsoluteCellSize`. UI that sizes itself from these renders as if they were zero: size it with AutomaticSize or a layout, which rhr lays out as Roblox does, or check it in a play-test. `TextFits` and an image's `IsLoaded` read true, so a loop that shrinks text until it fits, or waits for an image, goes on.
+- A story runs on story time, 1/60 s a frame: `task.wait`, `task.delay` and `os.clock` run on its frames, so a timer fires on the frame it would at 60 fps, and rhr draws the screen 30 frames (0.5 s) after the story mounts. `os.time` and `DateTime` read the machine's clock.
+- rhr lays the screen out as the story runs, after it mounts and once a frame, so `AbsoluteSize`, `AbsolutePosition`, `TextBounds`, a layout's `AbsoluteContentSize` and a ScrollingFrame's `AbsoluteCanvasSize` and `AbsoluteWindowSize` read the sizes the picture is drawn at, and their change signals fire. Read them from a change signal, a `task.defer` or a later frame: a read in the same resumption that created or parented an element gets 0, 0, where Roblox lays it out on the spot. `TextBounds` is as wide as rhr draws the text, which can be a few pixels off Studio's (Montserrat at TextSize 18: 175 px where Studio's is 179), so UI sized from it is off by as much, and rich text is measured as its plain text, so bold or sized runs read off. UI outside the story's screen, such as a ScreenGui the story makes, reads zero, as do `AbsoluteRotation` and a grid's `AbsoluteCellSize` and `AbsoluteCellCount`. `TextFits` and an image's `IsLoaded` read true, so a loop that shrinks text until it fits, or waits for an image, goes on. `RHR_STORY_SIZES=0` runs a story without this layout, every such read zero.
 - Some reads still error in a story: `ContentText`; a ViewportFrame's `CurrentCamera` (setting one works); and `Image`, `Font`, a UICorner's `CornerRadius` and a few other properties until the story sets them. A deprecated name such as `TextWrap`, `TextColor` or `BackgroundColor` does nothing when set, so `TextWrap = true` leaves the text unwrapped: use the current names (`TextWrapped`, `TextColor3`, `BackgroundColor3`).
 - `TextService:GetTextSize` and `GetTextBoundsAsync` are rough estimates, every character half the text size wide, and GetTextSize ignores line breaks and the frame size it's given.
 - Roblox's [styling](theme.md#styling) isn't applied.
 
-What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, UIGradients on frames, text and UIStrokes at any Rotation (those on images and rich text weren't compared), spring positions at 0.5 s, safe areas, and the touch controls' positions.
+What matches Studio: layout, a story's area (the same as a running game's), draw order under either ZIndexBehavior (a story mounts in a Sibling ScreenGui, as UI Labs mounts it), scroll bars, notch fill, text to within 1 or 2 pixels, 9-slice sizing, `rbxassetid://` icons, UIGradients on frames, text and UIStrokes at any Rotation (those on images and rich text weren't compared), spring positions at 0.5 s, safe areas, the touch controls' positions, and the sizes a story reads as it runs: `AbsoluteSize`, `AbsolutePosition`, `TextBounds` as closely as rhr's text widths do, and a UIListLayout's `AbsoluteContentSize`. On a phone only positions measured from the story's target were compared, and other layouts' `AbsoluteContentSize` and a ScrollingFrame's `AbsoluteCanvasSize` and `AbsoluteWindowSize` weren't compared.
