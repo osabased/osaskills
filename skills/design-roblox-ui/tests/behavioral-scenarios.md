@@ -24,11 +24,19 @@ Assess: asks the brief in one batch: the game and its players, platforms ranked,
 
 Round 2 answers: a full brief, four reference images placed in `docs/design/refs/` with notes and one marked as the favourite, and "I also love the numbers in Tiny Fishing."
 
-Assess: asks for screenshots of the named game rather than downloading or searching for any. Writes `docs/design/brief.md` with traits sampled from the references (hex colours, corner shapes, type, density) and an Assumptions section. Calibrates the reviewer once on the favourite reference and logs what it flagged under Reviewer calibration. Makes three named directions, each with a one-line bet, differing in shape, colour, type, surface and density, not one look in three palettes. Builds one specimen story over three draft theme tables, runs `contrast.py` on each tile's pairs, renders each on phone and desktop, and renders the HUD's floating parts with `--transparent` over backdrops. Shows one contact sheet and asks for a pick, offering a mix. Builds no HUD before the pick.
+Assess: asks for screenshots of the named game rather than downloading or searching for any. Writes `docs/design/brief.md` with traits taken from the references (hex colours measured with `palette.py`, corner shapes, type, density) and an Assumptions section. Calibrates the reviewer once on the favourite reference and logs what it flagged under Reviewer calibration. Makes three named directions, each with a one-line bet, spaced from calm to bold in shape, colour, type, surface and density, not one look in three palettes; the bold one has saturated colour, chunky type, thick strokes or outlined text, within the brief's "not" words. Builds one specimen story over three draft theme tables, runs `contrast.py` on each tile's pairs, renders each on phone and desktop, and renders the HUD's floating parts with `--transparent` over backdrops. Shows one contact sheet and asks for a pick, offering a mix. Builds no HUD before the pick.
 
 Round 3 answers: "B, but with A's colours."
 
 Assess: renders the mix as a new tile and shows it before building on it. Logs the pick and its reasons in the taste log and saves the sheet in `docs/design/picks/` at about 1500 px. Turns the chosen table into the theme module, keeps the specimen story rendering it as the style guide, deletes the other drafts and adds the raw-value guard to the check.
+
+## No references
+
+Fixture: the new-UI fixture, with the user present.
+
+Request: "Build the HUD for my fishing game." Answers: a full brief, and "I don't have any reference images."
+
+Assess: doesn't wait for references or ask for them again. Writes in the brief that there are none, makes the three tiles from the feel words, the players and the constraints, spaced from calm to bold, and asks for a pick. Calibrates the reviewer after the pick, on the picked tile's render. Fails if it downloads or searches for images, or calibrates on nothing.
 
 ## Make it look better, with no theme
 
@@ -76,8 +84,8 @@ Assess: fixes the logic with the project's usual checks and leaves the look alon
 
 ## Reviewer calibration
 
-Fixture: the reviewer agent alone. Two shop screens for the same brief and references, rendered with rhr on phone and desktop: A is deliberately generic (the stock font, a half-transparent black panel, one radius on everything, a red X, a uniform grid of equal cards, everything centred); B is built to match the references. The taste log has a Reviewer calibration entry that B shows.
+Fixture: the reviewer agent alone. Three shop screens for the same brief and references, rendered with rhr on phone and desktop: A is deliberately generic (the stock font, a half-transparent black panel, one radius on everything, a red X, a uniform grid of equal cards, everything centred); B is built to match the references; C is built in a bold direction, saturated colour with outlined text and thick strokes, which the taste log records as the user's style-tile pick. The taste log has a Reviewer calibration entry that B shows. A fourth set, D, is B rendered offline, with render notes saying the featured item's art wasn't downloaded.
 
 Request: the round 1 prompt from review.md, once for each screen, in separate agents.
 
-Assess: for A, flags the tells by element and device, ranks them by what they cost a player with the rubric's severity, keeps at most five fixes in the theme's terms, and answers Rework or Ship after fixes. For B, answers Ship or asks only minor fixes, and doesn't flag the calibration entry. Both open the contact sheet before the full-size renders, then every render and reference, open no source file, keep the answer's shape at about 400 words or fewer, and put anything that looks like the renderer under Render doubts. Fails if A gets Ship, or B gets a major fix for a choice its references settle.
+Assess: for A, flags the tells by element and device, ranks them by what they cost a player with the rubric's severity, keeps at most five fixes in the theme's terms, and answers Rework or Ship after fixes. For B, answers Ship or asks only minor fixes, and doesn't flag the calibration entry. For C, doesn't call its saturation, outlines or strokes tells, and judges them by one depth construction, one outline weight and colour spent by rank. For D, answers at most Ship after fixes, with a fix to render the art. All open the contact sheet before the full-size renders, then every render and reference, open no source file, keep the answer's shape at about 400 words or fewer, and put anything that looks like the renderer under Render doubts. Fails if A gets Ship, B gets a major fix for a choice its references settle, C gets a fix that calms its picked style, or D gets Ship.

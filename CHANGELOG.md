@@ -538,6 +538,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## design-roblox-ui
 
+### 2026-10-20
+
+#### Added
+
+- `palette.py` measures the main colours of reference images as hex, with each one's share and what the images share, so the brief's palette comes from the images rather than a guess at them. ([#92](https://github.com/osabased/osaskills/pull/92))
+
+#### Changed
+
+- The three style tiles run from calm to bold, the bold one saturated, chunky and outlined as far as the brief's "not" words allow. The AI tells are scoped to calm UI: under a bold pick, saturation, outlines and strokes are judged by one depth construction, one outline weight and colour spent by rank. ([#92](https://github.com/osabased/osaskills/pull/92))
+- With no reference images, the tiles come from the brief alone, and the reviewer is calibrated on the picked tile. ([#92](https://github.com/osabased/osaskills/pull/92))
+- The reviewer gives at most Ship after fixes while one of the brief's top two items isn't drawn, such as art rhr didn't download, and the builder renders it before the user's review. ([#92](https://github.com/osabased/osaskills/pull/92))
+- `contrast.py` and `theme_guard.py` run through `uv run`, and the guard's docs say it reads Luau only. ([#92](https://github.com/osabased/osaskills/pull/92))
+
 ### 2026-10-19
 
 #### Added

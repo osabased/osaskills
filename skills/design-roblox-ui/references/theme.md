@@ -198,9 +198,9 @@ The WCAG ratios are from [1.4.3](https://www.w3.org/TR/WCAG22/#contrast-minimum)
 A see-through surface is checked over white and over black, since anything can be behind it. `contrast.py` takes a colour with an `@` transparency, as in `2B1D14@0.35` (Roblox's transparency, so 0 is opaque), composites it over both and reports the worse ratio.
 
 ```sh
-python <skill>/scripts/contrast.py 2B1D14 F3E9D2  6B5442 F3E9D2  FFF8EC B54A24
-python <skill>/scripts/contrast.py --min 3 8A7764 F3E9D2  1A6460 E8D9B5
-python <skill>/scripts/contrast.py FFF8EC 2B1D14@0.35
+uv run --no-project python <skill>/scripts/contrast.py 2B1D14 F3E9D2  6B5442 F3E9D2  FFF8EC B54A24
+uv run --no-project python <skill>/scripts/contrast.py --min 3 8A7764 F3E9D2  1A6460 E8D9B5
+uv run --no-project python <skill>/scripts/contrast.py FFF8EC 2B1D14@0.35
 ```
 
 The first line checks body text, muted text and text on the accent; the second, disabled text and the selection outline at 3:1; the third, a hint written straight on the modal scrim.
@@ -209,15 +209,15 @@ In the example, the brief's rust `#C4552D` gave `textOnAccent` only 4.25:1, so t
 
 ## The raw-value guard
 
-`<skill>/scripts/theme_guard.py` fails on visual values written outside the theme:
+`<skill>/scripts/theme_guard.py` fails on visual values written outside the theme, in `.luau` and `.lua` files:
 
 - colours: `Color3.new`, `Color3.fromRGB`, `Color3.fromHex`, `Color3.fromHSV` and `BrickColor`;
 - fonts: `Font.new`, `Font.fromEnum`, `Font.fromName`, `Font.fromId` and `Enum.Font`;
 - text sizes: `TextSize`, `MinTextSize` or `MaxTextSize` set to a number.
 
-It skips comments and strings, and any line marked `-- theme-guard: allow <reason>` for a value that really is one-off. The reason is for the user to read, so a marker without one doesn't count. Spacing, radii and durations aren't checked, because too many plain numbers are legitimate. The review catches those.
+It skips comments and strings, and any line marked `-- theme-guard: allow <reason>` for a value that really is one-off. The reason is for the user to read, so a marker without one doesn't count. Spacing, radii and durations aren't checked, because too many plain numbers are legitimate. The review catches those. It reads no other language, so a roblox-ts project needs its own check for these values.
 
-Copy the script into the project, beside its other check scripts, because CI can't reach this skill's folder. Run it from the project's check on the UI folders, allowing the theme module:
+Copy the script into the project, beside its other check scripts, because CI can't reach this skill's folder. Run it from the project's check, with whatever Python the check uses, on the UI folders, allowing the theme module:
 
 ```sh
 python scripts/theme_guard.py src/client/UI --allow src/client/UI/Theme.luau
