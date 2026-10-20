@@ -1,0 +1,76 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Yes, that's enough, as long as the frontmatter is being parsed correctly.\n\n**Why it works:** `tools` is an allowlist. When you set it, the subagent gets only those tools and doesn't inherit the rest. Read, Grep and Glob can't write anything. Edit, Write, NotebookEdit and Bash aren't in the list, so the agent has no way to change files. That includes indirect routes like `echo > file` or `sed -i` through Bash.\n\n**Things to check:**\n\n1. **Make sure the frontmatter is actually read.** If `tools` is missing or the YAML is malformed, the subagent inherits every tool from the main thread, including Edit, Write and Bash. That's the main way this goes wrong. Check that:\n   - the file starts with `---` on line 1, with nothing before it\n   - there's a closing `---`\n   - `name` and `description` are present\n   - you run `/agents` in that project and confirm the auditor shows only Read, Grep and Glob\n\n2. **Spell tool names exactly.** They're case-sensitive (`Read`, not `read`). A misspelled name just isn't granted, so the agent ends up with fewer tools, never more.\n\n3. **MCP tools aren't included unless you list them.** Some MCP servers have write tools, like filesystem or database servers. Since your list doesn't name any, the auditor can't use them. Just don't add an MCP tool later without checking whether it writes.\n\n4. **Hooks still run.** Any `PreToolUse` or `PostToolUse` hooks in your settings also fire for the subagent's tool calls. A hook that formats or modifies files would run, but that's your config doing it, not the agent.\n\n5. **The main agent can still write.** The auditor only returns a report. If the main conversation acts on it, it uses its own tools. If you want a hard guarantee at the session level too, add `deny` rules for `Edit`, `Write` and `Bash` in `.claude/settings.json`. Note that this restricts the main agent as well.\n\nI can't see the file since it's not in this directory, but if you paste the frontmatter I'll check it.",
+ "texts": [
+  "Yes, that's enough, as long as the frontmatter is being parsed correctly.\n\n**Why it works:** `tools` is an allowlist. When you set it, the subagent gets only those tools and doesn't inherit the rest. Read, Grep and Glob can't write anything. Edit, Write, NotebookEdit and Bash aren't in the list, so the agent has no way to change files. That includes indirect routes like `echo > file` or `sed -i` through Bash.\n\n**Things to check:**\n\n1. **Make sure the frontmatter is actually read.** If `tools` is missing or the YAML is malformed, the subagent inherits every tool from the main thread, including Edit, Write and Bash. That's the main way this goes wrong. Check that:\n   - the file starts with `---` on line 1, with nothing before it\n   - there's a closing `---`\n   - `name` and `description` are present\n   - you run `/agents` in that project and confirm the auditor shows only Read, Grep and Glob\n\n2. **Spell tool names exactly.** They're case-sensitive (`Read`, not `read`). A misspelled name just isn't granted, so the agent ends up with fewer tools, never more.\n\n3. **MCP tools aren't included unless you list them.** Some MCP servers have write tools, like filesystem or database servers. Since your list doesn't name any, the auditor can't use them. Just don't add an MCP tool later without checking whether it writes.\n\n4. **Hooks still run.** Any `PreToolUse` or `PostToolUse` hooks in your settings also fire for the subagent's tool calls. A hook that formats or modifies files would run, but that's your config doing it, not the agent.\n\n5. **The main agent can still write.** The auditor only returns a report. If the main conversation acts on it, it uses its own tools. If you want a hard guarantee at the session level too, add `deny` rules for `Edit`, `Write` and `Bash` in `.claude/settings.json`. Note that this restricts the main agent as well.\n\nI can't see the file since it's not in this directory, but if you paste the frontmatter I'll check it."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.07203119999999999,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5761,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1193,
+  "output_tokens_details": {
+   "thinking_tokens": 502
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5761,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1193,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5761,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5761
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1193,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5761,
+   "webSearchRequests": 0,
+   "costUSD": 0.07203119999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 502,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

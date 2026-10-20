@@ -1,0 +1,76 @@
+{
+ "id": "scriptsync-client",
+ "kind": "trap",
+ "prompt": "We're using Roblox Studio's Script Sync. I'm putting our client controller at `client/Controller.client.luau`, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client`. It should run once per player. Anything wrong with this setup?",
+ "truth": "Yes. Under Script Sync a `.client.luau` file becomes a Script with RunContext Client, and in StarterPlayerScripts that runs twice. Use `.local.luau`, which becomes a LocalScript, or sync the client folder somewhere a RunContext script runs once, such as ReplicatedStorage.",
+ "trap": "Nothing wrong: a client script in StarterPlayerScripts runs once per player.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Your setup is fine. With Script Sync, `Controller.client.luau` becomes a **LocalScript** named `Controller` inside the `Client` folder. It runs once per player because of how StarterPlayerScripts works:\n\n- When a player joins, everything under `StarterPlayerScripts` is copied into that player's `Player.PlayerScripts`, and LocalScripts there run.\n- Putting it inside a `Client` folder is fine. LocalScripts run anywhere under `PlayerScripts`, not just at the top level.\n- It does **not** rerun when the character respawns. That only happens with `StarterCharacterScripts`. So you get one run per player per session, which is what you want.\n\nA few things to check:\n\n1. **Check the instance type in Studio.** Make sure `Controller` shows up as a `LocalScript`. If it ever ends up as a `Script` with `RunContext = Client` (for example, if someone converts it or uses a different naming suffix), it can run twice: once in `StarterPlayerScripts` and once in the copy under `PlayerScripts`. Keep it as a LocalScript in this location.\n2. **Handle respawns yourself.** The script only runs once, so any references to the character, Humanoid, or character parts will go stale after a respawn. Use `player.CharacterAdded` (and also handle `player.Character` if a character already exists) instead of grabbing the character once at the top of the script.\n3. **Don't wait on the folder by name from other code.** Other client code that looks for this script should go through `PlayerScripts.Client`, not `StarterPlayerScripts.Client`. Better still, put shared logic in ModuleScripts (`.luau` with no suffix) and have the controller `require` them.",
+ "texts": [
+  "Your setup is fine. With Script Sync, `Controller.client.luau` becomes a **LocalScript** named `Controller` inside the `Client` folder. It runs once per player because of how StarterPlayerScripts works:\n\n- When a player joins, everything under `StarterPlayerScripts` is copied into that player's `Player.PlayerScripts`, and LocalScripts there run.\n- Putting it inside a `Client` folder is fine. LocalScripts run anywhere under `PlayerScripts`, not just at the top level.\n- It does **not** rerun when the character respawns. That only happens with `StarterCharacterScripts`. So you get one run per player per session, which is what you want.\n\nA few things to check:\n\n1. **Check the instance type in Studio.** Make sure `Controller` shows up as a `LocalScript`. If it ever ends up as a `Script` with `RunContext = Client` (for example, if someone converts it or uses a different naming suffix), it can run twice: once in `StarterPlayerScripts` and once in the copy under `PlayerScripts`. Keep it as a LocalScript in this location.\n2. **Handle respawns yourself.** The script only runs once, so any references to the character, Humanoid, or character parts will go stale after a respawn. Use `player.CharacterAdded` (and also handle `player.Character` if a character already exists) instead of grabbing the character once at the top of the script.\n3. **Don't wait on the folder by name from other code.** Other client code that looks for this script should go through `PlayerScripts.Client`, not `StarterPlayerScripts.Client`. Better still, put shared logic in ModuleScripts (`.luau` with no suffix) and have the controller `require` them."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0770672,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5803,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1428,
+  "output_tokens_details": {
+   "thinking_tokens": 861
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5803,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1428,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5803,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5803
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1428,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5803,
+   "webSearchRequests": 0,
+   "costUSD": 0.0770672,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 861,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

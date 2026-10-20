@@ -1,0 +1,85 @@
+{
+ "id": "control-tools",
+ "kind": "control",
+ "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+ "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+ "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+ "source": "Sub-agents docs, tools field.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "I couldn't find `.claude/agents/auditor.md` in this directory, so I couldn't check your file. This answer is based on how the `tools` field works.\n\n**Yes, that's enough.** `tools:` is an allowlist. When it's present, the subagent gets only the tools you list. `Read`, `Grep` and `Glob` can't change anything. Without `Edit`, `Write`, `NotebookEdit` or `Bash`, the subagent has no way to modify files. Leaving out Bash matters, because a shell can write files even with no Edit tool.\n\nA few things to check:\n\n1. **Don't remove the `tools:` line.** If it's missing, the subagent inherits every tool from the main session, including Edit, Write, Bash and any MCP tools.\n2. **Spell the names exactly.** Use the exact casing: `tools: Read, Grep, Glob`. Make sure the frontmatter sits between `---` lines at the very top of the file. If the frontmatter doesn't parse, the agent may not load as you expect.\n3. **Be careful adding MCP tools later.** If you allowlist an MCP tool, check whether it can write. Some, like filesystem or database servers, can.\n4. **Read access is still broad.** The agent can read anything Read can reach, including `.env` files and credentials. If that matters, add `deny` rules for those paths in `settings.json`.\n5. **Optional extra safety.** For defense in depth, you can also add `disallowedTools: Edit, Write, NotebookEdit, Bash`. With a correct allowlist this repeats what's already blocked, but it protects you if someone later loosens `tools:`.\n\nTo confirm it works, run `/agents` and check the tool list shown for `auditor`. You can also ask the auditor to edit a file and see it refuse because it has no tool for it.",
+ "texts": [
+  "I couldn't find `.claude/agents/auditor.md` in this directory, so I couldn't check your file. This answer is based on how the `tools` field works.\n\n**Yes, that's enough.** `tools:` is an allowlist. When it's present, the subagent gets only the tools you list. `Read`, `Grep` and `Glob` can't change anything. Without `Edit`, `Write`, `NotebookEdit` or `Bash`, the subagent has no way to modify files. Leaving out Bash matters, because a shell can write files even with no Edit tool.\n\nA few things to check:\n\n1. **Don't remove the `tools:` line.** If it's missing, the subagent inherits every tool from the main session, including Edit, Write, Bash and any MCP tools.\n2. **Spell the names exactly.** Use the exact casing: `tools: Read, Grep, Glob`. Make sure the frontmatter sits between `---` lines at the very top of the file. If the frontmatter doesn't parse, the agent may not load as you expect.\n3. **Be careful adding MCP tools later.** If you allowlist an MCP tool, check whether it can write. Some, like filesystem or database servers, can.\n4. **Read access is still broad.** The agent can read anything Read can reach, including `.env` files and credentials. If that matters, add `deny` rules for those paths in `settings.json`.\n5. **Optional extra safety.** For defense in depth, you can also add `disallowedTools: Edit, Write, NotebookEdit, Bash`. With a correct allowlist this repeats what's already blocked, but it protects you if someone later loosens `tools:`.\n\nTo confirm it works, run `/agents` and check the tool list shown for `auditor`. You can also ask the auditor to edit a file and see it refuse because it has no tool for it."
+ ],
+ "steps": [
+  [
+   "Read",
+   "<runs>\\control-tools-single-1\\.claude\\agents\\auditor.md"
+  ],
+  [
+   "Glob",
+   "**/auditor.md"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.07978679999999999,
+ "turns": 3,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 6303,
+  "cache_read_input_tokens": 43094,
+  "output_tokens": 1036,
+  "output_tokens_details": {
+   "thinking_tokens": 276
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 6303,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 611,
+    "cache_read_input_tokens": 16592,
+    "cache_creation_input_tokens": 87,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 87
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 1036,
+   "cacheReadInputTokens": 43094,
+   "cacheCreationInputTokens": 6303,
+   "webSearchRequests": 0,
+   "costUSD": 0.07978679999999999,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 276,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,103 @@
+{
+ "id": "pesde-sync",
+ "kind": "trap",
+ "prompt": "We use Roblox Studio's Script Sync and the pesde package manager. I'm going to run `pesde install` so packages land in `shared/Packages`, inside the folder that syncs to `ReplicatedStorage.Shared`, and then require them from our scripts. Will that work?",
+ "truth": "No. pesde's link modules require into the `.pesde` folder, and Script Sync skips directories whose names start with a dot and ignores each package's `default.project.json`, so the requires fail. Keep the install outside the synced roots, for example as a model built with `rojo build` and inserted in Studio, rebuilt after each install.",
+ "trap": "Yes, the packages sync into ReplicatedStorage and require normally.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "I don't think that will work as you've described it. There are two separate problems.\n\n**1. Packages won't land in `shared/Packages`.** pesde installs Roblox packages into a `roblox_packages` folder next to your `pesde.toml`. It's not a `Packages` folder like Wally's, and as far as I know you can't rename it. Server-only dependencies also go in a separate `roblox_server_packages` folder. You shouldn't put those under `ReplicatedStorage`, because clients can see everything there. I couldn't confirm the folder name in pesde's docs just now, so treat this as from memory and check what `pesde install` actually creates.\n\n**2. pesde's Roblox packages expect Rojo, and Script Sync isn't Rojo.** This is the bigger problem.\n- On install, pesde runs a sync-config-generator script (normally the Rojo one) that writes a `default.project.json` into each package. Those files say which folder becomes the package's root ModuleScript, for example mapping `src/` to the package root.\n- The small \"linker\" modules pesde generates call `require` with instance paths like `script.Parent...`. Those paths only resolve if the instance tree in Studio matches the layout the Rojo config describes.\n- As far as I know, Script Sync doesn't read `*.project.json` files. It mirrors the folder on disk directly. So any package that depends on its project file will end up in Studio with the wrong nesting, and the linker `require`s will fail or return a Folder instead of a module.\n- Script Sync also only syncs Script, LocalScript, ModuleScript and Folder instances. Anything in a package that isn't a script or folder (models, `.rbxm` files, values from `.meta.json` or `.model.json`) gets dropped.\n\nSimple pure-Luau packages whose root is a plain `init.luau` might happen to work. You can't count on that across your dependency tree, though, and it can break whenever a dependency updates.\n\n**What I'd do instead:**\n- **Use Rojo**, at least for the packages. That's what pesde's Roblox setup is built and tested for. Map `roblox_packages` to something like `ReplicatedStorage.Packages` in your `default.project.json`, and keep Script Sync (or Rojo) for your own code.\n- **If you want to stay on Script Sync only,** test it before relying on it. Run `pesde install`, sync, then look at the instance tree in Studio and try requiring a package that has dependencies of its own. If a linker module's `require` fails, you've hit problem 2.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [Studio Script Sync beta – DevForum](https://devforum.roblox.com/t/studio-script-sync-now-in-beta/4065468)\n- [pesde – docs.rs](https://docs.rs/pesde)",
+ "texts": [
+  "I don't think that will work as you've described it. There are two separate problems.\n\n**1. Packages won't land in `shared/Packages`.** pesde installs Roblox packages into a `roblox_packages` folder next to your `pesde.toml`. It's not a `Packages` folder like Wally's, and as far as I know you can't rename it. Server-only dependencies also go in a separate `roblox_server_packages` folder. You shouldn't put those under `ReplicatedStorage`, because clients can see everything there. I couldn't confirm the folder name in pesde's docs just now, so treat this as from memory and check what `pesde install` actually creates.\n\n**2. pesde's Roblox packages expect Rojo, and Script Sync isn't Rojo.** This is the bigger problem.\n- On install, pesde runs a sync-config-generator script (normally the Rojo one) that writes a `default.project.json` into each package. Those files say which folder becomes the package's root ModuleScript, for example mapping `src/` to the package root.\n- The small \"linker\" modules pesde generates call `require` with instance paths like `script.Parent...`. Those paths only resolve if the instance tree in Studio matches the layout the Rojo config describes.\n- As far as I know, Script Sync doesn't read `*.project.json` files. It mirrors the folder on disk directly. So any package that depends on its project file will end up in Studio with the wrong nesting, and the linker `require`s will fail or return a Folder instead of a module.\n- Script Sync also only syncs Script, LocalScript, ModuleScript and Folder instances. Anything in a package that isn't a script or folder (models, `.rbxm` files, values from `.meta.json` or `.model.json`) gets dropped.\n\nSimple pure-Luau packages whose root is a plain `init.luau` might happen to work. You can't count on that across your dependency tree, though, and it can break whenever a dependency updates.\n\n**What I'd do instead:**\n- **Use Rojo**, at least for the packages. That's what pesde's Roblox setup is built and tested for. Map `roblox_packages` to something like `ReplicatedStorage.Packages` in your `default.project.json`, and keep Script Sync (or Rojo) for your own code.\n- **If you want to stay on Script Sync only,** test it before relying on it. Run `pesde install`, sync, then look at the instance tree in Studio and try requiring a package that has dependencies of its own. If a linker module's `require` fails, you've hit problem 2.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [Studio Script Sync beta – DevForum](https://devforum.roblox.com/t/studio-script-sync-now-in-beta/4065468)\n- [pesde – docs.rs](https://docs.rs/pesde)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Script Sync pesde packages"
+  ],
+  [
+   "WebSearch",
+   "pesde roblox_packages directory roblox_sync_config_generator rojo"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.1691554,
+ "turns": 4,
+ "minutes": 0.8,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 9653,
+  "cache_read_input_tokens": 44710,
+  "output_tokens": 2976,
+  "output_tokens_details": {
+   "thinking_tokens": 1763
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 9653,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1300,
+    "cache_read_input_tokens": 18159,
+    "cache_creation_input_tokens": 1870,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1870
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 2976,
+   "cacheReadInputTokens": 44710,
+   "cacheCreationInputTokens": 9653,
+   "webSearchRequests": 0,
+   "costUSD": 0.14571,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1763,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 27009,
+   "outputTokens": 1489,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.023445399999999998,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 419,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

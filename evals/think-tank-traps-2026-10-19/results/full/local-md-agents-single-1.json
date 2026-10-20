@@ -1,0 +1,76 @@
+{
+ "id": "local-md-agents",
+ "kind": "trap",
+ "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+ "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+ "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+ "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "Mostly fine. One thing is worth checking before you rely on it, though.\n\n**The main risk: AGENTS.md might stop loading.** Claude Code's main instruction file is CLAUDE.md. Reading AGENTS.md is a fallback. I can't confirm from here whether that fallback applies only when there's no CLAUDE.md, or no CLAUDE-anything. If adding CLAUDE.local.md counts as having a CLAUDE file, Claude Code could quietly stop loading AGENTS.md. Your personal notes would then replace the team's instructions instead of adding to them. Nothing would error, so you'd only notice when Claude stops following repo conventions.\n\nTo check, create the file, start a new session in the repo and run `/memory`. It lists the instruction files that actually loaded. If AGENTS.md isn't there, you can fix it either way:\n- Put `@AGENTS.md` at the top of CLAUDE.local.md to import it explicitly.\n- Or keep your notes outside the repo and skip CLAUDE.local.md (see below).\n\n**Smaller points:**\n- **Use `.git/info/exclude` instead of `.gitignore`.** It ignores files the same way but is never committed. Otherwise you'd be committing a change to `.gitignore` just for your personal file.\n- **Git worktrees and other clones won't have it.** Because the file is ignored, it only exists in this one checkout. If you use worktrees or have other clones, you'd have to copy it to each one. Keeping your notes in a file like `~/.claude/<project>-notes.md` and importing that file avoids this. User-level `~/.claude/CLAUDE.md` also works, but it applies to every project.\n- **Load order:** your local file and AGENTS.md both load. If they contradict each other, it's unclear which one wins, so don't write rules that fight the shared ones.\n\nSo the only real risk is the AGENTS.md fallback, and `/memory` will tell you in a few seconds whether it's a problem.",
+ "texts": [
+  "Mostly fine. One thing is worth checking before you rely on it, though.\n\n**The main risk: AGENTS.md might stop loading.** Claude Code's main instruction file is CLAUDE.md. Reading AGENTS.md is a fallback. I can't confirm from here whether that fallback applies only when there's no CLAUDE.md, or no CLAUDE-anything. If adding CLAUDE.local.md counts as having a CLAUDE file, Claude Code could quietly stop loading AGENTS.md. Your personal notes would then replace the team's instructions instead of adding to them. Nothing would error, so you'd only notice when Claude stops following repo conventions.\n\nTo check, create the file, start a new session in the repo and run `/memory`. It lists the instruction files that actually loaded. If AGENTS.md isn't there, you can fix it either way:\n- Put `@AGENTS.md` at the top of CLAUDE.local.md to import it explicitly.\n- Or keep your notes outside the repo and skip CLAUDE.local.md (see below).\n\n**Smaller points:**\n- **Use `.git/info/exclude` instead of `.gitignore`.** It ignores files the same way but is never committed. Otherwise you'd be committing a change to `.gitignore` just for your personal file.\n- **Git worktrees and other clones won't have it.** Because the file is ignored, it only exists in this one checkout. If you use worktrees or have other clones, you'd have to copy it to each one. Keeping your notes in a file like `~/.claude/<project>-notes.md` and importing that file avoids this. User-level `~/.claude/CLAUDE.md` also works, but it applies to every project.\n- **Load order:** your local file and AGENTS.md both load. If they contradict each other, it's unclear which one wins, so don't write rules that fight the shared ones.\n\nSo the only real risk is the AGENTS.md fallback, and `/memory` will tell you in a few seconds whether it's a problem."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0776672,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5803,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1458,
+  "output_tokens_details": {
+   "thinking_tokens": 799
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5803,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1458,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5803,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5803
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1458,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5803,
+   "webSearchRequests": 0,
+   "costUSD": 0.0776672,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 799,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

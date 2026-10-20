@@ -1,0 +1,82 @@
+[
+ {
+  "id": "advisor-disallow",
+  "kind": "trap",
+  "prompt": "I have a custom Claude Code subagent in .claude/agents/reviewer.md that has to give its own independent judgement, so it shouldn't consult the advisor tool. My sessions run with an advisor model set. My plan is to add `disallowedTools: advisor` to the agent's frontmatter. Is that enough to keep the subagent off the advisor, or do I need something else?",
+  "truth": "Not enough. Subagents inherit the session's advisor, and neither the agent's `tools` allowlist nor `disallowedTools: advisor` removes it. The options are an instruction in the agent's prompt not to call it, or turning the advisor off for the whole session (`/advisor off`, or `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1`).",
+  "trap": "Yes, `disallowedTools: advisor` removes the tool from the subagent.",
+  "source": "Tested with claude -p --advisor opus on 2.1.296 during PR #89; the advisor docs say subagents inherit the configured advisor."
+ },
+ {
+  "id": "fork-wait",
+  "kind": "trap",
+  "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+  "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+  "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+  "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232."
+ },
+ {
+  "id": "local-md-agents",
+  "kind": "trap",
+  "prompt": "Our repo keeps its agent instructions in AGENTS.md and has no CLAUDE.md, and Claude Code picks AGENTS.md up fine. I want some personal instructions I don't commit, so I'm going to add a CLAUDE.local.md at the repo root and gitignore it. Any downside to doing that?",
+  "truth": "Yes. Under the default Project instructions setting, Claude reads AGENTS.md only when there is no CLAUDE.md or CLAUDE.local.md in the working directory or above it, so adding CLAUDE.local.md stops AGENTS.md from loading. Start CLAUDE.local.md with `@AGENTS.md`, or set Project instructions to `claude-md-and-agents-md`.",
+  "trap": "No downside: CLAUDE.local.md adds to AGENTS.md.",
+  "source": "Memory docs, AGENTS.md section; CHANGELOG entry for #74."
+ },
+ {
+  "id": "advisor-sonnet",
+  "kind": "trap",
+  "prompt": "I run Claude Code with Opus 5.5 as my main model and Opus as the advisor. To cut costs I want to switch the advisor to Sonnet 5.5 (`advisorModel: sonnet`) and keep Opus 5.5 as the main model. Good idea?",
+  "truth": "It won't work. An advisor must rank at or above the main model, and Opus 5.5 accepts only Fable or Opus 5 or later as its advisor. Claude Code won't attach a Sonnet advisor to Opus 5.5 requests, so the session runs with no advisor at all. To cut cost, run Sonnet as the main model with an Opus advisor instead, or turn the advisor off.",
+  "trap": "Yes, a Sonnet advisor is cheaper and works with an Opus main model.",
+  "source": "Advisor docs, Choose an advisor model."
+ },
+ {
+  "id": "rojo-sourcemap",
+  "kind": "trap",
+  "prompt": "In our Roblox project on Rojo 7.7.1, a CI check confirms that `ReplicatedStorage.Remotes.BuyItem`, a RemoteEvent defined in `src/shared/Remotes/BuyItem.model.json`, exists. The check runs `rojo sourcemap default.project.json -o sourcemap.json` and looks for that instance path in the JSON. Is this a sound approach, or will it bite us?",
+  "truth": "It will fail. By default `rojo sourcemap` includes only scripts and their ancestors, so a RemoteEvent with no script under it is left out. Generate the sourcemap with `--include-non-scripts`.",
+  "trap": "Sound: the sourcemap lists every instance the project maps.",
+  "source": "Observed on Rojo 7.7.1 for #73 (structure-roblox-projects rojo.md)."
+ },
+ {
+  "id": "scriptsync-client",
+  "kind": "trap",
+  "prompt": "We're using Roblox Studio's Script Sync. I'm putting our client controller at `client/Controller.client.luau`, with the `client/` folder synced to `StarterPlayer.StarterPlayerScripts.Client`. It should run once per player. Anything wrong with this setup?",
+  "truth": "Yes. Under Script Sync a `.client.luau` file becomes a Script with RunContext Client, and in StarterPlayerScripts that runs twice. Use `.local.luau`, which becomes a LocalScript, or sync the client folder somewhere a RunContext script runs once, such as ReplicatedStorage.",
+  "trap": "Nothing wrong: a client script in StarterPlayerScripts runs once per player.",
+  "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync)."
+ },
+ {
+  "id": "live-scripting",
+  "kind": "trap",
+  "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+  "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+  "trap": "Only after you commit: script edits stay in your drafts until then.",
+  "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly)."
+ },
+ {
+  "id": "pesde-sync",
+  "kind": "trap",
+  "prompt": "We use Roblox Studio's Script Sync and the pesde package manager. I'm going to run `pesde install` so packages land in `shared/Packages`, inside the folder that syncs to `ReplicatedStorage.Shared`, and then require them from our scripts. Will that work?",
+  "truth": "No. pesde's link modules require into the `.pesde` folder, and Script Sync skips directories whose names start with a dot and ignores each package's `default.project.json`, so the requires fail. Keep the install outside the synced roots, for example as a model built with `rojo build` and inserted in Studio, rebuilt after each install.",
+  "trap": "Yes, the packages sync into ReplicatedStorage and require normally.",
+  "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync)."
+ },
+ {
+  "id": "control-tools",
+  "kind": "control",
+  "prompt": "I wrote a Claude Code subagent in .claude/agents/auditor.md with `tools: Read, Grep, Glob` in its frontmatter. It must never modify files. Is that enough, or does it need more?",
+  "truth": "Enough. With a `tools` allowlist the subagent gets only the listed tools, and none of Read, Grep or Glob can change a file.",
+  "trap": "Not enough: it still needs `disallowedTools` or a hook to block edits.",
+  "source": "Sub-agents docs, tools field."
+ },
+ {
+  "id": "control-sort",
+  "kind": "control",
+  "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+  "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+  "trap": "Yes, add the index: equal keys can be reordered.",
+  "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable."
+ }
+]

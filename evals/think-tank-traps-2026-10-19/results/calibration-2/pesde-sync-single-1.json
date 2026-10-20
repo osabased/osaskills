@@ -1,0 +1,115 @@
+{
+ "id": "pesde-sync",
+ "kind": "trap",
+ "prompt": "We use Roblox Studio's Script Sync and the pesde package manager. I'm going to run `pesde install` so packages land in `shared/Packages`, inside the folder that syncs to `ReplicatedStorage.Shared`, and then require them from our scripts. Will that work?",
+ "truth": "No. pesde's link modules require into the `.pesde` folder, and Script Sync skips directories whose names start with a dot and ignores each package's `default.project.json`, so the requires fail. Keep the install outside the synced roots, for example as a model built with `rojo build` and inserted in Studio, rebuilt after each install.",
+ "trap": "Yes, the packages sync into ReplicatedStorage and require normally.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-scriptsync).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "I don't think it will work as you've described it. Some of the problems are documented, and two need a quick test.\n\n**1. pesde can't install into `shared/Packages`.**\npesde puts Roblox packages in `roblox_packages/` (or `roblox_server_packages/`) next to `pesde.toml`. The manifest docs don't list any option to change that folder. The closest setting is `[place]`, and it doesn't move anything on disk; it only tells pesde where the packages will live in the DataModel. So you would need to put `pesde.toml` inside `shared/`, which gives you `shared/roblox_packages`. You would also need to set `[place]` so it matches where that folder ends up in Studio, e.g. `game.ReplicatedStorage.Shared.roblox_packages`.\n\n**2. pesde expects a Rojo-style sync tool, and Script Sync isn't one.**\nThe modules pesde creates at the top of `roblox_packages/` are thin \"linker\" stubs. The real code sits under `roblox_packages/.pesde/<scope+name>/<version>/...`. Each package's layout is described by a sync config that your `roblox_sync_config_generator` script writes, usually a Rojo `default.project.json` from `pesde/scripts_rojo`. Script Sync ignores project files and maps the disk using its own fixed rules:\n- `name.luau` becomes a ModuleScript\n- a directory becomes a Folder\n- `init.*.luau` becomes a script with children\n\nOnly Script, LocalScript, ModuleScript and Folder instances sync. So any package whose layout depends on its project file, or that includes non-script content like models or `.json` files, will come out wrong or incomplete. A likely result: a linker requires something that Script Sync created as a plain Folder, and the `require` fails.\n\n**3. Two things the docs don't say:**\n- Whether Script Sync picks up a dot-prefixed folder like `.pesde`.\n- Whether it reliably imports a large batch of files that something outside Studio creates and deletes, which is what `pesde install` and updates do.\n\nRoblox's own docs say that if the file system should be the source of truth, \"third-party tools like Rojo are a better choice.\"\n\n**What I'd do instead:** keep Script Sync for your own scripts, and keep the packages outside the synced folder.\n- Run `pesde install` at the project root.\n- Use a small Rojo project that maps `roblox_packages` to `ReplicatedStorage.Packages`.\n- Either `rojo build` it to an `.rbxm` and insert that into Studio (rebuild whenever dependencies change), or run `rojo serve` for just that subtree.\n- Set `[place] shared = \"game.ReplicatedStorage.Packages\"`.\n- Require packages with `require(game.ReplicatedStorage.Packages.foo)`.\n\nDon't point Rojo and Script Sync at the same folder.\n\nIf you want to try your original layout anyway, test it with one package that has a dependency. Check whether `.pesde` appears in Studio and whether the `require` resolves before you commit to it.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [Script Sync early preview – DevForum](https://devforum.roblox.com/t/early-preview-studio-script-sync/3257548?page=8)\n- [pesde Roblox guide](https://docs.pesde.dev/guides/roblox/)\n- [pesde manifest reference](https://docs.pesde.dev/reference/manifest/)\n- [pesde on docs.rs](https://docs.rs/crate/pesde/latest)",
+ "texts": [
+  "I don't think it will work as you've described it. Some of the problems are documented, and two need a quick test.\n\n**1. pesde can't install into `shared/Packages`.**\npesde puts Roblox packages in `roblox_packages/` (or `roblox_server_packages/`) next to `pesde.toml`. The manifest docs don't list any option to change that folder. The closest setting is `[place]`, and it doesn't move anything on disk; it only tells pesde where the packages will live in the DataModel. So you would need to put `pesde.toml` inside `shared/`, which gives you `shared/roblox_packages`. You would also need to set `[place]` so it matches where that folder ends up in Studio, e.g. `game.ReplicatedStorage.Shared.roblox_packages`.\n\n**2. pesde expects a Rojo-style sync tool, and Script Sync isn't one.**\nThe modules pesde creates at the top of `roblox_packages/` are thin \"linker\" stubs. The real code sits under `roblox_packages/.pesde/<scope+name>/<version>/...`. Each package's layout is described by a sync config that your `roblox_sync_config_generator` script writes, usually a Rojo `default.project.json` from `pesde/scripts_rojo`. Script Sync ignores project files and maps the disk using its own fixed rules:\n- `name.luau` becomes a ModuleScript\n- a directory becomes a Folder\n- `init.*.luau` becomes a script with children\n\nOnly Script, LocalScript, ModuleScript and Folder instances sync. So any package whose layout depends on its project file, or that includes non-script content like models or `.json` files, will come out wrong or incomplete. A likely result: a linker requires something that Script Sync created as a plain Folder, and the `require` fails.\n\n**3. Two things the docs don't say:**\n- Whether Script Sync picks up a dot-prefixed folder like `.pesde`.\n- Whether it reliably imports a large batch of files that something outside Studio creates and deletes, which is what `pesde install` and updates do.\n\nRoblox's own docs say that if the file system should be the source of truth, \"third-party tools like Rojo are a better choice.\"\n\n**What I'd do instead:** keep Script Sync for your own scripts, and keep the packages outside the synced folder.\n- Run `pesde install` at the project root.\n- Use a small Rojo project that maps `roblox_packages` to `ReplicatedStorage.Packages`.\n- Either `rojo build` it to an `.rbxm` and insert that into Studio (rebuild whenever dependencies change), or run `rojo serve` for just that subtree.\n- Set `[place] shared = \"game.ReplicatedStorage.Packages\"`.\n- Require packages with `require(game.ReplicatedStorage.Packages.foo)`.\n\nDon't point Rojo and Script Sync at the same folder.\n\nIf you want to try your original layout anyway, test it with one package that has a dependency. Check whether `.pesde` appears in Studio and whether the `require` resolves before you commit to it.\n\nSources:\n- [Script Sync – Roblox Creator Docs](https://create.roblox.com/docs/scripting/sync)\n- [Script Sync early preview – DevForum](https://devforum.roblox.com/t/early-preview-studio-script-sync/3257548?page=8)\n- [pesde Roblox guide](https://docs.pesde.dev/guides/roblox/)\n- [pesde manifest reference](https://docs.pesde.dev/reference/manifest/)\n- [pesde on docs.rs](https://docs.rs/crate/pesde/latest)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Script Sync limitations hidden folders files"
+  ],
+  [
+   "WebSearch",
+   "pesde roblox_packages .pesde folder install directory"
+  ],
+  [
+   "WebFetch",
+   "https://create.roblox.com/docs/en-us/scripting/sync.md"
+  ],
+  [
+   "WebFetch",
+   "https://docs.pesde.dev/guides/roblox/"
+  ],
+  [
+   "WebFetch",
+   "https://docs.pesde.dev/reference/manifest/"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.2314917,
+ "turns": 7,
+ "minutes": 1.2,
+ "usage": {
+  "input_tokens": 10,
+  "cache_creation_input_tokens": 12691,
+  "cache_read_input_tokens": 87747,
+  "output_tokens": 4227,
+  "output_tokens_details": {
+   "thinking_tokens": 2205
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 12691,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 2317,
+    "cache_read_input_tokens": 22411,
+    "cache_creation_input_tokens": 656,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 656
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 10,
+   "outputTokens": 4227,
+   "cacheReadInputTokens": 87747,
+   "cacheCreationInputTokens": 12691,
+   "webSearchRequests": 0,
+   "costUSD": 0.20365740000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 2205,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 41283,
+   "outputTokens": 7412,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 2,
+   "costUSD": 0.027834300000000006,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 4181,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,120 @@
+{
+ "id": "advisor-disallow",
+ "kind": "trap",
+ "prompt": "I have a custom Claude Code subagent in .claude/agents/reviewer.md that has to give its own independent judgement, so it shouldn't consult the advisor tool. My sessions run with an advisor model set. My plan is to add `disallowedTools: advisor` to the agent's frontmatter. Is that enough to keep the subagent off the advisor, or do I need something else?",
+ "truth": "Not enough. Subagents inherit the session's advisor, and neither the agent's `tools` allowlist nor `disallowedTools: advisor` removes it. The options are an instruction in the agent's prompt not to call it, or turning the advisor off for the whole session (`/advisor off`, or `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1`).",
+ "trap": "Yes, `disallowedTools: advisor` removes the tool from the subagent.",
+ "source": "Tested with claude -p --advisor opus on 2.1.296 during PR #89; the advisor docs say subagents inherit the configured advisor.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, `disallowedTools: advisor` isn't enough. As far as I can tell from the docs, it won't do anything.\n\n**Why it won't work**\n\n- **Subagents get the advisor automatically.** The advisor docs say: \"Subagents inherit the configured advisor and apply the same pairing check against their own model.\"\n- **The advisor has no name you can block.** It runs on Anthropic's servers rather than inside Claude Code. The tools reference says it \"has no name you can reference in permission rules or hook matchers.\" Subagent `tools` and `disallowedTools` lists use those same names, so `advisor` matches nothing. You won't get an error, and the reviewer will still have the advisor. The docs don't mention `disallowedTools` and the advisor together, so this comes from those two statements, not from testing.\n\n**What actually keeps the reviewer off the advisor**\n\n1. **Give the reviewer a model the advisor can't advise.** An advisor only attaches when it ranks at or above the model it's advising. For example, if your advisor is Opus and the reviewer has `model: fable`, the advisor won't attach to the reviewer. This doesn't work if your advisor is Fable 5.1, because nothing ranks above it. Picking a weaker reviewer model doesn't help either, since weaker models can still call a stronger advisor.\n2. **Turn the advisor off for the whole session.** `/advisor off` turns it off for the session. Setting `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` disables it completely and ignores `advisorModel`. Both also remove the advisor from your main session, which you probably don't want.\n3. **Run the reviewer as its own process.** For example, a script or hook that runs `claude -p` with `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` set, so the reviewer runs with no advisor at all. Your main session keeps its advisor.\n\nYou can also tell the reviewer in its system prompt not to consult the advisor. That's only an instruction the model may ignore, not something Claude Code enforces. If independence has to be guaranteed, use option 1 if your advisor and reviewer models allow it, otherwise option 3.\n\nTo check whatever you pick, run the reviewer with your advisor set and press `Ctrl+O` to expand the transcript. If an `Advising` line appears, the reviewer still has the advisor.\n\nSources:\n- [Escalate hard decisions with the advisor tool](https://code.claude.com/docs/en/advisor)\n- [Tools reference](https://code.claude.com/docs/en/tools-reference)\n- [Subagents](https://code.claude.com/docs/en/sub-agents)",
+ "texts": [
+  "I'm checking the Claude Code tools reference to see whether the advisor can be blocked with `disallowedTools`.",
+  "No, `disallowedTools: advisor` isn't enough. As far as I can tell from the docs, it won't do anything.\n\n**Why it won't work**\n\n- **Subagents get the advisor automatically.** The advisor docs say: \"Subagents inherit the configured advisor and apply the same pairing check against their own model.\"\n- **The advisor has no name you can block.** It runs on Anthropic's servers rather than inside Claude Code. The tools reference says it \"has no name you can reference in permission rules or hook matchers.\" Subagent `tools` and `disallowedTools` lists use those same names, so `advisor` matches nothing. You won't get an error, and the reviewer will still have the advisor. The docs don't mention `disallowedTools` and the advisor together, so this comes from those two statements, not from testing.\n\n**What actually keeps the reviewer off the advisor**\n\n1. **Give the reviewer a model the advisor can't advise.** An advisor only attaches when it ranks at or above the model it's advising. For example, if your advisor is Opus and the reviewer has `model: fable`, the advisor won't attach to the reviewer. This doesn't work if your advisor is Fable 5.1, because nothing ranks above it. Picking a weaker reviewer model doesn't help either, since weaker models can still call a stronger advisor.\n2. **Turn the advisor off for the whole session.** `/advisor off` turns it off for the session. Setting `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` disables it completely and ignores `advisorModel`. Both also remove the advisor from your main session, which you probably don't want.\n3. **Run the reviewer as its own process.** For example, a script or hook that runs `claude -p` with `CLAUDE_CODE_DISABLE_ADVISOR_TOOL=1` set, so the reviewer runs with no advisor at all. Your main session keeps its advisor.\n\nYou can also tell the reviewer in its system prompt not to consult the advisor. That's only an instruction the model may ignore, not something Claude Code enforces. If independence has to be guaranteed, use option 1 if your advisor and reviewer models allow it, otherwise option 3.\n\nTo check whatever you pick, run the reviewer with your advisor set and press `Ctrl+O` to expand the transcript. If an `Advising` line appears, the reviewer still has the advisor.\n\nSources:\n- [Escalate hard decisions with the advisor tool](https://code.claude.com/docs/en/advisor)\n- [Tools reference](https://code.claude.com/docs/en/tools-reference)\n- [Subagents](https://code.claude.com/docs/en/sub-agents)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch,WebFetch"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/sub-agents"
+  ],
+  [
+   "WebSearch",
+   "Claude Code advisor tool advisorModel subagent disallowedTools"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/advisor"
+  ],
+  [
+   "WebFetch",
+   "https://code.claude.com/docs/en/tools-reference"
+  ],
+  [
+   "Grep",
+   "(?i)advisor"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.27070510000000003,
+ "turns": 8,
+ "minutes": 0.8,
+ "usage": {
+  "input_tokens": 14,
+  "cache_creation_input_tokens": 20896,
+  "cache_read_input_tokens": 145969,
+  "output_tokens": 2918,
+  "output_tokens_details": {
+   "thinking_tokens": 944
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 20896,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1536,
+    "cache_read_input_tokens": 30781,
+    "cache_creation_input_tokens": 491,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 491
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 14,
+   "outputTokens": 2918,
+   "cacheReadInputTokens": 145969,
+   "cacheCreationInputTokens": 20896,
+   "webSearchRequests": 0,
+   "costUSD": 0.2547778,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 944,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 49133,
+   "outputTokens": 2028,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.015927300000000002,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 533,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

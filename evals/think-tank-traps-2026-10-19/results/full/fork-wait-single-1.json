@@ -1,0 +1,76 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Yes. Claude will wait for all three answers before it carries on, and you don't need to change anything.** One caveat: I'm going by how the Agent tool works in the Claude Code build I'm running now. I can't confirm that my build is v2.1.296.\n\n**Why it works:**\n- In current Claude Code, subagents run in the background by default. Claude gets a notification when each one finishes, and its turn continues in the meantime.\n- Setting `run_in_background: false` makes a call blocking. The agent's final report comes back as that tool call's result.\n- If all three calls are in one message, they still run at the same time. Claude's next step waits until all three results are back, so the comparison step sees all three answers.\n\nSetting `false` explicitly is also the safer choice. The default has changed across versions (older builds ran subagents in the foreground by default). An explicit value keeps your skill working whichever way the default goes.\n\n**Optional hardening for the skill's instructions:**\n1. **Say the calls must go in one message.** If Claude spreads them across several turns, they run one after another instead of side by side. The result is still correct, just slower. A line like \"Launch all three agents in a single message\" makes this reliable.\n2. **Plan for a failed or missing answer.** A subagent can error out, or a user can interrupt it. Tell Claude what to do if fewer than three answers come back, such as comparing the ones it has and saying which is missing. Without this, it may make up the missing answer.\n3. **Don't switch to background mode** unless you want Claude to stay free during the run. If you do, the skill must tell Claude to wait for all three completion notifications before comparing. That's less reliable than the blocking call you have now.\n\nIf you want to check this against v2.1.296 itself, add a debug line to the skill that has Claude say how many agent results it received before comparing, then run it once.",
+ "texts": [
+  "**Yes. Claude will wait for all three answers before it carries on, and you don't need to change anything.** One caveat: I'm going by how the Agent tool works in the Claude Code build I'm running now. I can't confirm that my build is v2.1.296.\n\n**Why it works:**\n- In current Claude Code, subagents run in the background by default. Claude gets a notification when each one finishes, and its turn continues in the meantime.\n- Setting `run_in_background: false` makes a call blocking. The agent's final report comes back as that tool call's result.\n- If all three calls are in one message, they still run at the same time. Claude's next step waits until all three results are back, so the comparison step sees all three answers.\n\nSetting `false` explicitly is also the safer choice. The default has changed across versions (older builds ran subagents in the foreground by default). An explicit value keeps your skill working whichever way the default goes.\n\n**Optional hardening for the skill's instructions:**\n1. **Say the calls must go in one message.** If Claude spreads them across several turns, they run one after another instead of side by side. The result is still correct, just slower. A line like \"Launch all three agents in a single message\" makes this reliable.\n2. **Plan for a failed or missing answer.** A subagent can error out, or a user can interrupt it. Tell Claude what to do if fewer than three answers come back, such as comparing the ones it has and saying which is missing. Without this, it may make up the missing answer.\n3. **Don't switch to background mode** unless you want Claude to stay free during the run. If you do, the skill must tell Claude to wait for all three completion notifications before comparing. That's less reliable than the blocking call you have now.\n\nIf you want to check this against v2.1.296 itself, add a debug line to the skill that has Claude say how many agent results it received before comparing, then run it once."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0748712,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5796,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1321,
+  "output_tokens_details": {
+   "thinking_tokens": 725
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5796,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1321,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5796,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5796
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1321,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5796,
+   "webSearchRequests": 0,
+   "costUSD": 0.0748712,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 725,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

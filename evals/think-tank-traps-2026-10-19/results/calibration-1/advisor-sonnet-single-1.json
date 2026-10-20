@@ -1,0 +1,76 @@
+{
+ "id": "advisor-sonnet",
+ "kind": "trap",
+ "prompt": "I run Claude Code with Opus 5.5 as my main model and Opus as the advisor. To cut costs I want to switch the advisor to Sonnet 5.5 (`advisorModel: sonnet`) and keep Opus 5.5 as the main model. Good idea?",
+ "truth": "It won't work. An advisor must rank at or above the main model, and Opus 5.5 accepts only Fable or Opus 5 or later as its advisor. Claude Code won't attach a Sonnet advisor to Opus 5.5 requests, so the session runs with no advisor at all. To cut cost, run Sonnet as the main model with an Opus advisor instead, or turn the advisor off.",
+ "trap": "Yes, a Sonnet advisor is cheaper and works with an Opus main model.",
+ "source": "Advisor docs, Choose an advisor model.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "I don't think so. It points the advisor the wrong way, and it won't save much.\n\n**Why it's backwards:** The advisor exists to give a second opinion that's stronger than the main model's own, at key moments like planning, getting stuck, or before finishing. With Opus 5.5 as the main model, a Sonnet 5.5 advisor would be a weaker model reviewing a stronger one. Its advice will mostly repeat what Opus already concluded, or occasionally steer it worse. The setup works best with a cheaper main model and a stronger advisor.\n\n**Why the savings are small:** The advisor is consulted only now and then and gives short answers. Almost all of your token spend comes from the main model reading files, calling tools and writing code across the whole session. Moving the advisor to Sonnet cuts a small share of the bill and keeps the large share at Opus prices.\n\n**What I'd do instead:** Reverse it. Make **Sonnet 5.5 the main model and keep Opus as the advisor.** The bulk of the work then runs at Sonnet prices, and Opus still checks the decisions that matter most. That's where the real cost reduction is, and you lose much less quality than the drop to Sonnet alone would cost you.\n\n**If you need to stay on Opus 5.5 as the main model** (for example, if Sonnet has struggled on this project), then either:\n- keep Opus as the advisor and accept the cost, or\n- turn the advisor off entirely. A weaker advisor adds little, so this saves the same small amount with less noise.\n\nTo decide with real numbers, check your usage breakdown. If advisor calls are only a few percent of your spend, which is typical, changing the advisor model isn't worth it.",
+ "texts": [
+  "I don't think so. It points the advisor the wrong way, and it won't save much.\n\n**Why it's backwards:** The advisor exists to give a second opinion that's stronger than the main model's own, at key moments like planning, getting stuck, or before finishing. With Opus 5.5 as the main model, a Sonnet 5.5 advisor would be a weaker model reviewing a stronger one. Its advice will mostly repeat what Opus already concluded, or occasionally steer it worse. The setup works best with a cheaper main model and a stronger advisor.\n\n**Why the savings are small:** The advisor is consulted only now and then and gives short answers. Almost all of your token spend comes from the main model reading files, calling tools and writing code across the whole session. Moving the advisor to Sonnet cuts a small share of the bill and keeps the large share at Opus prices.\n\n**What I'd do instead:** Reverse it. Make **Sonnet 5.5 the main model and keep Opus as the advisor.** The bulk of the work then runs at Sonnet prices, and Opus still checks the decisions that matter most. That's where the real cost reduction is, and you lose much less quality than the drop to Sonnet alone would cost you.\n\n**If you need to stay on Opus 5.5 as the main model** (for example, if Sonnet has struggled on this project), then either:\n- keep Opus as the advisor and accept the cost, or\n- turn the advisor off entirely. A weaker advisor adds little, so this saves the same small amount with less noise.\n\nTo decide with real numbers, check your usage breakdown. If advisor calls are only a few percent of your spend, which is typical, changing the advisor model isn't worth it."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0689392,
+ "turns": 1,
+ "minutes": 0.2,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5802,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1022,
+  "output_tokens_details": {
+   "thinking_tokens": 467
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5802,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1022,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5802,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5802
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1022,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5802,
+   "webSearchRequests": 0,
+   "costUSD": 0.0689392,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 467,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

@@ -1,0 +1,99 @@
+{
+ "id": "live-scripting",
+ "kind": "trap",
+ "prompt": "Our Roblox place is in Team Create with two other people editing, and we haven't touched the collaborative editing settings. I'm going to have Claude rename a function across several scripts through the Studio MCP. Will my collaborators see those script edits right away, or only after I commit them?",
+ "truth": "Right away. Drafts mode is off by default, so Live Scripting puts each edit in every collaborator's session at once. Warn them or save a version before the edit, since there is no commit step to hold it back.",
+ "trap": "Only after you commit: script edits stay in your drafts until then.",
+ "source": "Ground truth in evals/agent-optimization-2026-10-17/grading/rubrics.md (q-studioonly).",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "I can't tell you for sure, because it depends on which script-editing mode your place is in, and I couldn't confirm what the default is today.\n\n**The two modes:**\n- **Live scripting:** edits sync to collaborators in real time, and they see your cursor in the script. There's no commit step, so a rename done through the MCP would show up for them right away, including any half-finished state partway through. ([Roblox Developer Hub](https://developer.roblox.com/articles/Team-Create))\n- **Drafts mode:** edits stay in your local Drafts window. Collaborators only see them after you select the scripts there and click **Commit**. ([Roblox Creator Docs](https://create.roblox.com/docs/studio/collaboration))\n\n**Which one is the default?** The sources disagree and are out of date. A Roblox DevForum beta post said Live Scripting would become the Team Create default and could be switched per place ([DevForum](https://devforum.roblox.com/t/live-scripting-beta/2640607)). A 2023 third-party guide also said collaborative scripting was on by default ([Stealthy Gaming](https://stealthygaming.com/add-people-to-roblox-studio)). I found nothing current that settles it, so \"we never changed the settings\" doesn't tell you which mode you're in.\n\n**How to check in about 30 seconds:** open a script while a collaborator has it open. If you see their colored cursor, you're in live mode. If changed scripts appear in the **Drafts** window (View → Drafts) waiting to be committed, you're in Drafts mode.\n\n**What this means for the MCP rename:** the MCP edits scripts through your Studio session, so the edits follow whichever mode the place is in.\n- **If you're in live mode:** collaborators will see each script change as it happens. They could also hit broken references between edits, or be typing in a script while it's being changed. Warn them first, or do the rename while they're out of the scripts involved.\n- **If you're in Drafts mode:** nobody sees anything until you commit. Before you commit, use \"Compare with server\" to check for changes your collaborators made in the meantime ([Creator Docs](https://create.roblox.com/docs/studio/collaboration)).\n\nYou can switch modes, but one recent guide says switching requires collaborators to leave the session ([Obby.fun](https://www.obby.fun/blog/roblox-studio-team-create)).\n\nSources:\n- [Team Create – Roblox Developer Hub](https://developer.roblox.com/articles/Team-Create)\n- [Collaboration – Roblox Creator Docs](https://create.roblox.com/docs/studio/collaboration)\n- [Live Scripting Beta – DevForum](https://devforum.roblox.com/t/live-scripting-beta/2640607)\n- [Stealthy Gaming – Add people to Roblox Studio](https://stealthygaming.com/add-people-to-roblox-studio)\n- [Obby.fun – Roblox Studio Team Create](https://www.obby.fun/blog/roblox-studio-team-create)",
+ "texts": [
+  "I can't tell you for sure, because it depends on which script-editing mode your place is in, and I couldn't confirm what the default is today.\n\n**The two modes:**\n- **Live scripting:** edits sync to collaborators in real time, and they see your cursor in the script. There's no commit step, so a rename done through the MCP would show up for them right away, including any half-finished state partway through. ([Roblox Developer Hub](https://developer.roblox.com/articles/Team-Create))\n- **Drafts mode:** edits stay in your local Drafts window. Collaborators only see them after you select the scripts there and click **Commit**. ([Roblox Creator Docs](https://create.roblox.com/docs/studio/collaboration))\n\n**Which one is the default?** The sources disagree and are out of date. A Roblox DevForum beta post said Live Scripting would become the Team Create default and could be switched per place ([DevForum](https://devforum.roblox.com/t/live-scripting-beta/2640607)). A 2023 third-party guide also said collaborative scripting was on by default ([Stealthy Gaming](https://stealthygaming.com/add-people-to-roblox-studio)). I found nothing current that settles it, so \"we never changed the settings\" doesn't tell you which mode you're in.\n\n**How to check in about 30 seconds:** open a script while a collaborator has it open. If you see their colored cursor, you're in live mode. If changed scripts appear in the **Drafts** window (View → Drafts) waiting to be committed, you're in Drafts mode.\n\n**What this means for the MCP rename:** the MCP edits scripts through your Studio session, so the edits follow whichever mode the place is in.\n- **If you're in live mode:** collaborators will see each script change as it happens. They could also hit broken references between edits, or be typing in a script while it's being changed. Warn them first, or do the rename while they're out of the scripts involved.\n- **If you're in Drafts mode:** nobody sees anything until you commit. Before you commit, use \"Compare with server\" to check for changes your collaborators made in the meantime ([Creator Docs](https://create.roblox.com/docs/studio/collaboration)).\n\nYou can switch modes, but one recent guide says switching requires collaborators to leave the session ([Obby.fun](https://www.obby.fun/blog/roblox-studio-team-create)).\n\nSources:\n- [Team Create – Roblox Developer Hub](https://developer.roblox.com/articles/Team-Create)\n- [Collaboration – Roblox Creator Docs](https://create.roblox.com/docs/studio/collaboration)\n- [Live Scripting Beta – DevForum](https://devforum.roblox.com/t/live-scripting-beta/2640607)\n- [Stealthy Gaming – Add people to Roblox Studio](https://stealthygaming.com/add-people-to-roblox-studio)\n- [Obby.fun – Roblox Studio Team Create](https://www.obby.fun/blog/roblox-studio-team-create)"
+ ],
+ "steps": [
+  [
+   "ToolSearch",
+   "select:WebSearch"
+  ],
+  [
+   "WebSearch",
+   "Roblox Studio Team Create collaborative editing live scripting drafts commit default 2025"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.1286297,
+ "turns": 3,
+ "minutes": 0.6,
+ "usage": {
+  "input_tokens": 6,
+  "cache_creation_input_tokens": 8338,
+  "cache_read_input_tokens": 43957,
+  "output_tokens": 2066,
+  "output_tokens_details": {
+   "thinking_tokens": 878
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 8338,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1211,
+    "cache_read_input_tokens": 17412,
+    "cache_creation_input_tokens": 1302,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1302
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 6,
+   "outputTokens": 2066,
+   "cacheReadInputTokens": 43957,
+   "cacheCreationInputTokens": 8338,
+   "webSearchRequests": 0,
+   "costUSD": 0.11683940000000001,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 878,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  },
+  "claude-haiku-5-5": {
+   "inputTokens": 13318,
+   "outputTokens": 917,
+   "cacheReadInputTokens": 0,
+   "cacheCreationInputTokens": 0,
+   "webSearchRequests": 1,
+   "costUSD": 0.0117903,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 179,
+   "canonicalModel": "claude-haiku-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

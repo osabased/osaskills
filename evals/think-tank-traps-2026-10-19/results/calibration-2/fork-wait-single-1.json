@@ -1,0 +1,76 @@
+{
+ "id": "fork-wait",
+ "kind": "trap",
+ "prompt": "My Claude Code skill spawns three subagents in one message, each with `run_in_background: false`, and then compares their answers. My users run Claude Code v2.1.296 in an ordinary interactive terminal session. Will Claude wait for all three answers before it carries on, as the skill expects? Should I change anything?",
+ "truth": "No. Fork mode is on by default in interactive terminal sessions from v2.1.232, and while it is on Claude can't wait for a subagent there. The skill should expect answers to arrive later as notifications and wait for all three, or users must turn fork mode off (`CLAUDE_CODE_FORK_SUBAGENT=0`).",
+ "trap": "Yes, `run_in_background: false` makes Claude wait for each subagent.",
+ "source": "Sub-agents docs, Turn fork mode off: on by default from v2.1.302, and in an interactive terminal session from v2.1.232.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "**Yes, most likely.** I can't check your skill file or run v2.1.296 here, so this is based on how the Agent tool behaves in my own session:\n\n- **Foreground calls block.** With `run_in_background: false`, each Agent call returns the subagent's final report as its tool result.\n- **Calls in one message run at the same time.** The three subagents run concurrently, and Claude's turn doesn't continue until all three results are back. So Claude will have all three answers when it starts comparing, which is what your skill expects.\n\n**Things worth changing or guarding against:**\n\n1. **Make the parameter explicit in the skill text.** In current builds, subagents run in the background by default. If the model drops `run_in_background: false` on even one of the three calls, that subagent's answer won't be there for the comparison. It arrives later as a notification, and the model may compare two answers or end its turn early. Say it plainly, e.g. \"Launch all three in a single message, each with `run_in_background: false`.\"\n2. **Add a fallback rule for waiting.** For example: \"Don't compare until you have all three answers. If any subagent ran in the background, wait for its completion notification first.\" This also covers a user moving a running subagent to the background mid-run, which interactive sessions may allow.\n3. **Don't rely on the `fork` subagent type** unless you've tested it. It's handled differently from named agent types (for example, it ignores the model override). I haven't confirmed that it follows `run_in_background` the same way, so use a named type like `general-purpose`.\n4. **Tell each subagent what to put in its final message.** Only that final message comes back to the parent, so ask each one to end with an answer in a format you can compare directly.\n\nIf you paste the skill's instructions, I can check the exact wording.",
+ "texts": [
+  "**Yes, most likely.** I can't check your skill file or run v2.1.296 here, so this is based on how the Agent tool behaves in my own session:\n\n- **Foreground calls block.** With `run_in_background: false`, each Agent call returns the subagent's final report as its tool result.\n- **Calls in one message run at the same time.** The three subagents run concurrently, and Claude's turn doesn't continue until all three results are back. So Claude will have all three answers when it starts comparing, which is what your skill expects.\n\n**Things worth changing or guarding against:**\n\n1. **Make the parameter explicit in the skill text.** In current builds, subagents run in the background by default. If the model drops `run_in_background: false` on even one of the three calls, that subagent's answer won't be there for the comparison. It arrives later as a notification, and the model may compare two answers or end its turn early. Say it plainly, e.g. \"Launch all three in a single message, each with `run_in_background: false`.\"\n2. **Add a fallback rule for waiting.** For example: \"Don't compare until you have all three answers. If any subagent ran in the background, wait for its completion notification first.\" This also covers a user moving a running subagent to the background mid-run, which interactive sessions may allow.\n3. **Don't rely on the `fork` subagent type** unless you've tested it. It's handled differently from named agent types (for example, it ignores the model override). I haven't confirmed that it follows `run_in_background` the same way, so use a named type like `general-purpose`.\n4. **Tell each subagent what to put in its final message.** Only that final message comes back to the parent, so ask each one to end with an answer in a format you can compare directly.\n\nIf you paste the skill's instructions, I can check the exact wording."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0802952,
+ "turns": 1,
+ "minutes": 0.3,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5794,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 1593,
+  "output_tokens_details": {
+   "thinking_tokens": 1023
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5794,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 1593,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5794,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5794
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 1593,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5794,
+   "webSearchRequests": 0,
+   "costUSD": 0.0802952,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 1023,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

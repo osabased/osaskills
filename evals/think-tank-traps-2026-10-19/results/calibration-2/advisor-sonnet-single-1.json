@@ -1,0 +1,89 @@
+{
+ "id": "advisor-sonnet",
+ "kind": "trap",
+ "prompt": "I run Claude Code with Opus 5.5 as my main model and Opus as the advisor. To cut costs I want to switch the advisor to Sonnet 5.5 (`advisorModel: sonnet`) and keep Opus 5.5 as the main model. Good idea?",
+ "truth": "It won't work. An advisor must rank at or above the main model, and Opus 5.5 accepts only Fable or Opus 5 or later as its advisor. Claude Code won't attach a Sonnet advisor to Opus 5.5 requests, so the session runs with no advisor at all. To cut cost, run Sonnet as the main model with an Opus advisor instead, or turn the advisor off.",
+ "trap": "Yes, a Sonnet advisor is cheaper and works with an Opus main model.",
+ "source": "Advisor docs, Choose an advisor model.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, that won't work. The advisor model has to be at least as capable as the main model, so Sonnet 5.5 can't advise Opus 5.5.\n\n**This pairing isn't allowed.** In the advisor tool's pairing table, an `claude-opus-5-5` executor accepts only these advisors: Opus 5.5, Opus 5, Fable 5, Fable 5.1, Mythos 5 or Mythos 5.1. If you send Sonnet 5.5 as the advisor, the API returns `400 invalid_request_error`. I'm not sure exactly how Claude Code handles that setting: it might show an error or quietly drop the advisor. Either way, you wouldn't get cheaper advice.\n\n**It wouldn't save much anyway.** The main model generates most of the tokens, and the advisor is only consulted now and then for planning. Most of your bill is Opus 5.5 as the main model ($4 / $20 per million input/output tokens), so making the advisor cheaper only trims a small share.\n\n**Better ways to cut costs:**\n1. **Swap the roles: Sonnet 5.5 as main, Opus 5.5 as advisor.** This is the setup the advisor feature is built for, and it's a valid pairing. Sonnet 5.5 costs half as much ($2 / $10) and does most of the work, while Opus 5.5 handles the harder decisions. This is the biggest saving, but check on your own tasks that the quality holds.\n2. **Keep Opus 5.5 as main and turn off the advisor.** When Opus 5.5 advises Opus 5.5, the advice adds less than a stronger model would. Dropping it removes those calls entirely.\n3. **Lower the effort setting on Opus 5.5** for routine work. Effort controls how much the model thinks, so it directly affects token spend.\n\nI'd try option 1 first. Fall back to option 2 if Sonnet 5.5 struggles on your project.",
+ "texts": [
+  "No, that won't work. The advisor model has to be at least as capable as the main model, so Sonnet 5.5 can't advise Opus 5.5.\n\n**This pairing isn't allowed.** In the advisor tool's pairing table, an `claude-opus-5-5` executor accepts only these advisors: Opus 5.5, Opus 5, Fable 5, Fable 5.1, Mythos 5 or Mythos 5.1. If you send Sonnet 5.5 as the advisor, the API returns `400 invalid_request_error`. I'm not sure exactly how Claude Code handles that setting: it might show an error or quietly drop the advisor. Either way, you wouldn't get cheaper advice.\n\n**It wouldn't save much anyway.** The main model generates most of the tokens, and the advisor is only consulted now and then for planning. Most of your bill is Opus 5.5 as the main model ($4 / $20 per million input/output tokens), so making the advisor cheaper only trims a small share.\n\n**Better ways to cut costs:**\n1. **Swap the roles: Sonnet 5.5 as main, Opus 5.5 as advisor.** This is the setup the advisor feature is built for, and it's a valid pairing. Sonnet 5.5 costs half as much ($2 / $10) and does most of the work, while Opus 5.5 handles the harder decisions. This is the biggest saving, but check on your own tasks that the quality holds.\n2. **Keep Opus 5.5 as main and turn off the advisor.** When Opus 5.5 advises Opus 5.5, the advice adds less than a stronger model would. Dropping it removes those calls entirely.\n3. **Lower the effort setting on Opus 5.5** for routine work. Effort controls how much the model thinks, so it directly affects token spend.\n\nI'd try option 1 first. Fall back to option 2 if Sonnet 5.5 struggles on your project."
+ ],
+ "steps": [
+  [
+   "Skill",
+   "claude-api"
+  ],
+  [
+   "Grep",
+   "(?i)advisor"
+  ],
+  [
+   "Read",
+   "~\\AppData\\Local\\Temp\\claude\\bundled-skills\\2.1.296\\9388555d79368f10cdf20bf1ec876788\\claude-api\\shared\\tool-use-concepts.md"
+  ]
+ ],
+ "panelists": [],
+ "cost": 0.46788280000000004,
+ "turns": 5,
+ "minutes": 0.4,
+ "usage": {
+  "input_tokens": 8,
+  "cache_creation_input_tokens": 50200,
+  "cache_read_input_tokens": 143554,
+  "output_tokens": 1877,
+  "output_tokens_details": {
+   "thinking_tokens": 717
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 50200,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 983,
+    "cache_read_input_tokens": 59485,
+    "cache_creation_input_tokens": 1091,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 1091
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 8,
+   "outputTokens": 1877,
+   "cacheReadInputTokens": 143554,
+   "cacheCreationInputTokens": 50200,
+   "webSearchRequests": 0,
+   "costUSD": 0.46788280000000004,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 717,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}

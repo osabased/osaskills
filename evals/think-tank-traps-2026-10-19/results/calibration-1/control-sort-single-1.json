@@ -1,0 +1,76 @@
+{
+ "id": "control-sort",
+ "kind": "control",
+ "prompt": "I sort a list of order records by priority with `sorted(orders, key=lambda o: o.priority)`. Orders with the same priority must stay in the order they arrived. Should I add the arrival index to the key as a tie-breaker?",
+ "truth": "Not needed. Python's `sorted` is guaranteed stable, so records with equal priority keep their original order.",
+ "trap": "Yes, add the index: equal keys can be reordered.",
+ "source": "Python docs, Sorting Techniques: sorts are guaranteed to be stable.",
+ "arm": "single",
+ "rep": 1,
+ "model": "opus",
+ "effort": "high",
+ "panel_args": "",
+ "result": "No, you don't need it, provided `orders` is already in arrival order when you call `sorted`.\n\nPython's `sorted()` and `list.sort()` are guaranteed to be **stable**. This is part of the language spec, not an implementation detail. Records with equal keys keep their relative order from the input. So `sorted(orders, key=lambda o: o.priority)` already does what you want.\n\nA few cases where you would need a tie-breaker, or something else:\n\n- **The input isn't in arrival order.** Stability only keeps the order the list already has. If `orders` comes from a set, a database query with no `ORDER BY`, a merge of several sources, or parallel workers, the existing order may not match arrival. In that case, sort on a real arrival field, e.g. `key=lambda o: (o.priority, o.arrived_at)`. Using `enumerate()` on a list that's already scrambled won't recover arrival order.\n- **Descending priority.** `reverse=True` is still stable: ties keep their original order and are not reversed. `key=lambda o: -o.priority` works the same way for numbers. Either one is fine.\n- **Multi-pass sorts.** If you sort in several passes (secondary key first, then primary), each pass depends on stability. That works in Python but is easy to break if someone reorders the passes.\n- **Porting to another language or tool.** Not every sort is stable. C++ `std::sort` isn't, SQL `ORDER BY` doesn't promise any order for ties, and some JS engines were unstable before ES2019. If this logic might move, an explicit tie-breaker makes it portable.\n\nSome people add the tie-breaker anyway so the requirement is visible in the code. If you skip it, a short comment like `# relies on stable sort to preserve arrival order` does the same job for free.",
+ "texts": [
+  "No, you don't need it, provided `orders` is already in arrival order when you call `sorted`.\n\nPython's `sorted()` and `list.sort()` are guaranteed to be **stable**. This is part of the language spec, not an implementation detail. Records with equal keys keep their relative order from the input. So `sorted(orders, key=lambda o: o.priority)` already does what you want.\n\nA few cases where you would need a tie-breaker, or something else:\n\n- **The input isn't in arrival order.** Stability only keeps the order the list already has. If `orders` comes from a set, a database query with no `ORDER BY`, a merge of several sources, or parallel workers, the existing order may not match arrival. In that case, sort on a real arrival field, e.g. `key=lambda o: (o.priority, o.arrived_at)`. Using `enumerate()` on a list that's already scrambled won't recover arrival order.\n- **Descending priority.** `reverse=True` is still stable: ties keep their original order and are not reversed. `key=lambda o: -o.priority` works the same way for numbers. Either one is fine.\n- **Multi-pass sorts.** If you sort in several passes (secondary key first, then primary), each pass depends on stability. That works in Python but is easy to break if someone reorders the passes.\n- **Porting to another language or tool.** Not every sort is stable. C++ `std::sort` isn't, SQL `ORDER BY` doesn't promise any order for ties, and some JS engines were unstable before ES2019. If this logic might move, an explicit tie-breaker makes it portable.\n\nSome people add the tie-breaker anyway so the requirement is visible in the code. If you skip it, a short comment like `# relies on stable sort to preserve arrival order` does the same job for free."
+ ],
+ "steps": [],
+ "panelists": [],
+ "cost": 0.0633272,
+ "turns": 1,
+ "minutes": 0.2,
+ "usage": {
+  "input_tokens": 2,
+  "cache_creation_input_tokens": 5778,
+  "cache_read_input_tokens": 10376,
+  "output_tokens": 751,
+  "output_tokens_details": {
+   "thinking_tokens": 165
+  },
+  "server_tool_use": {
+   "web_search_requests": 0,
+   "web_fetch_requests": 0
+  },
+  "service_tier": "standard",
+  "cache_creation": {
+   "ephemeral_1h_input_tokens": 5778,
+   "ephemeral_5m_input_tokens": 0
+  },
+  "inference_geo": "global",
+  "iterations": [
+   {
+    "input_tokens": 2,
+    "output_tokens": 751,
+    "cache_read_input_tokens": 10376,
+    "cache_creation_input_tokens": 5778,
+    "cache_creation": {
+     "ephemeral_5m_input_tokens": 0,
+     "ephemeral_1h_input_tokens": 5778
+    },
+    "type": "message"
+   }
+  ],
+  "speed": "standard",
+  "fallback_credit": null
+ },
+ "model_usage": {
+  "claude-opus-5-5": {
+   "inputTokens": 2,
+   "outputTokens": 751,
+   "cacheReadInputTokens": 10376,
+   "cacheCreationInputTokens": 5778,
+   "webSearchRequests": 0,
+   "costUSD": 0.0633272,
+   "contextWindow": 1000000,
+   "maxOutputTokens": 128000,
+   "thinkingTokens": 165,
+   "canonicalModel": "claude-opus-5-5",
+   "provider": "firstParty",
+   "costBasis": "list"
+  }
+ },
+ "denials": [],
+ "rc": 0,
+ "stderr": "",
+ "cli": "2.1.296 (Claude Code)"
+}
