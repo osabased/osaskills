@@ -217,7 +217,7 @@ In the example, the brief's rust `#C4552D` gave `textOnAccent` only 4.25:1, so t
 
 It skips comments and strings, and any line marked `-- theme-guard: allow <reason>` for a value that really is one-off. The reason is for the user to read, so a marker without one doesn't count. Spacing, radii and durations aren't checked, because too many plain numbers are legitimate. The review catches those. It reads no other language, so a roblox-ts project needs its own check for these values.
 
-Copy the script into the project, beside its other check scripts, because CI can't reach this skill's folder. Run it from the project's check on the UI folders, allowing the theme module:
+Copy the script into the project, beside its other check scripts, because CI can't reach this skill's folder. Run it from the project's check, with whatever Python the check uses, on the UI folders, allowing the theme module:
 
 ```sh
 python scripts/theme_guard.py src/client/UI --allow src/client/UI/Theme.luau

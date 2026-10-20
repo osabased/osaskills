@@ -2,7 +2,7 @@
 
 A tell is a default used without a reason: what an editor, a template or a model produces when nobody decides. Players don't name tells, but they feel the result, a game that looks like every other prototype. When the brief or the taste log asks for one of these, it's a choice, not a tell: keep it.
 
-The entries are written for calm UI. Many Roblox games, especially for younger players, are loud on purpose: saturated colour, chunky display type, thick strokes and outlined text. When the user picked a bold direction ([style tiles](process.md#style-tiles)), those traits are its style rather than tells. Judge them by what holds in any style: one construction for depth, one outline weight, and colour spent by rank, so the accent and currencies still stand out.
+Three entries assume calm UI: effects, saturation and outlines. Many Roblox games, especially for younger players, are loud on purpose: saturated colour, chunky display type, thick strokes and outlined text. When the user picked a bold direction ([style tiles](process.md#style-tiles)), those traits are its style rather than tells. Judge them by what holds in any style: one construction for depth, one outline weight, and colour spent by rank, so the accent and currencies still stand out.
 
 Each entry says what the tell looks like, why it reads as unchosen, and a better move.
 
