@@ -4,8 +4,10 @@ Each case is a sequence of user turns sent to one headless session (`claude -p`,
 in a fresh copy of scaffold/. Load the plugin from a checkout with --plugin-dir. Usage:
     python harness.py --plugin-dir DIR [--model sonnet] [--runs 1] [case-id ...]
 """
-import argparse, json, os, re, shutil, subprocess, tempfile, pathlib, uuid, concurrent.futures as cf
+import argparse, json, os, re, shutil, subprocess, sys, tempfile, time, pathlib, uuid, concurrent.futures as cf
 ROOT = pathlib.Path(__file__).parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 SCAFFOLD = ROOT / "scaffold"
 BASE = {
     "@base1": "I want a wishlist that follows me across devices. Start by adding a heart button on each product that adds it to a wishlist.",
@@ -128,6 +130,7 @@ if __name__ == "__main__":
     jobs = [(c, n) for c in cases for n in range(1, a.runs + 1)]
     out = ROOT / a.out / a.model
     out.mkdir(parents=True, exist_ok=True)
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="osaskills-bp-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda j: run(a.cli, j[0], j[1], a.model, a.plugin_dir, pathlib.Path(tmp)), jobs))
     for r in recs:
@@ -137,3 +140,5 @@ if __name__ == "__main__":
               f"words={r.get('words')} bullet<={r.get('max_bullet_words')} tags={r.get('tags')} "
               f"impl={r.get('impl')} off={r.get('off_goal_hits')} ${r['cost']:.2f}")
     print("total cost $%.2f" % sum(r["cost"] for r in recs))
+    version = subprocess.run([a.cli, "--version"], capture_output=True, text=True, env=clean_env()).stdout.strip()
+    ledger.record(ROOT.name, f"{a.out}/{a.model}", recs, lambda r: "bigger-picture", cond_of=lambda r: "plugin", started=started, cli=version)

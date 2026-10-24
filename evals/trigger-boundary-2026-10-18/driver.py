@@ -4,8 +4,10 @@ Reuses run() from ../agent-optimization-2026-10-17/harness.py, so isolation, ins
 that eval. Usage:
     python driver.py --old-root <dir> --new-root <dir> [--reps sonnet=3,haiku=5] [--out results] [--groups boundary,anchor,srp-spot]
 """
-import argparse, concurrent.futures as cf, importlib.util, json, pathlib, subprocess, sys, tempfile
+import argparse, concurrent.futures as cf, importlib.util, json, pathlib, subprocess, sys, tempfile, time
 ROOT = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 spec = importlib.util.spec_from_file_location("h", ROOT.parent / "agent-optimization-2026-10-17" / "harness.py")
 h = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(h)
@@ -35,6 +37,7 @@ if __name__ == "__main__":
     out = ROOT / a.out
     out.mkdir(parents=True, exist_ok=True)
     version = subprocess.run(["claude", "--version"], capture_output=True, text=True, env=h.clean_env()).stdout.strip()
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="boundary-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda j: h.run(*j[:3], j[3], roots[j[2]], pathlib.Path(tmp)), jobs))
         scrub = h.scrubber([(tmp, "<runs>"), (roots["old"], "<old-plugin>"), (roots["new"], "<new-plugin>"),
@@ -48,3 +51,4 @@ if __name__ == "__main__":
             json.dumps(r, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"{r['verdict']:4} {r['id']:26} {r['model']:6} {r['cond']:4} {r['rep']} route={r['route']} cost={r['cost']} rc={r['rc']}")
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    ledger.record(ROOT.name, a.out, recs, lambda r: SKILLS.get(r["expect"]), started=started, cli=version)

@@ -6,9 +6,11 @@ out of it. "new" is this checkout's skills/; "old" is a skills/ tree you extract
 `git archive origin/main skills | tar -x -C <dir>`. Usage:
     python harness.py --old-skills <dir>/skills [--reps N] [--conds old,new] [--out results] [case-id ...]
 """
-import argparse, json, os, shutil, subprocess, tempfile, pathlib, concurrent.futures as cf
+import argparse, json, os, shutil, subprocess, sys, tempfile, time, pathlib, concurrent.futures as cf
 ROOT = pathlib.Path(__file__).parent
 REPO = ROOT.parent.parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 SCAFFOLDS = {"base": ROOT.parent / "sonnet-ab-2026-10-11" / "scaffold", "game": ROOT / "scaffold"}
 DENY = {"trigger": "Bash,PowerShell,Write,Edit,WebSearch,WebFetch,Agent,Task",
         "quality": "Bash,PowerShell,WebSearch,WebFetch,Agent,Task"}
@@ -95,6 +97,7 @@ if __name__ == "__main__":
     jobs = [(c, cond, rep) for c in cases for cond in a.conds.split(",") for rep in range(1, a.reps + 1)]
     out = ROOT / a.out
     out.mkdir(parents=True, exist_ok=True)
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="srp-revamp-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda j: run(j[0], j[1], j[2], roots[j[1]], pathlib.Path(tmp)), jobs))
     for r in recs:
@@ -105,3 +108,5 @@ if __name__ == "__main__":
         print(f"{r['verdict']:4} {r['id']:13} {r['cond']} {r['rep']} loaded={r['loaded']} reads={len(r['reads'])} "
               f"skill_bytes={skill_bytes} turns={r['turns']} cost={r['cost']} rc={r['rc']}")
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    ledger.record(ROOT.name, a.out, recs, lambda r: (r.get("expect") or "").lstrip("!") or None, model_of=lambda r: "sonnet",
+                  skills=["structure-roblox-projects"] if any(r["kind"] == "quality" for r in recs) else [], started=started)

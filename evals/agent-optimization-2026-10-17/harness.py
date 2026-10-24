@@ -10,10 +10,12 @@ server, with its tools allowed, and keeps the stub's call log. "old" is a plugin
 `git archive origin/main skills hooks | tar -x -C <dir>`. Results have local paths replaced. Usage:
     python harness.py --old-root <dir> [--models sonnet,haiku] [--reps N] [--conds old,new,bare] [--out results] [case-id ...]
 """
-import argparse, json, os, re, shutil, subprocess, sys, tempfile, pathlib, concurrent.futures as cf
+import argparse, json, os, re, shutil, subprocess, sys, tempfile, time, pathlib, concurrent.futures as cf
 from collections import Counter
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 SCAFFOLDS = {"base": ROOT.parent / "sonnet-ab-2026-10-11" / "scaffold",
              "game": ROOT.parent / "structure-revamp-2026-10-15" / "scaffold",
              "coin": ROOT.parent / "resource-revamp-2026-10-15" / "scaffold",
@@ -159,6 +161,7 @@ if __name__ == "__main__":
     out = ROOT / a.out
     out.mkdir(parents=True, exist_ok=True)
     version = subprocess.run(["claude", "--version"], capture_output=True, text=True, env=clean_env()).stdout.strip()
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="agent-opt-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda j: run(*j, roots[j[2]], pathlib.Path(tmp)), jobs))
         scrub = scrubber([(tmp, "<runs>"), (roots["old"], "<old-plugin>"), (REPO, "<new-plugin>"),
@@ -178,3 +181,6 @@ if __name__ == "__main__":
     for key in sorted(k for k in passes if len(k) == 3):
         print("%s %s %s: %d/%d trigger checks pass" % (*key, passes[key], passes[(*key, "n")]))
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    ledger.record(ROOT.name, a.out, recs, lambda r: (r.get("expect") or "").lstrip("!") or None if r["kind"] == "trigger" else None,
+                  skills=sorted({{"srp": "structure-roblox-projects", "rra": RRA}[r["suite"]] for r in recs if r["kind"] == "quality"}),
+                  started=started, cli=version)

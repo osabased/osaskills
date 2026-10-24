@@ -14,6 +14,8 @@ transcripts, which are then deleted. Results have local paths replaced. Usage:
 import argparse, json, os, re, shutil, subprocess, sys, tempfile, time, pathlib, concurrent.futures as cf
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 HOME = pathlib.Path.home()
 PROJECTS = HOME / ".claude" / "projects"
 MAIN = pathlib.Path(subprocess.run(["git", "rev-parse", "--path-format=absolute", "--git-common-dir"], cwd=ROOT,
@@ -199,6 +201,7 @@ if __name__ == "__main__":
     out = ROOT / a.out
     out.mkdir(parents=True, exist_ok=True)
     version = subprocess.run(["claude", "--version"], capture_output=True, text=True, env=clean_env()).stdout.strip()
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix=PREFIX) as tmp, cf.ThreadPoolExecutor(a.workers) as ex:
         recs = list(ex.map(lambda j: run(*j, a.model, a.effort, a.panel_args, pathlib.Path(tmp)), jobs))
         scrub = scrubber([(tmp, "<runs>"), (REPO, "<repo>"), (HOME, "~")])
@@ -212,3 +215,5 @@ if __name__ == "__main__":
               f"panelists={len(r['panelists'])} advisor={sum(x['advisor_calls'] for x in r['panelists'])} "
               f"denials={len(r['denials'] or [])} key_hits={len(r['key_hits'])} rc={r['rc']} by_model={models}")
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    ledger.record(ROOT.name, a.out, recs, lambda r: None, skills=["think-tank"] if any(r["arm"] in ("panel", "solo") for r in recs) else [],
+                  cond_of=lambda r: r["arm"], started=started, cli=version)

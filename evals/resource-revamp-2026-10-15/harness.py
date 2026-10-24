@@ -8,9 +8,11 @@ of it. Quality runs may execute `python` and `uv` commands; trigger runs can't e
 `git archive 20d318a skills hooks | tar -x -C <dir>`. Results have local paths replaced. Usage:
     python harness.py --old-root <dir> [--reps N] [--conds old,new] [--out results] [case-id ...]
 """
-import argparse, json, os, re, shutil, subprocess, sys, tempfile, pathlib, concurrent.futures as cf
+import argparse, json, os, re, shutil, subprocess, sys, tempfile, time, pathlib, concurrent.futures as cf
 ROOT = pathlib.Path(__file__).resolve().parent
 REPO = ROOT.parent.parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 DENY = {"trigger": "Bash,PowerShell,Write,Edit,WebSearch,WebFetch,Agent,Task",
         "quality": "PowerShell,WebSearch,WebFetch,Agent,Task"}
 ALLOW = {"trigger": [], "quality": ["Bash(python:*)", "Bash(python3:*)", "Bash(uv:*)"]}
@@ -135,6 +137,7 @@ if __name__ == "__main__":
     jobs = [(c, cond, rep) for c in cases for cond in a.conds.split(",") for rep in range(1, a.reps + 1)]
     out = ROOT / a.out
     out.mkdir(parents=True, exist_ok=True)
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="rra-revamp-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda j: run(j[0], j[1], j[2], roots[j[1]], pathlib.Path(tmp)), jobs))
         scrub = scrubber([(tmp, "<runs>"), (roots["old"], "<old-plugin>"), (REPO, "<new-plugin>"),
@@ -149,3 +152,5 @@ if __name__ == "__main__":
               f"skill_bytes={skill_bytes} clones={r['clones']} denials={len(r['denials'] or [])} "
               f"turns={r['turns']} cost={r['cost']} rc={r['rc']}")
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    ledger.record(ROOT.name, a.out, recs, lambda r: (r.get("expect") or "").lstrip("!") or None, model_of=lambda r: "sonnet",
+                  skills=["roblox-resource-acquisition"] if any(r["kind"] == "quality" for r in recs) else [], started=started)

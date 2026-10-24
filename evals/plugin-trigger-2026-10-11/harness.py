@@ -4,8 +4,10 @@ Uses your normal Claude Code config, so install the plugin first, or pass --plug
 a checkout instead (with the plugin not installed, so it isn't loaded twice). Usage:
     python harness.py [--cli PATH] [--plugin-dir DIR] [case-id ...]
 """
-import argparse, json, os, shutil, subprocess, tempfile, pathlib, concurrent.futures as cf
+import argparse, json, os, shutil, subprocess, sys, tempfile, time, pathlib, concurrent.futures as cf
 ROOT = pathlib.Path(__file__).parent
+sys.path.insert(0, str(ROOT.parent / "_lib"))
+import ledger
 SCAFFOLD = ROOT.parent / "sonnet-ab-2026-10-11" / "scaffold"
 
 def clean_env():
@@ -80,6 +82,7 @@ if __name__ == "__main__":
     a = ap.parse_args()
     cases = [c for c in json.load(open(ROOT / "cases.json", encoding="utf-8")) if not a.ids or c["id"] in a.ids]
     (ROOT / "results").mkdir(exist_ok=True)
+    started = time.time()
     with tempfile.TemporaryDirectory(prefix="osaskills-trigger-") as tmp, cf.ThreadPoolExecutor(5) as ex:
         recs = list(ex.map(lambda c: run(a.cli, c, pathlib.Path(tmp), a.plugin_dir), cases))
     for r in recs:
@@ -87,3 +90,6 @@ if __name__ == "__main__":
         (ROOT / "results" / f"{r['id']}.json").write_text(json.dumps(r, indent=1, ensure_ascii=False), encoding="utf-8")
         print(f"{r['verdict']:5} {r['id']:18} loaded={r['loaded']} reads={len(r['reads'])} denied={r['denied']} init_skills={r['init_skills']} rc={r['rc']}")
     print("total cost $%.2f" % sum(r["cost"] or 0 for r in recs))
+    version = subprocess.run([a.cli, "--version"], capture_output=True, text=True, env=clean_env()).stdout.strip()
+    ledger.record(ROOT.name, "results", recs, lambda r: (r.get("expect") or "").lstrip("!") or None, model_of=lambda r: "sonnet",
+                  cond_of=lambda r: "plugin", started=started, cli=version)
