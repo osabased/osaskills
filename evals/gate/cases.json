@@ -1,60 +1,172 @@
 [
- {"id": "registered", "kind": "registered", "max_turns": 1,
+ {
+  "id": "registered",
+  "kind": "registered",
+  "max_turns": 1,
   "prompt": "Do not use any tools. Reply with the single word NONE.",
-  "skills": ["bigger-picture", "design-roblox-ui", "roblox-resource-acquisition", "structure-roblox-projects",
-             "sharpen", "then-what", "think-tank", "vod-discovery",
-             "roblox-blink", "roblox-bootstrapper", "roblox-charm", "roblox-janitor", "roblox-lemonsignal",
-             "roblox-nevermore-ui", "roblox-ui-labs", "roblox-vide"]},
-
- {"id": "srp-glob", "kind": "trigger", "expect": "structure-roblox-projects",
-  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it"},
- {"id": "srp-playtest", "kind": "trigger", "expect": "structure-roblox-projects",
-  "prompt": "how do I test my shop button in a Studio play-test with the MCP"},
- {"id": "srp-remote", "kind": "trigger", "expect": "structure-roblox-projects",
-  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?"},
-
- {"id": "rra-hitbox", "kind": "trigger", "expect": "roblox-resource-acquisition",
-  "prompt": "is there a good module for hitboxes on roblox or should I raycast myself"},
- {"id": "rra-upgrade", "kind": "trigger", "expect": "roblox-resource-acquisition",
-  "prompt": "Vide has a new release, should we bump our pinned version?"},
- {"id": "rra-blink", "kind": "trigger", "expect": "roblox-resource-acquisition",
-  "prompt": "set up Blink for networking in this pesde project"},
-
- {"id": "ui-polish", "kind": "trigger", "expect": "design-roblox-ui",
-  "prompt": "the shop panel in src/client looks generic and AI-made, make it look more polished and deliberate"},
- {"id": "ui-hud", "kind": "trigger", "expect": "design-roblox-ui",
-  "prompt": "design a HUD for health and coins for this Roblox game, built with Vide, that looks good on phones too"},
- {"id": "ui-restyle", "kind": "trigger", "expect": "design-roblox-ui",
-  "prompt": "restyle the inventory menu so it looks cleaner and less like default Roblox UI"},
-
- {"id": "bp-why", "kind": "trigger", "expect": "bigger-picture",
-  "prompt": "wait, why are we touching the login page? I thought this session was about the wishlist feature. We've changed the header, the preferences link, the sign-in form and renamed two modules since I last looked."},
- {"id": "bp-explicit", "kind": "trigger", "expect": "bigger-picture", "markers": ["Goal", "Not needed for the goal"],
-  "prompt": "/osaskills:bigger-picture I asked for a wishlist that follows me across devices. So far: a heart button on each product, saving the list to the account, a rename of putJSON to saveJSON, and a new folder layout under src/."},
- {"id": "tw-explicit", "kind": "trigger", "expect": "then-what", "markers": ["Done when"],
-  "prompt": "/osaskills:then-what The audit found the cache index is 10x faster, Redis is untested, and mobile wasn't load tested."},
- {"id": "vod-explicit", "kind": "trigger", "expect": "vod-discovery", "markers": ["vod.py doctor", "doctor"], "max_turns": 1,
-  "prompt": "/osaskills:vod-discovery Do not run any tools or commands; just tell me in one paragraph what you would do first for a 4 hour VOD at /videos/stream.mp4."},
-
- {"id": "user-only-vod", "kind": "trigger", "expect": "!vod-discovery",
-  "prompt": "find the highlights in my 4 hour twitch VOD at /videos/stream.mp4"},
- {"id": "user-only-thenwhat", "kind": "trigger", "expect": "!then-what",
-  "prompt": "ok so then what? what should I do next with these findings?"},
- {"id": "user-only-sharpen", "kind": "trigger", "expect": "!sharpen",
-  "prompt": "I have a vague idea for a crafting feature but I can't pin down what I actually want from it, help me think it through"},
- {"id": "user-only-thinktank", "kind": "trigger", "expect": "!think-tank",
-  "prompt": "get a few independent opinions on whether we should switch this project from Wally to pesde"},
-
- {"id": "neg-tween", "kind": "trigger", "expect": ["!structure-roblox-projects", "!roblox-resource-acquisition", "!design-roblox-ui"],
-  "prompt": "write a TweenService animation that fades this GUI in"},
- {"id": "neg-luau", "kind": "trigger", "expect": ["!structure-roblox-projects", "!roblox-resource-acquisition", "!design-roblox-ui"],
-  "prompt": "explain Luau type refinement with typeof checks"},
- {"id": "neg-ui-logic", "kind": "trigger", "expect": "!design-roblox-ui",
-  "prompt": "the shop button's click handler fires twice, fix it so it fires once; don't change how anything looks"},
- {"id": "neg-short", "kind": "trigger", "expect": "!bigger-picture",
-  "prompt": "how many files are under src/server?"},
-
- {"id": "q-glob", "kind": "judged", "skill": "structure-roblox-projects", "max_turns": 15,
+  "skills": [
+   "bigger-picture",
+   "design-roblox-ui",
+   "roblox-resource-acquisition",
+   "structure-roblox-projects",
+   "sharpen",
+   "then-what",
+   "think-tank",
+   "vod-discovery"
+  ],
+  "note": "The roblox-* library skills live in roblox-resource-acquisition/libraries and are cloned into projects, not registered by the plugin (README, Install), so the probe lists only the plugin's own skills."
+ },
+ {
+  "id": "srp-glob",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it"
+ },
+ {
+  "id": "srp-playtest",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "how do I test my shop button in a Studio play-test with the MCP"
+ },
+ {
+  "id": "srp-remote",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?"
+ },
+ {
+  "id": "rra-hitbox",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "is there a good module for hitboxes on roblox or should I raycast myself"
+ },
+ {
+  "id": "rra-upgrade",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "Vide has a new release, should we bump our pinned version?"
+ },
+ {
+  "id": "rra-blink",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "set up Blink for networking in this pesde project"
+ },
+ {
+  "id": "ui-polish",
+  "kind": "trigger",
+  "expect": "design-roblox-ui",
+  "prompt": "the shop panel in src/client looks generic and AI-made, make it look more polished and deliberate"
+ },
+ {
+  "id": "ui-hud",
+  "kind": "trigger",
+  "expect": "design-roblox-ui",
+  "prompt": "design a HUD for health and coins for this Roblox game, built with Vide, that looks good on phones too"
+ },
+ {
+  "id": "ui-restyle",
+  "kind": "trigger",
+  "expect": "design-roblox-ui",
+  "prompt": "restyle the inventory menu so it looks cleaner and less like default Roblox UI"
+ },
+ {
+  "id": "bp-why",
+  "kind": "trigger",
+  "expect": "bigger-picture",
+  "prompt": "wait, why are we touching the login page? I thought this session was about the wishlist feature. We've changed the header, the preferences link, the sign-in form and renamed two modules since I last looked."
+ },
+ {
+  "id": "bp-explicit",
+  "kind": "trigger",
+  "expect": "bigger-picture",
+  "markers": [
+   "Goal",
+   "Not needed for the goal"
+  ],
+  "prompt": "/osaskills:bigger-picture I asked for a wishlist that follows me across devices. So far: a heart button on each product, saving the list to the account, a rename of putJSON to saveJSON, and a new folder layout under src/."
+ },
+ {
+  "id": "tw-explicit",
+  "kind": "trigger",
+  "expect": "then-what",
+  "markers": [
+   "Done when"
+  ],
+  "prompt": "/osaskills:then-what The audit found the cache index is 10x faster, Redis is untested, and mobile wasn't load tested."
+ },
+ {
+  "id": "vod-explicit",
+  "kind": "trigger",
+  "expect": "vod-discovery",
+  "markers": [
+   "vod.py doctor",
+   "doctor"
+  ],
+  "max_turns": 1,
+  "prompt": "/osaskills:vod-discovery Do not run any tools or commands; just tell me in one paragraph what you would do first for a 4 hour VOD at /videos/stream.mp4."
+ },
+ {
+  "id": "user-only-vod",
+  "kind": "trigger",
+  "expect": "!vod-discovery",
+  "prompt": "find the highlights in my 4 hour twitch VOD at /videos/stream.mp4"
+ },
+ {
+  "id": "user-only-thenwhat",
+  "kind": "trigger",
+  "expect": "!then-what",
+  "prompt": "ok so then what? what should I do next with these findings?"
+ },
+ {
+  "id": "user-only-sharpen",
+  "kind": "trigger",
+  "expect": "!sharpen",
+  "prompt": "I have a vague idea for a crafting feature but I can't pin down what I actually want from it, help me think it through"
+ },
+ {
+  "id": "user-only-thinktank",
+  "kind": "trigger",
+  "expect": "!think-tank",
+  "prompt": "get a few independent opinions on whether we should switch this project from Wally to pesde"
+ },
+ {
+  "id": "neg-tween",
+  "kind": "trigger",
+  "expect": [
+   "!structure-roblox-projects",
+   "!roblox-resource-acquisition",
+   "!design-roblox-ui"
+  ],
+  "prompt": "write a TweenService animation that fades this GUI in"
+ },
+ {
+  "id": "neg-luau",
+  "kind": "trigger",
+  "expect": [
+   "!structure-roblox-projects",
+   "!roblox-resource-acquisition",
+   "!design-roblox-ui"
+  ],
+  "prompt": "explain Luau type refinement with typeof checks"
+ },
+ {
+  "id": "neg-ui-logic",
+  "kind": "trigger",
+  "expect": "!design-roblox-ui",
+  "prompt": "the shop button's click handler fires twice, fix it so it fires once; don't change how anything looks"
+ },
+ {
+  "id": "neg-short",
+  "kind": "trigger",
+  "expect": "!bigger-picture",
+  "prompt": "how many files are under src/server?"
+ },
+ {
+  "id": "q-glob",
+  "kind": "judged",
+  "skill": "structure-roblox-projects",
+  "max_turns": 15,
   "prompt": "This project uses Rojo 7.7. I have init-backed Preview folders like src/client/Shop/Preview/init.luau that I want excluded from builds, plus every *.story.luau file. How do I configure that in default.project.json? Reply in chat only; don't edit files.",
   "truth": "`globIgnorePaths` is a top-level array in the project file. Patterns are matched relative to the project file's directory (so `src/client/...`, not `client/...`). `**/Preview` excludes an init-backed Preview directory and all its children. `**/Preview/**` ALONE excludes the children but leaves the directory's own init ModuleScript. `**/*.story.luau` excludes stories. Verify with `rojo build` or `rojo sourcemap`.",
   "criteria": {
@@ -63,8 +175,14 @@
    "G3": "Preview pattern that actually excludes the init-backed folder (`**/Preview` or `src/client/**/Preview`, possibly alongside `/**`).",
    "G4": "Does not claim `**/Preview/**` alone is sufficient; ideally explains that it leaves the init module.",
    "G5": "Correct about paths being relative to the project file directory (or uses patterns consistent with that).",
-   "G6": "Suggests verifying with a build or sourcemap."}},
- {"id": "q-entry", "kind": "judged", "skill": "structure-roblox-projects", "max_turns": 15,
+   "G6": "Suggests verifying with a build or sourcemap."
+  }
+ },
+ {
+  "id": "q-entry",
+  "kind": "judged",
+  "skill": "structure-roblox-projects",
+  "max_turns": 15,
   "prompt": "We're adding a client-side input controller to this project. Where should its entrypoint go and what kind of script should it be? Check how the project is wired today. Reply in chat only; don't edit files.",
   "truth": "Roblox recommends a `Script` with `RunContext = Client` placed in ReplicatedStorage (or similar) for client code; LocalScripts only run in specific containers (StarterPlayerScripts, StarterCharacterScripts, StarterGui, PlayerGui, Backpack, character), NOT in ReplicatedStorage. A RunContext=Client Script in StarterPlayerScripts or StarterCharacterScripts runs twice. In Rojo 7, `init.client.luau` becomes a LocalScript unless `emitLegacyScripts: false` (then a Script with RunContext Client). In this project, `src/client/init.client.luau` mapped into ReplicatedStorage.Client by default.project.json becomes a LocalScript that will NOT run.",
   "criteria": {
@@ -72,8 +190,14 @@
    "E2": "Notices the existing client entry would be a LocalScript in ReplicatedStorage and won't run (or flags the emitLegacyScripts issue).",
    "E3": "Recommends a correct option: RunContext=Client Script in ReplicatedStorage (preferred) and/or LocalScript in StarterPlayerScripts, with the needed Rojo mapping or setting.",
    "E4": "No wrong claims (e.g. \"LocalScripts run in ReplicatedStorage\", or \"a Client RunContext script in StarterPlayerScripts is fine\" without the run-twice caveat).",
-   "E5": "Proportional: answers the question without excessive process."}},
- {"id": "q-compare", "kind": "judged", "skill": "roblox-resource-acquisition", "max_turns": 12,
+   "E5": "Proportional: answers the question without excessive process."
+  }
+ },
+ {
+  "id": "q-compare",
+  "kind": "judged",
+  "skill": "roblox-resource-acquisition",
+  "max_turns": 12,
   "prompt": "Janitor or Trove for cleaning up per-round objects (parts, tweens, connections) in our server round system? Just give me a recommendation, don't change anything.",
   "truth": "The project already declares Janitor 1.18.3 in wally.toml. Both libraries suit the job. Janitor: `Janitor.new()`, `:Add(obj, method?, index?)`, `:Remove(index)`, `:LinkToInstance`, `:Cleanup()`, `:Destroy()`; a throwing cleanup aborts and leaves the janitor stuck. Trove: `Trove.new()`, `:Add`, `:Connect`, `:Clone`, `:Construct`, `:Extend`, `:AttachToInstance`, `:Clean()`, `:Destroy()`. Switching would add a dependency for no clear gain.",
   "criteria": {
@@ -81,5 +205,7 @@
    "C2": "Notices the project already declares Janitor and weighs that (consistency, no new dependency).",
    "C3": "States a clear recommendation with the deciding tradeoff.",
    "C4": "API facts used are accurate; no invented methods or behavior.",
-   "C5": "Proportional: no adoption or lifecycle reporting, no record or CLAUDE.md talk for an evaluation."}}
+   "C5": "Proportional: no adoption or lifecycle reporting, no record or CLAUDE.md talk for an evaluation."
+  }
+ }
 ]
