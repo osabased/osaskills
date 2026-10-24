@@ -1,0 +1,64 @@
+name: Eval gate
+
+on:
+  push:
+    paths:
+      - "skills/**"
+      - "hooks/**"
+      - "agents/**"
+      - "CLAUDE.md"
+      - "evals/gate/**"
+      - "evals/_lib/**"
+      - ".github/workflows/eval-gate.yml"
+  pull_request:
+    paths:
+      - "skills/**"
+      - "hooks/**"
+      - "agents/**"
+      - "CLAUDE.md"
+      - "evals/gate/**"
+      - "evals/_lib/**"
+      - ".github/workflows/eval-gate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: trigger and judged subset / haiku
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check for the API key
+        id: key
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "has_key=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_key=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Eval gate skipped::The ANTHROPIC_API_KEY secret is not set, so the eval gate did not run. Add it under Settings > Secrets and variables > Actions to gate skill changes on the eval subset."
+          fi
+      - uses: actions/setup-python@v7
+        if: steps.key.outputs.has_key == 'true'
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v7
+        if: steps.key.outputs.has_key == 'true'
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        if: steps.key.outputs.has_key == 'true'
+        run: npm install -g @anthropic-ai/claude-code@2.1.296
+      - name: Run the gate subset and compare with the ledger
+        if: steps.key.outputs.has_key == 'true'
+        run: python evals/gate/harness.py --plugin-dir "$GITHUB_WORKSPACE" --out results/ci
+      - name: Upload the ledger and results
+        if: always() && steps.key.outputs.has_key == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-ledger
+          path: |
+            evals/ledger.jsonl
+            evals/gate/results/ci
