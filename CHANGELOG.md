@@ -538,6 +538,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## design-roblox-ui
 
+### 2026-10-23
+
+#### Changed
+
+- In a session with a taste vault, a new standing preference is proposed to the vault instead of written into the taste log, which keeps the reviewer calibration and decisions. The builder sends the reviewer the taste rules the user confirmed that the vault showed it, word for word, since the reviewer can't read the vault, and the reviewer doesn't flag standing preferences in its prompt. A behavioral scenario covers it. ([#96](https://github.com/osabased/osaskills/pull/96))
+
 ### 2026-10-20
 
 #### Added

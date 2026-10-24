@@ -97,6 +97,8 @@ Content, most important first:
 - **Reviewer calibration:** what the reviewer flags that the user likes anyway. Every review is sent this list.
 - **Decisions,** newest first: each pick, review and user comment.
 
+In a session with a taste vault (a start note says how to propose a rule to it), propose each new standing preference to the vault instead of writing it here; this log keeps the reviewer calibration and decisions.
+
 Each pick is marked `(user)` when the user chose it, or `(provisional)` when an agent chose alone ([user away](process.md#when-the-user-isnt-there)). When the user confirms a provisional pick, change its mark to `(user, confirmed <date>)`. A reversed pick gets a new entry naming the one it replaces; leave the old entry, so its reasons stay readable.
 
 An example:

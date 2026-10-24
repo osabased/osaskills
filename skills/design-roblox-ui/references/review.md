@@ -9,6 +9,7 @@ The reviewer opens every file itself, so send absolute paths.
 - **Renders,** as PNGs at most 1500 px on the long side (`--max-size 1500`): larger images are shrunk before the model sees them, so their detail is lost anyway. The contact sheet comes first, then each render.
 - **The style guide:** a render of the theme's specimen story, so the reviewer can name the theme's colours, type steps and spacing in its fixes. Before the theme exists, the brief's hex values serve.
 - **The design files:** the brief, every reference image, and the taste log ([project files](project-files.md)).
+- **Vault preferences:** in a session with a taste vault, the taste rules the user confirmed that it showed you this session and that bear on how the UI looks, word for word. The reviewer can't read the vault, so they reach it only through your prompt.
 - **The criteria:** this skill's [rubric](rubric.md) and [AI tells](ai-tells.md).
 - **Render notes:** what the reviewer can't check for itself:
   - each render's device, size and image scale (`scale` in `rhr ui --json`), the text sizes after the root scale, and how to convert what it measures: divide by the scale;
@@ -60,6 +61,10 @@ Render notes:
 - The item cards' 9-sliced frames show hard seams where their pieces meet,
   which the game doesn't. Judge the frames' size and colour, not their seams.
 
+Standing preferences from the taste vault, confirmed by the user:
+- Do: Print each price on its item's card, beside the art. Not: Show prices
+  only after a tap.
+
 Read before judging:
 - <project>/docs/design/brief.md
 - <project>/docs/design/refs/ (every image)
@@ -91,7 +96,7 @@ If the reviewer can't be continued, spawn a new one with round 1's material, the
 
 ## Weighing the fixes
 
-- Apply each major fix, unless it contradicts the brief or the taste log. Decline those, and tell the user in your summary.
+- Apply each major fix, unless it contradicts the brief, the taste log or a vault preference you sent. Decline those, and tell the user in your summary.
 - Apply the minor fixes you agree with that cost little. Decline the rest with a reason; the reviewer reads it next round.
 - A fix's diagnosis can be right while its numbers are off. Check its measurements against `rhr layout`, and fix the cause of what the reviewer saw: buy buttons that looked 2 px apart were 8 apart, with 3 px strokes drawn outside each.
 - A fix to render an item that wasn't drawn, such as art rhr didn't download, is done before the user's review, whatever its severity. Ask the user before rhr's first download ([the loop](rendering.md#the-loop)), render with the art, and look at it yourself; send the renders as another round if the art changes how the screen reads.
@@ -110,7 +115,7 @@ You are a senior game UI designer reviewing a Roblox screen from its renders. Yo
 Work in this order:
 
 1. Look small first, then close: open the contact sheet, if you were sent one, then every render at full size. For each device, note a player's first impression: what you see first, what you would press, and what you can't read. Do this before reading the brief, so it can't tell you what you're meant to see.
-2. Read the brief, the taste log, the rubric and the AI tells, and open every reference image. The taste log holds the user's decisions: don't flag its standing preferences or picks, and never flag what its Reviewer calibration lists.
+2. Read the brief, the taste log, the rubric and the AI tells, and open every reference image. The taste log and any standing preferences in your prompt hold the user's decisions: don't flag a standing preference or a pick, and never flag what the log's Reviewer calibration lists.
 3. Judge each device as that device: a phone in landscape at arm's length, thumbs on the bottom corners over Roblox's thumbstick and jump button; a desktop with a mouse; a TV from the sofa with a gamepad.
 4. Rank what you found by what it costs a player, with the rubric's severity, and keep at most five.
 

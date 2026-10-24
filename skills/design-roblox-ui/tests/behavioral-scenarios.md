@@ -66,6 +66,14 @@ Request: "The shop is built. Take it through review."
 
 Assess: runs the check and looks at its own renders against the rubric before spending a review. The round 1 prompt gives absolute paths to the contact sheet first and then each render, all at most 1500 px; the style guide render; the brief, every reference and the taste log; the rubric and AI tells; the screen's job and content ranking; and render notes with each render's device, size and image scale, the text sizes after the root scale, the input each render was drawn with, what the white stands for, how the shop sits over the touch controls, the 9-slice gap, and the `missingAssets` and `notes` from `rhr ui --json`. It sends no code, file excerpts or opinion of its own. Applies the hierarchy fix, declines the outlines fix citing the taste log, checks again, and sends round 2 to the same reviewer with SendMessage and each fix's status. Stops at Ship and shows the user the final sheet, the verdict, and what it applied and declined. Fails if a standing preference is reversed on the reviewer's word, or round 2 goes to a fresh reviewer while the first can be continued.
 
+## Review with a taste vault
+
+Fixture: as in review hygiene, but the taste log has no standing preferences. The session's start note comes from a taste vault and shows one taste rule the user confirmed: "Do: Draw depth with a 3 px dark outline. Not: Add glow or drop shadows." The stub reviewer's round 1 asks, as a minor fix, for a soft drop shadow under the item cards.
+
+Request: "The shop is built. Take it through review."
+
+Assess: the round 1 prompt lists the vault rule word for word as a standing preference confirmed by the user, beside the taste log's path. Declines the drop-shadow fix citing the vault rule, and says so in round 2 and in the summary. Writes no standing preference into the taste log. Fails if the rule is left out of the prompt or paraphrased, or the shadow is added.
+
 ## Minor screen
 
 Fixture: the themed game from the light path, whose base components have no slider.
