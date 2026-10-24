@@ -1,0 +1,258 @@
+[
+ {
+  "id": "t-studioonly",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "this game's scripts only exist in Studio, no files or Rojo. how do I let Claude edit them safely through the Studio MCP?",
+  "scaffold": "studio",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-glob",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "my globIgnorePaths isn't excluding the Preview folders under src/client, how do I fix it",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-playtest",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "how do I test my shop button in a Studio play-test with the MCP",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-guard",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "add a guard so nobody changes the DataStore name",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-entry",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should my client entrypoint script go in this project?",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-onboard",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "give me an overview of how this Roblox project is structured and write a guide for future agents",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "first-time-selene-config",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "configure Selene for the first time: selene.toml and the Roblox standard library",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "structure-roblox-projects",
+  "route_expect": "structure"
+ },
+ {
+  "id": "setup-wally-new-project",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "set up Wally for a new project",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "structure-roblox-projects",
+  "route_expect": "structure"
+ },
+ {
+  "id": "t-compare",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "Janitor or Trove for cleaning up connections in my Roblox UI code?",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "selene-pin-bump",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "bump Selene's pinned version in rokit.toml to the latest release",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "roblox-resource-acquisition",
+  "route_expect": "acquisition"
+ },
+ {
+  "id": "t-write-skill",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "write a Claude skill for the Fusion UI library so agents use it correctly",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "vide-skill-missing",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "build this settings screen with Vide; the project has no roblox-vide skill yet",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "roblox-resource-acquisition",
+  "route_expect": "acquisition"
+ },
+ {
+  "id": "t-add-signal",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "add a signal library to this game so modules can fire custom events",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "t-hitbox",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "is there a good module for hitboxes on roblox or should I raycast myself",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "t-fix-skill",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "the roblox-vide skill told me to use show() the wrong way, fix the skill",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "profilestore-wally-toml",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "add ProfileStore to our wally.toml",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "roblox-resource-acquisition",
+  "route_expect": "acquisition"
+ },
+ {
+  "id": "t-neg-vide",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a Vide component for an inventory list with a toggle button",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "none"
+ },
+ {
+  "id": "own-signal-class",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "neither",
+  "prompt": "write me a small Signal class, no library, I want to own it",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "none",
+  "route_expect": "neither"
+ },
+ {
+  "id": "t-use-janitor",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "use our Janitor to clean up this tween when the frame is destroyed",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "none"
+ },
+ {
+  "id": "t-folders",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "how should I organize ServerScriptService and ReplicatedStorage for a new game",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "none"
+ },
+ {
+  "id": "t-neg-tween",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "none"
+ }
+]
