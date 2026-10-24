@@ -1,0 +1,78 @@
+name: Evals
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "hooks/**"
+      - "agents/**"
+      - ".claude-plugin/**"
+      - "evals/_lib/**"
+      - ".github/workflows/evals.yml"
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "hooks/**"
+      - "agents/**"
+      - ".claude-plugin/**"
+      - "evals/_lib/**"
+      - ".github/workflows/evals.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  ledger-tests:
+    name: ledger and gate tests / Python 3.12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install pytest==9.1.1
+      - name: Run tests
+        run: python -m pytest -q evals/_lib/tests
+
+  # The repository has no ANTHROPIC_API_KEY secret today, so this job skips until one is added.
+  # Pull requests from forks never receive the secret and skip the same way.
+  trigger-gate:
+    name: trigger gate / haiku
+    needs: ledger-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for the API key
+        id: key
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::notice::trigger gate skipped: no ANTHROPIC_API_KEY secret in this repository"
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.key.outputs.present == 'true'
+      - uses: actions/setup-python@v7
+        if: steps.key.outputs.present == 'true'
+        with:
+          python-version: "3.12"
+      - name: Install Claude Code
+        if: steps.key.outputs.present == 'true'
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Run the trigger gate
+        if: steps.key.outputs.present == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CI: "1"
+        run: python evals/_lib/gate.py run --model haiku
+      - name: Upload the ledger
+        if: always() && steps.key.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-ledger
+          path: evals/ledger.jsonl
+          if-no-files-found: warn
