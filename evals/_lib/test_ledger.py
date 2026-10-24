@@ -10,7 +10,7 @@ import ledger
 def row(**over):
     base = dict(date="2026-10-20", commit="abc1234", eval="gate", run="2026-10-20-1200", model="haiku", cond="new",
                 skills=["structure-roblox-projects"], trigger={"structure-roblox-projects": {"pass": 8, "n": 9}},
-                judge=None, cost_usd=0.21, minutes=3.5, cli="2.1.296", cases=9, note="")
+                judge=None, cost_usd=0.21, minutes=3.5, cli="2.1.296", cases=9, gate_ok=None, note="")
     base.update(over)
     return base
 
@@ -105,10 +105,13 @@ def test_baseline_is_the_last_row_for_the_same_eval_and_model():
     assert ledger.baseline(rows, "gate", "haiku")["run"] == "c"
     assert ledger.baseline(rows, "gate", "opus") is None
     assert ledger.baseline(rows, "gate", "haiku", before="c")["run"] == "a"
-    failed = row(date="2026-10-22", run="e", model="haiku", note="FAIL: trigger srp: 6/9 is below the last 9/9")
-    rows.append(failed)
-    assert ledger.baseline(rows, "gate", "haiku")["run"] == "e"
-    assert ledger.baseline(rows, "gate", "haiku", passing=True)["run"] == "c"
+    failed = row(date="2026-10-22", run="e", model="haiku", gate_ok=False, note="FAIL: trigger srp: 6/9 is below the last 9/9")
+    partial = row(date="2026-10-23", run="f", model="haiku", cond="partial", gate_ok=True)
+    rows += [failed, partial]
+    assert ledger.baseline(rows, "gate", "haiku")["run"] == "f"
+    assert ledger.baseline(rows, "gate", "haiku", passing=True)["run"] == "f"
+    assert ledger.baseline(rows, "gate", "haiku", passing=True, cond="new")["run"] == "c"
+    assert ledger.baseline(rows, "gate", "haiku", cond="new")["run"] == "e"
 
 
 def test_record_appends_from_a_harness_and_prints(tmp_path):

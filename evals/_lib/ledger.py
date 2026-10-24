@@ -18,7 +18,7 @@ EVALS = LIB.parent
 LEDGER = EVALS / "ledger.jsonl"
 KEY = ("eval", "run", "model", "cond")
 FIELDS = ("date", "commit", "eval", "run", "model", "cond", "skills", "trigger", "judge", "cost_usd", "minutes",
-          "cli", "cases", "note")
+          "cli", "cases", "gate_ok", "note")
 
 
 def load(path=LEDGER):
@@ -156,17 +156,22 @@ def wilson_upper(k, n, z=1.96):
     return min(1.0, (centre + spread) / denom)
 
 
-def baseline(rows, eval_name, model, before=None, passing=False):
+def baseline(rows, eval_name, model, before=None, passing=False, cond=None):
     """The last row for this eval and model, or the last one before the run named by `before`.
 
-    With passing, rows whose note starts with FAIL are skipped, so a regression never becomes the baseline.
+    With passing, rows the gate failed (gate_ok false) are skipped, so one regression keeps failing until the
+    rate recovers instead of becoming the new normal. With cond, only rows of that condition count, which keeps
+    a partial run's rows out of the comparison.
     """
     last = None
     for r in rows:
         if before is not None and r["eval"] == eval_name and r["run"] == before:
             break
-        if r["eval"] == eval_name and r.get("model") == model and not (passing and str(r.get("note") or "").startswith("FAIL")):
-            last = r
+        if r["eval"] != eval_name or r.get("model") != model:
+            continue
+        if (passing and r.get("gate_ok") is False) or (cond is not None and r.get("cond") != cond):
+            continue
+        last = r
     return last
 
 

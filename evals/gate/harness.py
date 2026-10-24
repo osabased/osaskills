@@ -7,8 +7,15 @@ installed skills excluded:
 - trigger: a prompt loads the expected skill (through the Skill tool or by reading its SKILL.md), does not load a
   skill marked `!name`, or, for a slash-invoked skill that leaves no tool event, answers in that skill's format;
 - judged: a short task graded by a second model against the case's ground truth and criteria, pooled over reps.
-Each run writes one JSON record under --out. Then one ledger row per model is built, compared with the last
-passing gate row for that model in evals/ledger.jsonl, appended, and the exit code is 1 on a regression. Usage:
+Each run writes one JSON record under --out. Then one ledger row per model is built, compared with the baseline
+in evals/ledger.jsonl, appended, and the exit code is 1 on a regression. Two rules keep the baseline honest:
+- A run narrowed to fewer cases than the full subset (case ids, or --kinds without every kind) writes its rows
+  with cond "partial" instead of "new". The comparison reads only cond "new" rows, so a partial run is judged
+  but never judged against.
+- Every gate row carries gate_ok, the gate's own decision for it. The baseline is the latest cond "new" row for
+  the model whose gate_ok is not false, so one regression keeps failing until the rate recovers.
+CI commits nothing back, so its baseline is the committed ledger: to move it, run the gate locally and commit
+evals/ledger.jsonl. Usage:
     python harness.py [--plugin-dir DIR] [--model haiku] [--judge-model sonnet] [--reps 3] [--judged-reps 3]
                       [--kinds registered,trigger,judged] [--out results/<stamp>] [--no-ledger] [case-id ...]
 """
@@ -132,6 +139,29 @@ def judged_score(recs):
     return {"metric": "criteria", "score": round(passes / total, 3), "n": len(graded), "passes": passes, "total": total}
 
 
+def cond_for(ids, kinds):
+    return "partial" if ids or set(kinds) != set(KINDS) else "new"
+
+
+def evaluate(previous, rows, trigger_tol, judge_tol, out=None):
+    """Decide each new row against the last passing cond "new" row for its model, mark it, and return the failures."""
+    out = out or sys.stdout
+    fails = []
+    for row in rows:
+        base = ledger.baseline(previous, "gate", row["model"], passing=True, cond="new")
+        print("gate: new      " + ledger.line(row), file=out)
+        if base:
+            print("gate: baseline " + ledger.line(base), file=out)
+            mine = ledger.gate_decision(base, row, trigger_tol, judge_tol)
+        else:
+            print(f"gate: no earlier passing gate row for {row['model']}; this run sets the baseline", file=out)
+            mine = []
+        row["gate_ok"] = not mine
+        row["note"] = ("FAIL: " + "; ".join(mine)) if mine else "pass"
+        fails += mine
+    return fails
+
+
 def flatten(recs):
     """One record per check, carrying each run's cost once, for the ledger's per-skill counts."""
     out = []
@@ -162,6 +192,9 @@ if __name__ == "__main__":
     out = ROOT / (a.out or f"results/{stamp}")
     out.mkdir(parents=True, exist_ok=True)
     kinds = a.kinds.split(",")
+    cond = cond_for(a.ids, kinds)
+    if cond == "partial":
+        print("partial run: its rows are recorded as cond partial and never become a baseline")
     cases = [c for c in json.load(open(ROOT / "cases.json", encoding="utf-8"))
              if c["kind"] in kinds and (not a.ids or c["id"] in a.ids)]
     reps = {"registered": 1, "trigger": a.reps, "judged": a.judged_reps}
@@ -186,18 +219,8 @@ if __name__ == "__main__":
     score = judged_score(recs)
     rows = ledger.rows_from_records("gate", out.relative_to(ROOT).as_posix(), flatten(recs), lambda c: c["skill"],
                                     commit=ledger.head_commit(REPO), cli=version, judge=lambda m, c: score,
-                                    cond_of=lambda c: "plugin", minutes=round((time.time() - started) / 60, 1))
-    previous = ledger.load()
-    fails = []
-    for row in rows:
-        base = ledger.baseline(previous, "gate", row["model"], passing=True)
-        print("gate: new      " + ledger.line(row))
-        if base:
-            print("gate: baseline " + ledger.line(base))
-            fails += ledger.gate_decision(base, row, a.trigger_tol, a.judge_tol)
-        else:
-            print(f"gate: no earlier passing gate row for {row['model']}; this run sets the baseline")
-        row["note"] = ("FAIL: " + "; ".join(fails)) if fails else "pass"
+                                    cond_of=lambda c: cond, minutes=round((time.time() - started) / 60, 1))
+    fails = evaluate(ledger.load(), rows, a.trigger_tol, a.judge_tol)
     ledger.append_rows(rows)
     for f in fails:
         print("FAIL " + f)
