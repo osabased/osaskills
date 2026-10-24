@@ -114,7 +114,7 @@ Send the renders to the reviewer as [review](review.md) describes. Apply its fix
 
 ## The user's review
 
-Show the user the final contact sheet, the reviewer's last verdict, and which of its fixes you applied or declined and why. Log what they say in the taste log. When they say the same thing twice, about any screen, make it a standing preference.
+Show the user the final contact sheet, the reviewer's last verdict, and which of its fixes you applied or declined and why. Log what they say in the taste log. When they say the same thing twice, about any screen, make it a [standing preference](project-files.md#taste-log).
 
 ## Motion
 
