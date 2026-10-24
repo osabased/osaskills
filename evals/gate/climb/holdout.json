@@ -1,0 +1,171 @@
+[
+ {
+  "id": "t-ci",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "set up CI for my Rojo project",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-scriptsync",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "can I sync my pesde packages folder into Studio with Script Sync?",
+  "scaffold": "sync",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "t-remote",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "where should I put the RemoteEvents for the shop, and how should the server validate purchases?",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "set-up-rokit",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "structure",
+  "prompt": "install Rokit and set up the toolchain for this new Roblox repo",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "structure-roblox-projects",
+  "route_expect": "structure"
+ },
+ {
+  "id": "t-agentready",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "structure-roblox-projects",
+  "prompt": "make this repo easier for Claude to work in: add a check script and hooks",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "structure-roblox-projects"
+ },
+ {
+  "id": "rokit-stylua",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "add StyLua and Selene to our existing rokit.toml, pinned to their latest releases",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "roblox-resource-acquisition",
+  "route_expect": "acquisition"
+ },
+ {
+  "id": "t-pin-mismatch",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "the roblox-janitor skill says my pesde.lock has a different Janitor version than it targets, what now",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "t-upgrade",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "Vide has a new release, should we bump our pinned version?",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "t-blink",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "roblox-resource-acquisition",
+  "prompt": "set up Blink for networking in this pesde project",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "roblox-resource-acquisition"
+ },
+ {
+  "id": "write-profilestore-skill",
+  "group": "boundary",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "acquisition",
+  "prompt": "write a roblox-profilestore skill for our pinned ProfileStore version",
+  "scaffold": "game",
+  "max_turns": 3,
+  "clones": [],
+  "skill": "roblox-resource-acquisition",
+  "route_expect": "acquisition"
+ },
+ {
+  "id": "t-neg-typo",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "fix the typo 'recieve' in the comments under src/server",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "none"
+ },
+ {
+  "id": "t-neg-luau",
+  "suite": "srp",
+  "kind": "trigger",
+  "expect": "!structure-roblox-projects",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "scaffold": "base",
+  "max_turns": 3,
+  "skill": "none"
+ },
+ {
+  "id": "t-tween",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "write a TweenService animation that fades this GUI in",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "none"
+ },
+ {
+  "id": "t-luau-types",
+  "suite": "rra",
+  "kind": "trigger",
+  "expect": "!roblox-resource-acquisition",
+  "prompt": "explain Luau type refinement with typeof checks",
+  "max_turns": 3,
+  "scaffold": "coin",
+  "clones": [
+   "roblox-vide",
+   "roblox-janitor"
+  ],
+  "skill": "none"
+ }
+]
